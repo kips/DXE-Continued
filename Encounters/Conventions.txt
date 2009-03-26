@@ -1,0 +1,20 @@
+	Conventions
+	--------------
+	Alert variables:
+		Warnings: <name>warn
+		Durations: <name>dur
+		Cooldowns: <name>cd
+
+	Combat log arguments
+	--------------
+	1 - srcGUID
+	2 - srcName
+	3 - srcFlags
+	4 - dstGUID
+	5 - dstName
+	6 - dstFlags
+	7 - spellID
+	8 - spellName
+
+	functions: &<func>&
+	set = "<INCR or DECR>|<number>" 

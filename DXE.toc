@@ -1,0 +1,84 @@
+## Interface: 30000
+## Title: Deus Vox Encounters
+## Author: Kollektiv, Fariel
+## Version: @project-version@
+## SavedVariables: DXEDB, DXERecDB
+## OptionalDeps: Ace3
+
+# Libraries
+Libs\LibStub\LibStub.lua
+Libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
+Libs\AceAddon-3.0\AceAddon-3.0.xml
+Libs\AceGUI-3.0\AceGUI-3.0.xml
+Libs\AceConsole-3.0\AceConsole-3.0.xml
+Libs\AceEvent-3.0\AceEvent-3.0.xml
+Libs\AceConfig-3.0\AceConfig-3.0.xml
+Libs\AceDB-3.0\AceDB-3.0.xml
+Libs\AceDBOptions-3.0\AceDBOptions-3.0.xml
+Libs\AceTimer-3.0\AceTimer-3.0.xml
+Libs\AceComm-3.0\AceComm-3.0.xml
+Libs\AceSerializer-3.0\AceSerializer-3.0.xml
+
+# DXE Library
+Library.lua
+
+# AceGUI Widgets
+Widgets\Timer.lua
+Widgets\Alert.lua
+Widgets\ProgressBar.lua
+Widgets\HealthWatcher.lua
+
+# Main files
+Core.lua
+Options.lua
+Constants.lua
+Alerts.lua
+Invoker.lua
+HOT.lua
+Config.lua
+Distributor.lua
+Validator.lua
+
+# Encounters
+## Naxxramas
+Encounters\Naxxramas\Anub.lua
+Encounters\Naxxramas\Faerlina.lua
+Encounters\Naxxramas\Four Horsemen.lua
+Encounters\Naxxramas\Gluth.lua
+Encounters\Naxxramas\Gothik.lua
+Encounters\Naxxramas\Grobbulus.lua
+Encounters\Naxxramas\Heigan.lua
+Encounters\Naxxramas\KT.lua
+Encounters\Naxxramas\Loatheb.lua
+Encounters\Naxxramas\Maexxna.lua
+Encounters\Naxxramas\Noth.lua
+Encounters\Naxxramas\Patchwerk.lua
+Encounters\Naxxramas\Razuvious.lua
+Encounters\Naxxramas\Sapphiron.lua
+Encounters\Naxxramas\Thaddius.lua
+
+## The Eye of Eternity
+Encounters\The Eye of Eternity\Malygos.lua
+
+## The Obsidian Sanctum
+Encounters\The Obsidian Sanctum\Sartharion.lua
+
+## The Vault of Archavon
+Encounters\Vault of Archavon\Archavon.lua
+
+## Ulduar
+Encounters\Ulduar\Flame Leviathan.lua
+Encounters\Ulduar\Freya.lua
+Encounters\Ulduar\Hodir.lua
+Encounters\Ulduar\Ignis.lua
+Encounters\Ulduar\Iron Council.lua
+Encounters\Ulduar\Mimir.lua
+Encounters\Ulduar\Thorim.lua
+Encounters\Ulduar\Algalon.lua
+Encounters\Ulduar\Auriya.lua
+Encounters\Ulduar\General Vezax.lua
+Encounters\Ulduar\Kologarn.lua
+Encounters\Ulduar\Mimiron.lua
+Encounters\Ulduar\Razorscale.lua
+Encounters\Ulduar\XT0023.lua
+Encounters\Ulduar\Yogg Saron.lua

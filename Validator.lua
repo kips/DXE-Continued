@@ -1,0 +1,364 @@
+---------------------------------------------
+-- Validates Encounter Data
+---------------------------------------------
+
+local ipairs,pairs = ipairs,pairs
+local gmatch,match = string.gmatch,string.match
+local assert,type,select = assert,type,select
+local insert,select,concat,wipe = table.insert,select,table.concat,wipe
+
+local Sounds = DXE.Constants.Sounds
+local Colors = DXE.Constants.Colors
+local conditions = DXE.Invoker:GetConditions()
+local repFuncs = DXE.Invoker:GetRepFuncs()
+
+local isstring = {["string"] = true, _ = "string"}
+local isstringtable = {["string"] = true, ["table"] = true, _ = "string or table"}
+local isnumber = {["number"] = true, _ = "number"}
+local isboolean = {["boolean"] = true, _ = "boolean"}
+local istable = {["table"] = true, _ = "table"}
+local istablenumber = {["table"] = true, ["number"] = true, _ = "table or number"}
+local isnumber = {["number"] = true, _ = "number"}
+local isnumberstring = {["number"] = true, ["string"] = true, _ = "number or string"}
+local opttablenumber = {["table"] = true, ["number"] = true, ["nil"] = true, _ = "table or number or nil"}
+local optnumberstring = {["number"] = true, ["string"] = true, ["nil"] = true, _ = "number or string"}
+local opttable = {["table"] = true, ["nil"] = true, _= "table or nil"}
+local optstring = {["string"] = true, ["nil"] = true, _ = "string or nil"}
+local optstringtable = {["string"] = true, ["table"] = true, ["nil"] = true, _ = "string or table"}
+local optnumber = {["number"] = true, ["nil"] = true, _ = "number or nil"}
+local optboolean = {["boolean"] = true, ["nil"] = true, _ = "boolean or nil"}
+
+local baseKeys = {
+	version = optnumberstring,
+	key = optstring,
+	zone = isstring,
+	name = isstring,
+	title = isstring,
+	onstart = opttable,
+	timers = opttable,
+	userdata = opttable,
+	events = opttable,
+	alerts = opttable,
+	tracing = opttable,
+	onactivate = opttable,
+	triggers = opttable,
+}
+
+local baseLineKeys = {
+	expect = istable,
+	quash = isstring,
+	set = istable,
+	alert = isstring,
+	scheduletimer = istable,
+	canceltimer = isstring,
+}
+
+local alertBaseKeys = {
+	var = isstring,
+	varname = isstring,
+	type = isstring,
+	text = isstring,
+	time = isnumberstring,
+	throttle = optnumber,
+	flashtime = optnumber,
+	sound = optstring,
+	color1 = optstring,
+	color2 = optstring,
+}
+
+local alertTypeValues = {
+	centerpopup = true,
+	dropdown = true,
+	simple = true,
+}
+
+local baseTables = {
+	tracing = {
+		name = isstringtable,
+	},
+	triggers = {
+		scan = optstringtable,
+		yell = optstringtable,
+	},
+	onactivate = {
+		autoupdate = optboolean,
+		autostart = optboolean,
+		autostop = optboolean,
+		entercombat = optboolean,
+		leavecombat = optboolean,
+	},
+}
+
+local eventBaseKeys = {
+	type = isstring,
+	event = optstring,
+	eventtype = optstring,
+	spellid = opttablenumber,
+	execute = istable,
+}
+
+local function tableSize(t)
+	local n = 0
+	for _ in pairs(t) do
+		n = n + 1
+	end
+	return n
+end
+
+local temp = {}
+local function err(msg, errlvl, ...)
+	wipe(temp)
+	for i=select("#",...),1,-1 do
+		local key = (select(i,...))
+		if type(key) == "number" then
+			key = "["..key.."]"
+		elseif i ~= select("#",...) then
+			key = "."..key
+		else
+			key = "["..key.."]: data"
+		end
+		insert(temp, key)
+	end
+	error("DXE:ValidateOptions() "..concat(temp)..msg, errlvl+2)
+end
+
+local function validateIsArray(tbl,errlvl,...)
+	errlvl = (errlvl or 0)+1
+	if #tbl < 1 then
+		err(": table should be an array - invalid array",errlvl,...)
+	end
+	for k in pairs(tbl) do
+		if type(k) ~= "number" then
+			err(": all keys should be numbers - invalid array",errlvl,...)
+		end
+	end
+end
+
+local function validateVal(v, oktypes, errlvl, ...)
+	errlvl = (errlvl or 0)+1
+	local isok=oktypes[type(v)]
+	if not isok then
+		err(": expected a "..oktypes._..", got '"..tostring(v).."'", errlvl, ...)
+	end
+end
+
+local function validateReplaces(data,text,errlvl,...)
+	errlvl=(errlvl or 0)+1
+	for rep in gmatch(text,"%b&&") do
+		local func = match(rep,"&(.+)&")
+		if not repFuncs[func] then
+			err(": replace func doesn't exist, got '"..rep.."'",errlvl,...)
+		end
+	end
+
+	for var in gmatch(text,"%b<>") do 
+		local key = match(var,"<(.+)>")
+		if not data.userdata[key] then
+			err(": replace var doesn't exist, got '"..var.."'",errlvl,...)
+		end
+	end
+end
+
+local function validateCommandLine(data,line,errlvl,...)
+	local type,info = next(line)
+	local oktype = baseLineKeys[type]
+	if not oktype then
+		err(": unknown command line type",errlvl,...)
+	end
+	validateVal(info,oktype,errlvl,type,...)
+	if type == "expect" then
+		validateIsArray(info,errlvl,type,...)
+		if #info ~= 3 then
+			err(": not an array of size 3",errlvl,type,...)
+		end
+		for _,str in ipairs(info) do
+			validateVal(str,isstring,errlvl,type,...)
+		end
+		if not conditions[info[2]] then
+			err(": unknown condition",errlvl,type,...)
+		end
+		validateReplaces(data,info[1],errlvl,type,...)
+		validateReplaces(data,info[3],errlvl,type,...)
+	elseif type == "set" then
+		local var = next(info)
+		if not data.userdata or not data.userdata[var] then
+			err(": setting a non-existent userdata variable '"..var.."'",errlvl,type,...)
+		end
+	elseif type == "alert" or type == "quash" then
+		if not data.alerts or not data.alerts[info] then
+			err(": firing/quashing a non-existent alert '"..info.."'",errlvl,type,...)
+		end
+	elseif type == "scheduletimer" then
+		validateIsArray(info,errlvl,"scheduletimer",...)
+		if #info ~= 2 then
+			err(": array is not size 2",errlvl,type,...)
+		end
+		local timer,time = info[1],info[2]
+		validateVal(timer,isstring,errlvl,type,...)
+		validateVal(time,isnumber,errlvl,type,...)
+		if not data.timers or not data.timers[timer] then
+			err(": scheduling a non-existent timer '"..info.."'",errlvl,type,...)
+		end
+	elseif type == "canceltimer" then
+		if not data.timers or not data.timers[info] then
+			err(": canceling a non-existent timer '"..info.."'",errlvl,type,...)
+		end
+	end
+end
+
+local function validateCommandList(data,list,errlvl,...)
+	for k,line in ipairs(list) do
+		validateVal(line,istable,errlvl,k,...)
+		local size = tableSize(line) 
+		if size ~= 1 then
+			err(": command line should only have one key",errlvl,k,...)
+		end
+		validateCommandLine(data,line,errlvl,k,...)
+	end
+end
+
+local function validateCommandBundle(data,bundle,errlvl,...)
+	errlvl=(errlvl or 0)+1
+	validateIsArray(bundle,errlvl,...)
+	for k,list in ipairs(bundle) do
+		validateVal(list,istable,errlvl,k,...)
+		validateIsArray(list,errlvl,k,...)
+		validateCommandList(data,list,errlvl,k,...)
+	end
+end
+
+local function validateAlert(data,info,errlvl,...)
+	errlvl=(errlvl or 0)+1
+	-- Consistency check
+	for k in pairs(info) do
+		if not alertBaseKeys[k] then
+			err(": unknown key '"..k.."'",errlvl,tostring(k),...)
+		end
+	end
+
+	for k,oktypes in pairs(alertBaseKeys) do
+		validateVal(info[k],oktypes,errlvl,k,...)
+		-- TODO: Check replaces
+		if info[k] then
+			-- check type
+			if k == "type" and not alertTypeValues[info[k]] then
+				err(": expected simple, dropdown, or centerpopup - got '"..info[k].."'",errlvl,k,...)
+			-- check sounds
+			elseif k == "sound" and not Sounds[info[k]] then
+				err(": unknown sound '"..info[k].."'",errlvl,k,...)
+			-- check colors
+			elseif (k == "color1" or k == "color2") and not Colors[info[k]] then
+				err(": unknown color '"..info[k].."'",errlvl,k,...)
+			-- check replaces
+			elseif k == "time" or k == "text" then
+				validateReplaces(data,info[k],errlvl,k,...)
+			end
+		end
+	end
+end
+
+local function validateAlerts(data,alerts,errlvl,...)
+	errlvl=(errlvl or 0)+1
+	for k,info in pairs(alerts) do
+		validateVal(k,isstring,errlvl,...)
+		validateAlert(data,info,errlvl,k,...)
+	end
+end
+
+local function validateEvent(data,info,errlvl,...)
+	for k in pairs(info) do
+		if not eventBaseKeys[k] then
+			err(": unknown parameter",errlvl,k,...)
+		end
+	end
+	for k, oktypes in pairs(eventBaseKeys) do
+		validateVal(info[k],oktypes,errlvl,k,...)
+		if k == "type" then
+			if info.type == "event" and not info.event then
+				err(": missing event key",errlvl,k,...)
+			end
+			if info.type == "combatevent" and not info.eventtype then
+				err(": missing eventtype key",errlvl,k,...)
+			end
+		elseif k == "spellid" then
+			if info.spellid and type(info.spellid) == "number" then
+				local exists = GetSpellInfo(info.spellid)
+				if not exists then
+					err("["..info.spellid.."]: unknown spellid",errlvl,k,...)
+				end
+			elseif info.spellid and type(info.spellid) == "table" then
+				validateIsArray(info.spellid,errlvl,"spellid",...)
+				for i,spellid in ipairs(info.spellid) do
+					local exists = GetSpellInfo(spellid)
+					if not exists then
+						err("["..spellid.."]: unknown spellid",errlvl,i,k,...)
+					end
+				end
+			end
+		elseif k == "execute" then
+			validateCommandBundle(data,info.execute,errlvl,"execute",...)
+		end
+	end
+end
+
+local function validateEvents(data,events,errlvl,...)
+	errlvl=(errlvl or 0)+1
+	for k,info in pairs(events) do
+		validateVal(info,istable,errlvl,k,...)
+		validateEvent(data,info,errlvl,k,...)
+	end
+end
+
+local function validate(data,errlvl,...)
+	errlvl=(errlvl or 0)+1
+	-- Consistency check
+	for k in pairs(data) do
+		if not baseKeys[k] then
+			err(": unknown key '"..k.."'",errlvl,tostring(k),...)
+		end
+	end
+	-- Base keys
+	for k,oktypes in pairs(baseKeys) do
+		validateVal(data[k],oktypes,errlvl,k,...)
+		if k == "onstart" and data[k] and tableSize(data[k]) > 0 then
+			validateCommandBundle(data,data.onstart,errlvl,"onstart",...)
+		elseif k == "timers" and data[timers] then
+			for name,bundle in pairs(data.timers) do
+				validateVal(bundle,istable,errlvl,name,"timers",...)
+				validateCommandBundle(data,bundle,errlvl,name,"timers",...)
+			end
+		end
+	end
+
+	-- Base tables
+	for tblName,tbl in pairs(baseTables) do
+		if data[tblName] then
+			for k,oktypes in pairs(tbl) do
+				validateVal(data[tblName][k],oktypes,errlvl,k,tblName,...)
+			end
+			for k in pairs(data[tblName]) do
+				if not tbl[k] then
+					err(": unknown key - got '"..k.."'",errlvl,k,tblName,...)
+				end
+			end
+		end
+	end
+
+	-- Alerts
+	if data.alerts and tableSize(data.alerts) > 0 then
+		validateAlerts(data,data.alerts,errlvl,"alerts",...)
+	end
+
+	-- Events
+	if data.events and tableSize(data.events) > 0 then
+		validateIsArray(data.events,errlvl,"events",...)
+		validateEvents(data,data.events,errlvl,"events",...)
+	end
+end
+
+function DXE:ValidateData(data)
+	errlvl=(errlvl or 0)+1
+	local name = data.name or "Data"
+	validate(data,errlvl,name)
+end
+
