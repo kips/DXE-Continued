@@ -10,10 +10,18 @@ local UnitIsFriend,UnitIsDead=UnitIsFriend,UnitIsDead
 local UnitName = UnitName
 local format = string.format
 
+
 do
 	local WidgetType = "DXE_HealthWatcher"
 	local WidgetVersion = 1
 	
+	local backdrop = {
+		bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
+		edgeFile="Interface\\Tooltips\\UI-Tooltip-Border", 
+		edgeSize = 9,             
+		insets = {left = 2, right = 2, top = 3, bottom = 2}
+	}
+
 	local function OnAcquire(self) 
 		self.frame:SetParent(UIParent)
 	end
@@ -76,8 +84,9 @@ do
 		frame:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
 		frame:SetMinMaxValues(0,1)
 		frame:SetValue(1)
-		frame:SetScript("OnSizeChanged",OnSizeChanged)
-		--frame:SetAllPoints(true)
+		frame:SetWidth(220)
+		frame:SetHeight(25)
+		frame:SetBackdrop(backdrop)
 
 		-- Add title text
 		title = frame:CreateFontString(nil,"ARTWORK")

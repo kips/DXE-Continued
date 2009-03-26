@@ -3,7 +3,7 @@ local BCL = BCL
 
 local options = {
 	type = "group",
-	name = "Big City",
+	name = "Deus Vox Encounters",
 	handler = DXE,
 	args = {
 		test = {

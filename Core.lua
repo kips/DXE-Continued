@@ -1,7 +1,6 @@
 ---------------------------------------------
 -- DEFAULTS
 ---------------------------------------------
-local HW = {}
 
 local defaults = {
 	global = {
@@ -25,6 +24,66 @@ _G.DXE = DXE
 DXE.defaults = defaults
 
 ---------------------------------------------
+-- UTILITY 
+---------------------------------------------
+local ipairs,pairs = ipairs,pairs
+
+DXE.noop = function() end
+
+-- Requires a ChatWindow named 'DXE Debug'
+DXE.debug = function(...)
+	local debugframe
+	for i=1,NUM_CHAT_WINDOWS do
+		local windowName = GetChatWindowInfo(i);
+		if windowName == "DXE Debug" then
+			debugframe = _G["ChatFrame"..i]
+			break
+		end
+	end
+	if debugframe then
+		DXE:Print(debugframe,...)
+	end
+end
+
+do
+	local cache = {}
+	setmetatable(cache,{__mode = "kv"})
+	local new = function()
+		local t = next(cache) or {}
+		cache[t] = nil
+		return t
+	end
+
+	local delete = function(t)
+		if type(t) ~= "table" then return end
+		for k in pairs(t) do
+			t[k] = nil
+		end
+		cache[t] = true
+		return nil
+	end
+
+	DXE.new = new
+	DXE.delete = delete
+end
+
+DXE.tablesize = function(t)
+	local n = 0
+	for _ in pairs(t) do n = n + 1 end
+	return n
+end
+
+DXE.icons = setmetatable({}, {__index =
+	function(self, key)
+		if not key then return end
+		local value = nil
+		if type(key) == "number" then value = select(3, GetSpellInfo(key)) end
+		self[key] = value
+		return value
+	end
+})
+
+---------------------------------------------
 -- RECEIVED DATABASE
 ---------------------------------------------
 
@@ -44,7 +103,6 @@ local gsub,format = string.gsub,string.format
 local insert,wipe = table.insert,table.wipe
 local setmetatable = setmetatable
 local UnitGUID,UnitName,UnitIsFriend,UnitIsDead = UnitGUID,UnitName,UnitIsFriend,UnitIsDead
-local ipairs,pairs=ipairs,pairs
 
 local Pane
 
@@ -86,7 +144,7 @@ function DXE:RegisterEncounter(data)
 	-- Add data to database
 	EDB[data.name] = data
 	-- Build trigger lists
-	self:BuildTriggerLists()
+	self:UpdateTriggers()
 end
 
 --- Remove an encounter previously added with RegisterEncounter.
@@ -98,11 +156,11 @@ function DXE:UnregisterEncounter(name)
 	-- Remove options
 	self:RemoveEncounterOptions(EDB[name])
 	-- Remove from the database
-	EDB[name] = BCL.deltable(EDB[name])
+	EDB[name] = self.delete(EDB[name])
 	-- Close options
 	ACD:Close("DXE")
-	-- Build trigger lists
-	self:BuildTriggerLists()
+	-- Update triggers
+	self:UpdateTriggers()
 end
 
 --- For now, get the encounter module table for distributor
@@ -129,29 +187,6 @@ function DXE:SetTriggers(trig)
 	end
 end
 
-function DXE:SetAutos(onact)
-	if not onact then return end
-	local flag = false
-	if onact.autoupdate or
-		onact.autostart or
-		onact.autostop then
-		flag = true
-		self:SetAutoStart(onact.autostart or false)
-		self:SetAutoStop(onact.autostop or false)
- 		self:SetAutoUpdate(onact.autoupdate or false)
-	end
-	if flag then 
-		--Tracer:Open() 
-	end
-end
-
---[[
-function DXE:SetTracing(trac)
-	if not trac then return end
-	self:TrackUnitName(trac.name)
-end
-]]
-
 --- Change the currently-active encounter.
 function DXE:SetActiveEncounter(name)
 	assert(type(name) == "string","String expected in SetActiveEncounter")
@@ -159,35 +194,36 @@ function DXE:SetActiveEncounter(name)
 	if not EDB[name] then return end
 	-- Already set to this encounter
 	if Current and Current.name == name then return end
-	-- Close tracer
-	--Tracer:Close()
 	self:SetAutoStart(false)
 	self:SetAutoStop(false)
-	self:SetAutoUpdate(false)
 	-- Stop the existing encounter
 	self:StopEncounter() 
 	-- Unregister regen events
 	self:UnregisterEvent("PLAYER_REGEN_ENABLED")
 	self:UnregisterEvent("PLAYER_REGEN_DISABLED")
 	-- Reset timer
-	HW[1]:Close()
 	self:ResetTimer()
 	-- Update Current upvalue
 	Current = EDB[name]
 	-- Update Encounter data
-	DXE.Invoker:SetData(Current)
+	self.Invoker:SetData(Current)
 	-- Set folder value
 	Pane.SetFolderValue(name)
-	--UIDropDownMenu_SetSelectedValue(Selector,name)
+	UIDropDownMenu_SetSelectedValue(Selector,name)
 	-- Set pane updating and starting/stopping
-	self:SetTracing(Current.tracing)
-	self:SetAutos(Current.onactivate)
+	self:SetAutoStart(Current.onactivate.autostart)
+	self:SetAutoStop(Current.onactivate.autostop)
 	self:SetTriggers(Current.onactivate)
 
-	-- Update pane
-	self:SetHWInfoBundle(1,Current.title, "", 1, 0, 0, 1)
-	-- Remove later
-	self:UpdateHWArea()
+	self:SetTracing(Current.tracing)
+
+	-- For the empty encounter
+	if name == "Default" then
+		HW[1]:SetInfoBundle("Default","",1,0,0,1)
+		HW[1]:Show()
+	end
+
+	self:LayoutHealthWatchers()
 end
 
 function DXE:StartEncounter()
@@ -205,8 +241,8 @@ end
 ---------------------------------------------
 -- Auto Activating
 ---------------------------------------------
-local Triggers_ScanNames = {} -- Activation names. Source: data.triggers.scan
-local Triggers_Yells = {} -- Yell activations. Source: data.triggers.yell
+local ScanNames = {} -- Activation names. Source: data.triggers.scan
+local YellMessages = {} -- Yell activations. Source: data.triggers.yell
 
 --  Helper function for BuildTriggerLists
 local function AddData(tbl,info,data)
@@ -230,12 +266,12 @@ function DXE:BuildTriggerLists()
 			if data.triggers then
 				local scan = data.triggers.scan
 				if scan then 
-					AddData(Triggers_ScanNames,scan,data)
+					AddData(ScanNames,scan,data)
 					flag_scan = true
 				end
 				local yell = data.triggers.yell
 				if yell then 
-					AddData(Triggers_Yells,yell,data) 
+					AddData(YellMessages,yell,data) 
 					flag_yell = true
 				end
 			end
@@ -244,10 +280,22 @@ function DXE:BuildTriggerLists()
 	return flag_scan, flag_yell
 end
 
+function DXE:UpdateTriggers()
+	-- Clear trigger tables
+	wipe(ScanNames)
+	wipe(YellMessages)
+	self:UnregisterEvent("CHAT_MSG_MONSTER_YELL")
+	self:CancelTimer(self.scanhandle,true)
+	-- Build trigger lists
+	local scan, yell = self:BuildTriggerLists()
+	-- Start invokers
+	if scan then self.scanhandle = self:ScheduleRepeatingTimer("ScanUpdate",2) end
+	if yell then self:RegisterEvent("CHAT_MSG_MONSTER_YELL") end
+end
+
 -------------------------
 -- Core Functions
 -------------------------
-
 
 function DXE:UpgradeEncounters()
 	-- Upgrade from stored encounters
@@ -264,7 +312,7 @@ function DXE:UpgradeEncounters()
 	end
 	-- Actually delete old versions
 	for name in pairs(delete) do
-		RDB[name] = BCL.deltable(RDB[name])
+		RDB[name] = self.delete(RDB[name])
 	end
 end
 
@@ -279,15 +327,6 @@ function DXE:OnInitialize()
 	for _,data in ipairs(LoadQueue) do self:RegisterEncounter(data) end
 	self:UpgradeEncounters()
 
--- Create health watchers
-HW[1] = AceGUI:Create("DXE_HealthWatcher")
-HW[2] = AceGUI:Create("DXE_HealthWatcher")
-HW[3] = AceGUI:Create("DXE_HealthWatcher")
-HW[4] = AceGUI:Create("DXE_HealthWatcher")
-
-
-HW[1]:SetCallback("HW_TRACER_UPDATE",function(self,name,uid) DXE:TRACER_UPDATE(uid) end)
-HW[1]:EnableUpdates()
 end
 
 -- Saves position
@@ -364,21 +403,9 @@ function DXE:OnDisable()
 	Pane:Hide()
 end
 
-function DXE:UpdateTriggers()
-	-- Clear trigger tables
-	wipe(Triggers_ScanNames)
-	wipe(Triggers_Yells)
-	self:UnregisterEvent("CHAT_MSG_MONSTER_YELL")
-	self:CancelTimer(self.scanhandle,true)
-	-- Build trigger lists
-	local scan, yell = self:BuildTriggerLists()
-	-- Start invokers
-	if scan then self.scanhandle = self:ScheduleRepeatingTimer("ScanUpdate",2) end
-	if yell then self:RegisterEvent("CHAT_MSG_MONSTER_YELL") end
-end
 
 function DXE:CHAT_MSG_MONSTER_YELL(_,msg)
-	for fragment,data in pairs(Triggers_Yells) do
+	for fragment,data in pairs(YellMessages) do
 		if msg:find(fragment) then
 			self:SetActiveEncounter(data.name)
 			self:StartEncounter()
@@ -391,10 +418,10 @@ function DXE:Scan()
 		local target = rIDtarget[i]
 		local name = UnitName(target)
 		if UnitExists(target) and 
-			Triggers_ScanNames[name] and 
+			ScanNames[name] and 
 			not UnitIsDead(target) then
 			-- Return name
-			return Triggers_ScanNames[name].name
+			return ScanNames[name].name
 		end
 	end
 end
@@ -462,6 +489,10 @@ function DXE:CreatePane()
 	Pane:SetPoint("CENTER",UIParent,"CENTER")
 	Pane:EnableMouse(true)
 	Pane:SetMovable(true)
+	local function OnUpdate() DXE:LayoutHealthWatchers() end
+	Pane:SetScript("OnDragStart",function(self) self:SetScript("OnUpdate",OnUpdate) end)
+	Pane:SetScript("OnDragStop",function(self) self:SetScript("OnUpdate",nil) end)
+
   	self.Pane = Pane
 	
 	-- Register for position saving
@@ -506,12 +537,14 @@ function DXE:CreatePane()
 
 	local TitleHeight = 31 -- 22
 
+	--[[
 	-- Add spacer graphic
 	local spacer = Pane:CreateTexture(nil,"BORDER")
 	spacer:SetTexture("Interface\\OptionsFrame\\UI-OptionsFrame-Spacer")
 	spacer:SetPoint("TOPLEFT", Pane, "TOPLEFT", 2, -(TitleHeight-3))
 	spacer:SetPoint("BOTTOMRIGHT", Pane, "TOPRIGHT", -2, -(TitleHeight+3))
 	--spacer:SetVertexColor(0.66,0.66,0.66)
+	--]]
 
 	--[[
 		local sep = Pane:CreateTexture(nil,"BORDER")
@@ -523,13 +556,6 @@ function DXE:CreatePane()
 		sep:SetVertexColor(0.66,0.66,0.66)]]
 		
 
-	local hwArea = CreateFrame("Frame",nil,Pane)
-	hwArea:SetWidth(Pane:GetWidth()-4)
-	hwArea:SetHeight(28)
-	hwArea:SetPoint("TOPLEFT",Pane,"TOPLEFT",2,-3)
-	hwArea:SetBackdrop(BackdropNoBorders)
-	hwArea:SetBackdropColor(1,0,0)
-	Pane.hwArea = hwArea
 
 	--[[
 	-- Add health bar
@@ -725,50 +751,56 @@ end
 ---------------------------------------------
 -- HEALTH WATCHERS
 ---------------------------------------------
--- Cache of HealthWatcher objects
---local HW = {}
+local HW = {}
 DXE.HW = HW
 
-	
+-- Create health watchers
+HW[1] = AceGUI:Create("DXE_HealthWatcher")
+HW[2] = AceGUI:Create("DXE_HealthWatcher")
+HW[3] = AceGUI:Create("DXE_HealthWatcher")
+HW[4] = AceGUI:Create("DXE_HealthWatcher")
 
+-- Only the main one sends updates
+HW[1]:SetCallback("HW_TRACER_UPDATE",function(self,name,uid) DXE:TRACER_UPDATE(uid) end)
+HW[1]:EnableUpdates()
+	
 function DXE:SetHWInfoBundle(index,...)
 	local hw = HW[index]
 	hw:SetInfoBundle(...)
 end
 
-function DXE:SetTracing(info)
-	if not info then return end
-	HW[1]:Open(info.name)
-	--[[
-	if not info then return end
-	-- One unit to track
-	if type(info) == "string" then
-		local hw = GetHW()
-		hw:Open(info)
-	-- Up to four units to track
-	elseif type(info) == "table" then
-		for i,name in ipairs(info) do
-			local hw = self:GetHW(i)
-			hw:Open(name)
-		end
-	end
-
-	]]
-	self:UpdateHWArea()
+function DXE:CloseAllHW()
+	for i=1,4 do HW[i]:Close(); HW[i]:Hide() end
 end
 
-	
-		--[[
-		local sep = ha:CreateTexture(nil,"BORDER")
-		sep:SetTexture("Interface\\OptionsFrame\\UI-OptionsFrame-Spacer")
-		sep:SetHeight(6)
-		sep:SetWidth(width)
-		sep:ClearAllPoints()
-		sep:SetPoint("LEFT",ha,"LEFT",0,1)
-		--sep:SetPoint("RIGHT",ha,"RIGHT",0,2)
-		sep:SetVertexColor(0.66,0.66,0.66)
-		]]
+-- Names should be validated to be an array of size 4
+function DXE:SetTracing(names)
+	self:CloseAllHW()
+	if not names then return end
+	for i,name in ipairs(names) do
+		HW[i]:SetInfoBundle(name,"",1,0,0,1)
+		HW[i]:Open(name)
+		HW[i]:Show()
+	end
+	self:LayoutHealthWatchers()
+end
 
+function DXE:LayoutHealthWatchers()
+	local cutoff = GetScreenHeight()/2
+	local x,y = self.Pane:GetCenter()
+	local point = y > cutoff and "BOTTOM" or "TOP"
+	local relPoint = y > cutoff and "TOP" or "BOTTOM"
+	local anchor = self.Pane
+	for i,hw in ipairs(self.HW) do
+		if hw.frame:IsShown() then
+			hw:ClearAllPoints()
+			hw:SetPoint(point,anchor,relPoint)
+			anchor = hw
+		end
+	end
+end
+
+--[[
 function DXE:UpdateHWArea()
 	local ha = Pane.hwArea
 	local width,height = ha:GetWidth(),ha:GetHeight()
@@ -862,15 +894,7 @@ function DXE:UpdateHWArea()
 		HW[4].health:SetFont("Interface\\Addons\\DXE\\Fonts\\FGM.ttf",10)
 	end	
 end
-
-function DXE:CloseAllHW()
-	for i=1,4 do HW[i]:Close() end
-end
-
-function DXE:GetHW(index)
-	index = index or 1
-	return HW[index]
-end
+]]
 
 function DXE:TRACER_UPDATE(uid)
 	if self:IsAutoStart() and not self:IsRunning() and UnitIsFriend(uid.."target","player") then
@@ -887,7 +911,7 @@ end
 ]]
 
 do
-	local AutoStart,AutoStop,AutoUpdate
+	local AutoStart,AutoStop
 	function DXE:SetAutoStart(val)
 		AutoStart = not not val
 	end
@@ -896,20 +920,12 @@ do
 		AutoStop = not not val
 	end
 
-	function DXE:SetAutoUpdate(val)
-		AutoUpdate = not not val
-	end
-
 	function DXE:IsAutoStart()
 		return AutoStart
 	end
 
 	function DXE:IsAutoStop()
 		return AutoStop
-	end
-
-	function DXE:IsAutoUpdate()
-		return AutoUpdate
 	end
 end
 
