@@ -198,7 +198,6 @@ function DXE:SetActiveEncounter(name)
 	self:UnregisterEvent("PLAYER_REGEN_ENABLED")
 	self:UnregisterEvent("PLAYER_REGEN_DISABLED")
 	-- Reset timer
-	self:ResetTimer()
 	-- Update CE upvalue
 	CE = EDB[name]
 	-- Update Encounter data
@@ -435,6 +434,46 @@ function DXE:ScanUpdate()
 end
 
 ---------------------------------------------
+-- TOOLTIP TEXT
+---------------------------------------------
+
+do
+	local function calculatepoint(self)
+		local worldscale = UIParent:GetEffectiveScale()
+		local width,height = worldscale*GetScreenWidth()/2,worldscale*GetScreenHeight()/2
+		local scale,x,y = self:GetEffectiveScale(), self:GetCenter()
+		x,y = x*scale,y*scale
+		if x <= width and y > height then -- Top left quadrant
+			return "ANCHOR_BOTTOMRIGHT"
+		elseif x <= width and y < height then -- Bottom left quadrant
+			return "ANCHOR_RIGHT"
+		elseif x > width and y <= height then -- Bottom right quadrant
+			return "ANCHOR_LEFT"
+		elseif x > width and y >= height then -- Top right quadrant
+			return "ANCHOR_BOTTOMLEFT"
+		end
+	end
+
+	local function onenter(self)
+		GameTooltip:SetOwner(self, calculatepoint(self))
+		GameTooltip:AddLine(self._ttTitle)
+		GameTooltip:AddLine(self._ttText,1,1,1,true)
+		GameTooltip:Show()
+	end
+
+	local function onleave(self)
+		GameTooltip:Hide()
+	end
+
+	function DXE:AddTooltipText(obj,title,text)
+		obj._ttTitle = title
+		obj._ttText = text
+		obj:SetScript("OnEnter",onenter)
+		obj:SetScript("OnLeave",onleave)
+	end
+end
+
+---------------------------------------------
 -- PANE CREATION
 ---------------------------------------------
 
@@ -443,7 +482,7 @@ end
 -- @param highlight The highlight texture for the button
 -- @param onclick The function of the OnClick script
 -- @param anchor SetPoints the control LEFT, anchor, RIGHT
-function DXE:AddPaneControl(normal,highlight,onclick,anchor)
+function DXE:AddPaneControl(normal,highlight,onclick,anchor,name,text)
 	local size = 17
 	local control = CreateFrame("Button",nil,self.Pane)
 	control:SetWidth(size)
@@ -452,6 +491,7 @@ function DXE:AddPaneControl(normal,highlight,onclick,anchor)
 	control:SetScript("OnClick",onclick)
 	control:SetNormalTexture(normal)
 	control:SetHighlightTexture(highlight)
+	self:AddTooltipText(control,name,text)
 
 	return control
 end
@@ -488,8 +528,8 @@ function DXE:BuildPane()
 	Pane:SetPoint("CENTER",UIParent,"CENTER")
 	Pane:EnableMouse(true)
 	Pane:SetMovable(true)
-	-- Register for position saving
 	self:RegisterMoveSaving(Pane)
+	self:AddTooltipText(Pane,"Pane","Shift + Left Click to move")
 	local function onupdate() DXE:LayoutHealthWatchers() end
 	Pane:HookScript("OnMouseDown",function(self) self:SetScript("OnUpdate",onupdate) end)
 	Pane:HookScript("OnMouseUp",function(self) self:SetScript("OnUpdate",nil) end)
@@ -508,7 +548,9 @@ function DXE:BuildPane()
 		PaneTextures.."Play",
 		PaneTextures.."Play",
 		function() self:ToggleTimer() end,
-		Pane.timer.frame
+		Pane.timer.frame,
+		"Start/Stop",
+		"Starts the timer or simultaneously stops the timer and encounter"
 	)
 	
 	-- Add Config control
@@ -516,7 +558,9 @@ function DXE:BuildPane()
 		PaneTextures.."Menu",
 		PaneTextures.."Menu",
 		function() self:OpenConfig() end,
-		Pane.startStop
+		Pane.startStop,
+		"Configuration",
+		"Opens the settings window"
 	)
 
 	-- Create dropdown menu for folder
@@ -529,7 +573,9 @@ function DXE:BuildPane()
 		PaneTextures.."Folder",
 		PaneTextures.."Folder",
 		function() ToggleDropDownMenu(1,nil,selector,Pane.folder,0,0) end,
-		Pane.config
+		Pane.config,
+		"Selector",
+		"Activates an encounter"
 	)
 end
 
