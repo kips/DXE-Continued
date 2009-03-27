@@ -1,6 +1,6 @@
 do
 	local data = {
-		version = "$Rev: 22 $",
+		version = "$Rev$",
 		key = "sapphiron", 
 		zone = "Naxxramas", 
 		name = "Sapphiron", 
