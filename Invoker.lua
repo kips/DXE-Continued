@@ -5,7 +5,7 @@ local ipairs,pairs,unpack = ipairs,pairs,unpack
 local tostring,tonumber = tostring,tonumber
 local match,gmatch,gsub = string.match,string.gmatch,string.gsub
 
-local db,data
+local db,CE
 local userdata = {}
 
 ---------------------------------------------
@@ -22,15 +22,15 @@ LibStub("AceTimer-3.0"):Embed(Invoker)
 ---------------------------------------------
 
 function Invoker:OnStart()
-	if data.onstart then
-		self:InvokeCommands(data.onstart)
+	if CE.onstart then
+		self:InvokeCommands(CE.onstart)
 	end
 end
 
 function Invoker:OnStop()
-	if not data then return end
-	if data.onstop then
-		self:InvokeCommands(data.onstop)
+	if not CE then return end
+	if CE.onstop then
+		self:InvokeCommands(CE.onstop)
 	end
 	-- Reset userdata
 	self:ResetUserData()
@@ -207,9 +207,9 @@ end
 
 function Invoker:ResetUserData()
 	wipe(userdata)
-	if not data.userdata then return end
+	if not CE.userdata then return end
 	-- Copy defaults into userdata
-	for k,v in pairs(data.userdata) do
+	for k,v in pairs(CE.userdata) do
 		userdata[k] = v
 		if type(v) == "table" then
 			userdata[k.."_index"] = 1
@@ -247,7 +247,7 @@ function Invoker:RemoveThrottles()
 end
 
 local function StartAlert(alert_name,...)
-	local info = data.alerts[alert_name]
+	local info = CE.alerts[alert_name]
 	-- Sanity check
 	if not info then return end
 	-- Throttling
@@ -270,9 +270,9 @@ local function StartAlert(alert_name,...)
 	if not time then return end
 	-- Pass in appropriate arguments
 	if info.type == "dropdown" then
-		DXE.Alerts:Dropdown(data.key..info.var,text,time,info.flashtime,info.sound,info.color1,info.color2)
+		DXE.Alerts:Dropdown(CE.key..info.var,text,time,info.flashtime,info.sound,info.color1,info.color2)
 	elseif info.type == "centerpopup" then
-		DXE.Alerts:CenterPopup(data.key..info.var,text,time,info.flashtime,info.sound,info.color1,info.color2)
+		DXE.Alerts:CenterPopup(CE.key..info.var,text,time,info.flashtime,info.sound,info.color1,info.color2)
 	elseif info.type == "simple" then
 		DXE.Alerts:Simple(text,info.sound,time)
 	end
@@ -301,8 +301,8 @@ local function canceltimer(name,nodel)
 end
 
 function Invoker:FireTimer(name)
-	if data.timers[name] then
-		self:InvokeCommands(data.timers[name],unpack(timers[name].args))
+	if CE.timers[name] then
+		self:InvokeCommands(CE.timers[name],unpack(timers[name].args))
 	end
 end
 
@@ -327,7 +327,7 @@ local CommandFuncs = {
 	end,
 
 	alert = function(info,...)
-		if db[data.alerts[info].var] then StartAlert(info,...) end
+		if db[CE.alerts[info].var] then StartAlert(info,...) end
 		return true
 	end,
 
@@ -384,9 +384,9 @@ function Invoker:REG_EVENT(event,...)
 end
 
 function Invoker:RegisterEvents()
-	if not data.events then return end
+	if not CE.events then return end
 	-- Iterate over events table
-	for _,info in ipairs(data.events) do
+	for _,info in ipairs(CE.events) do
 		if info.type == "combatevent" then
 			-- Register combat log event
 			self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED","COMBAT_EVENT")
@@ -421,12 +421,12 @@ end
 -- API
 ---------------------------------------------
 
-function Invoker:SetData(encData)
-	assert(type(encData) == "table","Expected encData table as argument #1 in SetData. Got "..tostring(encData).." as argument")
+function Invoker:SetData(data)
+	assert(type(data) == "table","Expected 'data' table as argument #1 in SetData. Got '"..tostring(data).."'")
 	-- Set data upvalue
-	data = encData
+	CE = data
 	-- Set db upvalue
-	db = DXE.db.profile.Encounters[data.key]
+	db = DXE.db.profile.Encounters[CE.key]
 	-- Wipe events
 	self:WipeEvents()
 	-- Register events

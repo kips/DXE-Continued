@@ -97,14 +97,7 @@ DXE.RDB = RDB
 
 local ACD = LibStub("AceConfigDialog-3.0")
 local AceGUI = LibStub("AceGUI-3.0")
-
-local floor = math.floor
-local gsub,format = string.gsub,string.format
 local insert,wipe = table.insert,table.wipe
-local setmetatable = setmetatable
-local UnitGUID,UnitName,UnitIsFriend,UnitIsDead = UnitGUID,UnitName,UnitIsFriend,UnitIsDead
-
-local Pane
 
 ---------------------------------------------
 -- UNIT IDS
@@ -117,20 +110,22 @@ for i=1,40 do
 end
 
 ---------------------------------------------
--- ENCOUNTER DATABASE
+-- ENCOUNTER MANAGEMENT
 ---------------------------------------------
-
 local EDB = {}
 DXE.EDB = EDB
-local Current -- Current Encounter data
+-- Current encounter data
+local CE 
 
-local LoadQueue = {}
+local loadQueue = {}
 -- @param forcedValid Used with received encounters since they've already been validated.
-function DXE:RegisterEncounter(data,forcedValid)
+function DXE:RegisterEncounter(data,forceValid)
 	-- Save for loading after initialization
-	if not self.Loaded then LoadQueue[#LoadQueue+1] = data return end
+	if not self.loaded then loadQueue[#loadQueue+1] = data return end
 	-- Validate data
-	if not forcedValid then self:ValidateData(data) end
+	if not forceValid then self:ValidateData(data) end
+	-- Unregister before registering the same
+	if EDB[data.name] then error("Encounter already exists - Requires unregistering") return end
 	-- Only encounters with field key have options
 	if data.key then
 		-- Add options
@@ -153,7 +148,7 @@ function DXE:UnregisterEncounter(name)
 	-- Sanity checks
 	if name == "Default" or not EDB[name] then return end
 	-- Swap to default if we're trying to unregister the current encounter
-	if Current.name == name then self:SetActiveEncounter("Default") end
+	if CE.name == name then self:SetActiveEncounter("Default") end
 	-- Remove options
 	self:RemoveEncounterOptions(EDB[name])
 	-- Remove from the database
@@ -175,7 +170,7 @@ end
 
 --- Get the name of the currently-active encounter
 function DXE:GetActiveEncounter()
-	return Current and Current.name or "Default"
+	return CE and CE.name or "Default"
 end
 
 function DXE:SetRegenChecks(trig)
@@ -194,7 +189,7 @@ function DXE:SetActiveEncounter(name)
 	-- Check the new encounter
 	if not EDB[name] then return end
 	-- Already set to this encounter
-	if Current and Current.name == name then return end
+	if CE and CE.name == name then return end
 	self:SetAutoStart(false)
 	self:SetAutoStop(false)
 	-- Stop the existing encounter
@@ -204,100 +199,29 @@ function DXE:SetActiveEncounter(name)
 	self:UnregisterEvent("PLAYER_REGEN_DISABLED")
 	-- Reset timer
 	self:ResetTimer()
-	-- Update Current upvalue
-	Current = EDB[name]
+	-- Update CE upvalue
+	CE = EDB[name]
 	-- Update Encounter data
-	self.Invoker:SetData(Current)
+	self.Invoker:SetData(CE)
 	-- Set folder value
-	Pane.SetFolderValue(name)
+	self.Pane.SetFolderValue(name)
 	-- Set pane updating and starting/stopping
-	if Current.onactivate then
-		self:SetAutoStart(Current.onactivate.autostart)
-		self:SetAutoStop(Current.onactivate.autostop)
-		self:SetRegenChecks(Current.onactivate)
+	if CE.onactivate then
+		self:SetAutoStart(CE.onactivate.autostart)
+		self:SetAutoStop(CE.onactivate.autostop)
+		self:SetRegenChecks(CE.onactivate)
 	end
 
-	self:SetTracing(Current.tracing)
+	self:SetTracing(CE.tracing)
 
 	-- For the empty encounter
 	if not self.HW[1]:IsShown() then
-		self.HW[1]:SetInfoBundle(Current.title,"",1,0,0,1)
+		self.HW[1]:SetInfoBundle(CE.title,"",1,0,0,1)
 		self.HW[1].frame:Show()
 	end
 
 	self:LayoutHealthWatchers()
 end
-
-function DXE:StartEncounter()
-	if self:IsRunning() then return end
-	self:SendMessage("DXE_StartEncounter")
-	self:StartTimer()
-end
-
---- Stop the current encounter.
-function DXE:StopEncounter()
-	self:SendMessage("DXE_StopEncounter")
-	self:StopTimer()
-end
-
----------------------------------------------
--- Auto Activating
----------------------------------------------
-local ScanNames = {} -- Activation names. Source: data.triggers.scan
-local YellMessages = {} -- Yell activations. Source: data.triggers.yell
-
---  Helper function for BuildTriggerLists
-local function AddData(tbl,info,data)
-	if type(info) == "table" then
-		-- Info contains names
-		for _,name in ipairs(info) do
-			tbl[name] = data
-		end
-	else
-		-- Info is name
-		tbl[info] = data
-	end
-end
-
-function DXE:BuildTriggerLists()
-	-- Get zone name
-	local zone = GetRealZoneText()
-	local flag_scan,flag_yell = false,false
-	for name, data in pairs(EDB) do
-		if data.zone == zone then
-			if data.triggers then
-				local scan = data.triggers.scan
-				if scan then 
-					AddData(ScanNames,scan,data)
-					flag_scan = true
-				end
-				local yell = data.triggers.yell
-				if yell then 
-					AddData(YellMessages,yell,data) 
-					flag_yell = true
-				end
-			end
-		end
-	end
-	return flag_scan, flag_yell
-end
-
-function DXE:UpdateTriggers()
-	-- Clear trigger tables
-	wipe(ScanNames)
-	wipe(YellMessages)
-	self:UnregisterEvent("CHAT_MSG_MONSTER_YELL")
-	self:CancelTimer(self.scanhandle,true)
-	-- Build trigger lists
-	local scan, yell = self:BuildTriggerLists()
-	-- Start invokers
-	if scan then self.scanhandle = self:ScheduleRepeatingTimer("ScanUpdate",2) end
-	if yell then self:RegisterEvent("CHAT_MSG_MONSTER_YELL") end
-end
-
--------------------------
--- Core Functions
--------------------------
 
 function DXE:UpgradeEncounters()
 	-- Upgrade from stored encounters
@@ -318,18 +242,114 @@ function DXE:UpgradeEncounters()
 	end
 end
 
+function DXE:StartEncounter()
+	if self:IsRunning() then return end
+	self:SendMessage("DXE_StartEncounter")
+	self:StartTimer()
+end
+
+--- Stop the current encounter.
+function DXE:StopEncounter()
+	self:SendMessage("DXE_StopEncounter")
+	self:StopTimer()
+end
+
+---------------------------------------------
+-- TRIGGER BUILDING
+---------------------------------------------
+local nameTriggers = {} -- Activation names. Source: data.triggers.scan
+local yellTriggers = {} -- Yell activations. Source: data.triggers.yell
+
+do
+	local function addData(tbl,info,data)
+		if type(info) == "table" then
+			-- Info contains names
+			for _,name in ipairs(info) do
+				tbl[name] = data
+			end
+		else
+			-- Info is name
+			tbl[info] = data
+		end
+	end
+
+	local function BuildTriggerLists()
+		-- Get zone name
+		local zone = GetRealZoneText()
+		local hasName,hasYell = false,false
+		for name, data in pairs(EDB) do
+			if data.zone == zone then
+				if data.triggers then
+					local scan = data.triggers.scan
+					if scan then 
+						addData(nameTriggers,scan,data)
+						hasName = true
+					end
+					local yell = data.triggers.yell
+					if yell then 
+						addData(yellTriggers,yell,data) 
+						hasYell = true
+					end
+				end
+			end
+		end
+		return hasName,hasYell
+	end
+
+	function DXE:UpdateTriggers()
+		-- Clear trigger tables
+		wipe(nameTriggers)
+		wipe(yellTriggers)
+		self:UnregisterEvent("CHAT_MSG_MONSTER_YELL")
+		self:CancelTimer(self.scanhandle,true)
+		-- Build trigger lists
+		local scan, yell = BuildTriggerLists()
+		-- Start invokers
+		if scan then self.scanhandle = self:ScheduleRepeatingTimer("ScanUpdate",2) end
+		if yell then self:RegisterEvent("CHAT_MSG_MONSTER_YELL") end
+	end
+end
+
+---------------------------------------------
+-- ACE ADDON FUNCTIONS
+---------------------------------------------
 
 -- Initialization
 function DXE:OnInitialize()
-	self.Loaded = true
+	self.loaded = true
 	self.db = LibStub("AceDB-3.0"):New("DXEDB",self.defaults)
 	LibStub("AceConfig-3.0"):RegisterOptionsTable("DXE", self.options)
 	-- The default encounter
 	self:RegisterEncounter({name = "Default", title = "Default", zone = ""})
-	for _,data in ipairs(LoadQueue) do self:RegisterEncounter(data) end
+	-- Register queued data
+	for _,data in ipairs(loadQueue) do self:RegisterEncounter(data) end
+	loadQueue = self.delete(loadQueue)
 	self:UpgradeEncounters()
 	self:InitializeHealthWatchers()
 end
+
+function DXE:OnEnable()
+	self:BuildPane()
+	self:LoadPositions()
+	self:UpdateRosterTable()
+	self:UpdateTriggers()
+	self:RegisterEvent("RAID_ROSTER_UPDATE","UpdateRosterTable")
+	self:RegisterEvent("ZONE_CHANGED_NEW_AREA","UpdateTriggers")
+	self:RegisterEvent("PLAYER_ENTERING_WORLD","UpdateTriggers")
+	self:SetActiveEncounter("Default")
+end
+
+function DXE:OnDisable()
+	self:UnregisterAllEvents()
+	self:UnregisterAllMessages()
+	self:CancelAllTimers()
+	self:SetActiveEncounter("Default")
+	self.Pane:Hide()
+end
+
+---------------------------------------------
+-- POSITIONING
+---------------------------------------------
 
 -- Saves position
 function DXE:SavePosition(f)
@@ -341,6 +361,7 @@ function DXE:SavePosition(f)
 	self.db.profile.Positions[name].relativeTo = relativeTo
 	self.db.profile.Positions[name].relativePoint = relativePoint
 end
+
 
 -- Loads position
 function DXE:LoadPositions()
@@ -359,48 +380,34 @@ function DXE:LoadPositions()
 	end
 end
 
--- Move
-local function Move(self)
-	if IsShiftKeyDown() then
-		self:StartMoving()
+do
+	-- Move
+	local function startmoving(self)
+		if IsShiftKeyDown() then
+			self:StartMoving()
+		end
+	end
+
+	-- Stop moving
+	local function stopmoving(self)
+		self:StopMovingOrSizing()
+		DXE:SavePosition(self)
+	end
+
+	-- Registers saving positions in database
+	function DXE:RegisterMoveSaving(frame)
+		frame:SetScript("OnMouseDown",startmoving)
+		frame:SetScript("OnMouseUp",stopmoving)
+		self.db.profile.Positions[frame:GetName()] = self.db.profile.Positions[frame:GetName()] or {}
 	end
 end
 
--- Stop moving
-local function StopMove(self)
-	self:StopMovingOrSizing()
-	DXE:SavePosition(self)
-end
-
--- Registers saving positions in database
-function DXE:RegisterMoveSaving(frame)
-	frame:SetScript("OnMouseDown",Move)
-	frame:SetScript("OnMouseUp",StopMove)
-	self.db.profile.Positions[frame:GetName()] = self.db.profile.Positions[frame:GetName()] or {}
-end
-
-function DXE:OnEnable()
-	self:CreatePane()
-	self:LoadPositions()
-	self:RegisterEvent("RAID_ROSTER_UPDATE","UpdateRosterTable")
-	self:RegisterEvent("ZONE_CHANGED_NEW_AREA","UpdateTriggers")
-	self:RegisterEvent("PLAYER_ENTERING_WORLD","UpdateTriggers")
-	self:UpdateRosterTable()
-	self:SetActiveEncounter("Default")
-	Pane:Show()
-end
-
-function DXE:OnDisable()
-	self:UnregisterAllEvents()
-	self:UnregisterAllMessages()
-	self:CancelAllTimers()
-	self:StopEncounter()
-	Pane:Hide()
-end
-
+---------------------------------------------
+-- TRIGGERING
+---------------------------------------------
 
 function DXE:CHAT_MSG_MONSTER_YELL(_,msg)
-	for fragment,data in pairs(YellMessages) do
+	for fragment,data in pairs(yellTriggers) do
 		if msg:find(fragment) then
 			self:SetActiveEncounter(data.name)
 			self:StartEncounter()
@@ -408,15 +415,16 @@ function DXE:CHAT_MSG_MONSTER_YELL(_,msg)
 	end
 end
 
+local UnitName = UnitName
 function DXE:Scan()
 	for i,unit in pairs(DXE.Roster) do
 		local target = rIDtarget[i]
 		local name = UnitName(target)
 		if UnitExists(target) and 
-			ScanNames[name] and 
+			nameTriggers[name] and 
 			not UnitIsDead(target) then
 			-- Return name
-			return ScanNames[name].name
+			return nameTriggers[name].name
 		end
 	end
 end
@@ -437,7 +445,7 @@ end
 -- @param anchor SetPoints the control LEFT, anchor, RIGHT
 function DXE:AddPaneControl(normal,highlight,onclick,anchor)
 	local size = 17
-	local control = CreateFrame("Button",nil,Pane)
+	local control = CreateFrame("Button",nil,self.Pane)
 	control:SetWidth(size)
 	control:SetHeight(size)
 	control:SetPoint("LEFT",anchor,"RIGHT")
@@ -453,13 +461,13 @@ function DXE:OpenConfig()
 end
 
 function DXE:SetPlay()
-	Pane.startStop:SetNormalTexture("Interface\\Addons\\DXE\\Textures\\Pane\\Play")
-	Pane.startStop:SetHighlightTexture("Interface\\Addons\\DXE\\Textures\\Pane\\Play")
+	self.Pane.startStop:SetNormalTexture("Interface\\Addons\\DXE\\Textures\\Pane\\Play")
+	self.Pane.startStop:SetHighlightTexture("Interface\\Addons\\DXE\\Textures\\Pane\\Play")
 end
 
 function DXE:SetStop()
-	Pane.startStop:SetNormalTexture("Interface\\Addons\\DXE\\Textures\\Pane\\Stop")
-	Pane.startStop:SetHighlightTexture("Interface\\Addons\\DXE\\Textures\\Pane\\Stop")
+	self.Pane.startStop:SetNormalTexture("Interface\\Addons\\DXE\\Textures\\Pane\\Stop")
+	self.Pane.startStop:SetHighlightTexture("Interface\\Addons\\DXE\\Textures\\Pane\\Stop")
 end
 
 local backdrop = {
@@ -469,8 +477,9 @@ local backdrop = {
 	insets = {left = 2, right = 2, top = 2, bottom = 2}
 }
 
-function DXE:CreatePane()
-	Pane = CreateFrame("Frame","DXE_Pane",UIParent)
+function DXE:BuildPane()
+	if self.Pane then self.Pane:Show() return end
+	local Pane = CreateFrame("Frame","DXE_Pane",UIParent)
 	Pane:SetClampedToScreen(true)
 	Pane:SetBackdrop(backdrop)
 	Pane:SetBackdropBorderColor(0.66,0.66,0.66)
@@ -484,11 +493,10 @@ function DXE:CreatePane()
 	local function OnUpdate() DXE:LayoutHealthWatchers() end
 	Pane:HookScript("OnMouseDown",function(self) self:SetScript("OnUpdate",OnUpdate) end)
 	Pane:HookScript("OnMouseUp",function(self) self:SetScript("OnUpdate",nil) end)
-
   	self.Pane = Pane
 	
 	
-	Pane.timer = LibStub("AceGUI-3.0"):Create("DXE_Timer")
+	Pane.timer = AceGUI:Create("DXE_Timer")
 	Pane.timer.frame:SetParent(Pane)
 	Pane.timer:SetPoint("BOTTOMLEFT",5,2)
 	Pane.timer.left:SetFont("Interface\\Addons\\DXE\\Fonts\\BS.ttf",19)
@@ -614,58 +622,55 @@ end
 ---------------------------------------------
 -- PANE FUNCTIONS
 ---------------------------------------------
--- Has the timer started?
-local Running
--- Elapsed time of the timer
-local ElapsedTime
+local isRunning,elapsedTime
 
 --- Returns the encounter start time based off GetTime()
 -- @return A number >= 0
 function DXE:GetElapsedTime()
-	return ElapsedTime
+	return elapsedTime
 end
 
 --- Returns whether or not the timer is running
 -- @return A boolean
 function DXE:IsRunning()
-	return Running
+	return isRunning
 end
 
-function DXE:SetRunning(bool)
-	Running = bool
+function DXE:SetRunning(val)
+	isRunning = val
 end
 
 local function Timer_OnUpdate(self,elapsed)
-	ElapsedTime = ElapsedTime + elapsed
-	self.obj:SetTime(ElapsedTime)
+	elapsedTime = elapsedTime + elapsed
+	self.obj:SetTime(elapsedTime)
 end
 
 --- Starts the Pane timer
 function DXE:StartTimer()
-	ElapsedTime = 0
-	self:SendMessage("DXE_StartEncTimer",ElapsedTime)
-	Pane.timer.frame:SetScript("OnUpdate",Timer_OnUpdate)
+	elapsedTime = 0
+	self:SendMessage("DXE_StartEncTimer",elapsedTime)
+	self.Pane.timer.frame:SetScript("OnUpdate",Timer_OnUpdate)
 	self:SetRunning(true)
 	self:SetStop()
 end
 
 --- Stops the Pane timer
 function DXE:StopTimer()
-	Pane.timer.frame:SetScript("OnUpdate",nil)
+	self.Pane.timer.frame:SetScript("OnUpdate",nil)
 	self:SetPlay()
 	self:SetRunning(false)
 end
 
 --- Resets the Pane timer
 function DXE:ResetTimer()
-	ElapsedTime = 0
-	Pane.timer:SetTime(0)
+	elapsedTime = 0
+	self.Pane.timer:SetTime(0)
 	self:StopTimer()
 end
 
 --- Toggles the Pane timer
 function DXE:ToggleTimer()
-	if Running then
+	if self:IsRunning() then
 		self:StopTimer()
 		self:StopEncounter()
 	else
@@ -728,6 +733,7 @@ function DXE:LayoutHealthWatchers()
 	end
 end
 
+local UnitIsFriend,UnitIsDead = UnitIsFriend,UnitIsDead
 function DXE:TRACER_UPDATE(uid)
 	if self:IsAutoStart() and not self:IsRunning() and UnitIsFriend(uid.."target","player") then
 		self:StartEncounter()
