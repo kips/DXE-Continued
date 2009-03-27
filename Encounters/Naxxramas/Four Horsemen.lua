@@ -5,9 +5,7 @@ do
 		zone = "Naxxramas", 
 		name = "Four Horsemen",
 		title = "Four Horsemen",
-		tracing = {
-			name = "Thane Korth'azz", 
-		},
+		tracing = {"Thane Korth'azz","Baron Rivendare","Lady Blaumeux","Sir Zeliek"},
 		triggers = {
 			scan = "Thane Korth'azz", 
 		},

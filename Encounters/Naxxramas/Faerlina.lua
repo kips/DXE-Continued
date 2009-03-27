@@ -5,9 +5,7 @@ do
 		zone = "Naxxramas", 
 		name = "Grand Widow Faerlina", 
 		title = "Grand Widow Faerlina", 
-		tracing = {
-			name = "Grand Widow Faerlina", 
-		},
+		tracing = {"Grand Widow Faerlina",},
 		triggers = {
 			scan = "Grand Widow Faerlina", 
 		},

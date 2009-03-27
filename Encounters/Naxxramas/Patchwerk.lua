@@ -5,9 +5,7 @@ do
 		zone = "Naxxramas", 
 		name = "Patchwerk", 
 		title = "Patchwerk", 
-		tracing = {
-			name = "Patchwerk", 
-		},
+		tracing = {"Patchwerk",},
 		triggers = {
 			scan = "Patchwerk", 
 		},

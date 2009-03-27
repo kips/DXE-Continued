@@ -15,12 +15,6 @@ do
 	local WidgetType = "DXE_HealthWatcher"
 	local WidgetVersion = 1
 	
-	local backdrop = {
-		bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
-		edgeFile="Interface\\Tooltips\\UI-Tooltip-Border", 
-		edgeSize = 9,             
-		insets = {left = 2, right = 2, top = 3, bottom = 2}
-	}
 
 	local function OnAcquire(self) 
 		self.frame:SetParent(UIParent)
@@ -36,8 +30,8 @@ do
 	end
 
 	local function SetInfoBundle(self,title,health,perc,r,g,b)
-		self.frame:SetValue(perc)
-		self.frame:SetStatusBarColor(r or (perc > 0.5 and ((1.0 - perc) * 2) or 1.0),
+		self.bar:SetValue(perc)
+		self.bar:SetStatusBarColor(r or (perc > 0.5 and ((1.0 - perc) * 2) or 1.0),
 											g or (perc > 0.5 and 1 or (perc * 2)),
 											b or 0.0)
 		self.title:SetText(title)
@@ -55,7 +49,7 @@ do
 	end
 
 	local function TRACER_LOST(self)
-		self.frame:SetStatusBarColor(0.66,0.66,0.66)
+		self.bar:SetStatusBarColor(0.66,0.66,0.66)
 	end
 
 	local function Open(self,name)
@@ -76,32 +70,52 @@ do
 		self.title:SetWidth(width*0.75)
 	end
 
+	local backdrop = {
+		bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",          
+		insets = {left = 2, right = 2, top = 3, bottom = 2}
+	}
+
+	local backdropborder = {
+		edgeFile="Interface\\Tooltips\\UI-Tooltip-Border", 
+		edgeSize = 9,             
+		insets = {left = 2, right = 2, top = 3, bottom = 2}
+	}
+
 	local function Constructor()
 		local self = {}
 		self.type = WidgetType
-
-		local frame = CreateFrame("StatusBar",nil,UIParent)
-		frame:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
-		frame:SetMinMaxValues(0,1)
-		frame:SetValue(1)
+		local frame = CreateFrame("Frame",nil,UIParent)
 		frame:SetWidth(220)
-		frame:SetHeight(25)
+		frame:SetHeight(22)
 		frame:SetBackdrop(backdrop)
 
+		local bar = CreateFrame("StatusBar",nil,frame)
+		bar:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
+		bar:SetMinMaxValues(0,1)
+		bar:SetValue(1)
+		bar:SetPoint("TOPLEFT",2,-2)
+		bar:SetPoint("BOTTOMRIGHT",-2,2)
+		self.bar = bar
+		
+		local border = CreateFrame("Frame",nil,frame)
+		border:SetAllPoints(true)
+		border:SetBackdrop(backdropborder)
+		border:SetFrameLevel(bar:GetFrameLevel()+1)
+
 		-- Add title text
-		title = frame:CreateFontString(nil,"ARTWORK")
-		title:SetFont("Interface\\Addons\\DXE\\Fonts\\FGM.ttf",12)
+		title = bar:CreateFontString(nil,"ARTWORK")
+		title:SetFont(GameFontNormal:GetFont()--[["Interface\\Addons\\DXE\\Fonts\\FGM.ttf"]],10)
 		title:SetHeight(1)
-		title:SetPoint("LEFT",frame,"LEFT",2,0)
+		title:SetPoint("LEFT",bar,"LEFT",2,0)
 		title:SetJustifyH("LEFT")
 		self.title = title
 
 		-- Add health text
-		health = frame:CreateFontString(nil,"ARTWORK")
+		health = bar:CreateFontString(nil,"ARTWORK")
 		health:SetHeight(1)
 		health:SetFont("Interface\\Addons\\DXE\\Fonts\\FGM.ttf",12)
 		health:SetJustifyH("RIGHT")
-		health:SetPoint("RIGHT",frame,"RIGHT",-1,0)
+		health:SetPoint("RIGHT",bar,"RIGHT",-2,0)
 		self.health = health
 		
 		self.TRACER_UPDATE = TRACER_UPDATE
@@ -119,7 +133,6 @@ do
 		self.OnWidthSet = OnWidthSet
 		self.Open = Open
 		self.Close = Close
-		
 		
 		self.frame = frame
 		frame.obj = self

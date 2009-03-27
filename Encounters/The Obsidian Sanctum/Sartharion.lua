@@ -5,9 +5,7 @@ do
 		zone = "The Obsidian Sanctum", 
 		name = "Sartharion", 
 		title = "Sartharion", 
-		tracing = {
-			name = "Sartharion", 
-		},
+		tracing = {"Sartharion",},
 		triggers = {
 			scan = "Sartharion", 
 		},

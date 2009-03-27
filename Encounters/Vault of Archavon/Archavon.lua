@@ -5,9 +5,7 @@ do
 		zone = "Vault of Archavon",
 		name = "Archavon the Stone Watcher",
 		title = "Archavon the Stone Watcher",
-		tracing = {
-			name = "Archavon the Stone Watcher", 
-		},
+		tracing = {"Archavon the Stone Watcher"},
 		triggers = {
 			scan = "Archavon the Stone Watcher",
 		},

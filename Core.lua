@@ -177,7 +177,7 @@ function DXE:GetActiveEncounter()
 	return Current and Current.name or "Default"
 end
 
-function DXE:SetTriggers(trig)
+function DXE:SetRegenChecks(trig)
 	if not trig then return end
 	if trig.entercombat then
 		self:RegisterEvent("PLAYER_REGEN_DISABLED","CheckForEngage")
@@ -209,18 +209,19 @@ function DXE:SetActiveEncounter(name)
 	self.Invoker:SetData(Current)
 	-- Set folder value
 	Pane.SetFolderValue(name)
-	UIDropDownMenu_SetSelectedValue(Selector,name)
 	-- Set pane updating and starting/stopping
-	self:SetAutoStart(Current.onactivate.autostart)
-	self:SetAutoStop(Current.onactivate.autostop)
-	self:SetTriggers(Current.onactivate)
+	if Current.onactivate then
+		self:SetAutoStart(Current.onactivate.autostart)
+		self:SetAutoStop(Current.onactivate.autostop)
+		self:SetRegenChecks(Current.onactivate)
+	end
 
 	self:SetTracing(Current.tracing)
 
 	-- For the empty encounter
-	if name == "Default" then
-		HW[1]:SetInfoBundle("Default","",1,0,0,1)
-		HW[1]:Show()
+	if not self.HW[1]:IsShown() then
+		self.HW[1]:SetInfoBundle(Current.title,"",1,0,0,1)
+		self.HW[1].frame:Show()
 	end
 
 	self:LayoutHealthWatchers()
@@ -326,7 +327,7 @@ function DXE:OnInitialize()
 	self:RegisterEncounter({name = "Default", title = "Default", zone = ""})
 	for _,data in ipairs(LoadQueue) do self:RegisterEncounter(data) end
 	self:UpgradeEncounters()
-
+	self:InitializeHealthWatchers()
 end
 
 -- Saves position
@@ -439,7 +440,7 @@ local Backdrop = {
 	bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
    edgeFile="Interface\\Tooltips\\UI-Tooltip-Border", 
 	edgeSize = 9,             
-	insets = {left = 2, right = 2, top = 3, bottom = 2}
+	insets = {left = 2, right = 2, top = 2, bottom = 2}
 }
 
 local BackdropNoBorders = {
@@ -485,22 +486,22 @@ function DXE:CreatePane()
 	Pane:SetBackdrop(Backdrop)
 	Pane:SetBackdropBorderColor(0.66,0.66,0.66)
 	Pane:SetWidth(220)
-	Pane:SetHeight(54)
+	Pane:SetHeight(25)
 	Pane:SetPoint("CENTER",UIParent,"CENTER")
 	Pane:EnableMouse(true)
 	Pane:SetMovable(true)
+	-- Register for position saving
+	self:RegisterMoveSaving(Pane)
 	local function OnUpdate() DXE:LayoutHealthWatchers() end
-	Pane:SetScript("OnDragStart",function(self) self:SetScript("OnUpdate",OnUpdate) end)
-	Pane:SetScript("OnDragStop",function(self) self:SetScript("OnUpdate",nil) end)
+	Pane:HookScript("OnMouseDown",function(self) self:SetScript("OnUpdate",OnUpdate) end)
+	Pane:HookScript("OnMouseUp",function(self) self:SetScript("OnUpdate",nil) end)
 
   	self.Pane = Pane
 	
-	-- Register for position saving
-	self:RegisterMoveSaving(Pane)
 	
 	Pane.timer = LibStub("AceGUI-3.0"):Create("DXE_Timer")
 	Pane.timer.frame:SetParent(Pane)
-	Pane.timer:SetPoint("TOPLEFT",5,-32)-- -27
+	Pane.timer:SetPoint("BOTTOMLEFT",5,2)--("TOPLEFT",5,-32)-- -27
 	Pane.timer.left:SetFont("Interface\\Addons\\DXE\\Fonts\\BS.ttf",19)
 	Pane.timer.right:SetFont("Interface\\Addons\\DXE\\Fonts\\BS.ttf",11)
 
@@ -755,22 +756,19 @@ local HW = {}
 DXE.HW = HW
 
 -- Create health watchers
-HW[1] = AceGUI:Create("DXE_HealthWatcher")
-HW[2] = AceGUI:Create("DXE_HealthWatcher")
-HW[3] = AceGUI:Create("DXE_HealthWatcher")
-HW[4] = AceGUI:Create("DXE_HealthWatcher")
+function DXE:InitializeHealthWatchers()
+	HW[1] = AceGUI:Create("DXE_HealthWatcher")
+	HW[2] = AceGUI:Create("DXE_HealthWatcher")
+	HW[3] = AceGUI:Create("DXE_HealthWatcher")
+	HW[4] = AceGUI:Create("DXE_HealthWatcher")
 
--- Only the main one sends updates
-HW[1]:SetCallback("HW_TRACER_UPDATE",function(self,name,uid) DXE:TRACER_UPDATE(uid) end)
-HW[1]:EnableUpdates()
-	
-function DXE:SetHWInfoBundle(index,...)
-	local hw = HW[index]
-	hw:SetInfoBundle(...)
+	-- Only the main one sends updates
+	HW[1]:SetCallback("HW_TRACER_UPDATE",function(self,name,uid) DXE:TRACER_UPDATE(uid) end)
+	HW[1]:EnableUpdates()
 end
 
 function DXE:CloseAllHW()
-	for i=1,4 do HW[i]:Close(); HW[i]:Hide() end
+	for i=1,4 do HW[i]:Close(); HW[i].frame:Hide() end
 end
 
 -- Names should be validated to be an array of size 4
@@ -780,7 +778,7 @@ function DXE:SetTracing(names)
 	for i,name in ipairs(names) do
 		HW[i]:SetInfoBundle(name,"",1,0,0,1)
 		HW[i]:Open(name)
-		HW[i]:Show()
+		HW[i].frame:Show()
 	end
 	self:LayoutHealthWatchers()
 end
@@ -788,14 +786,14 @@ end
 function DXE:LayoutHealthWatchers()
 	local cutoff = GetScreenHeight()/2
 	local x,y = self.Pane:GetCenter()
-	local point = y > cutoff and "BOTTOM" or "TOP"
-	local relPoint = y > cutoff and "TOP" or "BOTTOM"
+	local point = y > cutoff and "TOP" or "BOTTOM"
+	local relPoint = y > cutoff and "BOTTOM" or "TOP"
 	local anchor = self.Pane
 	for i,hw in ipairs(self.HW) do
 		if hw.frame:IsShown() then
 			hw:ClearAllPoints()
 			hw:SetPoint(point,anchor,relPoint)
-			anchor = hw
+			anchor = hw.frame
 		end
 	end
 end

@@ -5,9 +5,7 @@ do
 		zone = "Naxxramas",
 		name = "Gothik the Harvester",
 		title = "Gothik the Harvester",
-		tracing = {
-			name = "Gothik the Harvester",
-		},
+		tracing = {"Gothik the Harvester",},
 		triggers = {
 			scan = "Gothik the Harvester", 
 			yell = "Foolishly you have sought your own demise",

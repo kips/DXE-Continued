@@ -1,5 +1,5 @@
 local AceGUI = LibStub("AceGUI-3.0")
-local DXE,BCL,Colors = DXE,BCL,DXE.Constants.Colors
+local DXE,Colors = DXE,DXE.Constants.Colors
 local PlayerName = UnitName("player")
 
 local ipairs, pairs = ipairs, pairs
@@ -194,7 +194,7 @@ function Distributor:Distribute(name, dist, target)
 	dist = dist or "RAID"
 	local data = DXE:GetEncounterData(name)
 	if not data or Uploads[name] or name == "Default" or GetNumRaidMembers() == 0 then return end
-	if BCL.tablesize(Uploads) == 4 then UploadQueue[name] = true return end
+	if DXE.tablesize(Uploads) == 4 then UploadQueue[name] = true return end
 	local serialData = self:Serialize(data)
 	local length = len(serialData)
 	local message = format("UPDATE:%s:%d:%d",name,data.version,length)
@@ -456,7 +456,7 @@ function Distributor:RemoveLoad(tbl,name)
 	self:CancelTimer(ld.timer,true)
 	self:RemoveProgressBar(ld.bar)
 	AceGUI:Release(ld.bar)
-	tbl[name] = BCL.deltable(tbl[name])
+	tbl[name] = DXE.delete(tbl[name])
 end
 
 function Distributor:FadeBar(bar)

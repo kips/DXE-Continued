@@ -1,5 +1,4 @@
 local DXE = DXE
-local BCL = BCL
 
 local options = {
 	type = "group",
@@ -51,10 +50,10 @@ local version = {
 function DXE:RemoveEncounterOptions(data)
 	local zonekey = data.zone:gsub(" ",""):lower()
 	local groupargs = self.options.plugins.encounters.encs_group.args
-	groupargs[zonekey].args[data.key] = BCL.deltable(groupargs[zonekey].args[data.key])
+	groupargs[zonekey].args[data.key] = DXE.delete(groupargs[zonekey].args[data.key])
 	-- Remove zone category if there are no more encounters in it
 	if not next(groupargs[zonekey].args) then
-		groupargs[zonekey] = BCL.deltable(groupargs[zonekey])
+		groupargs[zonekey] = DXE.delete(groupargs[zonekey])
 	end
 end
 

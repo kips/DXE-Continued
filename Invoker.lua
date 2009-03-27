@@ -1,4 +1,3 @@
-local BCL = BCL
 local DXE = DXE
 
 local type,next,select = type,next,select
@@ -288,7 +287,7 @@ function Invoker:RemoveAllTimers()
 	-- Cancel all timers
 	for name in pairs(timers) do
 		Invoker:CancelTimer(timers[name].handle,true)
-		BCL.deltable(timers[name])
+		DXE.delete(timers[name])
 	end
 	wipe(timers)
 end
@@ -296,7 +295,7 @@ end
 local function canceltimer(name,nodel)
 	if timers[name] then
 		Invoker:CancelTimer(timers[name].handle,true)
-		timers[name] = BCL.deltable(timers[name])
+		timers[name] = DXE.delete(timers[name])
 	end
 	return true
 end
@@ -335,7 +334,7 @@ local CommandFuncs = {
 	scheduletimer = function(info,...)
 		local name,time = info[1],info[2]
 		canceltimer(name)
-		timers[name] = BCL.newtable()
+		timers[name] = DXE.new()
 		timers[name].handle = Invoker:ScheduleTimer("FireTimer",time,name)
 		-- Easiest way to do this
 		timers[name].args = {...}

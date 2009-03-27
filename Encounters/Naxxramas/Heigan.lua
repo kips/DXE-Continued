@@ -5,9 +5,7 @@ do
 		zone = "Naxxramas", 
 		name = "Heigan the Unclean", 
 		title = "Heigan the Unclean", 
-		tracing = {
-			name = "Heigan the Unclean", 
-		},
+		tracing = {"Heigan the Unclean",},
 		triggers = {
 			scan = "Heigan the Unclean", 
 		},

@@ -5,9 +5,7 @@ do
 		zone = "The Eye of Eternity", 
 		name = "Malygos", 
 		title = "Malygos", 
-		tracing = {
-			name = "Malygos", 
-		},
+		tracing = {"Malygos"},
 		triggers = {
 			scan = "Malygos", 
 		},

@@ -7,14 +7,6 @@
 	The prototarget is the pretarget at the beginning of the chain.
 ]]
 
-----------------------------------
--- INITIALIZATION
-----------------------------------
-
-local HOT = {}
-local DXE,BCL = DXE,BCL
-local AceTimer = LibStub("AceTimer-3.0")
-
 -- Local accessors
 local wipe = table.wipe
 local ipairs = ipairs
@@ -22,7 +14,14 @@ local UnitIsUnit,UnitName = UnitIsUnit,UnitName
 
 -- Perf: default delay between traces.
 local TraceDelay = 0.2
-local Prototype = {}
+
+local DXE = DXE
+local AceTimer = LibStub("AceTimer-3.0")
+----------------------------------
+-- INITIALIZATION
+----------------------------------
+
+local HOT,Prototype = {},{}
 
 ----------------------------------
 -- CORE
@@ -41,7 +40,7 @@ end
 local mt = {__index = Prototype}
 
 function HOT:New(multi)
-	local tracer = BCL.newtable()
+	local tracer = DXE.new()
 	setmetatable(tracer, mt)
 	AceTimer:Embed(tracer)
 	
@@ -50,9 +49,9 @@ function HOT:New(multi)
 	tracer.distinct = true -- Show only distinct mobs matching the filter, or all mobs?
 	tracer.n = 0 -- The number of acquired traces
 	tracer.lostTime = 0 -- The time the signal was last lost
-	tracer.proto_uids = BCL.newtable() -- The uids of all units that tripped the trace
-	tracer.uids = BCL.newtable() -- The uids of all the target units
-	tracer.events = BCL.newtable() -- Callbacks
+	tracer.proto_uids = DXE.new() -- The uids of all units that tripped the trace
+	tracer.uids = DXE.new() -- The uids of all the target units
+	tracer.events = DXE.new() -- Callbacks
 
 	return tracer
 end

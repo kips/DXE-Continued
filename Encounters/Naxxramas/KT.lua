@@ -5,9 +5,7 @@ do
 		zone = "Naxxramas", 
 		name = "Kel'Thuzad", 
 		title = "Kel'Thuzad", 
-		tracing = {
-			name = "Kel'Thuzad", 
-		},
+		tracing = {"Kel'Thuzad",},
 		triggers = {
 			yell = "Minions, servants, soldiers of the cold dark", 
 		},
