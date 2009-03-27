@@ -408,7 +408,7 @@ function DXE:CHAT_MSG_MONSTER_YELL(_,msg)
 end
 
 function DXE:Scan()
-	for i,unit in pairs(self:GetRoster()) do
+	for i,unit in pairs(DXE.Roster) do
 		local target = rIDtarget[i]
 		local name = UnitName(target)
 		if UnitExists(target) and 
@@ -428,18 +428,6 @@ end
 ---------------------------------------------
 -- PANE CREATION
 ---------------------------------------------
-
-local Backdrop = {
-	bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
-   edgeFile="Interface\\Tooltips\\UI-Tooltip-Border", 
-	edgeSize = 9,             
-	insets = {left = 2, right = 2, top = 2, bottom = 2}
-}
-
-local BackdropNoBorders = {
-	bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
-   --edgeFile="Interface\\Tooltips\\UI-Tooltip-Border", 
-}
 
 --- Adds a control button to the encounter pane
 -- @param normal The normal texture for the button
@@ -473,10 +461,17 @@ function DXE:SetStop()
 	Pane.startStop:SetHighlightTexture("Interface\\Addons\\DXE\\Textures\\Pane\\Stop")
 end
 
+local backdrop = {
+	bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
+   edgeFile="Interface\\Tooltips\\UI-Tooltip-Border", 
+	edgeSize = 9,             
+	insets = {left = 2, right = 2, top = 2, bottom = 2}
+}
+
 function DXE:CreatePane()
 	Pane = CreateFrame("Frame","DXE_Pane",UIParent)
 	Pane:SetClampedToScreen(true)
-	Pane:SetBackdrop(Backdrop)
+	Pane:SetBackdrop(backdrop)
 	Pane:SetBackdropBorderColor(0.66,0.66,0.66)
 	Pane:SetWidth(220)
 	Pane:SetHeight(25)
@@ -792,6 +787,7 @@ end
 -- ROSTER
 ---------------------------------------------
 local Roster = {}
+DXE.Roster = Roster
 
 function DXE:GetRoster()
 	return Roster
@@ -805,4 +801,3 @@ function DXE:UpdateRosterTable()
 		end 
 	end
 end
-

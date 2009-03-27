@@ -82,7 +82,7 @@ function Prototype:Execute()
 	local proto_uid, uid, ix, flag = nil, nil, 0, nil;
 
 	-- Scan
-	for _,unit in ipairs(DXE:GetRoster()) do
+	for _,unit in ipairs(DXE.Roster) do
 		-- Get unit and test it
 		proto_uid = unit
 		proto_uid, uid = test(self,proto_uid)

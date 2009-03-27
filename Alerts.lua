@@ -18,14 +18,13 @@ LibStub("AceTimer-3.0"):Embed(Alerts)
 ---------------------------------------
 
 -- Top stack anchor
-local TopStackAnchor, CenterStackAnchor
-TopStackAnchor = CreateFrame("Frame",nil,UIParent)
+local TopStackAnchor = CreateFrame("Frame",nil,UIParent)
 TopStackAnchor:SetWidth(1) 
 TopStackAnchor:SetHeight(10)
 TopStackAnchor:SetPoint("TOP",-125,-16)
 
 -- Bottom stack anchor
-CenterStackAnchor = CreateFrame("Frame",nil,UIParent)
+local CenterStackAnchor = CreateFrame("Frame",nil,UIParent)
 CenterStackAnchor:SetWidth(1)
 CenterStackAnchor:SetHeight(1)
 CenterStackAnchor:SetPoint("CENTER",-125,100)
