@@ -490,11 +490,10 @@ function DXE:BuildPane()
 	Pane:SetMovable(true)
 	-- Register for position saving
 	self:RegisterMoveSaving(Pane)
-	local function OnUpdate() DXE:LayoutHealthWatchers() end
-	Pane:HookScript("OnMouseDown",function(self) self:SetScript("OnUpdate",OnUpdate) end)
+	local function onupdate() DXE:LayoutHealthWatchers() end
+	Pane:HookScript("OnMouseDown",function(self) self:SetScript("OnUpdate",onupdate) end)
 	Pane:HookScript("OnMouseUp",function(self) self:SetScript("OnUpdate",nil) end)
   	self.Pane = Pane
-	
 	
 	Pane.timer = AceGUI:Create("DXE_Timer")
 	Pane.timer.frame:SetParent(Pane)

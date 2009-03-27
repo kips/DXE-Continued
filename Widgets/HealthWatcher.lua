@@ -104,7 +104,7 @@ do
 
 		-- Add title text
 		title = bar:CreateFontString(nil,"ARTWORK")
-		title:SetFont(GameFontNormal:GetFont()--[["Interface\\Addons\\DXE\\Fonts\\FGM.ttf"]],10)
+		title:SetFont("Interface\\Addons\\DXE\\Fonts\\FGM.ttf",10)
 		title:SetHeight(1)
 		title:SetPoint("LEFT",bar,"LEFT",2,0)
 		title:SetJustifyH("LEFT")
