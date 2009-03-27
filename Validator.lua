@@ -35,6 +35,7 @@ local baseKeys = {
 	name = isstring,
 	title = isstring,
 	onstart = opttable,
+	onacquired = opttable,
 	timers = opttable,
 	userdata = opttable,
 	events = opttable,
@@ -51,6 +52,8 @@ local baseLineKeys = {
 	alert = isstring,
 	scheduletimer = istable,
 	canceltimer = isstring,
+	resettimer = isboolean,
+	tracing = istable,
 }
 
 local alertBaseKeys = {
@@ -157,6 +160,14 @@ local function validateReplaces(data,text,errlvl,...)
 	end
 end
 
+local function validateTracing(tbl,errlvl,...)
+	errlvl=(errlvl or 0)+1
+	validateIsArray(tbl,errlvl,"tracing",...)
+	if #tbl > 4 or #tbl == 0 then
+		err(": not an array with 1 <= size <= 4",errlvl,"tracing",...)
+	end
+end
+
 local function validateCommandLine(data,line,errlvl,...)
 	local type,info = next(line)
 	local oktype = baseLineKeys[type]
@@ -201,6 +212,8 @@ local function validateCommandLine(data,line,errlvl,...)
 		if not data.timers or not data.timers[info] then
 			err(": canceling a non-existent timer '"..info.."'",errlvl,type,...)
 		end
+	elseif type == "tracing" then
+		validateTracing(info,errlvl,...)
 	end
 end
 
@@ -307,13 +320,6 @@ local function validateEvents(data,events,errlvl,...)
 	end
 end
 
-local function validateTracing(tbl,errlvl,...)
-	errlvl=(errlvl or 0)+1
-	validateIsArray(tbl,errlvl,"tracing",...)
-	if #tbl > 4 or #tbl == 0 then
-		err(": not an array with 1 <= size <= 4",errlvl,"tracing",...)
-	end
-end
 
 local function validate(data,errlvl,...)
 	errlvl=(errlvl or 0)+1
@@ -328,6 +334,11 @@ local function validate(data,errlvl,...)
 		validateVal(data[k],oktypes,errlvl,k,...)
 		if k == "onstart" and data[k] and tableSize(data[k]) > 0 then
 			validateCommandBundle(data,data.onstart,errlvl,"onstart",...)
+		elseif k == "onacquired" and data[k] and tableSize(data[k]) > 0 then
+			for name,bundle in pairs(data[k]) do
+				validateVal(name,isstring,errlvl,name,"onacquired",...)
+				validateCommandBundle(data,bundle,errlvl,name,"onacquired",...)
+			end
 		elseif k == "timers" and data.timers then
 			for name,bundle in pairs(data.timers) do
 				validateVal(bundle,istable,errlvl,name,"timers",...)

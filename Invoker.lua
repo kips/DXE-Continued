@@ -32,6 +32,7 @@ function Invoker:OnStop()
 	if CE.onstop then
 		self:InvokeCommands(CE.onstop)
 	end
+	DXE:SetTracing(CE.tracing)
 	-- Reset userdata
 	self:ResetUserData()
 	-- Quashes all alerts
@@ -41,6 +42,7 @@ function Invoker:OnStop()
 	-- Remove throttles
 	self:RemoveThrottles()
 end
+
 
 ---------------------------------------------
 -- MESSAGES
@@ -112,7 +114,7 @@ local function expect(alpha, condition, bravo)
 end
 
 local function tft()
-	return DXE.Tracer:First() and DXE.Tracer:First().."target" or ""
+	return DXE.HW[1]:First() and DXE.HW[1]:First().."target" or ""
 end
 
 -- IMPORTANT - Return values should all be strings
@@ -125,6 +127,7 @@ local RepFuncs = {
 	tft_unitexists = function() return tostring(UnitExists(tft())) end,
 	tft_isplayer = function() return tostring(UnitIsUnit(tft(),"player")) end,
 	tft_unitname = function() return tostring(UnitName(tft())) end,
+	scan = function() return tostring(DXE:Scan()) end,
 }
 
 function Invoker:GetRepFuncs()
@@ -342,6 +345,16 @@ local CommandFuncs = {
 	end,
 
 	canceltimer = canceltimer,
+
+	resettimer = function(info,...) 
+		DXE:ResetTimer() 
+		return true
+	end,
+
+	tracing = function(info,...)
+		DXE:SetTracing(info)
+		return true
+	end
 }
 
 ---------------------------------------------
@@ -418,6 +431,31 @@ function Invoker:WipeEvents()
 end
 
 ---------------------------------------------
+-- TRACER ACQUIRES
+---------------------------------------------
+-- Holds command bundles
+local AcquiredBundles = {}
+
+function Invoker:HW_TRACER_ACQUIRED(event,uid)
+	local name = UnitName(uid)
+	if AcquiredBundles[name] then
+		self:InvokeCommands(AcquiredBundles[name])
+	end
+end
+
+-- Each entry in 
+function Invoker:SetOnAcquired()
+	wipe(AcquiredBundles)
+	local onacquired = CE.onacquired
+	if not onacquired then return end
+	for name,bundle in pairs(onacquired) do
+		AcquiredBundles[name] = bundle
+	end
+end
+
+DXE.RegisterCallback(Invoker,"HW_TRACER_ACQUIRED")
+
+---------------------------------------------
 -- API
 ---------------------------------------------
 
@@ -433,6 +471,8 @@ function Invoker:SetData(data)
 	self:RegisterEvents()
 	-- Copy data.userdata to userdata upvalue
 	self:ResetUserData()
+	-- OnAcquired
+	self:SetOnAcquired()
 end
 
 DXE.Invoker = Invoker

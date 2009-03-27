@@ -48,13 +48,13 @@ do
 			blank1 = genblank(150),
 			created_desc = {
 				type = "description",
-				name = "Created for |cffffd200Deus Vox|r on |cffffff78Laughing Skull|r",
+				name = "Created for use by |cffffd200Deus Vox|r on |cffffff78Laughing Skull|r",
 				order = 200,
 			},
 			blank2 = genblank(250),
 			visit_desc = {
 				type = "description",
-				name = "Visit: |cffffd244http://www.deusvox.net|r",
+				name = "Website: |cffffd244http://www.deusvox.net|r",
 				order = 300,
 			},
 		},

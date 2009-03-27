@@ -20,6 +20,7 @@ local defaults = {
 ---------------------------------------------
 
 local DXE = LibStub("AceAddon-3.0"):NewAddon("DXE","AceEvent-3.0","AceTimer-3.0","AceConsole-3.0")
+DXE.callbacks = LibStub("CallbackHandler-1.0"):New(DXE)
 _G.DXE = DXE
 DXE.defaults = defaults
 
@@ -405,9 +406,10 @@ end
 -- TRIGGERING
 ---------------------------------------------
 
+local find = string.find
 function DXE:CHAT_MSG_MONSTER_YELL(_,msg)
 	for fragment,data in pairs(yellTriggers) do
-		if msg:find(fragment) then
+		if find(msg,fragment) then
 			self:SetActiveEncounter(data.name)
 			self:StartEncounter()
 		end
@@ -440,16 +442,16 @@ end
 do
 	local function calculatepoint(self)
 		local worldscale = UIParent:GetEffectiveScale()
-		local width,height = worldscale*GetScreenWidth()/2,worldscale*GetScreenHeight()/2
+		local midX,midY = worldscale*GetScreenWidth()/2,worldscale*GetScreenHeight()/2
 		local scale,x,y = self:GetEffectiveScale(), self:GetCenter()
 		x,y = x*scale,y*scale
-		if x <= width and y > height then -- Top left quadrant
+		if x <= midX and y > midY then -- Top left quadrant
 			return "ANCHOR_BOTTOMRIGHT"
-		elseif x <= width and y < height then -- Bottom left quadrant
+		elseif x <= midX and y < midY then -- Bottom left quadrant
 			return "ANCHOR_RIGHT"
-		elseif x > width and y <= height then -- Bottom right quadrant
+		elseif x > midX and y <= midY then -- Bottom right quadrant
 			return "ANCHOR_LEFT"
-		elseif x > width and y >= height then -- Top right quadrant
+		elseif x > midX and y >= midY then -- Top right quadrant
 			return "ANCHOR_BOTTOMLEFT"
 		end
 	end
@@ -693,7 +695,6 @@ end
 --- Starts the Pane timer
 function DXE:StartTimer()
 	elapsedTime = 0
-	self:SendMessage("DXE_StartEncTimer",elapsedTime)
 	self.Pane.timer.frame:SetScript("OnUpdate",Timer_OnUpdate)
 	self:SetRunning(true)
 	self:SetStop()
@@ -710,7 +711,6 @@ end
 function DXE:ResetTimer()
 	elapsedTime = 0
 	self.Pane.timer:SetTime(0)
-	self:StopTimer()
 end
 
 --- Toggles the Pane timer
@@ -743,8 +743,12 @@ function DXE:InitializeHealthWatchers()
 	HW[4] = AceGUI:Create("DXE_HealthWatcher")
 
 	-- Only the main one sends updates
-	HW[1]:SetCallback("HW_TRACER_UPDATE",function(self,name,uid) DXE:TRACER_UPDATE(uid) end)
+	HW[1]:SetCallback("HW_TRACER_UPDATE",function(self,event,uid) DXE:TRACER_UPDATE(uid) end)
 	HW[1]:EnableUpdates()
+
+	-- OnAcquired
+	local onacquire = function(self,event,uid) DXE.callbacks:Fire("HW_TRACER_ACQUIRED",uid) end
+	for i=1,4 do HW[i]:SetCallback("HW_TRACER_ACQUIRED",onacquire) end
 end
 
 function DXE:CloseAllHW()
@@ -764,10 +768,10 @@ function DXE:SetTracing(names)
 end
 
 function DXE:LayoutHealthWatchers()
-	local cutoff = GetScreenHeight()/2
+	local midY = GetScreenHeight()/2
 	local x,y = self.Pane:GetCenter()
-	local point = y > cutoff and "TOP" or "BOTTOM"
-	local relPoint = y > cutoff and "BOTTOM" or "TOP"
+	local point = y > midY and "TOP" or "BOTTOM"
+	local relPoint = y > midY and "BOTTOM" or "TOP"
 	local anchor = self.Pane
 	for i,hw in ipairs(self.HW) do
 		if hw.frame:IsShown() then
@@ -840,10 +844,6 @@ end
 ---------------------------------------------
 local Roster = {}
 DXE.Roster = Roster
-
-function DXE:GetRoster()
-	return Roster
-end
 
 function DXE:UpdateRosterTable()
 	wipe(Roster)

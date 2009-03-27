@@ -38,6 +38,10 @@ do
 		self.health:SetText(health)
 	end
 
+	local function TRACER_ACQUIRED(self)
+		self:Fire("HW_TRACER_ACQUIRED",self.tracer:First())
+	end
+
 	local function TRACER_UPDATE(self)
 		local uid = self.tracer:First()
 		local h, hm = UnitHealth(uid), UnitHealthMax(uid) 
@@ -120,10 +124,12 @@ do
 		
 		self.TRACER_UPDATE = TRACER_UPDATE
 		self.TRACER_LOST = TRACER_LOST
+		self.TRACER_ACQUIRED = TRACER_ACQUIRED
 
 		self.tracer = DXE.HOT:New()
 		self.tracer:SetCallback(self,"TRACER_UPDATE")
 		self.tracer:SetCallback(self,"TRACER_LOST")
+		self.tracer:SetCallback(self,"TRACER_ACQUIRED")
 
 		self.OnAcquire = OnAcquire
 		self.OnRelease = OnRelease

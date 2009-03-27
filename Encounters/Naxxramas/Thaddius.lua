@@ -5,9 +5,9 @@ do
 		zone = "Naxxramas", 
 		name = "Thaddius", 
 		title = "Thaddius", 
-		tracing = {"Thaddius"},
+		tracing = {"Feugan","Stalagg","Thaddius"},
 		triggers = {
-			scan = "Thaddius", 
+			scan = {"Feugan","Stalagg","Thaddius"}, 
 		},
 		onactivate = {
 			autoupdate = true,
@@ -17,18 +17,24 @@ do
 		userdata = { 
 			dead = 0,
 		},
+		onacquired = {
+			["Thaddius"] = {
+				[1] = {
+					{alert = "enragecd"},
+				},
+			},
+		},
 		onstart = {
 			[1] = {
-				--{expect = {"<dead>","not_==","0"}},
-				{alert = "enragecd"},
-			},
-			--[[
-			[2] = {
-				{expect = {"<dead>","==","0"}},
 				{alert = "tankthrowcd"},
 				{scheduletimer = {"tankthrow", 20.6}},
 			},
-			]]
+			[2] = {
+				{expect = {"&scan&","==","Thaddius"}},
+				{quash = "tankthrowcd"},
+				{canceltimer = "tankthrow"},
+				{tracing = {"Thaddius"}},
+			},
 		},
 		alerts = {
 			enragecd = {
@@ -61,7 +67,6 @@ do
 				color1 = "BLUE", 
 			},
 		},
-		--[[
 		timers = {
 			tankthrow = {
 				[1] = {
@@ -70,7 +75,6 @@ do
 				},
 			},
 		},
-		]]
 		events = {
 			-- Polarity shift
 			[1] = {
@@ -83,7 +87,6 @@ do
 					},
 				},
 			},
-			--[[
 			-- Emotes
 			[2] = {
 				type = "event", 
@@ -95,10 +98,10 @@ do
 						{expect = {"dead",">=","2"}},
 						{quash = "tankthrowcd"},
 						{canceltimer = "tankthrow"},
+						{tracing = {"Thaddius"}},
 					},
 				},
 			},
-			]]
 		},
 	}
 
