@@ -379,18 +379,11 @@ function DXE:RegisterMoveSaving(frame)
 end
 
 function DXE:OnEnable()
-	--Tracer = Tracer or self.HOT:New()
-	--DXE.Tracer = Tracer
 	self:CreatePane()
 	self:LoadPositions()
 	self:RegisterEvent("RAID_ROSTER_UPDATE","UpdateRosterTable")
 	self:RegisterEvent("ZONE_CHANGED_NEW_AREA","UpdateTriggers")
 	self:RegisterEvent("PLAYER_ENTERING_WORLD","UpdateTriggers")
-	--[[
-	self:RegisterMessage("DXE_Tracer_OnAcquire","OnAcquire")
-	self:RegisterMessage("DXE_Tracer_OnTrace","OnTrace")
-	self:RegisterMessage("DXE_Tracer_OnLost","OnLost")
-	]]
 	self:UpdateRosterTable()
 	self:SetActiveEncounter("Default")
 	Pane:Show()
@@ -501,7 +494,7 @@ function DXE:CreatePane()
 	
 	Pane.timer = LibStub("AceGUI-3.0"):Create("DXE_Timer")
 	Pane.timer.frame:SetParent(Pane)
-	Pane.timer:SetPoint("BOTTOMLEFT",5,2)--("TOPLEFT",5,-32)-- -27
+	Pane.timer:SetPoint("BOTTOMLEFT",5,2)
 	Pane.timer.left:SetFont("Interface\\Addons\\DXE\\Fonts\\BS.ttf",19)
 	Pane.timer.right:SetFont("Interface\\Addons\\DXE\\Fonts\\BS.ttf",11)
 
@@ -535,55 +528,6 @@ function DXE:CreatePane()
 		function() ToggleDropDownMenu(1,nil,selector,Pane.folder,0,0) end,
 		Pane.config
 	)
-
-	local TitleHeight = 31 -- 22
-
-	--[[
-	-- Add spacer graphic
-	local spacer = Pane:CreateTexture(nil,"BORDER")
-	spacer:SetTexture("Interface\\OptionsFrame\\UI-OptionsFrame-Spacer")
-	spacer:SetPoint("TOPLEFT", Pane, "TOPLEFT", 2, -(TitleHeight-3))
-	spacer:SetPoint("BOTTOMRIGHT", Pane, "TOPRIGHT", -2, -(TitleHeight+3))
-	--spacer:SetVertexColor(0.66,0.66,0.66)
-	--]]
-
-	--[[
-		local sep = Pane:CreateTexture(nil,"BORDER")
-		sep:SetTexture("Interface\\OptionsFrame\\UI-OptionsFrame-Spacer")
-		sep:SetHeight(6)
-		sep:SetWidth(Pane:GetWidth()-4)
-		sep:SetPoint("LEFT",Pane,"LEFT",2,-15)
-		--sep:SetPoint("RIGHT",ha,"RIGHT",0,2)
-		sep:SetVertexColor(0.66,0.66,0.66)]]
-		
-
-
-	--[[
-	-- Add health bar
-	Bar = CreateFrame("StatusBar",nil,Pane)
-	Bar:SetStatusBarTexture("Interface\\Addons\\DXE\\Textures\\StatusBars\\Ace")
-	Bar:SetMinMaxValues(0,1)
-	Bar:SetValue(1)
-	Bar:SetWidth(Pane:GetWidth()-4)
-	Bar:SetHeight(20)
-	Bar:SetPoint("TOPLEFT",Pane,"TOPLEFT",2,-4)
-
-	-- Add title text
-	TitleText = Bar:CreateFontString(nil,"ARTWORK")
-	TitleText:SetFont("Interface\\Addons\\DXE\\Fonts\\FGM.ttf",12)
-	TitleText:SetWidth(Bar:GetWidth() - 40)
-	TitleText:SetHeight(1)
-	TitleText:SetPoint("LEFT",Bar,"LEFT",2,0)
-	TitleText:SetJustifyH("LEFT")
-
-	-- Add health text
-	HealthText = Bar:CreateFontString(nil,"ARTWORK")
-	HealthText:SetWidth(Bar:GetWidth()-40)
-	HealthText:SetHeight(1)
-	HealthText:SetFont("Interface\\Addons\\DXE\\Fonts\\FGM.ttf",12)
-	HealthText:SetJustifyH("RIGHT")
-	HealthText:SetPoint("RIGHT",Bar,"RIGHT")
-	]]
 end
 
 ---------------------------------------------
@@ -678,16 +622,6 @@ end
 local Running
 -- Elapsed time of the timer
 local ElapsedTime
-
---[[
-function DXE:SetInfoBundle(titleText, healthText, perc, r, g, b)
-	--if not r then r,g,b = GetGradientColor(perc) end
-	Bar:SetValue(perc)
-	Bar:SetStatusBarColor(r or (perc > 0.5 and ((1.0 - perc) * 2) or 1.0),g or (perc > 0.5 and 1 or (perc * 2)),b or 0.0)
-	TitleText:SetText(titleText)
-	HealthText:SetText(healthText)
-end
-]]
 
 --- Returns the encounter start time based off GetTime()
 -- @return A number >= 0
@@ -798,102 +732,6 @@ function DXE:LayoutHealthWatchers()
 	end
 end
 
---[[
-function DXE:UpdateHWArea()
-	local ha = Pane.hwArea
-	local width,height = ha:GetWidth(),ha:GetHeight()
-	for _,hw in ipairs(HW) do
-		hw.frame:SetFrameLevel(ha:GetFrameLevel()+1)
-	end
-		--frame:SetScript("OnSizeChanged",function() print("TEST") end)
-		--for k,v in ipairs(HW) do
-		--	v.frame:SetScript("OnSizeChanged",function() print("TEST") end)
-		--end
-	local num = 4
-	if num == 1 then
-		HW[1]:ClearAllPoints()
-		HW[1]:SetHeight(height)
-		HW[1]:SetPoint("LEFT",ha,"LEFT",0.5,0)
-		HW[1]:SetPoint("RIGHT",ha,"RIGHT",-0.5,0)
-		--self:SetHWInfoBundle(1,"Stalagg", "100%", 1, 0, 1, 0)
-		HW[1].title:SetFont("Interface\\Addons\\DXE\\Fonts\\FGM.ttf",12)
-		HW[1].health:SetFont("Interface\\Addons\\DXE\\Fonts\\FGM.ttf",12)
-	elseif num == 2 then
-		HW[1]:ClearAllPoints()
-		HW[1]:SetHeight((height/2)-1)
-		HW[1]:SetWidth(width-2)
-		HW[1]:SetPoint("TOP",ha,"TOP")
-		self:SetHWInfoBundle(1,"Stalagg", "100%", 1, 0, 1, 0)
-		HW[1].title:SetFont("Interface\\Addons\\DXE\\Fonts\\FGM.ttf",10)
-		HW[1].health:SetFont("Interface\\Addons\\DXE\\Fonts\\FGM.ttf",10)
-
-		HW[2]:ClearAllPoints()
-		HW[2]:SetHeight((height/2)-1)
-		HW[2]:SetWidth(width-2)
-		HW[2]:SetPoint("BOTTOM",ha,"BOTTOM")
-		self:SetHWInfoBundle(2,"Feugan", "100%", 1, 1, 0, 0)
-		HW[2].title:SetFont("Interface\\Addons\\DXE\\Fonts\\FGM.ttf",10)
-		HW[2].health:SetFont("Interface\\Addons\\DXE\\Fonts\\FGM.ttf",10)
-	elseif num == 3 then
-		HW[1]:ClearAllPoints()
-		HW[1]:SetHeight((height/3)-1)
-		HW[1]:SetWidth(width-2)
-		HW[1]:SetPoint("TOPLEFT",ha,"TOPLEFT",1,0)
-		self:SetHWInfoBundle(1,"Stalagg", "100%", 1, 0, 1, 0)
-		HW[1].title:SetFont("Interface\\Addons\\DXE\\Fonts\\FGM.ttf",9)
-		HW[1].health:SetFont("Interface\\Addons\\DXE\\Fonts\\FGM.ttf",9)
-
-		HW[2]:ClearAllPoints()
-		HW[2]:SetHeight((height/3)-1)
-		HW[2]:SetWidth(width-2)
-		HW[2]:SetPoint("TOPLEFT",HW[1].frame,"BOTTOMLEFT",0,-1)
-		self:SetHWInfoBundle(2,"Feugan", "100%", 1, 1, 0, 0)
-		HW[2].title:SetFont("Interface\\Addons\\DXE\\Fonts\\FGM.ttf",9)
-		HW[2].health:SetFont("Interface\\Addons\\DXE\\Fonts\\FGM.ttf",9)
-
-		HW[3]:ClearAllPoints()
-		HW[3]:SetHeight((height/3)-1)
-		HW[3]:SetWidth(width-2)
-		HW[3]:SetPoint("TOPLEFT",HW[2].frame,"BOTTOMLEFT",0,-1)
-		self:SetHWInfoBundle(3,"Stalagg", "100%", 1, 0, 1, 0)
-		HW[3].title:SetFont("Interface\\Addons\\DXE\\Fonts\\FGM.ttf",9)
-		HW[3].health:SetFont("Interface\\Addons\\DXE\\Fonts\\FGM.ttf",9)
-	elseif num == 4 then
-		HW[1]:ClearAllPoints()
-		HW[1]:SetHeight((height/2)-1)
-		HW[1]:SetWidth((width/2)-1)
-		HW[1]:SetPoint("TOPLEFT",ha,"TOPLEFT")
-		self:SetHWInfoBundle(1,"Stalagg", "100%", 1, 0, 1, 0)
-		HW[1].title:SetFont("Interface\\Addons\\DXE\\Fonts\\FGM.ttf",10)
-		HW[1].health:SetFont("Interface\\Addons\\DXE\\Fonts\\FGM.ttf",10)
-
-		HW[2]:ClearAllPoints()
-		HW[2]:SetHeight((height/2)-1)
-		HW[2]:SetWidth((width/2)-1)
-		HW[2]:SetPoint("TOPRIGHT",ha,"TOPRIGHT")
-		self:SetHWInfoBundle(2,"Feugan", "100%", 1, 1, 0, 0)
-		HW[2].title:SetFont("Interface\\Addons\\DXE\\Fonts\\FGM.ttf",10)
-		HW[2].health:SetFont("Interface\\Addons\\DXE\\Fonts\\FGM.ttf",10)
-
-		HW[3]:ClearAllPoints()
-		HW[3]:SetHeight((height/2)-1)
-		HW[3]:SetWidth((width/2)-1)
-		HW[3]:SetPoint("BOTTOMLEFT",ha,"BOTTOMLEFT")
-		self:SetHWInfoBundle(3,"Stalagg", "100%", 1, 0, 1, 0)
-		HW[3].title:SetFont("Interface\\Addons\\DXE\\Fonts\\FGM.ttf",10)
-		HW[3].health:SetFont("Interface\\Addons\\DXE\\Fonts\\FGM.ttf",10)
-
-		HW[4]:ClearAllPoints()
-		HW[4]:SetHeight((height/2)-1)
-		HW[4]:SetWidth((width/2)-1)
-		HW[4]:SetPoint("BOTTOMRIGHT",ha,"BOTTOMRIGHT")
-		self:SetHWInfoBundle(4,"Archavon the Stone Watcher", "100%", 1, 1, 0, 0)
-		HW[4].title:SetFont("Interface\\Addons\\DXE\\Fonts\\FGM.ttf",10)
-		HW[4].health:SetFont("Interface\\Addons\\DXE\\Fonts\\FGM.ttf",10)
-	end	
-end
-]]
-
 function DXE:TRACER_UPDATE(uid)
 	if self:IsAutoStart() and not self:IsRunning() and UnitIsFriend(uid.."target","player") then
 		self:StartEncounter()
@@ -901,12 +739,6 @@ function DXE:TRACER_UPDATE(uid)
 		self:StopEncounter()
 	end
 end
-
---[[
-function DXE:TrackUnitName(name)
-	Tracer:TrackUnitName(name)
-end
-]]
 
 do
 	local AutoStart,AutoStop
@@ -926,57 +758,6 @@ do
 		return AutoStop
 	end
 end
-
---[[
-function DXE:OnAcquire(_,tr)
-	if tr ~= Tracer then return end
-	-- Do nothing
-end
-
-local function clamp(n, min, max)
-	if (type(n) ~= "number") then return min end
-	if(n < min) then 
-		return min
-	elseif(n > max) 
-		then return max
-	else 
-		return n 
-	end
-end
-
-function DXE:OnTrace(_,tr)
-	if tr ~= Tracer then return end
-	if AutoStart then
-		if not self:IsRunning() then
-			if UnitIsFriend(tr:First() .. "target", "player") then
-				self:StartEncounter()
-			end
-		end
-	end
-
-	if AutoStop then
-		if self:IsRunning() then
-			if UnitIsDead(tr:First()) then
-				self:StopEncounter()
-			end
-		end
-	end
-
-	if AutoUpdate then
-		local uid = tr:First()
-		local h, hm = UnitHealth(uid), UnitHealthMax(uid); if hm < 1 then hm = 1; end
-		local fh = clamp(h/hm, 0, 1) 
-		local name = UnitName(uid)
-		self:SetInfoBundle(name, format("%0.0f%%", fh*100), fh)
-	end
-end
-
-function DXE:OnLost(_,tr)
-	if tr ~= Tracer then return end
-	if not AutoUpdate then return end
-	Bar:SetStatusBarColor(0.66,0.66,0.66)
-end
-]]
 
 ---------------------------------------------
 -- REGEN START/STOPPING

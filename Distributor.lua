@@ -152,6 +152,7 @@ local options = {
 							end
 							return RaidNames
 						end,
+						disabled = function() return GetNumRaidMembers() == 0 end,
 					},
 					blank = {type="description",name="",order=200},
 					DistributeToPlayer = {
@@ -486,15 +487,15 @@ function Distributor:RemoveProgressBar(bar)
 end
 
 -- No cool gradual movement
+-- Move between center and top
+local StackAnchor = CreateFrame("Frame",nil,UIParent)
+StackAnchor:SetHeight(1); StackAnchor:SetWidth(1)
+StackAnchor:SetPoint("TOP",0,-GetScreenHeight()/4)
 function Distributor:LayoutProgBarStack()
-	local x,y = DXE.Pane:GetCenter()
-	local height = GetScreenHeight()/2
-	local point = y > height and "TOP" or "BOTTOM"
-	local relPoint = y > height and "BOTTOM" or "TOP"
-	local anchor = DXE.Pane
+	local anchor = StackAnchor
 	for i=1,#ProgressStack do
 		local bar = ProgressStack[i]
-		bar:Anchor(point,anchor,relPoint)
+		bar:Anchor("TOP",anchor,"BOTTOM")
 		anchor = bar.frame
 	end
 end
