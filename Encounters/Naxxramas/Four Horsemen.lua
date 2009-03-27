@@ -79,10 +79,27 @@ do
 					},
 				},
 			},
+			-- Boss quashes
+			[4] = {
+				type = "combatevent",
+				eventtype = "UNIT_DIED",
+				execute = {
+					[1] = {
+						{expect = {"#5#","==","Sir Zeliek"},},
+						{quash = "wrathcd"},
+					},
+					[2] = {
+						{expect = {"#5#","==","Thane Korth'azz"},},
+						{quash = "meteorcd"},
+					},
+					[3] = {
+						{expect = {"#5#","==","Lady Blaumeux"},},
+						{quash = "voidzonecd"},
+					},
+				},
+			},
 		},
 	}
 
 	DXE:RegisterEncounter(data)
 end
-
--- Need to quash alerts on death somehow

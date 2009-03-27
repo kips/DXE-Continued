@@ -125,11 +125,12 @@ DXE.EDB = EDB
 local Current -- Current Encounter data
 
 local LoadQueue = {}
-function DXE:RegisterEncounter(data)
+-- @param forcedValid Used with received encounters since they've already been validated.
+function DXE:RegisterEncounter(data,forcedValid)
 	-- Save for loading after initialization
 	if not self.Loaded then LoadQueue[#LoadQueue+1] = data return end
 	-- Validate data
-	self:ValidateData(data)
+	if not forcedValid then self:ValidateData(data) end
 	-- Only encounters with field key have options
 	if data.key then
 		-- Add options
@@ -300,19 +301,19 @@ end
 
 function DXE:UpgradeEncounters()
 	-- Upgrade from stored encounters
-	local delete = {}
+	local deleteQueue = self.new()
 	for name,data in pairs(RDB) do
 		-- Upgrading to new versions
 		if not EDB[name] or EDB[name].version < data.version then
 			self:UnregisterEncounter(name)
-			self:RegisterEncounter(data)
+			self:RegisterEncounter(data,true)
 		-- Deleting old versions
 		elseif EDB[name] and EDB[name].version > data.version then
-			delete[data.name] = true
+			deleteQueue[data.name] = true
 		end
 	end
 	-- Actually delete old versions
-	for name in pairs(delete) do
+	for name in pairs(deleteQueue) do
 		RDB[name] = self.delete(RDB[name])
 	end
 end

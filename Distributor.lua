@@ -282,7 +282,7 @@ function Distributor:DownloadReceived(prefix, msg, dist, sender)
 	-- Unregister
 	DXE:UnregisterEncounter(name)
 	-- Register
-	DXE:RegisterEncounter(data)
+	DXE:RegisterEncounter(data,true)
 	-- Store it in SavedVariables
 	DXERecEncDB[name] = data	
 
