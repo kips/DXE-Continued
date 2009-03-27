@@ -20,6 +20,7 @@ do
 		onacquired = {
 			["Thaddius"] = {
 				[1] = {
+					{resettimer = true},
 					{alert = "enragecd"},
 				},
 			},

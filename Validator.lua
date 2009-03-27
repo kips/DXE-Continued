@@ -380,4 +380,3 @@ function DXE:ValidateData(data)
 	local name = data.name or "Data"
 	validate(data,errlvl,name)
 end
-

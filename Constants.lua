@@ -20,6 +20,7 @@ local Colors = {
 	MIDGREY = 		{r=.5, 	g=.5, 	b=.5, 	a=1},
 	BLACK = 			{r=0,		g=0,		b=0,		a=1},
 	BROWN = 			{r=.65,  g=.165,  b=.165,	a=1},
+	TURQUOISE =  	{r=.251, g=.878,  b=.816,  a=1},
 }
 
 Constants.Colors = Colors

@@ -144,7 +144,7 @@ local options = {
 						set = function(info,value) PlayerSelect = value end,
 						values = function()
 							wipe(RaidNames)
-							for k,uid in pairs(DXE:GetRoster()) do
+							for k,uid in pairs(DXE.Roster) do
 								local name = UnitName(uid)
 								if UnitExists(uid) and name and name ~= PlayerName then
 									 RaidNames[name] = name
