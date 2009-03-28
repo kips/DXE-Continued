@@ -66,7 +66,6 @@ do
 				event = "CHAT_MSG_RAID_BOSS_EMOTE", 
 				execute = {
 					[1] = {
-						
 						{expect = {"#1#","find","lifts"}},
 						{alert = "airphasedur"}, 
 					},

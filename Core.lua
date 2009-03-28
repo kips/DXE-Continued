@@ -428,6 +428,7 @@ function DXE:Scan()
 			return nameTriggers[name].name
 		end
 	end
+	return nil
 end
 
 function DXE:ScanUpdate()

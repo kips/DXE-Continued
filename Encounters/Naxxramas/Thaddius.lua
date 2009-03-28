@@ -96,7 +96,7 @@ do
 					[1] = {
 						{expect = {"#1#","find","overloads!"}},
 						{set = {dead = "INCR|1"}},
-						{expect = {"dead",">=","2"}},
+						{expect = {"<dead>",">=","2"}},
 						{quash = "tankthrowcd"},
 						{canceltimer = "tankthrow"},
 						{tracing = {"Thaddius"}},
