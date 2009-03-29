@@ -35,9 +35,9 @@ do
 	end
 	local options_args = options.args
 
-	local credits = {
+	local about = {
 		type = "group",
-		name = "Credits",
+		name = "About",
 		order = -1,
 		args = {
 			authors_desc = {
@@ -60,7 +60,7 @@ do
 		},
 	}
 
-	options_args.credits = credits
+	options_args.about = about
 end
 
 DXE.options = options

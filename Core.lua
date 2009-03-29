@@ -5,6 +5,7 @@
 local defaults = {
 	global = {
 		Enabled = true,
+		Locked = true,
 	},
 	profile = {
 		Positions = {},
@@ -23,6 +24,10 @@ local DXE = LibStub("AceAddon-3.0"):NewAddon("DXE","AceEvent-3.0","AceTimer-3.0"
 DXE.callbacks = LibStub("CallbackHandler-1.0"):New(DXE)
 _G.DXE = DXE
 DXE.defaults = defaults
+
+function DXE:RefreshDefaults()
+	self.db:RegisterDefaults(defaults)
+end
 
 ---------------------------------------------
 -- UTILITY 
@@ -132,7 +137,7 @@ function DXE:RegisterEncounter(data,forceValid)
 		-- Add options
 		self:AddEncounterOptions(data)
 		-- Refresh defaults
-		self.db:RegisterDefaults(self.defaults)
+		self:RefreshDefaults()
 	end
 	-- Replace Rev keyword
 	if data.version and type(data.version) == "string" then
@@ -212,6 +217,7 @@ function DXE:SetActiveEncounter(name)
 		self:SetRegenChecks(CE.onactivate)
 	end
 
+	self:CloseAllHW()
 	self:SetTracing(CE.tracing)
 
 	-- For the empty encounter
@@ -326,6 +332,7 @@ function DXE:OnInitialize()
 	loadQueue = self.delete(loadQueue)
 	self:UpgradeEncounters()
 	self:InitializeHealthWatchers()
+	self.callbacks:Fire("OnInitialize")
 end
 
 function DXE:OnEnable()
@@ -333,6 +340,7 @@ function DXE:OnEnable()
 	self:LoadPositions()
 	self:UpdateRosterTable()
 	self:UpdateTriggers()
+	self:UpdateLock()
 	self:RegisterEvent("RAID_ROSTER_UPDATE","UpdateRosterTable")
 	self:RegisterEvent("ZONE_CHANGED_NEW_AREA","UpdateTriggers")
 	self:RegisterEvent("PLAYER_ENTERING_WORLD","UpdateTriggers")
@@ -345,6 +353,7 @@ function DXE:OnDisable()
 	self:CancelAllTimers()
 	self:SetActiveEncounter("Default")
 	self.Pane:Hide()
+	self:SetLocked()
 end
 
 ---------------------------------------------
@@ -355,11 +364,11 @@ end
 function DXE:SavePosition(f)
 	local point, relativeTo, relativePoint, xOfs, yOfs = f:GetPoint()
 	local name = f:GetName()
-	self.db.profile.Positions[name].xOfs = xOfs
-	self.db.profile.Positions[name].yOfs = yOfs
 	self.db.profile.Positions[name].point = point
 	self.db.profile.Positions[name].relativeTo = relativeTo
 	self.db.profile.Positions[name].relativePoint = relativePoint
+	self.db.profile.Positions[name].xOfs = xOfs
+	self.db.profile.Positions[name].yOfs = yOfs
 end
 
 
@@ -368,37 +377,47 @@ function DXE:LoadPositions()
 	for k,v in pairs(self.db.profile.Positions) do
 		local f = _G[k]
 		if f then
-			-- Doesn't exist in database
-			if not v.point then
-				f:ClearAllPoints()
-				f:SetPoint("CENTER",UIParent,"CENTER")
-			else
-				f:ClearAllPoints()
-				f:SetPoint(v.point,_G[v.relativeTo] or UIParent,v.relativePoint,v.xOfs,v.yOfs)
-			end
+			f:ClearAllPoints()
+			f:SetPoint(v.point,_G[v.relativeTo] or UIParent,v.relativePoint,v.xOfs,v.yOfs)
 		end
 	end
 end
 
 do
-	-- Move
-	local function startmoving(self)
+	local function startmovingshift(self)
 		if IsShiftKeyDown() then
 			self:StartMoving()
 		end
 	end
 
-	-- Stop moving
+	local function startmoving(self)
+		self:StartMoving()
+	end
+
 	local function stopmoving(self)
 		self:StopMovingOrSizing()
 		DXE:SavePosition(self)
 	end
 
 	-- Registers saving positions in database
-	function DXE:RegisterMoveSaving(frame)
-		frame:SetScript("OnMouseDown",startmoving)
+	function DXE:RegisterMoveSaving(frame,point,relativeTo,relativePoint,xOfs,yOfs,withShift)
+		assert(type(frame) == "table","expected 'frame' to be a table")
+		assert(frame.IsObjectType and frame:IsObjectType("Region"),"'frame' is not a blizzard frame")
+		if withShift then
+			frame:SetScript("OnMouseDown",startmovingshift)
+		else
+			frame:SetScript("OnMouseDown",startmoving)
+		end
 		frame:SetScript("OnMouseUp",stopmoving)
-		self.db.profile.Positions[frame:GetName()] = self.db.profile.Positions[frame:GetName()] or {}
+		-- Add default position
+		local tbl = self.new()
+		tbl.point = point
+		tbl.relativeTo = relativeTo
+		tbl.relativePoint = relativePoint
+		tbl.xOfs = xOfs
+		tbl.yOfs = yOfs
+		defaults.profile.Positions[frame:GetName()] = tbl
+		self:RefreshDefaults()
 	end
 end
 
@@ -528,11 +547,10 @@ function DXE:BuildPane()
 	Pane:SetBackdropBorderColor(0.66,0.66,0.66)
 	Pane:SetWidth(220)
 	Pane:SetHeight(25)
-	Pane:SetPoint("CENTER",UIParent,"CENTER")
 	Pane:EnableMouse(true)
 	Pane:SetMovable(true)
-	self:RegisterMoveSaving(Pane)
-	self:AddTooltipText(Pane,"Pane","Shift + Left Click to move")
+	self:RegisterMoveSaving(Pane,"CENTER","UIParent","CENTER",nil,nil,true)
+	self:AddTooltipText(Pane,"Pane","|cffffff00Shift + Click|r to move")
 	local function onupdate() DXE:LayoutHealthWatchers() end
 	Pane:HookScript("OnMouseDown",function(self) self:SetScript("OnUpdate",onupdate) end)
 	Pane:HookScript("OnMouseUp",function(self) self:SetScript("OnUpdate",nil) end)
@@ -580,6 +598,84 @@ function DXE:BuildPane()
 		"Selector",
 		"Activates an encounter"
 	)
+
+	Pane.lock = self:AddPaneControl(
+		PaneTextures.."Locked",
+		PaneTextures.."Locked",
+		function() self:ToggleLock() end,
+		Pane.folder,
+		"Locking",
+		"Toggle frame anchors"
+	)
+end
+
+---------------------------------------------
+-- LOCK
+---------------------------------------------
+
+do
+	local LockableFrames = {}
+	function DXE:RegisterForLocking(frame)
+		assert(type(frame) == "table","expected 'frame' to be a table")
+		assert(frame.IsObjectType and frame:IsObjectType("Region"),"'frame' is not a blizzard frame")
+		LockableFrames[frame] = true
+		self:UpdateLockedFrames()
+	end
+
+	local backdrop = {bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background"}
+	function DXE:CreateLockableFrame(name,width,height,text)
+		assert(type(name) == "string","expected 'name' to be a string")
+		assert(type(width) == "number" and width > 0,"expected 'width' to be a number > 0")
+		assert(type(height) == "number" and height > 0,"expected 'height' to be a number > 0")
+		assert(type(text) == "string","expected 'text' to be a string")
+		local frame = CreateFrame("Frame","DXE"..name,UIParent)
+		frame:SetClampedToScreen(true)
+		frame:EnableMouse(true)
+		frame:SetMovable(true)
+		frame:SetBackdrop(backdrop)
+		frame:SetWidth(width)
+		frame:SetHeight(height)
+		LockableFrames[frame] = true
+		self:UpdateLockedFrames()
+		
+		local desc = frame:CreateFontString(nil,"ARTWORK")
+		desc:SetFont("Interface\\Addons\\DXE\\Fonts\\FGM.ttf",10)
+		desc:SetPoint("CENTER")
+		desc:SetText(text)
+		return frame
+	end
+
+	function DXE:UpdateLock()
+		self:UpdateLockedFrames()
+		if self.db.global.Locked then
+			self:SetLocked()
+		else
+			self:SetUnlocked()
+		end
+	end
+
+	function DXE:ToggleLock()
+		self.db.global.Locked = not self.db.global.Locked
+		self:UpdateLock()
+	end
+
+	function DXE:UpdateLockedFrames()
+		if self.db.global.Locked then
+			for frame in pairs(LockableFrames) do frame:Hide() end
+		else
+			for frame in pairs(LockableFrames) do frame:Show() end
+		end
+	end
+
+	function DXE:SetLocked()
+		self.Pane.lock:SetNormalTexture("Interface\\Addons\\DXE\\Textures\\Pane\\Locked")
+		self.Pane.lock:SetHighlightTexture("Interface\\Addons\\DXE\\Textures\\Pane\\Locked")
+	end
+
+	function DXE:SetUnlocked()
+		self.Pane.lock:SetNormalTexture("Interface\\Addons\\DXE\\Textures\\Pane\\Unlocked")
+		self.Pane.lock:SetHighlightTexture("Interface\\Addons\\DXE\\Textures\\Pane\\Unlocked")
+	end
 end
 
 ---------------------------------------------
@@ -758,8 +854,8 @@ end
 
 -- Names should be validated to be an array of size 4
 function DXE:SetTracing(names)
-	self:CloseAllHW()
 	if not names then return end
+	self:CloseAllHW()
 	for i,name in ipairs(names) do
 		HW[i]:SetInfoBundle(name,"",1,0,0,1)
 		HW[i]:Open(name)

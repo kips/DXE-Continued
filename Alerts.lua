@@ -16,18 +16,20 @@ LibStub("AceTimer-3.0"):Embed(Alerts)
 ---------------------------------------
 -- ALERT ANCHORS
 ---------------------------------------
+local TopStackAnchor,CenterStackAnchor
+-- 250,30
+function Alerts:OnInitialize()
+	-- Top stack anchor
+	TopStackAnchor = DXE:CreateLockableFrame("AlertsTopStackAnchor",245,10,"Alerts - Top Anchor")
+	DXE:RegisterMoveSaving(TopStackAnchor,"TOP","UIParent","TOP",0,-16)
 
--- Top stack anchor
-local TopStackAnchor = CreateFrame("Frame",nil,UIParent)
-TopStackAnchor:SetWidth(1) 
-TopStackAnchor:SetHeight(10)
-TopStackAnchor:SetPoint("TOP",-125,-16)
+	-- Bottom stack anchor
+	CenterStackAnchor = DXE:CreateLockableFrame("AlertsCenterStackAnchor",245,10,"Alerts - Center Anchor")
+	DXE:RegisterMoveSaving(CenterStackAnchor,"CENTER","UIParent","CENTER",0,100)
+end
 
--- Bottom stack anchor
-local CenterStackAnchor = CreateFrame("Frame",nil,UIParent)
-CenterStackAnchor:SetWidth(1)
-CenterStackAnchor:SetHeight(1)
-CenterStackAnchor:SetPoint("CENTER",-125,100)
+DXE.RegisterCallback(Alerts,"OnInitialize")
+
 
 ---------------------------------------
 -- ALERT UPDATING
@@ -71,7 +73,7 @@ function Alerts:LayoutAlertStack(stack, anchor)
 	sort(stack, StackSortFunc)
 	for i=1,#stack do
 		local alert = stack[i]
-		alert:Anchor("TOPLEFT",anchor,"BOTTOMLEFT")
+		alert:Anchor("TOP",anchor,"BOTTOM")
 		anchor = alert.frame
 	end
 end
@@ -150,12 +152,14 @@ local function MoveFunc(self,time)
 	local y = userdata.movefy + ((userdata.movetoy - userdata.movefy) * perc)
 	local a = userdata.movefroma + ((userdata.movetoa - userdata.movefroma) * perc)
 	self.frame:ClearAllPoints() 
-	self.frame:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", x, y)
+	self.frame:SetPoint("TOP", UIParent, "BOTTOMLEFT", x, y)
 	self.frame:SetAlpha(a)
 end
 
 function Alerts:Move(alert,dt,tox,toy,froma,toa)
-	local fx,fy,t0 = alert.frame:GetLeft(), alert.frame:GetTop(), GetTime()
+	local t0 = GetTime()
+	local fx,fy = alert.frame:GetCenter()
+	fy = fy + alert.frame:GetHeight()/2
 	local userdata = alert.userdata
 	userdata.moving = true
 	userdata.movefx = fx
@@ -180,7 +184,8 @@ function Alerts:ToTop(alert)
 		insert(TopAlertStack, alert)
 		self:LayoutAlertStack(TopAlertStack, TopStackAnchor)
 	else
-		local x,y = TopStackAnchor:GetLeft(), TopStackAnchor:GetBottom()
+		local x,y = TopStackAnchor:GetCenter()
+		y = y - TopStackAnchor:GetHeight()/2
 		self:Move(alert,animTime, x, y, alert.frame:GetAlpha())
 		Timers[self:ScheduleTimer("ToTop",alert.userdata.animTime,alert)] = alert
 		alert.userdata.forceTop = true
@@ -194,7 +199,8 @@ function Alerts:ToCenter(alert)
 		self:LayoutAlertStack(CenterAlertStack, CenterStackAnchor)
 	else
 		if alert.userdata.sound then PlaySoundFile(alert.userdata.sound) end
-		local x,y = CenterStackAnchor:GetLeft(), CenterStackAnchor:GetBottom()
+		local x,y = CenterStackAnchor:GetCenter()
+		y = y - CenterStackAnchor:GetHeight()/2
 		self:Move(alert,alert.userdata.animTime, x, y, alert.frame:GetAlpha())
 		Timers[self:ScheduleTimer("ToCenter",alert.userdata.animTime, alert)] = alert
 		alert.userdata.forceCenter = true
