@@ -371,7 +371,6 @@ function DXE:SavePosition(f)
 	self.db.profile.Positions[name].yOfs = yOfs
 end
 
-
 -- Loads position
 function DXE:LoadPositions()
 	for k,v in pairs(self.db.profile.Positions) do
@@ -614,6 +613,7 @@ end
 ---------------------------------------------
 
 do
+	-- TODO: Mechanism for OnDisable
 	local LockableFrames = {}
 	function DXE:RegisterForLocking(frame)
 		assert(type(frame) == "table","expected 'frame' to be a table")

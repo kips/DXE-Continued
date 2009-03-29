@@ -5,9 +5,9 @@ do
 		zone = "Naxxramas", 
 		name = "Thaddius", 
 		title = "Thaddius", 
-		tracing = {"Feugan","Stalagg","Thaddius"},
+		tracing = {"Feugen","Stalagg","Thaddius"},
 		triggers = {
-			scan = {"Feugan","Stalagg","Thaddius"}, 
+			scan = {"Feugen","Stalagg","Thaddius"}, 
 		},
 		onactivate = {
 			autoupdate = true,

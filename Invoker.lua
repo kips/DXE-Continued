@@ -25,6 +25,7 @@ function Invoker:OnStart()
 	if CE.onstart then
 		self:InvokeCommands(CE.onstart)
 	end
+	DXE:SetTracing(CE.tracing)
 end
 
 function Invoker:OnStop()
@@ -32,7 +33,6 @@ function Invoker:OnStop()
 	if CE.onstop then
 		self:InvokeCommands(CE.onstop)
 	end
-	DXE:SetTracing(CE.tracing)
 	-- Reset userdata
 	self:ResetUserData()
 	-- Quashes all alerts
@@ -435,10 +435,11 @@ end
 ---------------------------------------------
 -- Holds command bundles
 local AcquiredBundles = {}
+local UnitIsDead = UnitIsDead
 
 function Invoker:HW_TRACER_ACQUIRED(event,uid)
 	local name = UnitName(uid)
-	if AcquiredBundles[name] then
+	if AcquiredBundles[name] and not UnitIsDead(uid) then
 		self:InvokeCommands(AcquiredBundles[name])
 	end
 end
