@@ -11,7 +11,6 @@ do
 			scan = "Hodir", 
 		},
 		onactivate = {
-			autoupdate = true,
 			autostart = true,
 			autostop = true,
 		},

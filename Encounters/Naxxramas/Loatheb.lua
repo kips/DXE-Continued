@@ -10,7 +10,6 @@ do
 			scan = "Loatheb", 
 		},
 		onactivate = {
-			autoupdate = true,
 			autostart = true,
 			autostop = true,
 		},

@@ -6,18 +6,19 @@ local GetTime,PlaySoundFile = GetTime,PlaySoundFile
 local ipairs, pairs = ipairs, pairs
 local insert,remove= table.insert,table.remove
 
+local scale
+
 ---------------------------------------
 -- INITIALIZATION
 ---------------------------------------
 
-local Alerts = {}
-LibStub("AceTimer-3.0"):Embed(Alerts)
+local Alerts = DXE:NewModule("Alerts","AceTimer-3.0")
 
 ---------------------------------------
 -- ALERT ANCHORS
 ---------------------------------------
 local TopStackAnchor,CenterStackAnchor
--- 250,30
+
 function Alerts:OnInitialize()
 	-- Top stack anchor
 	TopStackAnchor = DXE:CreateLockableFrame("AlertsTopStackAnchor",245,10,"Alerts - Top Anchor")
@@ -26,9 +27,9 @@ function Alerts:OnInitialize()
 	-- Bottom stack anchor
 	CenterStackAnchor = DXE:CreateLockableFrame("AlertsCenterStackAnchor",245,10,"Alerts - Center Anchor")
 	DXE:RegisterMoveSaving(CenterStackAnchor,"CENTER","UIParent","CENTER",0,100)
-end
 
-DXE.RegisterCallback(Alerts,"OnInitialize")
+	scale = DXE.db.global.AlertsScale
+end
 
 
 ---------------------------------------
@@ -37,7 +38,7 @@ DXE.RegisterCallback(Alerts,"OnInitialize")
 -- The active alerts
 local Active= {}
 local frame = CreateFrame("Frame",nil,UIParent)
-local function OnUpdate(elapsed)
+local function OnUpdate(self,elapsed)
 	if #Active == 0 then frame:SetScript("OnUpdate",nil) end
 	local time = GetTime()
 	for i=1,#Active do
@@ -91,8 +92,17 @@ end
 -- Timer cache
 local Timers = {}
 
+function Alerts:AlertsScaleChanged()
+	scale = DXE.db.global.AlertsScale
+	for _,alert in ipairs(Active) do
+		alert.frame:SetScale(scale)
+	end
+end
+DXE.RegisterCallback(Alerts,"AlertsScaleChanged")
+
 function Alerts:GetAlert()
 	local alert = AceGUI:Create("DXE_Alert")
+	alert.frame:SetScale(scale)
 	insert(Active, alert)
 	return alert
 end
@@ -152,7 +162,7 @@ local function MoveFunc(self,time)
 	local y = userdata.movefy + ((userdata.movetoy - userdata.movefy) * perc)
 	local a = userdata.movefroma + ((userdata.movetoa - userdata.movefroma) * perc)
 	self.frame:ClearAllPoints() 
-	self.frame:SetPoint("TOP", UIParent, "BOTTOMLEFT", x, y)
+	self.frame:SetPoint("TOP", UIParent, "BOTTOMLEFT", x,y)
 	self.frame:SetAlpha(a)
 end
 
@@ -161,11 +171,13 @@ function Alerts:Move(alert,dt,tox,toy,froma,toa)
 	local fx,fy = alert.frame:GetCenter()
 	fy = fy + alert.frame:GetHeight()/2
 	local userdata = alert.userdata
+	local worldscale = UIParent:GetEffectiveScale()
+	local escale = alert.frame:GetEffectiveScale()
 	userdata.moving = true
 	userdata.movefx = fx
 	userdata.movefy = fy
-	userdata.movetox = tox
-	userdata.movetoy = toy
+	userdata.movetox = tox*worldscale/escale
+	userdata.movetoy = toy*worldscale/escale
 	userdata.movefroma = froma
 	userdata.movetoa = 1
 	userdata.movet0 = t0

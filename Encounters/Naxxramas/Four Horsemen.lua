@@ -10,7 +10,6 @@ do
 			scan = "Thane Korth'azz", 
 		},
 		onactivate = {
-			autoupdate = true,
 			autostart = true,
 			leavecombat = true,
 		},

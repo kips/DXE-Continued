@@ -10,7 +10,6 @@ do
 			scan = "Heigan the Unclean", 
 		},
 		onactivate = {
-			autoupdate = true,
 			autostart = true,
 			autostop = true,
 		},

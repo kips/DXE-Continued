@@ -10,7 +10,6 @@ do
 			scan = "Archavon the Stone Watcher",
 		},
 		onactivate = {
-			autoupdate = true,
 			autostart = true,
 			autostop = true,
 		},

@@ -10,7 +10,6 @@ do
 			scan = "Noth the Plaguebringer", 
 		},
 		onactivate = {
-			autoupdate = true,
 			autostart = true,
 			autostop = true,
 		},

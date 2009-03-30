@@ -10,7 +10,6 @@ do
 			scan = "Anub'Rekhan", 
 		},
 		onactivate = {
-			autoupdate = true,
 			autostart = true,
 			autostop = true,
 		},

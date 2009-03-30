@@ -1,3 +1,21 @@
+--[[
+	Terminology:
+	
+	A command line is a hash table with one key (the command) and a value
+	A command list is an array of command lines
+	A command bundle is an array of command lists
+
+	Valid commands are:
+		expect
+		quash
+		set
+		alert
+		scheduletimer
+		canceltimer
+		resettimer
+		tracing
+]]
+
 local DXE = DXE
 
 local type,next,select = type,next,select
@@ -12,10 +30,16 @@ local userdata = {}
 -- INITIALIZATION
 ---------------------------------------------
 
-local Invoker = {}
-LibStub("AceEvent-3.0"):Embed(Invoker)
-LibStub("AceTimer-3.0"):Embed(Invoker)
+local Invoker = DXE:NewModule("Invoker","AceEvent-3.0","AceTimer-3.0")
 
+function Invoker:OnEnable()
+	self:RegisterMessage("DXE_StartEncounter","OnStart")
+	self:RegisterMessage("DXE_StopEncounter","OnStop")
+end
+
+function Invoker:OnDisable()
+	self:UnregisterAllMessages()
+end
 
 ---------------------------------------------
 -- CONTROLS
@@ -43,13 +67,6 @@ function Invoker:OnStop()
 	self:RemoveThrottles()
 end
 
-
----------------------------------------------
--- MESSAGES
----------------------------------------------
-
-Invoker:RegisterMessage("DXE_StartEncounter","OnStart")
-Invoker:RegisterMessage("DXE_StopEncounter","OnStop")
 
 ---------------------------------------------
 -- CONDITIONS

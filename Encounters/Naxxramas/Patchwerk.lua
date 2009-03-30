@@ -10,7 +10,6 @@ do
 			scan = "Patchwerk", 
 		},
 		onactivate = {
-			autoupdate = true,
 			autostart = true,
 			autostop = true,
 		},

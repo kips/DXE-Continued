@@ -10,7 +10,6 @@ do
 			scan = "Maexxna", 
 		},
 		onactivate = {
-			autoupdate = true,
 			autostart = true,
 			autostop = true,
 		},

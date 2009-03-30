@@ -10,7 +10,6 @@ do
 			scan = "Gluth",
 		},
 		onactivate = {
-			autoupdate = true,
 			autostart = true,
 			autostop = true,
 		},

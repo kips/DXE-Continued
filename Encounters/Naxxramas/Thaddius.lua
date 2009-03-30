@@ -10,7 +10,6 @@ do
 			scan = {"Feugen","Stalagg","Thaddius"}, 
 		},
 		onactivate = {
-			autoupdate = true,
 			autostart = true,
 			autostop = true,
 		},

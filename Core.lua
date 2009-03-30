@@ -6,13 +6,15 @@ local defaults = {
 	global = {
 		Enabled = true,
 		Locked = true,
+		Distributor = {
+			AutoAccept = true,
+		},
+		AlertsScale = 1,
+		PaneOnlyInRaid = false,
 	},
 	profile = {
 		Positions = {},
 		Encounters = {},
-		Distributor = {
-			AutoAccept = true,
-		},
 	},
 }
 
@@ -21,6 +23,8 @@ local defaults = {
 ---------------------------------------------
 
 local DXE = LibStub("AceAddon-3.0"):NewAddon("DXE","AceEvent-3.0","AceTimer-3.0","AceConsole-3.0")
+-- Ensures modules are only enabled if DXE is enabled
+DXE:SetDefaultModuleState(false)
 DXE.callbacks = LibStub("CallbackHandler-1.0"):New(DXE)
 _G.DXE = DXE
 DXE.defaults = defaults
@@ -88,6 +92,22 @@ DXE.icons = setmetatable({}, {__index =
 		return value
 	end
 })
+
+---------------------------------------------
+-- MODULES
+---------------------------------------------
+
+function DXE:EnableAllModules()
+	for name in self:IterateModules() do
+		self:EnableModule(name)
+	end
+end
+
+function DXE:DisableAllModules()
+	for name in self:IterateModules() do
+		self:DisableModule(name)
+	end
+end
 
 ---------------------------------------------
 -- RECEIVED DATABASE
@@ -188,6 +208,14 @@ function DXE:SetRegenChecks(trig)
 		self:RegisterEvent("PLAYER_REGEN_ENABLED","CheckForWipe")
 	end
 end
+-- Make function to show the first one if all of them are hidden
+
+function DXE:ShowFirstHW()
+	if not self.HW[1]:IsShown() then
+		self.HW[1]:SetInfoBundle(CE.title,"",1,0,0,1)
+		self.HW[1].frame:Show()
+	end
+end
 
 --- Change the currently-active encounter.
 function DXE:SetActiveEncounter(name)
@@ -221,10 +249,7 @@ function DXE:SetActiveEncounter(name)
 	self:SetTracing(CE.tracing)
 
 	-- For the empty encounter
-	if not self.HW[1]:IsShown() then
-		self.HW[1]:SetInfoBundle(CE.title,"",1,0,0,1)
-		self.HW[1].frame:Show()
-	end
+	self:ShowFirstHW()
 
 	self:LayoutHealthWatchers()
 end
@@ -317,6 +342,15 @@ do
 end
 
 ---------------------------------------------
+-- GENERIC EVENTS
+---------------------------------------------
+
+function DXE:RAID_ROSTER_UPDATE()
+	self:UpdatePaneVisibility()
+	self:UpdateRosterTable()
+end
+
+---------------------------------------------
 -- ACE ADDON FUNCTIONS
 ---------------------------------------------
 
@@ -324,36 +358,46 @@ end
 function DXE:OnInitialize()
 	self.loaded = true
 	self.db = LibStub("AceDB-3.0"):New("DXEDB",self.defaults)
+	self.options = self:InitializeOptions()
+	-- GUI Options
 	LibStub("AceConfig-3.0"):RegisterOptionsTable("DXE", self.options)
+	-- Slash Commands
+	LibStub("AceConfig-3.0"):RegisterOptionsTable("Deus Vox Encounters", self:GetSlashOptions(),"dxe")
 	-- The default encounter
 	self:RegisterEncounter({name = "Default", title = "Default", zone = ""})
 	-- Register queued data
 	for _,data in ipairs(loadQueue) do self:RegisterEncounter(data) end
 	loadQueue = self.delete(loadQueue)
+	-- Upgrade
 	self:UpgradeEncounters()
-	self:InitializeHealthWatchers()
-	self.callbacks:Fire("OnInitialize")
+	-- Health watchers
+	self:SetEnabledState(self.db.global.Enabled)
 end
 
 function DXE:OnEnable()
-	self:BuildPane()
+	self:CreatePane()
+	self:CreateHealthWatchers()
 	self:LoadPositions()
 	self:UpdateRosterTable()
 	self:UpdateTriggers()
 	self:UpdateLock()
-	self:RegisterEvent("RAID_ROSTER_UPDATE","UpdateRosterTable")
+	self:UpdatePaneVisibility()
+	self:RegisterEvent("RAID_ROSTER_UPDATE")
 	self:RegisterEvent("ZONE_CHANGED_NEW_AREA","UpdateTriggers")
 	self:RegisterEvent("PLAYER_ENTERING_WORLD","UpdateTriggers")
 	self:SetActiveEncounter("Default")
+	self:EnableAllModules()
 end
 
 function DXE:OnDisable()
+	self:UpdateLockedFrames("Hide")
 	self:UnregisterAllEvents()
 	self:UnregisterAllMessages()
 	self:CancelAllTimers()
+	self:StopEncounter()
 	self:SetActiveEncounter("Default")
 	self.Pane:Hide()
-	self:SetLocked()
+	self:DisableAllModules()
 end
 
 ---------------------------------------------
@@ -538,7 +582,15 @@ local backdrop = {
 	insets = {left = 2, right = 2, top = 2, bottom = 2}
 }
 
-function DXE:BuildPane()
+function DXE:UpdatePaneVisibility()
+	if self.db.global.PaneOnlyInRaid then
+		self.Pane[GetNumRaidMembers() > 0 and "Show" or "Hide"](self.Pane)
+	else
+		self.Pane:Show()
+	end
+end
+
+function DXE:CreatePane()
 	if self.Pane then self.Pane:Show() return end
 	local Pane = CreateFrame("Frame","DXE_Pane",UIParent)
 	Pane:SetClampedToScreen(true)
@@ -613,7 +665,6 @@ end
 ---------------------------------------------
 
 do
-	-- TODO: Mechanism for OnDisable
 	local LockableFrames = {}
 	function DXE:RegisterForLocking(frame)
 		assert(type(frame) == "table","expected 'frame' to be a table")
@@ -659,12 +710,9 @@ do
 		self:UpdateLock()
 	end
 
-	function DXE:UpdateLockedFrames()
-		if self.db.global.Locked then
-			for frame in pairs(LockableFrames) do frame:Hide() end
-		else
-			for frame in pairs(LockableFrames) do frame:Show() end
-		end
+	function DXE:UpdateLockedFrames(func)
+		func = func or (self.db.global.Locked and "Hide" or "Show")
+		for frame in pairs(LockableFrames) do frame[func](frame) end
 	end
 
 	function DXE:SetLocked()
@@ -684,6 +732,10 @@ end
 local sort = table.sort
 
 do
+	local function CloseAll()
+		CloseDropDownMenus(1)
+	end
+
 	local function onclick(self)
 		DXE:SetActiveEncounter(self.value)
 		CloseDropDownMenus()
@@ -750,7 +802,7 @@ do
 			info.notCheckable = true 
 			info.justifyH = "LEFT"
 			info.text = "Cancel"
-			info.func = CloseDropDownMenus
+			info.func = CloseAll
 			UIDropDownMenu_AddButton(info,1)
 		end
 	end
@@ -833,7 +885,8 @@ local HW = {}
 DXE.HW = HW
 
 -- Create health watchers
-function DXE:InitializeHealthWatchers()
+function DXE:CreateHealthWatchers()
+	if HW[1] then return end
 	HW[1] = AceGUI:Create("DXE_HealthWatcher")
 	HW[2] = AceGUI:Create("DXE_HealthWatcher")
 	HW[3] = AceGUI:Create("DXE_HealthWatcher")
@@ -845,7 +898,10 @@ function DXE:InitializeHealthWatchers()
 
 	-- OnAcquired
 	local onacquire = function(self,event,uid) DXE.callbacks:Fire("HW_TRACER_ACQUIRED",uid) end
-	for i=1,4 do HW[i]:SetCallback("HW_TRACER_ACQUIRED",onacquire) end
+	for i,hw in ipairs(HW) do 
+		hw:SetCallback("HW_TRACER_ACQUIRED",onacquire) 
+		hw.frame:SetParent(self.Pane)
+	end
 end
 
 function DXE:CloseAllHW()

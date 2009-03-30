@@ -11,7 +11,6 @@ do
 			yell = "Foolishly you have sought your own demise",
 		},
 		onactivate = {
-			autoupdate = true,
 			autostart = true,
 			autostop = true,
 		},

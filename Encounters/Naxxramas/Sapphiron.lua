@@ -10,7 +10,6 @@ do
 			scan = "Sapphiron", 
 		},
 		onactivate = {
-			autoupdate = true,
 			autostart = true,
 			autostop = true,
 		},

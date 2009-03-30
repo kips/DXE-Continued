@@ -10,7 +10,6 @@ do
 			scan = "Grand Widow Faerlina", 
 		},
 		onactivate = {
-			autoupdate = true,
 			autostart = true,
 			autostop = true,
 		},

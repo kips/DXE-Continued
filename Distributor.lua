@@ -1,6 +1,6 @@
 local AceGUI = LibStub("AceGUI-3.0")
 local DXE,Colors = DXE,DXE.Constants.Colors
-local PlayerName = UnitName("player")
+local PlayerName
 
 local ipairs, pairs = ipairs, pairs
 local insert,remove,wipe = table.insert,table.remove,table.wipe
@@ -10,11 +10,22 @@ local match,len,format,split = string.match,string.len,string.format,string.spli
 -- INITIALIZATION
 ----------------------------------
 
-local Distributor = {}
-LibStub("AceEvent-3.0"):Embed(Distributor)
-LibStub("AceTimer-3.0"):Embed(Distributor)
-LibStub("AceComm-3.0"):Embed(Distributor)
-LibStub("AceSerializer-3.0"):Embed(Distributor)
+local Distributor = DXE:NewModule("Distributor","AceEvent-3.0","AceTimer-3.0","AceComm-3.0","AceSerializer-3.0")
+
+function Distributor:OnInitialize()
+	PlayerName = UnitName("player")
+	DXE:AddPluginOptions("distributor",self:GetOptions())
+end
+
+function Distributor:OnEnable()
+	self:RegisterComm("DXE_Dist","OnCommReceived")
+	self:RegisterEvent("CHAT_MSG_ADDON")
+end
+
+function Distributor:OnDisable()
+	self:UnregisterAllEvents()
+	self:UnregisterAllComm()
+end
 
 ----------------------------------
 -- CONSTANTS
@@ -72,116 +83,117 @@ end
 
 local EncNames,RaidNames = {},{}
 local ListSelect,PlayerSelect
-local options = {
-	dist_group = {
-		type = "group",
-		name = "Distributor",
-		order = 200,
-		get = function(info) return DXE.db.profile.Distributor[info[#info]] end,
-		set = function(info,value) DXE.db.profile.Distributor[info[#info]] = value end,
-		args = {
-			AutoAccept = {
-				type = "toggle",
-				name = "Auto accept",
-				order = 50,
-			},
-			blank = {type="description",name="",order=75},
-			ListSelect = {
-				type = "select",
-				order = 100,
-				name = "Select an encounter",
-				get = function() return ListSelect end,
-				set = function(info,value) ListSelect = value end,
-				values = function()
-					wipe(EncNames)
-					for k in pairs(DXE.EDB) do
-						if k ~= "Default" then
-							EncNames[k] = k
-						end
-					end
-					return EncNames
-				end,
-			},
-			send_raid_group = {
-				type = "group",
-				name = "Raid Distributing",
-				order = 120,
-				inline = true,
-				args = {
-					DistributeToRaid = {
-						type = "execute",
-						name = "Send to raid",
-						order = 100,
-						func = function() Distributor:Distribute(ListSelect) end,
-						disabled = function() return not ListSelect end,
-					},
-					DistributeAllToRaid = {
-						type = "execute",
-						name = "Send all to raid",
-						order = 200,
-						func = function() 
-									for name in pairs(DXE.EDB) do
-										Distributor:Distribute(name)
-									end
-								 end,
-						confirm = true,
-						confirmText = "Are you sure you want to do this?",
-					},
+function Distributor:GetOptions()
+	return {
+		dist_group = {
+			type = "group",
+			name = "Distributor",
+			order = 300,
+			get = function(info) return DXE.db.global.Distributor[info[#info]] end,
+			set = function(info,value) DXE.db.global.Distributor[info[#info]] = value end,
+			args = {
+				AutoAccept = {
+					type = "toggle",
+					name = "Auto accept",
+					order = 50,
 				},
-			},
-			send_player_group = {
-				type = "group",
-				name = "Player Distributing",
-				order = 200,
-				inline = true,
-				disabled = function() return not ListSelect end,
-				args = {
-					PlayerSelect = {
-						type = "select",
-						order = 100,
-						name = "Select a player",
-						get = function() return PlayerSelect end,
-						set = function(info,value) PlayerSelect = value end,
-						values = function()
-							wipe(RaidNames)
-							for k,uid in pairs(DXE.Roster) do
-								local name = UnitName(uid)
-								if UnitExists(uid) and name and name ~= PlayerName then
-									 RaidNames[name] = name
-								end
+				blank = DXE.genblank(75),
+				ListSelect = {
+					type = "select",
+					order = 100,
+					name = "Select an encounter",
+					get = function() return ListSelect end,
+					set = function(info,value) ListSelect = value end,
+					values = function()
+						wipe(EncNames)
+						for k in pairs(DXE.EDB) do
+							if k ~= "Default" then
+								EncNames[k] = k
 							end
-							return RaidNames
-						end,
-						disabled = function() return GetNumRaidMembers() == 0 end,
+						end
+						return EncNames
+					end,
+				},
+				send_raid_group = {
+					type = "group",
+					name = "Raid Distributing",
+					order = 120,
+					inline = true,
+					args = {
+						DistributeToRaid = {
+							type = "execute",
+							name = "Send to raid",
+							order = 100,
+							func = function() Distributor:Distribute(ListSelect) end,
+							disabled = function() return not ListSelect end,
+						},
+						DistributeAllToRaid = {
+							type = "execute",
+							name = "Send all to raid",
+							order = 200,
+							func = function() 
+										for name in pairs(DXE.EDB) do
+											Distributor:Distribute(name)
+										end
+									 end,
+							confirm = true,
+							confirmText = "Are you sure you want to do this?",
+						},
 					},
-					blank = {type="description",name="",order=200},
-					DistributeToPlayer = {
-						type = "execute",
-						order = 300,
-						name = "Send to player",
-						func = function() Distributor:Distribute(ListSelect, "WHISPER", PlayerSelect) end,
-						disabled = function() return not PlayerSelect end,
-					},
-					DistributeAllToPlayer = {
-						type = "execute",
-						order = 400,
-						name = "Send all to player",
-						func = function()
-									for name in pairs(DXE.EDB) do
-										Distributor:Distribute(name, "WHISPER", PlayerSelect)
+				},
+				send_player_group = {
+					type = "group",
+					name = "Player Distributing",
+					order = 200,
+					inline = true,
+					disabled = function() return not ListSelect end,
+					args = {
+						PlayerSelect = {
+							type = "select",
+							order = 100,
+							name = "Select a player",
+							get = function() return PlayerSelect end,
+							set = function(info,value) PlayerSelect = value end,
+							values = function()
+								wipe(RaidNames)
+								for k,uid in pairs(DXE.Roster) do
+									local name = UnitName(uid)
+									if UnitExists(uid) and name and name ~= PlayerName then
+										 RaidNames[name] = name
 									end
-								 end,
-						disabled = function() return not PlayerSelect end,
-						confirm = true,
-						confirmText = "Are you sure you want to do this?",
+								end
+								return RaidNames
+							end,
+							disabled = function() return GetNumRaidMembers() == 0 end,
+						},
+						blank = DXE.genblank(200),
+						DistributeToPlayer = {
+							type = "execute",
+							order = 300,
+							name = "Send to player",
+							func = function() Distributor:Distribute(ListSelect, "WHISPER", PlayerSelect) end,
+							disabled = function() return not PlayerSelect end,
+						},
+						DistributeAllToPlayer = {
+							type = "execute",
+							order = 400,
+							name = "Send all to player",
+							func = function()
+										for name in pairs(DXE.EDB) do
+											Distributor:Distribute(name, "WHISPER", PlayerSelect)
+										end
+									 end,
+							disabled = function() return not PlayerSelect end,
+							confirm = true,
+							confirmText = "Are you sure you want to do this?",
+						},
 					},
 				},
 			},
-		},
+		}
 	}
-}
+end
 
-DXE:AddPluginOptions("distributor",options)
 
 ----------------------------------
 -- API
@@ -312,7 +324,7 @@ function Distributor:OnCommReceived(prefix, msg, dist, sender)
 			return
 		end
 
-		if DXE.db.profile.Distributor.AutoAccept then
+		if DXE.db.global.Distributor.AutoAccept then
 			self:StartReceiving(name,length,sender)
 			self:Respond(format("RESPONSE:%s:%s",name,"YES"),sender)
 			return
@@ -354,8 +366,6 @@ function Distributor:OnCommReceived(prefix, msg, dist, sender)
 	end
 end
 
-Distributor:RegisterComm("DXE_Dist","OnCommReceived")
-
 -- AceComm-3.0 doesn't give us a method for checking multipart data as it comes in so will watch the prefixes and the event to figure it out
 function Distributor:CHAT_MSG_ADDON(_,prefix, msg, dist, sender)
 	if (dist == "RAID" or dist == "WHISPER") and (next(Downloads) or next(Uploads)) then
@@ -394,8 +404,6 @@ function Distributor:CHAT_MSG_ADDON(_,prefix, msg, dist, sender)
 		end
 	end
 end
-
-Distributor:RegisterEvent("CHAT_MSG_ADDON")
 
 ----------------------------------
 -- COMPLETIONS

@@ -11,7 +11,6 @@ do
 			scan = "Flame Leviathan", 
 		},
 		onactivate = {
-			autoupdate = true,
 			autostart = true,
 			autostop = true,
 		},

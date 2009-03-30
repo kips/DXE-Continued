@@ -82,7 +82,6 @@ local baseTables = {
 		yell = optstringtable,
 	},
 	onactivate = {
-		autoupdate = optboolean,
 		autostart = optboolean,
 		autostop = optboolean,
 		entercombat = optboolean,

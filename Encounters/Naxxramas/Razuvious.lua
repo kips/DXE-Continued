@@ -10,7 +10,6 @@ do
 			scan = "Instructor Razuvious", 
 		},
 		onactivate = {
-			autoupdate = true,
 			autostart = true,
 			autostop = true,
 		},

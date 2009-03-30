@@ -1,39 +1,123 @@
 local DXE = DXE
 
-local options = {
-	type = "group",
-	name = "Deus Vox Encounters",
-	handler = DXE,
-	args = {
-		test = {
-			type = "execute",
-			name = "Alert test",
-			func = "AlertTest",
-		},
-	},
-	plugins = {
-		encounters = {
-			encs_group = {
-				type = "group",
-				name = "Encounters",
+DXE.genblank = function(order)
+	return {
+		type = "description",
+		name = "",
+		order = order,
+	}
+end
+
+function DXE:GetSlashOptions()
+	return {
+		type = "group",
+		name = "Deus Vox Encounters",
+		handler = self,
+		args = {
+			enable = {
+				type = "execute",
+				name = "Enable DXE",
 				order = 100,
-				get = function(info) return DXE.db.profile.Encounters[info[#info-1]][info[#info]]  end,
-				set = function(info, v) DXE.db.profile.Encounters[info[#info-1]][info[#info]] = v end,
-				args = {},
+				func = function() self.db.global.Enabled = true; self:Enable() end,
+			},
+			disable = {
+				type = "execute",
+				name = "Disable DXE",
+				order = 200,
+				func = function() self.db.global.Enabled = false; self:Disable() end,
+			},
+			config = {
+				type = "execute",
+				name = "Open the configuration",
+				func = "OpenConfig",
+				order = 300,
+			},
+			paneonlyinraid = {
+				type = "toggle",
+				name = "Toggle showing the pane only in a raid group",
+				order = 400,
+				set = function(info,v) 
+					self.db.global.PaneOnlyInRaid = v
+					self:UpdatePaneVisibility()
+				end,
+				get = function() 
+					return self.db.global.PaneOnlyInRaid
+				end,
 			},
 		},
 	}
-}
+end
 
-do
-	local function genblank(order)
-		return {
-			type = "description",
-			name = "",
-			order = order,
+function DXE:InitializeOptions()
+	local options = {
+		type = "group",
+		name = "Deus Vox Encounters",
+		handler = self,
+		disabled = function() return not self.db.global.Enabled end,
+		args = {
+			Enabled = {
+				type = "toggle",
+				order = 100,
+				name = "Enabled",
+				get = "IsEnabled",
+				width = "half",
+				set = function(info,val) self.db.global.Enabled = val
+						if val then self:Enable()
+						else self:Disable() end
+				end,
+				disabled = function() return false end,
+			},
+			test = {
+				type = "execute",
+				name = "Alert test",
+				order = 200,
+				func = "AlertTest",
+			},
+		},
+		plugins = {
+			encounters = {
+				encs_group = {
+					type = "group",
+					name = "Encounters",
+					order = 200,
+					get = function(info) return self.db.profile.Encounters[info[#info-1]][info[#info]]  end,
+					set = function(info, v) self.db.profile.Encounters[info[#info-1]][info[#info]] = v end,
+					args = {},
+				},
+			},
 		}
-	end
+	}
+
 	local options_args = options.args
+	-------ADDITIONAL GROUPS
+	local general = {
+		type = "group",
+		name = "General",
+		order = 100,
+		get = function(info) return self.db.global[info[#info]] end,
+		set = function(info,v) self.db.global[info[#info]] = v end,
+		args = {
+			PaneOnlyInRaid = {
+				order = 100,
+				type = "toggle",
+				name = "Show Pane only in raid",
+				set = function(info,v)
+					self.db.global.PaneOnlyInRaid = v
+					self:UpdatePaneVisibility()
+				end,
+			},
+			AlertsScale = {
+				order = 200,
+				type = "range",
+				name = "Alerts scale",
+				min = 0.5,
+				max = 1.5,
+				step = 0.1,
+				set = function(info,v) self.db.global.AlertsScale = v; self.callbacks:Fire("AlertsScaleChanged") end,
+			},
+		},
+	}
+	options_args.general = general
 
 	local about = {
 		type = "group",
@@ -45,13 +129,13 @@ do
 				name = "Authors: |cffffd200Kollektiv|r and |cffffd200Fariel|r",
 				order = 100,
 			},
-			blank1 = genblank(150),
+			blank1 = self.genblank(150),
 			created_desc = {
 				type = "description",
 				name = "Created for use by |cffffd200Deus Vox|r on |cffffff78Laughing Skull|r",
 				order = 200,
 			},
-			blank2 = genblank(250),
+			blank2 = self.genblank(250),
 			visit_desc = {
 				type = "description",
 				name = "Website: |cffffd244http://www.deusvox.net|r",
@@ -61,9 +145,13 @@ do
 	}
 
 	options_args.about = about
+
+	return options
 end
 
-DXE.options = options
+
+
+
 
 function DXE:AddPluginOptions(name,tbl)
 	self.options.plugins[name] = tbl

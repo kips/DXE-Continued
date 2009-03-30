@@ -10,7 +10,6 @@ do
 			scan = "Grobbulus",
 		},
 		onactivate = {
-			autoupdate = true,
 			autostart = true,
 			autostop = true,
 		},
