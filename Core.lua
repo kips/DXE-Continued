@@ -969,12 +969,14 @@ function DXE:LayoutHealthWatchers()
 	end
 end
 
-local UnitIsFriend,UnitIsDead = UnitIsFriend,UnitIsDead
-function DXE:TRACER_UPDATE(uid)
-	if self:IsAutoStart() and not self:IsRunning() and UnitIsFriend(uid.."target","player") then
-		self:StartEncounter()
-	elseif self:IsAutoStop() and self:IsRunning() and (UnitIsDead(uid) or not UnitAffectedCombat(uid)) then
-		self:StopEncounter()
+do
+local UnitIsFriend,UnitIsDead,UnitAffectingCombat = UnitIsFriend,UnitIsDead,UnitAffectingCombat
+	function DXE:TRACER_UPDATE(uid)
+		if self:IsAutoStart() and not self:IsRunning() and UnitIsFriend(uid.."target","player") then
+			self:StartEncounter()
+		elseif self:IsAutoStop() and self:IsRunning() and (UnitIsDead(uid) or not UnitAffectingCombat(uid)) then
+			self:StopEncounter()
+		end
 	end
 end
 
