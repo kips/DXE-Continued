@@ -970,7 +970,7 @@ function DXE:LayoutHealthWatchers()
 end
 
 do
-local UnitIsFriend,UnitIsDead,UnitAffectingCombat = UnitIsFriend,UnitIsDead,UnitAffectingCombat
+	local UnitIsFriend,UnitIsDead,UnitAffectingCombat = UnitIsFriend,UnitIsDead,UnitAffectingCombat
 	function DXE:TRACER_UPDATE(uid)
 		if self:IsAutoStart() and not self:IsRunning() and UnitIsFriend(uid.."target","player") then
 			self:StartEncounter()
