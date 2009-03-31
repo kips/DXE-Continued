@@ -21,7 +21,7 @@ function DXE:InitializeOptions()
 		args = {
 			dxe_header = {
 				type = "header",
-				name = "Deus Vox Encounters",
+				name = format("Deus Vox Encounters - Version: |cff99ff33%d|r",self.version),
 				order = 1,
 				width = "full",
 			},
@@ -37,16 +37,7 @@ function DXE:InitializeOptions()
 				end,
 				disabled = function() return false end,
 			},
-			ShowMinimap = {
-				type = "toggle",
-				order = 150,
-				name = "Minimap",
-				desc = "Show minimap icon",
-				get = function() return self.db.global.ShowMinimap end,
-				set = function(info,v) self.db.global.ShowMinimap = v; self:UpdateMinimapIcon() end,
-				width = "half",
-			},
-			test = {
+			AlertsTest = {
 				type = "execute",
 				name = "Alerts Test",
 				order = 200,
@@ -69,6 +60,18 @@ function DXE:InitializeOptions()
 	}
 
 	local options_args = options.args
+	-------ADDITIONAL ROOT OPTIONS
+	if LibStub("LibDBIcon-1.0",true) then
+		options_args.ShowMinimap = {
+			type = "toggle",
+			order = 150,
+			name = "Minimap",
+			desc = "Show minimap icon",
+			get = function() return self.db.global.ShowMinimap end,
+			set = function(info,v) self.db.global.ShowMinimap = v; self:UpdateMinimapIcon() end,
+			width = "half",
+		}
+	end
 	-------ADDITIONAL GROUPS
 	local general = {
 		type = "group",
@@ -192,7 +195,7 @@ end
 
 local version = {
 	type = "header",
-	name = function(info) return "Version: |cff00ff00"..tostring(findversion(info[#info-1])).."|r" end,
+	name = function(info) return "Version: |cff99ff33"..tostring(findversion(info[#info-1])).."|r" end,
 	order = 1,
 	width = "full",
 }

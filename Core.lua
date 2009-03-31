@@ -25,10 +25,10 @@ local defaults = {
 ---------------------------------------------
 
 local DXE = LibStub("AceAddon-3.0"):NewAddon("DXE","AceEvent-3.0","AceTimer-3.0","AceConsole-3.0")
+DXE.version = tonumber(("$Rev$"):match("$Rev: (%d+) %$"))
 -- Ensures modules are only enabled if DXE is enabled
 DXE:SetDefaultModuleState(false)
 DXE.callbacks = LibStub("CallbackHandler-1.0"):New(DXE)
-_G.DXE = DXE
 DXE.defaults = defaults
 
 function DXE:RefreshDefaults()
@@ -42,7 +42,7 @@ local ipairs,pairs = ipairs,pairs
 
 DXE.noop = function() end
 
--- Requires a ChatWindow named 'DXE Debug'
+-- Requires a ChatWindow named "DXE Debug"
 DXE.debug = function(...)
 	local debugframe
 	for i=1,NUM_CHAT_WINDOWS do
@@ -347,7 +347,7 @@ end
 ---------------------------------------------
 -- MAIN
 ---------------------------------------------
-local LDBIcon = LibStub("LibDBIcon-1.0")
+local LDBIcon = LibStub("LibDBIcon-1.0",true)
 
 function DXE:SetupMinimapIcon()
 	local LDB = LibStub("LibDataBroker-1.1")
@@ -363,11 +363,11 @@ function DXE:SetupMinimapIcon()
 			tooltip:AddLine("|cffffff00Click|r to open the settings window",1,1,1)
 		end,
 	})
-	LDBIcon:Register("DXE",self.launcher,self.db.global._Minimap)
+	if LDBIcon then LDBIcon:Register("DXE",self.launcher,self.db.global._Minimap) end
 end
 
 function DXE:UpdateMinimapIcon()
-	LDBIcon[self.db.global.ShowMinimap and "Show" or "Hide"](LDBIcon,"DXE")
+	if LDBIcon then LDBIcon[self.db.global.ShowMinimap and "Show" or "Hide"](LDBIcon,"DXE") end
 end
 
 -- Initialization
@@ -1042,3 +1042,5 @@ function DXE:UpdateRosterTable()
 		end 
 	end
 end
+
+_G.DXE = DXE

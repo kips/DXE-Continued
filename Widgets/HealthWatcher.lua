@@ -4,12 +4,12 @@
 		hw:Open("Maexxna")
 		hw:EnableUpdates()
 ]]
+
 local AceGUI = LibStub("AceGUI-3.0")
 local UnitHealth,UnitHealthMax=UnitHealth,UnitHealthMax
 local UnitIsFriend,UnitIsDead=UnitIsFriend,UnitIsDead
 local UnitName = UnitName
 local format = string.format
-
 
 do
 	local WidgetType = "DXE_HealthWatcher"
