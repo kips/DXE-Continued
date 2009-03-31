@@ -83,7 +83,6 @@ do
 				type = "simple", 
 				text = "Shadow Fissure Spawned", 
 				time = 1.5, 
-				flashtime = 0, 
 			},
 		},
 		events = {

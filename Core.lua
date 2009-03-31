@@ -11,6 +11,8 @@ local defaults = {
 		},
 		AlertsScale = 1,
 		PaneOnlyInRaid = false,
+		ShowMinimap = true,
+		_Minimap = {},
 	},
 	profile = {
 		Positions = {},
@@ -63,12 +65,10 @@ do
 		cache[t] = nil
 		return t
 	end
-
+	local wipe = table.wipe
 	local delete = function(t)
 		if type(t) ~= "table" then return end
-		for k in pairs(t) do
-			t[k] = nil
-		end
+		wipe(t)
 		cache[t] = true
 		return nil
 	end
@@ -345,8 +345,30 @@ function DXE:RAID_ROSTER_UPDATE()
 end
 
 ---------------------------------------------
--- ACE ADDON FUNCTIONS
+-- MAIN
 ---------------------------------------------
+local LDBIcon = LibStub("LibDBIcon-1.0")
+
+function DXE:SetupMinimapIcon()
+	local LDB = LibStub("LibDataBroker-1.1")
+	self.launcher = LDB:NewDataObject("DXE", 
+	{
+		type = "launcher",
+		icon = "Interface\\Icons\\INV_Misc_DragonKite_02",
+		OnClick = function(_, button)
+			self:OpenConfig() 
+		end,
+		OnTooltipShow = function(tooltip)
+			tooltip:AddLine("Deus Vox Encounters")
+			tooltip:AddLine("|cffffff00Click|r to open the settings window",1,1,1)
+		end,
+	})
+	LDBIcon:Register("DXE",self.launcher,self.db.global._Minimap)
+end
+
+function DXE:UpdateMinimapIcon()
+	LDBIcon[self.db.global.ShowMinimap and "Show" or "Hide"](LDBIcon,"DXE")
+end
 
 -- Initialization
 function DXE:OnInitialize()
@@ -368,6 +390,10 @@ function DXE:OnInitialize()
 	self:UpgradeEncounters()
 	-- Health watchers
 	self:SetEnabledState(self.db.global.Enabled)
+	-- Minimap
+	self:SetupMinimapIcon()
+	self:UpdateMinimapIcon()
+	print("|cff99ff33Deus Vox Encounters|r: Type |cffffff00/dxe|r for slash commands")
 end
 
 function DXE:OnEnable()
