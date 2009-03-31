@@ -61,9 +61,13 @@ do
 		self.tracer:TrackUnitName(name)
 		self.tracer:Open()
 	end
-	
+
 	local function Close(self)
 		self.tracer:Close()
+	end
+
+	local function GetName(self)
+		return self.tracer.name
 	end
 
 	local function EnableUpdates(self)
@@ -139,6 +143,7 @@ do
 		self.OnWidthSet = OnWidthSet
 		self.Open = Open
 		self.Close = Close
+		self.GetName = GetName
 		
 		self.frame = frame
 		frame.obj = self

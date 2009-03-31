@@ -22,11 +22,6 @@ function Distributor:OnEnable()
 	self:RegisterEvent("CHAT_MSG_ADDON")
 end
 
-function Distributor:OnDisable()
-	self:UnregisterAllEvents()
-	self:UnregisterAllComm()
-end
-
 ----------------------------------
 -- CONSTANTS
 ----------------------------------
@@ -289,7 +284,7 @@ function Distributor:DownloadReceived(prefix, msg, dist, sender)
 
 	local success, data = self:Deserialize(msg)
 	-- Failed to deserialize
-	if not success then return end
+	if not success then DXE:Print(format("Failed to load %s after downloading! Request another distribute",name)) return end
 
 	-- Unregister
 	DXE:UnregisterEncounter(name)

@@ -31,6 +31,10 @@ function Alerts:OnInitialize()
 	scale = DXE.db.global.AlertsScale
 end
 
+function Alerts:OnDisable()
+	self:QuashAllAlerts()
+end
+
 
 ---------------------------------------
 -- ALERT UPDATING
@@ -113,6 +117,15 @@ function Alerts:RemoveAlert(alert)
 			remove(Active,i) 
 			break 
 		end
+	end
+end
+
+function Alerts:QuashAllAlerts()
+	local n,i = #Active, 1
+	while(i <= n) do
+		local alert = Active[i]
+		self:Destroy(alert)
+		n = n - 1
 	end
 end
 

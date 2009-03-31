@@ -208,14 +208,7 @@ function DXE:SetRegenChecks(trig)
 		self:RegisterEvent("PLAYER_REGEN_ENABLED","CheckForWipe")
 	end
 end
--- Make function to show the first one if all of them are hidden
 
-function DXE:ShowFirstHW()
-	if not self.HW[1]:IsShown() then
-		self.HW[1]:SetInfoBundle(CE.title,"",1,0,0,1)
-		self.HW[1].frame:Show()
-	end
-end
 
 --- Change the currently-active encounter.
 function DXE:SetActiveEncounter(name)
@@ -271,6 +264,7 @@ function DXE:UpgradeEncounters()
 	for name in pairs(deleteQueue) do
 		RDB[name] = self.delete(RDB[name])
 	end
+	deleteQueue = self.delete(deleteQueue)
 end
 
 function DXE:StartEncounter()
@@ -359,10 +353,12 @@ function DXE:OnInitialize()
 	self.loaded = true
 	self.db = LibStub("AceDB-3.0"):New("DXEDB",self.defaults)
 	self.options = self:InitializeOptions()
+	self.InitializeOptions = nil
 	-- GUI Options
 	LibStub("AceConfig-3.0"):RegisterOptionsTable("DXE", self.options)
 	-- Slash Commands
 	LibStub("AceConfig-3.0"):RegisterOptionsTable("Deus Vox Encounters", self:GetSlashOptions(),"dxe")
+	self.GetSlashOptions = nil
 	-- The default encounter
 	self:RegisterEncounter({name = "Default", title = "Default", zone = ""})
 	-- Register queued data
@@ -391,9 +387,6 @@ end
 
 function DXE:OnDisable()
 	self:UpdateLockedFrames("Hide")
-	self:UnregisterAllEvents()
-	self:UnregisterAllMessages()
-	self:CancelAllTimers()
 	self:StopEncounter()
 	self:SetActiveEncounter("Default")
 	self.Pane:Hide()
@@ -908,14 +901,29 @@ function DXE:CloseAllHW()
 	for i=1,4 do HW[i]:Close(); HW[i].frame:Hide() end
 end
 
+function DXE:ShowFirstHW()
+	if not HW[1]:IsShown() then
+		HW[1]:SetInfoBundle(CE.title,"",1,0,0,1)
+		HW[1].frame:Show()
+	end
+end
+
 -- Names should be validated to be an array of size 4
 function DXE:SetTracing(names)
 	if not names then return end
-	self:CloseAllHW()
+	local n = 0
 	for i,name in ipairs(names) do
-		HW[i]:SetInfoBundle(name,"",1,0,0,1)
-		HW[i]:Open(name)
-		HW[i].frame:Show()
+		-- Prevents overwriting
+		if HW[i]:GetName() ~= name then
+			HW[i]:SetInfoBundle(name,"",1,0,0,1)
+			HW[i]:Open(name)
+			HW[i].frame:Show()
+		end
+		n = n + 1
+	end
+	for i=n+1,4 do
+		HW[i]:Close()
+		HW[i].frame:Hide()
 	end
 	self:LayoutHealthWatchers()
 end

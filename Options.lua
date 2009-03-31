@@ -1,5 +1,9 @@
 local DXE = DXE
 
+-----------------------------------------
+-- MAIN
+-----------------------------------------
+
 DXE.genblank = function(order)
 	return {
 		type = "description",
@@ -8,53 +12,19 @@ DXE.genblank = function(order)
 	}
 end
 
-function DXE:GetSlashOptions()
-	return {
-		type = "group",
-		name = "Deus Vox Encounters",
-		handler = self,
-		args = {
-			enable = {
-				type = "execute",
-				name = "Enable DXE",
-				order = 100,
-				func = function() self.db.global.Enabled = true; self:Enable() end,
-			},
-			disable = {
-				type = "execute",
-				name = "Disable DXE",
-				order = 200,
-				func = function() self.db.global.Enabled = false; self:Disable() end,
-			},
-			config = {
-				type = "execute",
-				name = "Open the configuration",
-				func = "OpenConfig",
-				order = 300,
-			},
-			paneonlyinraid = {
-				type = "toggle",
-				name = "Toggle showing the pane only in a raid group",
-				order = 400,
-				set = function(info,v) 
-					self.db.global.PaneOnlyInRaid = v
-					self:UpdatePaneVisibility()
-				end,
-				get = function() 
-					return self.db.global.PaneOnlyInRaid
-				end,
-			},
-		},
-	}
-end
-
 function DXE:InitializeOptions()
 	local options = {
 		type = "group",
-		name = "Deus Vox Encounters",
+		name = "DXE",
 		handler = self,
 		disabled = function() return not self.db.global.Enabled end,
 		args = {
+			dxe_header = {
+				type = "header",
+				name = "Deus Vox Encounters",
+				order = 1,
+				width = "full",
+			},
 			Enabled = {
 				type = "toggle",
 				order = 100,
@@ -80,6 +50,7 @@ function DXE:InitializeOptions()
 					type = "group",
 					name = "Encounters",
 					order = 200,
+					childGroups = "tab",
 					get = function(info) return self.db.profile.Encounters[info[#info-1]][info[#info]]  end,
 					set = function(info, v) self.db.profile.Encounters[info[#info-1]][info[#info]] = v end,
 					args = {},
@@ -97,23 +68,39 @@ function DXE:InitializeOptions()
 		get = function(info) return self.db.global[info[#info]] end,
 		set = function(info,v) self.db.global[info[#info]] = v end,
 		args = {
-			PaneOnlyInRaid = {
+			pane_group = {
+				type = "group",
+				name = "Pane",
+				inline = true,
 				order = 100,
-				type = "toggle",
-				name = "Show Pane only in raid",
-				set = function(info,v)
-					self.db.global.PaneOnlyInRaid = v
-					self:UpdatePaneVisibility()
-				end,
+				args = {
+					PaneOnlyInRaid = {
+						order = 100,
+						type = "toggle",
+						name = "Show Pane only in raid",
+						set = function(info,v)
+							self.db.global.PaneOnlyInRaid = v
+							self:UpdatePaneVisibility()
+						end,
+					},
+				},
 			},
-			AlertsScale = {
+			alerts_group = {
+				type = "group",
+				name = "Alerts",
 				order = 200,
-				type = "range",
-				name = "Alerts scale",
-				min = 0.5,
-				max = 1.5,
-				step = 0.1,
-				set = function(info,v) self.db.global.AlertsScale = v; self.callbacks:Fire("AlertsScaleChanged") end,
+				inline = true,
+				args = {
+					AlertsScale = {
+						order = 200,
+						type = "range",
+						name = "Alerts scale",
+						min = 0.5,
+						max = 1.5,
+						step = 0.1,
+						set = function(info,v) self.db.global.AlertsScale = v; self.callbacks:Fire("AlertsScaleChanged") end,
+					},
+				},
 			},
 		},
 	}
@@ -150,12 +137,41 @@ function DXE:InitializeOptions()
 end
 
 
-
-
+function DXE:GetSlashOptions()
+	return {
+		type = "group",
+		name = "Deus Vox Encounters",
+		handler = self,
+		args = {
+			enable = {
+				type = "execute",
+				name = "Enable",
+				order = 100,
+				func = function() self.db.global.Enabled = true; self:Enable() end,
+			},
+			disable = {
+				type = "execute",
+				name = "Disable",
+				order = 200,
+				func = function() self.db.global.Enabled = false; self:Disable() end,
+			},
+			config = {
+				type = "execute",
+				name = "Open the configuration",
+				func = "OpenConfig",
+				order = 300,
+			},
+		},
+	}
+end
 
 function DXE:AddPluginOptions(name,tbl)
 	self.options.plugins[name] = tbl
 end
+
+-----------------------------------------
+-- ENCOUNTERS
+-----------------------------------------
 
 local function findversion(key)
 	for name,data in pairs(DXE.EDB) do
@@ -190,7 +206,6 @@ function DXE:AddEncounterOptions(data)
 	local zonekey = data.zone:gsub(" ",""):lower()
 	args[zonekey] = args[zonekey] or {	
 		type = "group",
-		childGroups = "select",
 		name = data.zone,
 		args = {}
 	}

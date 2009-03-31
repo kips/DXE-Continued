@@ -37,10 +37,6 @@ function Invoker:OnEnable()
 	self:RegisterMessage("DXE_StopEncounter","OnStop")
 end
 
-function Invoker:OnDisable()
-	self:UnregisterAllMessages()
-end
-
 ---------------------------------------------
 -- CONTROLS
 ---------------------------------------------
@@ -60,7 +56,7 @@ function Invoker:OnStop()
 	-- Reset userdata
 	self:ResetUserData()
 	-- Quashes all alerts
-	DXE.Alerts:QuashAlertsByPattern("")
+	DXE.Alerts:QuashAllAlerts()
 	-- Remove timers
 	self:RemoveAllTimers()
 	-- Remove throttles

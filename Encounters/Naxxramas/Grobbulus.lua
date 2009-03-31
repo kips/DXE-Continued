@@ -17,6 +17,7 @@ do
 		onstart = {
 			[1] = {
 				{alert = "enragecd"},
+				{alert = "injectionwarnself"},
 			}
 		},
 		alerts = {
@@ -27,27 +28,25 @@ do
 				text = "Enrage",
 				time = 360,
 				flashtime = 5,
-				sound = "ALERT1",
 			},
 			injectionwarnself = {
-				var = "injectionwarn",
-				varname = "Injection warning",
+				var = "injectionwarnself",
+				varname = "Injections on self",
 				type = "centerpopup",
 				text = "Move! You're injected!",
 				time = 10,
-				flashtime = 5,
+				flashtime = 10,
 				sound = "ALERT1",
-				color1 = "ORANGE",
+				color1 = "RED",
+				color2 = "MAGENTA",
 			},
 			injectionwarnother = {
-				var = "injectionwarn",
-				varname = "Injection warning",
+				var = "injectionwarnother",
+				varname = "Injections on others",
 				type = "centerpopup",
-				
 				text = "#5# is injected!",
 				time = 10,
 				flashtime = 0,
-				sound = "ALERT1",
 				color1 = "ORANGE",
 			},
 			cloudcd = {
@@ -57,7 +56,6 @@ do
 				text = "Poison cloud cooldown",
 				time = 15,
 				flashtime = 5,
-				sound = "ALERT3",
 				color1 = "GREEN",
 			},
 		},
@@ -73,7 +71,7 @@ do
 						{alert = "injectionwarnself"},
 					},
 					[2] = {
-						{expect = {"#4#", "not_==", "&playerguid&"}},
+						{expect = {"#4#", "~=", "&playerguid&"}},
 						{alert = "injectionwarnother"},
 					},
 				},
