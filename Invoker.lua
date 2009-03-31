@@ -127,7 +127,7 @@ local function expect(alpha, condition, bravo)
 end
 
 local function tft()
-	return DXE.HW[1]:First() and DXE.HW[1]:First().."target" or ""
+	return DXE.HW[1].tracer:First() and DXE.HW[1].tracer:First().."target" or ""
 end
 
 -- IMPORTANT - Return values should all be strings
