@@ -26,7 +26,6 @@ do
 				type = "simple", 
 				text = "Fissure spawned", 
 				time = 1.5, 
-				flashtime = 0, 
 				sound = "ALERT1", 
 			},
 			frostblastwarn = {
@@ -35,7 +34,6 @@ do
 				type = "simple", 
 				text = "Frostblast casted", 
 				time = 1.5, 
-				flashtime = 0, 
 				sound = "ALERT2", 
 				throttle = 5,
 			},
@@ -45,7 +43,6 @@ do
 				type = "centerpopup", 
 				text = "You have detonate!", 
 				time = 5, 
-				flashtime = 0, 
 				sound = "ALERT3", 
 				color1 = "BLUE", 
 			},

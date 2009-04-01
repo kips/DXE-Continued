@@ -39,7 +39,6 @@ do
 				type = "simple", 
 				text = "Static field casted. Move!", 
 				time = 1.5, 
-				flashtime = 0, 
 				sound = "ALERT2", 
 			},
 			surgewarn = { 
@@ -48,7 +47,6 @@ do
 				type = "simple", 
 				text = "Surge on you. Careful!", 
 				time = 1.5, 
-				flashtime = 0, 
 				sound = "ALERT1", 
 				throttle = 5,
 			},

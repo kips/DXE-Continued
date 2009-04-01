@@ -41,7 +41,6 @@ do
 				type = "centerpopup", 
 				text = "Open healing", 
 				time = 3, 
-				flashtime = 0, 
 				sound = "ALERT3", 
 				color1 = "GREEN", 
 				

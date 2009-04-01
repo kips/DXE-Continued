@@ -58,7 +58,6 @@ do
 				type = "simple", 
 				text = "Curse casted. Decurse!", 
 				time = 1.5, 
-				flashtime = 0, 
 				sound = "ALERT3", 
 			},
 		},

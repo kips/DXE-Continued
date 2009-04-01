@@ -35,7 +35,6 @@ do
 				type = "simple", 
 				text = "Enraged!", 
 				time = 1.5, 
-				flashtime = 0, 
 				sound = "ALERT1", 
 			},
 		},

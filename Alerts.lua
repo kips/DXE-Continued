@@ -182,6 +182,8 @@ end
 function Alerts:Move(alert,dt,tox,toy,froma,toa)
 	local t0 = GetTime()
 	local fx,fy = alert.frame:GetCenter()
+	-- Unknown error. I don't know how this could happen. Possibly flashtime = 0 in alert definitions.
+	--"DXE-22\\Alerts.lua:185: attempt to perform arithmetic on local 'fy' (a nil value)\nDXE-22\\Alerts.lua:229: in function <Interface\\AddOns\\DXE\\Alerts.lua:220>\n(tail call): ?:\n<in C code>: ?\n<string>:\"safecall Dispatcher[2]\":9: in function <[string \"safecall Dispatcher[2]\"]:5>\n(tail call): ?:\nAceTimer-3.0-5 (Ace3):144: in function <Interface\\AddOns\\Ace3\\AceTimer-3.0\\AceTimer-3.0.lua:118>\n\n
 	fy = fy + alert.frame:GetHeight()/2
 	local userdata = alert.userdata
 	local worldscale = UIParent:GetEffectiveScale()

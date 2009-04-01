@@ -45,7 +45,6 @@ do
 				type = "centerpopup",
 				text = "#5# is injected!",
 				time = 10,
-				flashtime = 0,
 				color1 = "ORANGE",
 			},
 			cloudcd = {

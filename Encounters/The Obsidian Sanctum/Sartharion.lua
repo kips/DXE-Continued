@@ -73,7 +73,6 @@ do
 				type = "centerpopup", 
 				text = "Incoming Lava Wall", 
 				time = 5, 
-				flashtime = 0, 
 				sound = "ALERT1", 
 				color1 = "ORANGE", 
 			},
