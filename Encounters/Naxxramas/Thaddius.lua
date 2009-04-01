@@ -21,6 +21,9 @@ do
 				[1] = {
 					{resettimer = true},
 					{alert = "enragecd"},
+					{quash = "tankthrowcd"},
+					{canceltimer = "tankthrow"},
+					{tracing = {"Thaddius"}},
 				},
 			},
 		},
@@ -28,12 +31,6 @@ do
 			[1] = {
 				{alert = "tankthrowcd"},
 				{scheduletimer = {"tankthrow", 20.6}},
-			},
-			[2] = {
-				{expect = {"&scan&","==","Thaddius"}},
-				{quash = "tankthrowcd"},
-				{canceltimer = "tankthrow"},
-				{tracing = {"Thaddius"}},
 			},
 		},
 		alerts = {

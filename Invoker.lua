@@ -46,6 +46,12 @@ function Invoker:OnStart()
 		self:InvokeCommands(CE.onstart)
 	end
 	DXE:SetTracing(CE.tracing)
+	-- Reset color somehow
+	for i,hw in ipairs(DXE.HW) do
+		if hw:IsOpen() and not hw.tracer:First() then
+			hw:SetInfoBundle(hw:GetName(),"",1,0,0,1)
+		end
+	end
 end
 
 function Invoker:OnStop()

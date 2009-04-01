@@ -22,7 +22,6 @@ do
 				type = "dropdown",
 				text = "Void zone",
 				time = 12,
-				flashtime = 0,
 				color1 = "MAGENTA",
 			},
 			meteorcd = {
@@ -31,7 +30,6 @@ do
 				type = "dropdown",
 				text = "Meteor",
 				time = 12,
-				flashtime = 0,
 				color1 = "RED",
 			},
 			wrathcd = {
@@ -40,7 +38,6 @@ do
 				type = "dropdown",
 				text = "Holy wrath",
 				time = 12,
-				flashtime = 0,
 				color1 = "YELLOW",
 			},
 		},

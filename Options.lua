@@ -58,19 +58,20 @@ function DXE:InitializeOptions()
 			},
 		}
 	}
-
 	local options_args = options.args
 	-------ADDITIONAL ROOT OPTIONS
 	if LibStub("LibDBIcon-1.0",true) then
+		local LDBIcon = LibStub("LibDBIcon-1.0")
 		options_args.ShowMinimap = {
 			type = "toggle",
 			order = 150,
 			name = "Minimap",
 			desc = "Show minimap icon",
-			get = function() return self.db.global.ShowMinimap end,
-			set = function(info,v) self.db.global.ShowMinimap = v; self:UpdateMinimapIcon() end,
+			get = function() return not self.db.global._Minimap.hide end,
+			set = function(info,v) self.db.global._Minimap.hide = not v; LDBIcon[self.db.global._Minimap.hide and "Hide" or "Show"](LDBIcon,"DXE") end,
 			width = "half",
 		}
+
 	end
 	-------ADDITIONAL GROUPS
 	local general = {

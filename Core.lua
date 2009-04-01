@@ -366,9 +366,6 @@ function DXE:SetupMinimapIcon()
 	if LDBIcon then LDBIcon:Register("DXE",self.launcher,self.db.global._Minimap) end
 end
 
-function DXE:UpdateMinimapIcon()
-	if LDBIcon then LDBIcon[self.db.global.ShowMinimap and "Show" or "Hide"](LDBIcon,"DXE") end
-end
 
 -- Initialization
 function DXE:OnInitialize()
@@ -392,7 +389,6 @@ function DXE:OnInitialize()
 	self:SetEnabledState(self.db.global.Enabled)
 	-- Minimap
 	self:SetupMinimapIcon()
-	self:UpdateMinimapIcon()
 	print("|cff99ff33Deus Vox Encounters|r: Type |cffffff00/dxe|r for slash commands")
 end
 
@@ -970,11 +966,12 @@ function DXE:LayoutHealthWatchers()
 end
 
 do
-	local UnitIsFriend,UnitIsDead,UnitAffectingCombat = UnitIsFriend,UnitIsDead,UnitAffectingCombat
+	local UnitIsFriend,UnitIsDead = UnitIsFriend,UnitIsDead
 	function DXE:TRACER_UPDATE(uid)
 		if self:IsAutoStart() and not self:IsRunning() and UnitIsFriend(uid.."target","player") then
 			self:StartEncounter()
-		elseif self:IsAutoStop() and self:IsRunning() and (UnitIsDead(uid) or not UnitAffectingCombat(uid)) then
+		-- Don't add UnitAffectingCombat. Sometimes bosses pulsate in and out of combat at the start
+		elseif self:IsAutoStop() and self:IsRunning() and UnitIsDead(uid) then
 			self:StopEncounter()
 		end
 	end

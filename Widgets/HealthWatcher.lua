@@ -64,6 +64,7 @@ do
 
 	local function Close(self)
 		self.tracer:Close()
+		self.tracer.name = nil
 	end
 
 	local function GetName(self)

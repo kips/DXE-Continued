@@ -17,7 +17,6 @@ do
 		onstart = {
 			[1] = {
 				{alert = "enragecd"},
-				{alert = "injectionwarnself"},
 			}
 		},
 		alerts = {

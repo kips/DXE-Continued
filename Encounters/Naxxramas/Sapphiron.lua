@@ -29,7 +29,7 @@ do
 			airphasedur = {
 				var = "airphasedur", 
 				varname = "Air phase duration", 
-				type = "dropdown", 
+				type = "centerpopup", 
 				text = "Air Phase", 
 				time = 15.5, 
 				flashtime = 5, 
@@ -67,9 +67,11 @@ do
 					[1] = {
 						{expect = {"#1#","find","lifts"}},
 						{alert = "airphasedur"}, 
+						{quash = "lifedraincd"},
 					},
 					[2] = {
 						{expect = {"#1#","find","deep"}},
+						{quash = "airphasedur"},
 						{alert = "deepbreathwarn"}, 
 					},
 				},
