@@ -1,3 +1,7 @@
+--[[
+	Credits to Bazaar
+]]
+
 local AceGUI = LibStub("AceGUI-3.0")
 local DXE,Colors = DXE,DXE.Constants.Colors
 local PlayerName
@@ -489,7 +493,6 @@ function Distributor:RemoveProgressBar(bar)
 	self:LayoutProgBarStack()
 end
 
--- No cool gradual movement
 -- Move between center and top
 local StackAnchor = CreateFrame("Frame",nil,UIParent)
 StackAnchor:SetHeight(1); StackAnchor:SetWidth(1)

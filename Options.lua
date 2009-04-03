@@ -254,5 +254,6 @@ function DXE:AddEncounterOptions(data)
 		args.version = version
 		args[info.var].name = info.varname
 		args[info.var].type = "toggle"
+		args[info.var].width = "full"
 	end
 end

@@ -46,7 +46,7 @@ function Invoker:OnStart()
 		self:InvokeCommands(CE.onstart)
 	end
 	DXE:SetTracing(CE.tracing)
-	-- Reset color somehow
+	-- Reset colors
 	for i,hw in ipairs(DXE.HW) do
 		if hw:IsOpen() and not hw.tracer:First() then
 			hw:SetInfoBundle(hw:GetName(),"",1,0,0,1)
@@ -72,38 +72,32 @@ end
 
 ---------------------------------------------
 -- CONDITIONS
+-- Taken from Pitbull. Credits: ckknight
 ---------------------------------------------
 
 local conditions = {}
 
-conditions['=='] = function(alpha, bravo)
-	return alpha == bravo
+conditions['=='] = function(a, b)
+	return a == b
 end
-conditions['~='] = function(alpha, bravo)
-	return alpha ~= bravo
+conditions['~='] = function(a, b)
+	return a ~= b
 end
-conditions['>'] = function(alpha, bravo)
-	return type(alpha) == type(bravo) and alpha > bravo
+conditions['>'] = function(a, b)
+	return type(a) == type(b) and a > b
 end
-conditions['>='] = function(alpha, bravo)
-	return type(alpha) == type(bravo) and alpha >= bravo
+conditions['>='] = function(a, b)
+	return type(a) == type(b) and a >= b
 end
-conditions['<'] = function(alpha, bravo)
-	return type(alpha) == type(bravo) and alpha < bravo
+conditions['<'] = function(a, b)
+	return type(a) == type(b) and a < b
 end
-conditions['<='] = function(alpha, bravo)
-	return type(alpha) == type(bravo) and alpha <= bravo
-end
-
-conditions['find'] = function(alpha,bravo)
-	return tostring(alpha):find(tostring(bravo))
+conditions['<='] = function(a, b)
+	return type(a) == type(b) and a <= b
 end
 
--- @usage {expect = {<guid>,"guid",<expected npc id>}
-conditions['npcid'] = function(alpha,bravo)
-	bravo = tonumber(bravo)
-	alpha = tonumber(alpha:sub(-12,-7),16)
-	return alpha == bravo
+conditions['find'] = function(a,b)
+	return tostring(a):find(tostring(b))
 end
 
 do
@@ -112,8 +106,8 @@ do
 		t[#t+1] = k
 	end
 	for _, k in ipairs(t) do
-		conditions["not_" .. k] = function(alpha, bravo)
-			return not conditions[k](alpha, bravo)
+		conditions["not_" .. k] = function(a, b)
+			return not conditions[k](a, b)
 		end
 	end
 end
@@ -128,8 +122,8 @@ end
 
 local UnitGUID, UnitName, UnitExists, UnitIsUnit = UnitGUID, UnitName, UnitExists, UnitIsUnit
 
-local function expect(alpha, condition, bravo)
-	return conditions[condition](alpha,bravo)
+local function expect(a, condition, b)
+	return conditions[condition](a,b)
 end
 
 local function tft()
@@ -146,7 +140,6 @@ local RepFuncs = {
 	tft_unitexists = function() return tostring(UnitExists(tft())) end,
 	tft_isplayer = function() return tostring(UnitIsUnit(tft(),"player")) end,
 	tft_unitname = function() return tostring(UnitName(tft())) end,
-	scan = function() return tostring(DXE:Scan()) end,
 }
 
 function Invoker:GetRepFuncs()
@@ -187,6 +180,7 @@ local function ReplaceVars(str)
 	return str
 end
 
+-- TODO: Add possibility to pass arguments delimited by '|'
 local function ReplaceFuncs(str)
 	-- Enclosed in &&
 	for rep in gmatch(str,"%b&&") do
@@ -268,6 +262,7 @@ function Invoker:RemoveThrottles()
 	wipe(throttles)
 end
 
+local GetTime = GetTime
 local function StartAlert(alert_name,...)
 	local info = CE.alerts[alert_name]
 	-- Sanity check
@@ -277,10 +272,11 @@ local function StartAlert(alert_name,...)
 		-- Initialize to 0 if non-existant. Note: alert_name or data.var?
 		throttles[alert_name] = throttles[alert_name] or 0
 		-- Check throttle
-		if throttles[alert_name] + info.throttle < GetTime() then
-			throttles[alert_name] = GetTime()
-		-- Failed throttle so exit out
+		local t = GetTime()
+		if throttles[alert_name] + info.throttle < t then
+			throttles[alert_name] = t
 		else
+			-- Failed throttle so exit out
 			return
 		end
 	end
@@ -296,7 +292,7 @@ local function StartAlert(alert_name,...)
 	elseif info.type == "centerpopup" then
 		DXE.Alerts:CenterPopup(CE.key..info.var,text,time,info.flashtime,info.sound,info.color1,info.color2)
 	elseif info.type == "simple" then
-		DXE.Alerts:Simple(text,info.sound,time)
+		DXE.Alerts:Simple(text,info.sound,time,info.color1)
 	end
 end
 
@@ -314,7 +310,7 @@ function Invoker:RemoveAllTimers()
 	wipe(timers)
 end
 
-local function canceltimer(name,nodel)
+local function canceltimer(name)
 	if timers[name] then
 		Invoker:CancelTimer(timers[name].handle,true)
 		timers[name] = DXE.delete(timers[name])
@@ -415,6 +411,11 @@ function Invoker:REG_EVENT(event,...)
 	self:InvokeCommands(RegEvents[event],...)
 end
 
+local REG_ALIASES = {
+	YELL = "CHAT_MSG_MONSTER_YELL",
+	EMOTE = "CHAT_MSG_RAID_BOSS_EMOTE",
+}
+
 function Invoker:RegisterEvents()
 	if not CE.events then return end
 	-- Iterate over events table
@@ -435,10 +436,11 @@ function Invoker:RegisterEvents()
 				end
 			end
 		elseif info.type == "event" then
+			local event = REG_ALIASES[info.event] or info.event
 			-- Register regular event
-			self:RegisterEvent(info.event,"REG_EVENT")
+			self:RegisterEvent(event,"REG_EVENT")
 			-- Add execute list to the appropriate key
-			RegEvents[info.event] = info.execute
+			RegEvents[event] = info.execute
 		end
 	end
 end

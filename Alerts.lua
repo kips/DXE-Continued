@@ -182,8 +182,16 @@ end
 function Alerts:Move(alert,dt,tox,toy,froma,toa)
 	local t0 = GetTime()
 	local fx,fy = alert.frame:GetCenter()
-	-- Unknown error. I don't know how this could happen. Possibly flashtime = 0 in alert definitions.
-	--"DXE-22\\Alerts.lua:185: attempt to perform arithmetic on local 'fy' (a nil value)\nDXE-22\\Alerts.lua:229: in function <Interface\\AddOns\\DXE\\Alerts.lua:220>\n(tail call): ?:\n<in C code>: ?\n<string>:\"safecall Dispatcher[2]\":9: in function <[string \"safecall Dispatcher[2]\"]:5>\n(tail call): ?:\nAceTimer-3.0-5 (Ace3):144: in function <Interface\\AddOns\\Ace3\\AceTimer-3.0\\AceTimer-3.0.lua:118>\n\n
+	--[[
+	 "DXE-22\\Alerts.lua:185: attempt to perform arithmetic on local 'fy' (a nil value)
+	 DXE-22\\Alerts.lua:229: in function <Interface\\AddOns\\DXE\\Alerts.lua:220>
+	 (tail call): ?:
+	 <in C code>: ?
+	 <string>:\"safecall Dispatcher[2]\":9: in function <[string \"safecall Dispatcher[2]\"]:5>
+	 (tail call): ?:
+	 AceTimer-3.0-5 (Ace3):144: in function <Interface\\AddOns\\Ace3\\AceTimer-3.0\\AceTimer-3.0.lua:118>
+	]]
+	-- Error is possibly caused by flashtime = 0 in alert definitions.
 	fy = fy + alert.frame:GetHeight()/2
 	local userdata = alert.userdata
 	local worldscale = UIParent:GetEffectiveScale()
@@ -291,7 +299,7 @@ function Alerts:Dropdown(id, text, totalTime, flashTime, sound, c1, c2)
 	local alert = self:GetAlert()
 	alert:SetColor(c1,c2)
 	alert:SetText(text) 
-	alert:SetAlpha(.60) 
+	alert:SetAlpha(0.6) 
 	alert.userdata.name = id
 	alert.userdata.sound = sound
 	alert.userdata.animTime = 0.3
@@ -328,12 +336,17 @@ function Alerts:CenterPopup(id, text, time, flashTime, sound, c1, c2)
 end
 
 -- Center popup, simple text
-function Alerts:Simple(text, sound, persist)
+function Alerts:Simple(text, sound, persist, c1)
 	if sound then sound = Sounds[sound] end
 	local alert = self:GetAlert()
+	if c1 then 
+		c1 = Colors[c1] 
+		alert:SetColor(c1)
+		alert.bar:SetValue(1)
+	end
 	alert:SetText(text) 
 	alert.timer.frame:Hide()
-	alert:SetAlpha(0.7)
+	alert:SetAlpha(0.6)
 	alert.userdata.forceCenter = true
 	self:ToCenter(alert)
 	if sound then PlaySoundFile(sound) end

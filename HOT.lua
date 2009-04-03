@@ -6,7 +6,7 @@
 
 	The prototarget is the pretarget at the beginning of the chain.
 
-	Credits: RDX
+	Credits to RDX
 ]]
 
 -- Local accessors

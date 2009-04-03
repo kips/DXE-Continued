@@ -1,5 +1,6 @@
 ---------------------------------------------
 -- Validates Encounter Data
+-- Based off AceConfig's validation
 ---------------------------------------------
 
 local ipairs,pairs = ipairs,pairs

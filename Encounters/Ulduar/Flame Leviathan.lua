@@ -106,7 +106,7 @@ do
 						{alert = "pursuedurself"},
 					},
 					[2] = {
-						{expect = {"&playerguid&","not_==","#4#"}},
+						{expect = {"&playerguid&","~=","#4#"}},
 						{alert = "pursuedurother"},
 					},
 				},

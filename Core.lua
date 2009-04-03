@@ -122,6 +122,7 @@ DXE.RDB = RDB
 ---------------------------------------------
 
 local ACD = LibStub("AceConfigDialog-3.0")
+local AC = LibStub("AceConfig-3.0")
 local AceGUI = LibStub("AceGUI-3.0")
 local insert,wipe = table.insert,table.wipe
 
@@ -137,6 +138,7 @@ end
 
 ---------------------------------------------
 -- ENCOUNTER MANAGEMENT
+-- Credits to RDX
 ---------------------------------------------
 local EDB = {}
 DXE.EDB = EDB
@@ -374,9 +376,10 @@ function DXE:OnInitialize()
 	self.options = self:InitializeOptions()
 	self.InitializeOptions = nil
 	-- GUI Options
-	LibStub("AceConfig-3.0"):RegisterOptionsTable("DXE", self.options)
+	AC:RegisterOptionsTable("DXE", self.options)
+	ACD:SetDefaultSize("DXE", 730,500)
 	-- Slash Commands
-	LibStub("AceConfig-3.0"):RegisterOptionsTable("Deus Vox Encounters", self:GetSlashOptions(),"dxe")
+	AC:RegisterOptionsTable("Deus Vox Encounters", self:GetSlashOptions(),"dxe")
 	self.GetSlashOptions = nil
 	-- The default encounter
 	self:RegisterEncounter({name = "Default", title = "Default", zone = ""})
@@ -605,6 +608,7 @@ function DXE:UpdatePaneVisibility()
 	end
 end
 
+-- Idea based off RDX's Pane
 function DXE:CreatePane()
 	if self.Pane then self.Pane:Show() return end
 	local Pane = CreateFrame("Frame","DXE_Pane",UIParent)
@@ -998,6 +1002,7 @@ end
 
 ---------------------------------------------
 -- REGEN START/STOPPING
+-- Credits to BigWigs for these functions
 ---------------------------------------------
 
 local UnitIsFeignDeath = UnitIsFeignDeath
