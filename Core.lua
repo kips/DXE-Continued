@@ -367,6 +367,11 @@ function DXE:SetupMinimapIcon()
 	if LDBIcon then LDBIcon:Register("DXE",self.launcher,self.db.global._Minimap) end
 end
 
+-- Replace default Print
+local print,format = print,string.format
+function DXE:Print(s)
+	print(format("|cff99ff33Deus Vox Encounters|r: %s",s))
+end
 
 -- Initialization
 function DXE:OnInitialize()
@@ -395,7 +400,7 @@ function DXE:OnInitialize()
 	self:SetEnabledState(self.db.global.Enabled)
 	-- Minimap
 	self:SetupMinimapIcon()
-	print("|cff99ff33Deus Vox Encounters|r: Type |cffffff00/dxe|r for slash commands")
+	self:Print("Type |cffffff00/dxe|r for slash commands")
 end
 
 function DXE:OnEnable()

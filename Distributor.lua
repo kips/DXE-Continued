@@ -163,7 +163,7 @@ function Distributor:GetOptions()
 								end
 								return RaidNames
 							end,
-							disabled = function() return GetNumRaidMembers() == 0 end,
+							disabled = function() return GetNumRaidMembers() == 0 or not ListSelect end,
 						},
 						blank = DXE.genblank(200),
 						DistributeToPlayer = {
@@ -198,7 +198,7 @@ end
 -- API
 ----------------------------------
 -- The active uploads
-local Uploads = {}
+Uploads = {}
 -- The queues uploads
 local UploadQueue = {}
 
@@ -248,6 +248,8 @@ function Distributor:StartUpload(name)
 	self:SendCommMessage(format("DXE_DistR_%s",name), message, ul.dist, ul.target)
 	ul.bar:SetText(format("Sending %s",name))
 	self:RemoveFromUpdating(name.."UL")
+	-- We can't see the WHISPER distribution to others
+	if ul.dist == "WHISPER" then self:ULCompleted(name) end
 end
 
 ----------------------------------
@@ -288,7 +290,7 @@ function Distributor:DownloadReceived(prefix, msg, dist, sender)
 
 	local success, data = self:Deserialize(msg)
 	-- Failed to deserialize
-	if not success then DXE:Print(format("Failed to load %s after downloading! Request another distribute",name)) return end
+	if not success then DXE:Print(format("Failed to load %s after downloading! Request another distribute from %s",name,dl.sender)) return end
 
 	-- Unregister
 	DXE:UnregisterEncounter(name)
@@ -297,7 +299,7 @@ function Distributor:DownloadReceived(prefix, msg, dist, sender)
 	-- Store it in SavedVariables
 	DXE.RDB[name] = data	
 
-	self:DLCompleted(name)
+	self:DLCompleted(name,dl.sender)
 end
 
 ----------------------------------
@@ -365,9 +367,8 @@ function Distributor:OnCommReceived(prefix, msg, dist, sender)
 	end
 end
 
--- AceComm-3.0 doesn't give us a method for checking multipart data as it comes in so will watch the prefixes and the event to figure it out
 function Distributor:CHAT_MSG_ADDON(_,prefix, msg, dist, sender)
-	if (dist == "RAID" or dist == "WHISPER") and (next(Downloads) or next(Uploads)) then
+	if dist == "RAID" and (next(Downloads) or next(Uploads)) then
 		local name, mark = match(prefix, "DXE_DistR_([%w' ]+)(.)")
 		if not name then return end
 		-- Track downloads
@@ -408,8 +409,8 @@ end
 -- COMPLETIONS
 ----------------------------------
 
-function Distributor:DLCompleted(name)
-	DXE:Print(format("%s successfully updated",name))
+function Distributor:DLCompleted(name,sender)
+	DXE:Print(format("%s successfully updated from %s",name,sender))
 	self:LoadCompleted(name,Downloads[name],"Download Completed",Colors.GREEN,"RemoveDL")
 end
 

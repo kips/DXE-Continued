@@ -1,4 +1,3 @@
---[[
 do
 	local data = {
 		version = "$Rev$",
@@ -92,4 +91,3 @@ do
 
 	DXE:RegisterEncounter(data)
 end
-]]
