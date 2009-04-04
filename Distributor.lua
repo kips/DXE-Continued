@@ -215,7 +215,7 @@ function Distributor:Distribute(name, dist, target)
 	local bar = self:GetProgressBar()
 	bar:SetText(format("Waiting for %s responses",firstword(name)))
 	bar:SetColor(Colors.GREY)
-	local dest = (channel == "WHISPER") and 1 or (GetNumRaidMembers() - 1)
+	local dest = (dist == "WHISPER") and 1 or (GetNumRaidMembers() - 1)
 
 	Uploads[name] = {
 		accepts = 0,
