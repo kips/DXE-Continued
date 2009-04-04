@@ -517,6 +517,38 @@ function DXE:ScanUpdate()
 end
 
 ---------------------------------------------
+-- EXPLICIT SCANNING
+---------------------------------------------
+--[[
+-- For scanning bosses
+
+-- @return uid The unit id of the name. UnitName(raid<number>target)
+function DXE:UnitID(name)
+	if not name then return end
+	for i,unit in pairs(DXE.Roster) do
+		local uid = rIDtarget[i]
+		local _name = UnitName(uid)
+		if _name == name then
+			return uid
+		end
+	end
+	return nil
+end
+
+-- @return name Finds the unit id of the name and returns the name of the unid id's target
+function DXE:TargetName(name)
+	local uid = self:UnitID(name)
+	if not uid then return nil end
+	local nextid = uid.."target"
+	if UnitExists(nextid) then
+		return UnitName(nextid)
+	else
+		return nil
+	end
+end
+]]
+
+---------------------------------------------
 -- TOOLTIP TEXT
 ---------------------------------------------
 

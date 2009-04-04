@@ -131,16 +131,32 @@ local function tft()
 end
 
 -- IMPORTANT - Return values should all be strings
+local pguid,pname
 local RepFuncs = {
-	playerguid = function() return UnitGUID("player") end,
-	playername = function() return UnitName("player") end,
+	playerguid = function() pguid = pguid or UnitGUID("player"); return pguid end,
+	playername = function() pname = pname or UnitName("player"); return pname end,
 	vehicleguid  = function() return UnitGUID("vehicle") or "" end,
 	difficulty = function() return tostring(GetCurrentDungeonDifficulty()) end,
+	-- First health watcher
 	tft = tft,
 	tft_unitexists = function() return tostring(UnitExists(tft())) end,
 	tft_isplayer = function() return tostring(UnitIsUnit(tft(),"player")) end,
 	tft_unitname = function() return tostring(UnitName(tft())) end,
 }
+
+-- Add funcs for the other health watchers
+do
+	for i=2,4 do
+		local tft = function() return DXE.HW[i].tracer:First() and DXE.HW[i].tracer:First().."target" or "" end
+		local tft_unitexists = function() return tostring(UnitExists(tft())) end
+		local tft_isplayer = function() return tostring(UnitIsUnit(tft(),"player")) end
+		local tft_unitname = function() return tostring(UnitName(tft())) end
+		RepFuncs["tft"..i] = tft
+		RepFuncs["tft"..i.."_unitexists"] = tft_unitexists
+		RepFuncs["tft"..i.."_isplayer"] = tft_isplayer
+		RepFuncs["tft"..i.."_unitname"] = tft_unitname
+	end
+end
 
 function Invoker:GetRepFuncs()
 	return RepFuncs

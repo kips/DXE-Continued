@@ -41,7 +41,7 @@ end
 
 local mt = {__index = Prototype}
 
-function HOT:New(multi)
+function HOT:New()
 	local tracer = DXE.new()
 	setmetatable(tracer, mt)
 	AceTimer:Embed(tracer)
@@ -115,14 +115,12 @@ function Prototype:Execute()
 		end
 		self.n = ix
 		self:Fire("TRACER_UPDATE")
-		--return true
 	else
 		if(self.n > 0) then
 			self.n = 0 
 			self.lostTime = GetTime()
 			self:Fire("TRACER_LOST")
 		end
-		-- return nil
 	end
 end
 

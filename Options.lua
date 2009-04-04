@@ -189,7 +189,7 @@ end
 local function findversion(key)
 	for name,data in pairs(DXE.EDB) do
 		if data.key == key then
-			return data.version
+			return data.version or "|cff808080Unknown|r"
 		end
 	end
 end

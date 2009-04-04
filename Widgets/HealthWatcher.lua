@@ -56,6 +56,10 @@ do
 		self.bar:SetStatusBarColor(0.66,0.66,0.66)
 	end
 
+	local function IsOpen(self)
+		return self.tracer:IsOpen()
+	end
+
 	local function Open(self,name)
 		assert(name,"Missing 'name' paramater - got '"..tostring(name).."'")
 		self.tracer:TrackUnitName(name)
@@ -142,6 +146,7 @@ do
 		self.SetInfoBundle = SetInfoBundle
 		self.EnableUpdates = EnableUpdates
 		self.OnWidthSet = OnWidthSet
+		self.IsOpen = IsOpen
 		self.Open = Open
 		self.Close = Close
 		self.GetName = GetName
