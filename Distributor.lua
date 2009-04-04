@@ -295,7 +295,7 @@ function Distributor:DownloadReceived(prefix, msg, dist, sender)
 	-- Register
 	DXE:RegisterEncounter(data,true)
 	-- Store it in SavedVariables
-	DXERecEncDB[name] = data	
+	DXE.RDB[name] = data	
 
 	self:DLCompleted(name)
 end

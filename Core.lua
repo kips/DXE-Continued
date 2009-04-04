@@ -114,8 +114,7 @@ end
 ---------------------------------------------
 
 DXERecDB = DXERecDB or {}
-local RDB = DXERecDB
-DXE.RDB = RDB
+local RDB
 
 ---------------------------------------------
 -- UPVALUES
@@ -372,6 +371,10 @@ end
 -- Initialization
 function DXE:OnInitialize()
 	self.loaded = true
+	-- Received DB
+	RDB = DXERecDB
+	DXE.RDB = RDB
+	-- Options
 	self.db = LibStub("AceDB-3.0"):New("DXEDB",self.defaults)
 	self.options = self:InitializeOptions()
 	self.InitializeOptions = nil
