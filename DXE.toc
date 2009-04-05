@@ -70,7 +70,7 @@ Encounters\Vault of Archavon\Archavon.lua
 
 ## Ulduar
 Encounters\Ulduar\Algalon.lua
-Encounters\Ulduar\Auriya.lua
+Encounters\Ulduar\Auriaya.lua
 Encounters\Ulduar\Flame Leviathan.lua
 Encounters\Ulduar\Freya.lua
 Encounters\Ulduar\General Vezax.lua

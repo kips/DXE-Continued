@@ -31,6 +31,8 @@ local userdata = {}
 ---------------------------------------------
 
 local Invoker = DXE:NewModule("Invoker","AceEvent-3.0","AceTimer-3.0")
+local HW = DXE.HW
+local Alerts = DXE.Alerts
 
 function Invoker:OnEnable()
 	self:RegisterMessage("DXE_StartEncounter","OnStart")
@@ -47,7 +49,7 @@ function Invoker:OnStart()
 	end
 	DXE:SetTracing(CE.tracing)
 	-- Reset colors
-	for i,hw in ipairs(DXE.HW) do
+	for i,hw in ipairs(HW) do
 		if hw:IsOpen() and not hw.tracer:First() then
 			hw:SetInfoBundle(hw:GetName(),"",1,0,0,1)
 		end
@@ -62,7 +64,7 @@ function Invoker:OnStop()
 	-- Reset userdata
 	self:ResetUserData()
 	-- Quashes all alerts
-	DXE.Alerts:QuashAllAlerts()
+	Alerts:QuashAllAlerts()
 	-- Remove timers
 	self:RemoveAllTimers()
 	-- Remove throttles
@@ -72,7 +74,7 @@ end
 
 ---------------------------------------------
 -- CONDITIONS
--- Taken from Pitbull. Credits: ckknight
+-- Shamelessly stolen from Pitbull. Credits: ckknight
 ---------------------------------------------
 
 local conditions = {}
@@ -127,7 +129,7 @@ local function expect(a, condition, b)
 end
 
 local function tft()
-	return DXE.HW[1].tracer:First() and DXE.HW[1].tracer:First().."target" or ""
+	return HW[1].tracer:First() and HW[1].tracer:First().."target" or ""
 end
 
 -- IMPORTANT - Return values should all be strings
@@ -147,7 +149,7 @@ local RepFuncs = {
 -- Add funcs for the other health watchers
 do
 	for i=2,4 do
-		local tft = function() return DXE.HW[i].tracer:First() and DXE.HW[i].tracer:First().."target" or "" end
+		local tft = function() return HW[i].tracer:First() and HW[i].tracer:First().."target" or "" end
 		local tft_unitexists = function() return tostring(UnitExists(tft())) end
 		local tft_isplayer = function() return tostring(UnitIsUnit(tft(),"player")) end
 		local tft_unitname = function() return tostring(UnitName(tft())) end
@@ -304,11 +306,11 @@ local function StartAlert(alert_name,...)
 	if not time then return end
 	-- Pass in appropriate arguments
 	if info.type == "dropdown" then
-		DXE.Alerts:Dropdown(CE.key..info.var,text,time,info.flashtime,info.sound,info.color1,info.color2)
+		Alerts:Dropdown(CE.key..info.var,text,time,info.flashtime,info.sound,info.color1,info.color2)
 	elseif info.type == "centerpopup" then
-		DXE.Alerts:CenterPopup(CE.key..info.var,text,time,info.flashtime,info.sound,info.color1,info.color2)
+		Alerts:CenterPopup(CE.key..info.var,text,time,info.flashtime,info.sound,info.color1,info.color2)
 	elseif info.type == "simple" then
-		DXE.Alerts:Simple(text,info.sound,time,info.color1)
+		Alerts:Simple(text,info.sound,time,info.color1)
 	end
 end
 
@@ -329,6 +331,7 @@ end
 local function canceltimer(name)
 	if timers[name] then
 		Invoker:CancelTimer(timers[name].handle,true)
+		timers[name].args = DXE.delete(timers[name].args)
 		timers[name] = DXE.delete(timers[name])
 	end
 	return true
@@ -341,8 +344,71 @@ function Invoker:FireTimer(name)
 end
 
 ---------------------------------------------
+-- Proximity Checking
+---------------------------------------------
+
+-- 18 yards
+local bandages = {
+	[21991] = true, -- Heavy Netherweave Bandage
+	[21990] = true, -- Netherweave Bandage
+	[14530] = true, -- Heavy Runecloth Bandage
+	[14529] = true, -- Runecloth Bandage
+	[8545] = true, -- Heavy Mageweave Bandage
+	[8544] = true, -- Mageweave Bandage
+	[6451] = true, -- Heavy Silk Bandage
+	[6450] = true, -- Silk Bandage
+	[3531] = true, -- Heavy Wool Bandage
+	[3530] = true, -- Wool Bandage
+	[2581] = true, -- Heavy Linen Bandage
+	[1251] = true, -- Linen Bandage
+}
+-- CheckInteractDistance(unit,i)
+-- 2 = Trade, 11.11 yards 
+-- 3 = Duel, 9.9 yards 
+-- 4 = Follow, 28 yards 
+
+local IsItemInRange = IsItemInRange
+-- Keys refer to yards
+local ProximityFuncs = {
+	[10] = function(unit) return CheckInteractDistance(unit,3) end,
+	[11] = function(unit) return CheckInteractDistance(unit,2) end,
+	[18] = function(unit)  
+		for itemid in pairs(bandages) do
+			if IsItemInRange(itemid,unit) == 1 then
+				return true
+			end
+		end
+		return false
+	end,
+	[28] = function(unit) return CheckInteractDistance(unit,4) end,
+}
+
+function Invoker:GetProximityFuncs()
+	return ProximityFuncs
+end
+
+-- Range is validated
+local function CheckProximity(target,range)
+	local uid = DXE:GetUnitID(target)
+	if not uid then return false end
+	local test = ProximityFuncs[range]
+	if not test then return false end
+	return test(uid)
+end
+
+---------------------------------------------
 -- FUNCTIONS TABLE
 ---------------------------------------------
+
+local insert = table.insert
+local function insertargs(t,v,...)
+	if v then
+		insert(t,v)
+		return insertargs(t,...)
+	else
+		return t
+	end
+end
 
 local CommandFuncs = {
 	expect = function(info,...)
@@ -351,7 +417,7 @@ local CommandFuncs = {
 	end,
 
 	quash = function(info,...)
-		DXE.Alerts:QuashAlertsByPattern(info)
+		Alerts:QuashAlertsByPattern(info)
 		return true
 	end,
 
@@ -371,7 +437,7 @@ local CommandFuncs = {
 		timers[name] = DXE.new()
 		timers[name].handle = Invoker:ScheduleTimer("FireTimer",time,name)
 		-- Easiest way to do this
-		timers[name].args = {...}
+		timers[name].args = insertargs(DXE.new(),...)
 		return true
 	end,
 
@@ -385,7 +451,14 @@ local CommandFuncs = {
 	tracing = function(info,...)
 		DXE:SetTracing(info)
 		return true
-	end
+	end,
+
+	proximitycheck = function(info,...)
+		local target,range = info[1],info[2]
+		target = ReplaceNums(target,...)
+		target = ReplaceFuncs(target)
+		return CheckProximity(target,range)
+	end,
 }
 
 ---------------------------------------------

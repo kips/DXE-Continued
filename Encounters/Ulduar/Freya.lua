@@ -156,7 +156,7 @@ do
 					},
 				},
 			},
-			-- Nature's Fury from Ancient Conservator. Add Fury removal quashing?
+			-- Nature's Fury from Ancient Conservator. Add Fury quashing on SPELL_AURA_REMOVED?
 			[4] = {
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",

@@ -115,7 +115,7 @@ do
 					{set = {previoustarget = ""}},
 				},
 			},
-			-- tft3 = Stormcaller Brundir
+			-- tft3 = Stormcaller Brundir's Target
 			tendriltargets = {
 				[1] = {
 					{expect = {"&tft3_unitexists& &tft3_isplayer&","==","true true"}},

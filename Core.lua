@@ -67,8 +67,9 @@ do
 	end
 	local wipe = table.wipe
 	local delete = function(t)
-		if type(t) ~= "table" then return end
 		wipe(t)
+		t[""] = true
+		t[""] = nil
 		cache[t] = true
 		return nil
 	end
@@ -342,7 +343,7 @@ end
 
 function DXE:RAID_ROSTER_UPDATE()
 	self:UpdatePaneVisibility()
-	self:UpdateRosterTable()
+	self:UpdateRosterTables()
 end
 
 ---------------------------------------------
@@ -355,7 +356,7 @@ function DXE:SetupMinimapIcon()
 	self.launcher = LDB:NewDataObject("DXE", 
 	{
 		type = "launcher",
-		icon = "Interface\\Icons\\INV_Misc_DragonKite_02",
+		icon = "Interface\\Icons\\Achievement_Dungeon_Ulduar77_Normal",--"Interface\\Icons\\INV_Misc_DragonKite_02",
 		OnClick = function(_, button)
 			self:OpenConfig() 
 		end,
@@ -407,7 +408,7 @@ function DXE:OnEnable()
 	self:CreatePane()
 	self:CreateHealthWatchers()
 	self:LoadPositions()
-	self:UpdateRosterTable()
+	self:UpdateRosterTables()
 	self:UpdateTriggers()
 	self:UpdateLock()
 	self:UpdatePaneVisibility()
@@ -819,7 +820,7 @@ do
 			info.justifyH = "LEFT"
 			UIDropDownMenu_AddButton(info,level)
 			for name,data in pairs(EDB) do
-				local info = {}
+				local info = DXE.new()
 				if data.zone == "" then
 					info.text = name
 					info.value = name
@@ -841,7 +842,7 @@ do
 			local category = UIDROPDOWNMENU_MENU_VALUE
 			for name,data in pairs(EDB) do
 				if data.zone == category then
-					local info = {}
+					local info = DXE.new()
 					info.hasArrow = false
 					info.text = name
 					info.owner = self
@@ -934,7 +935,7 @@ end
 function DXE:AlertTest()
 	DXE.Alerts:CenterPopup("AlertTest1", "Decimating. Life Tap Now!", 10, 5, "ALERT1", "YELLOW", "CYAN")
 	DXE.Alerts:Dropdown("AlertTest2", "Big City Opening", 20, 5, "ALERT2", "WHITE")
-	DXE.Alerts:Simple("Gay","ALERT3",3)
+	DXE.Alerts:Simple("Gay","ALERT3",3,"GOLD")
 end
 
 ---------------------------------------------
@@ -944,6 +945,7 @@ local HW = {}
 DXE.HW = HW
 
 -- Create health watchers
+-- Only four are needed currently. Too many health watchers clutters the screen.
 function DXE:CreateHealthWatchers()
 	if HW[1] then return end
 	HW[1] = AceGUI:Create("DXE_HealthWatcher")
@@ -1073,15 +1075,35 @@ end
 ---------------------------------------------
 -- ROSTER
 ---------------------------------------------
+local UnitGUID = UnitGUID
+-- All values should be unit ids
+
+-- Keys are [1-40]
 local Roster = {}
 DXE.Roster = Roster
+-- Keys are the names
+local NameRoster = {}
+DXE.NameRoster = NameRoster
+-- Keys are the GUIDs
+local GUIDRoster = {}
+DXE.GUIDRoster = GUIDRoster
 
-function DXE:UpdateRosterTable()
+function DXE:UpdateRosterTables()
 	wipe(Roster)
 	for i,id in ipairs(rID) do
 		if UnitExists(id) then 
 			Roster[i] = id
+			NameRoster[UnitName(id)] = id
+			GUIDRoster[UnitGUID(id)] = id
 		end 
+	end
+end
+
+function DXE:GetUnitID(target)
+	if find(target,"0x%x+") then 
+		return GUIDRoster[target]
+	else 
+		return NameRoster[target]
 	end
 end
 

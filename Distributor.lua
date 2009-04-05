@@ -157,7 +157,7 @@ function Distributor:GetOptions()
 								wipe(RaidNames)
 								for k,uid in pairs(DXE.Roster) do
 									local name = UnitName(uid)
-									if UnitExists(uid) and name and name ~= PlayerName then
+									if name ~= PlayerName then
 										 RaidNames[name] = name
 									end
 								end
@@ -217,6 +217,7 @@ function Distributor:Distribute(name, dist, target)
 	bar:SetColor(Colors.GREY)
 	local dest = (dist == "WHISPER") and 1 or (GetNumRaidMembers() - 1)
 
+	-- TODO: Make it use DXE.new()
 	Uploads[name] = {
 		accepts = 0,
 		declines = 0,
@@ -248,8 +249,6 @@ function Distributor:StartUpload(name)
 	self:SendCommMessage(format("DXE_DistR_%s",name), message, ul.dist, ul.target)
 	ul.bar:SetText(format("Sending %s",name))
 	self:RemoveFromUpdating(name.."UL")
-	-- We can't see the WHISPER distribution to others
-	if ul.dist == "WHISPER" then self:ULCompleted(name) end
 end
 
 ----------------------------------
@@ -258,7 +257,7 @@ end
 -- The active downloads
 local Downloads = {}
 
-function Distributor:StartReceiving(name,length,sender)
+function Distributor:StartReceiving(name,length,sender,dist)
 	local prefix = format("DXE_DistR_%s",name)
 	if Downloads[name] then self:RemoveDL(name) end
 
@@ -273,7 +272,8 @@ function Distributor:StartReceiving(name,length,sender)
 		received = 0,
 		length = length,
 		bar = bar,
-		timer = self:ScheduleTimer("DLTimeout",40,name)
+		timer = self:ScheduleTimer("DLTimeout",40,name),
+		dist = dist,
 	}
 	bar.userdata.timeleft = 40
 	bar.userdata.totaltime = 40
@@ -287,6 +287,11 @@ function Distributor:DownloadReceived(prefix, msg, dist, sender)
 
 	local dl = Downloads[name]
 	if not dl then return end
+
+	-- For WHISPER distributions
+	if dl.dist == "WHISPER" then
+		self:SendCommMessage(prefix,"COMPLETED","WHISPER",sender)
+	end
 
 	local success, data = self:Deserialize(msg)
 	-- Failed to deserialize
@@ -326,14 +331,14 @@ function Distributor:OnCommReceived(prefix, msg, dist, sender)
 		end
 
 		if DXE.db.global.Distributor.AutoAccept then
-			self:StartReceiving(name,length,sender)
+			self:StartReceiving(name,length,sender,dist)
 			self:Respond(format("RESPONSE:%s:%s",name,"YES"),sender)
 			return
 		end
 
 		local STATIC_CONFIRM = {
 			text = format("%s is sharing an update for %s",sender,firstword(name)),
-			OnAccept = function() self:StartReceiving(name,length,sender)
+			OnAccept = function() self:StartReceiving(name,length,sender,dist)
 										 self:Respond(format("RESPONSE:%s:%s",name,"YES"),sender)
 						  end,
 			OnCancel = function() self:Respond(format("RESPONSE:%s:%s",name,"NO"),sender) end,
@@ -371,6 +376,12 @@ function Distributor:CHAT_MSG_ADDON(_,prefix, msg, dist, sender)
 	if dist == "RAID" and (next(Downloads) or next(Uploads)) then
 		local name, mark = match(prefix, "DXE_DistR_([%w' ]+)(.)")
 		if not name then return end
+		-- For WHISPER distributions
+		if msg == "COMPLETED" and Uploads[name] then
+			self:ULCompleted(name)
+			return
+		end
+
 		-- Track downloads
 		local dl = Downloads[name]
 		if dl and dl.sender == sender then
@@ -416,7 +427,7 @@ end
 
 function Distributor:DLTimeout(name)
 	DXE:Print(format("%s updating timed out",name))
-	self:LoadCompleted(name,Downloads[name],"Download Timeout",Colors.Red,"RemoveDL")
+	self:LoadCompleted(name,Downloads[name],"Download Timedout",Colors.Red,"RemoveDL")
 end
 
 function Distributor:QueueNextUL()
@@ -435,7 +446,7 @@ end
 
 function Distributor:ULTimeout(name)
 	DXE:Print(format("%s sending timed out",name))
-	self:LoadCompleted(name,Uploads[name],"Upload Timeout",Colors.RED,"RemoveUL")
+	self:LoadCompleted(name,Uploads[name],"Upload Timedout",Colors.RED,"RemoveUL")
 	self:QueueNextUL()
 end
 

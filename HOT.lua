@@ -32,7 +32,7 @@ local HOT,Prototype = {},{}
 -- Unit test
 local function testname(self,proto_uid)
 	local uid = proto_uid.."target"
-	if UnitExists(uid) and UnitName(uid) == self.name then 
+	if UnitName(uid) == self.name then 
 		return proto_uid,uid
 	else
 		return nil
@@ -84,7 +84,7 @@ function Prototype:Execute()
 	local proto_uid, uid, ix, flag = nil, nil, 0, nil;
 
 	-- Scan
-	for _,unit in ipairs(DXE.Roster) do
+	for _,unit in pairs(DXE.Roster) do
 		-- Get unit and test it
 		proto_uid = unit
 		proto_uid, uid = test(self,proto_uid)

@@ -14,7 +14,7 @@ do
 			autostop = true,
 		},
 		userdata = { 
-			swarmcd = {90, 85, loop=false},
+			swarmcd = {105, 85, loop=false},
 		},
 		onstart = {
 			[1] = {
@@ -27,7 +27,7 @@ do
 				varname = "Locust swarm cooldown", 
 				type = "dropdown", 
 				text = "Locust swarm cooldown", 
-				time = 90, 
+				time = "<swarmcd>",
 				flashtime = 5, 
 				sound = "ALERT1", 
 				color1 = "GREEN", 

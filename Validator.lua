@@ -11,7 +11,8 @@ local insert,select,concat,wipe = table.insert,select,table.concat,wipe
 local Sounds = DXE.Constants.Sounds
 local Colors = DXE.Constants.Colors
 local conditions = DXE.Invoker:GetConditions()
-local repFuncs = DXE.Invoker:GetRepFuncs()
+local RepFuncs = DXE.Invoker:GetRepFuncs()
+local ProximityFuncs = DXE.Invoker:GetProximityFuncs()
 
 local isstring = {["string"] = true, _ = "string"}
 local isstringtable = {["string"] = true, ["table"] = true, _ = "string or table"}
@@ -55,6 +56,7 @@ local baseLineKeys = {
 	canceltimer = isstring,
 	resettimer = isboolean,
 	tracing = istable,
+	proximitycheck = istable,
 }
 
 local alertBaseKeys = {
@@ -147,7 +149,7 @@ local function validateReplaces(data,text,errlvl,...)
 	errlvl=(errlvl or 0)+1
 	for rep in gmatch(text,"%b&&") do
 		local func = match(rep,"&(.+)&")
-		if not repFuncs[func] then
+		if not RepFuncs[func] then
 			err(": replace func doesn't exist, got '"..rep.."'",errlvl,...)
 		end
 	end
@@ -214,6 +216,20 @@ local function validateCommandLine(data,line,errlvl,...)
 		end
 	elseif type == "tracing" then
 		validateTracing(info,errlvl,...)
+	elseif type == "proximitycheck" then
+		validateIsArray(info,errlvl,"proximitycheck",...)
+		if #info ~= 2 then
+			err(": array is not size 2",errlvl,type,...)
+		end
+		local target,range = info[1],info[2]
+		validateVal(target,isstring,errlvl,type,...)
+		validateVal(range,isnumber,errlvl,type,...)
+		if not target:match("^#[^#]*%d[^#]*#$") and not target:match("^&[^&]+&$") then
+			err(": invalid target, has to be exactly of the form #%d# or &func& - got '"..target.."'",errlvl,type,...)
+		end
+		if not ProximityFuncs[range] then
+			err(": invalid range - got '"..range.."'",errlvl,type,...)
+		end
 	end
 end
 
