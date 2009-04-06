@@ -65,18 +65,39 @@ do
 		cache[t] = nil
 		return t
 	end
-	local wipe = table.wipe
+	local type,wipe = type,table.wipe
 	local delete = function(t)
-		wipe(t)
-		t[""] = true
-		t[""] = nil
-		cache[t] = true
+		if type(t) == "table" then
+			wipe(t)
+			t[""] = true
+			t[""] = nil
+			cache[t] = true
+		end
+		return nil
+	end
+
+	-- Recursive delete
+	local rdelete
+	rdelete = function(t)
+		if type(t) == "table" then
+			for k,v in pairs(t) do
+				if type(v) == "table" then
+					rdelete(v)
+				end
+				t[k] = nil
+			end
+			t[""] = true
+			t[""] = nil
+			cache[t] = true
+		end
 		return nil
 	end
 
 	DXE.new = new
 	DXE.delete = delete
+	DXE.rdelete = rdelete
 end
+
 
 DXE.tablesize = function(t)
 	local n = 0
@@ -180,7 +201,7 @@ function DXE:UnregisterEncounter(name)
 	-- Remove options
 	self:RemoveEncounterOptions(EDB[name])
 	-- Remove from the database
-	EDB[name] = self.delete(EDB[name])
+	EDB[name] = self.rdelete(EDB[name])
 	-- Close options
 	ACD:Close("DXE")
 	-- Update triggers
@@ -256,7 +277,7 @@ function DXE:UpgradeEncounters()
 		-- Upgrading to new versions
 		if not EDB[name] or EDB[name].version < data.version then
 			self:UnregisterEncounter(name)
-			self:RegisterEncounter(data,true)
+			self:RegisterEncounter(data)
 		-- Deleting old versions
 		elseif EDB[name] and EDB[name].version > data.version then
 			deleteQueue[data.name] = true
@@ -264,7 +285,7 @@ function DXE:UpgradeEncounters()
 	end
 	-- Actually delete old versions
 	for name in pairs(deleteQueue) do
-		RDB[name] = self.delete(RDB[name])
+		RDB[name] = self.rdelete(RDB[name])
 	end
 	deleteQueue = self.delete(deleteQueue)
 end
@@ -392,7 +413,7 @@ function DXE:OnInitialize()
 	self.GetSlashOptions = nil
 	-- The default encounter
 	self:RegisterEncounter({name = "Default", title = "Default", zone = ""})
-	-- Register queued data
+	-- Register queued data TODO: Check for versions between RDB and EDB before registering
 	for _,data in ipairs(loadQueue) do self:RegisterEncounter(data) end
 	loadQueue = self.delete(loadQueue)
 	-- Upgrade
@@ -1013,12 +1034,22 @@ function DXE:LayoutHealthWatchers()
 end
 
 do
-	local UnitIsFriend,UnitIsDead = UnitIsFriend,UnitIsDead
+	-- Throttling is needed because sometimes bosses pulsate in and out of combat at the start.
+	-- UnitAffectingCombat can return false at the start even if the boss is moving towards a player.
+	local UnitIsFriend,UnitIsDead,UnitAffectingCombat,GetTime = UnitIsFriend,UnitIsDead,UnitAffectingCombat,GetTime
+	-- Lookup table so we don't have to concatenate every update
+	local targetof = {}
+	for i=1,40 do targetof["raid"..i.."target"] = "raid"..i.."targettarget" end
+	-- The time to wait (seconds) before it auto stops the encounter after auto starting
+	local throttle = 5
+	-- The last time the encounter was auto started + throttle time
+	local last = 0
 	function DXE:TRACER_UPDATE(uid)
-		if self:IsAutoStart() and not self:IsRunning() and UnitIsFriend(uid.."target","player") then
+		local time,running = GetTime(),self:IsRunning()
+		if self:IsAutoStart() and not running and UnitIsFriend(targetof[uid],"player") then
 			self:StartEncounter()
-		-- Don't add UnitAffectingCombat. Sometimes bosses pulsate in and out of combat at the start
-		elseif self:IsAutoStop() and self:IsRunning() and UnitIsDead(uid) then
+			last = time + throttle
+		elseif (UnitIsDead(uid) or not UnitAffectingCombat(uid)) and self:IsAutoStop() and running and last < time then
 			self:StopEncounter()
 		end
 	end

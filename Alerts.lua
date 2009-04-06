@@ -182,16 +182,6 @@ end
 function Alerts:Move(alert,dt,tox,toy,froma,toa)
 	local t0 = GetTime()
 	local fx,fy = alert.frame:GetCenter()
-	--[[
-	 "DXE-22\\Alerts.lua:185: attempt to perform arithmetic on local 'fy' (a nil value)
-	 DXE-22\\Alerts.lua:229: in function <Interface\\AddOns\\DXE\\Alerts.lua:220>
-	 (tail call): ?:
-	 <in C code>: ?
-	 <string>:\"safecall Dispatcher[2]\":9: in function <[string \"safecall Dispatcher[2]\"]:5>
-	 (tail call): ?:
-	 AceTimer-3.0-5 (Ace3):144: in function <Interface\\AddOns\\Ace3\\AceTimer-3.0\\AceTimer-3.0.lua:118>
-	]]
-	-- Error is possibly caused by flashtime = 0 in alert definitions.
 	fy = fy + alert.frame:GetHeight()/2
 	local userdata = alert.userdata
 	local worldscale = UIParent:GetEffectiveScale()
@@ -245,7 +235,7 @@ end
 local function CountdownFunc(self,time)
 	local timeleft = self.userdata.endt - time
 	if timeleft < 0 then return end
-	self.timer.SetTime(timeleft)
+	self.timer:SetTime(timeleft)
 	local value = 1 - (timeleft / self.userdata.dt)
 	self.bar:SetValue(value)
 end
@@ -306,7 +296,7 @@ function Alerts:Dropdown(id, text, totalTime, flashTime, sound, c1, c2)
 	alert.userdata.forceTop = true
 	self:Countdown(alert,totalTime,flashTime)
 	self:ToTop(alert)
-	Timers[self:ScheduleTimer("ToCenter",ldt, alert)] = alert
+	if flashTime then Timers[self:ScheduleTimer("ToCenter",ldt, alert)] = alert end
 	Timers[self:ScheduleTimer("Fade",totalTime,alert)] = alert
 	Timers[self:ScheduleTimer("Destroy",totalTime + 3,alert)] = alert
 	self:StartUpdating()

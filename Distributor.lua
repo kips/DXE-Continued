@@ -300,8 +300,9 @@ function Distributor:DownloadReceived(prefix, msg, dist, sender)
 	-- Unregister
 	DXE:UnregisterEncounter(name)
 	-- Register
-	DXE:RegisterEncounter(data,true)
+	DXE:RegisterEncounter(data)
 	-- Store it in SavedVariables
+	DXE.RDB[name] = DXE.rdelete(DXE.RDB[name])
 	DXE.RDB[name] = data	
 
 	self:DLCompleted(name,dl.sender)

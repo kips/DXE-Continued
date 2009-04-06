@@ -1,13 +1,13 @@
 do
 	local data = {
 		version = "$Rev$",
-		key = "algalon", 
+		key = "emalon", 
 		zone = "Ulduar", 
-		name = "Algalon the Observer", 
-		title = "Algalon the Observer", 
-		tracing = {"Algalon the Observer",},
+		name = "Emalon the Storm Watcher", 
+		title = "Emalon the Storm Watcher", 
+		tracing = {"Emalon the Storm Watcher",},
 		triggers = {
-			scan = "Algalon the Observer", 
+			scan = "Emalon the Storm Watcher", 
 		},
 		onactivate = {
 			autostart = true,
@@ -20,3 +20,4 @@ do
 
 	DXE:RegisterEncounter(data)
 end
+

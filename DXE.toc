@@ -67,6 +67,7 @@ Encounters\The Obsidian Sanctum\Sartharion.lua
 
 ## The Vault of Archavon
 Encounters\Vault of Archavon\Archavon.lua
+Encounters\Vault of Archavon\Emalon.lua
 
 ## Ulduar
 Encounters\Ulduar\Algalon.lua
@@ -82,4 +83,4 @@ Encounters\Ulduar\Mimiron.lua
 Encounters\Ulduar\Razorscale.lua
 Encounters\Ulduar\Thorim.lua
 Encounters\Ulduar\XT002.lua
-Encounters\Ulduar\Yogg Saron.lua
+Encounters\Ulduar\Yogg-Saron.lua

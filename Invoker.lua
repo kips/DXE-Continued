@@ -323,22 +323,21 @@ function Invoker:RemoveAllTimers()
 	-- Cancel all timers
 	for name in pairs(timers) do
 		Invoker:CancelTimer(timers[name].handle,true)
-		DXE.delete(timers[name])
+		timers[name] = DXE.rdelete(timers[name])
 	end
-	wipe(timers)
 end
 
 local function canceltimer(name)
 	if timers[name] then
 		Invoker:CancelTimer(timers[name].handle,true)
-		timers[name].args = DXE.delete(timers[name].args)
-		timers[name] = DXE.delete(timers[name])
+		timers[name] = DXE.rdelete(timers[name])
 	end
 	return true
 end
 
 function Invoker:FireTimer(name)
 	if CE.timers[name] then
+		-- Don't wipe timers[name], it could be rescheduled
 		self:InvokeCommands(CE.timers[name],unpack(timers[name].args))
 	end
 end

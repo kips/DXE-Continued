@@ -6,7 +6,6 @@ do
 		name = "Mimiron", 
 		title = "Mimiron", 
 		tracing = {"Leviathan MKII"},
-
 		triggers = {
 			yell = "^We haven't much time, friends",
 		},
@@ -19,10 +18,9 @@ do
 		onstart = {
 			-- Phase 1
 			[1] = {
-				{alert = "plasmablastwarn"},
+				{alert = "plasmablastcd"},
 			},
 		},
-		-- TODO: Categorize into phases and mob
 		alerts = {
 			--- Unknown
 			flamesuppressantwarn = {
@@ -123,6 +121,31 @@ do
 				time = 1.5,
 				sound = "ALERT7",
 			},
+			--- Phase Changes
+			onetotwo = {
+				var = "onetotwo",
+				varname = "Phase 1 to Phase 2 timer",
+				type = "dropdown",
+				text = "Phase Two begins",
+				time = 40,
+				flashtime = 10,
+			},
+			twotothree = {
+				var = "twotothree",
+				varname = "Phase 2 to Phase 3 timer",
+				type = "dropdown",
+				text = "Phase Three begins",
+				time = 25,
+				flashtime = 10,
+			},
+			threetofour = {
+				var = "threetofour",
+				varname = "Phase 3 to Phase 4 timer",
+				type = "dropdown",
+				text = "Phase Four begins",
+				time = 25,
+				flashtime = 10,
+			},
 		},
 		timers = {
 			startbarragedur = {
@@ -142,26 +165,29 @@ do
 				type = "event",
 				event = "YELL",
 				execute = {
-					-- Phase 2
+					-- Transition from Phase 1 to Phase 2
 					[1] = {
-						{expect = {"#1#","find","^Behold, the VX-001"}},
-						{quash = "plasmablastwarn"},
+						{expect = {"#1#","find","^WONDERFUL! Positively"}},
+						{quash = "plasmablastcd"},
 						{tracing = {"VX-001"}},
+						{alert = "onetotwo"},
 					},
-					-- Phase 3
+					-- Transition from Phase 2 to Phase 3
 					[2] = {
-						{expect = {"#1#","find","^Mwahahahaha! Isn't it beautiful!"}},
+						{expect = {"#1#","find","^Thank you, friends!"}},
 						{tracing = {"Aerial Command Unit"}},
 						{quash = "laserbarragecd"},
 						{quash = "laserbarragedur"},
 						{quash = "spinupwarn"},
 						{canceltimer = "startbarragedur"},
 						{canceltimer = "startbarragecd"},
+						{alert = "twotothree"},
 					},
-					-- Phase 4
+					-- Transition from Phase 3 to Phase 4
 					[3] = {
-						{expect = {"#1#","find","^Gaze upon its magnificence! Bask in"}},
+						{expect = {"#1#","find","^Preliminary testing phase complete"}},
 						{tracing = {"Leviathan MKII","VX-001","Aerial Command Unit"}},
+						{alert = "threetofour"},
 					},
 				},
 			},
@@ -185,7 +211,7 @@ do
 				spellid = 63631, -- TODO: Add heroic spellid
 				execute = {
 					[1] = {
-						{alert  = "shockblastwarn"},
+						{alert = "shockblastwarn"},
 					},	
 				},
 			},
@@ -207,7 +233,7 @@ do
 			[5] = {
 				type = "combatevent",
 				eventtype = "SPELL_CAST_SUCCESS",
-				spellid = 63041,
+				spellid = {65034,64402,63681,63036,63041}, -- TODO: Remove unnecessary spellids
 				execute = {
 					[1] = {
 						{alert = "rocketstrikewarn"},
@@ -215,9 +241,11 @@ do
 				},
 			},
 			--- Phase 3 - Aerial Command Unit
-			-- Plasma Ball - Always casts on tank?
-
-			--- Unknown
+			-- Possible additions:
+				-- Spawn messages
+				-- Plasma Ball
+			--- Unknown - Are these even in the fight?
+			-- Possibly hard mode additional abilities
 			-- Flame Suppressant
 			[6] = {
 				type = "combatevent",

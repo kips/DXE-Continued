@@ -1,4 +1,5 @@
 do
+	-- TODO: Make surge warning scan for targets. Add surgewarnself and surgewarnothers
 	local data = {
 		version = "$Rev$",
 		key = "malygos", 
@@ -40,6 +41,7 @@ do
 				text = "Static field casted. Move!", 
 				time = 1.5, 
 				sound = "ALERT2", 
+				color1 = "YELLOW",
 			},
 			surgewarn = { 
 				var = "surgewarn", 
@@ -49,6 +51,7 @@ do
 				time = 1.5, 
 				sound = "ALERT1", 
 				throttle = 5,
+				color1 = "MAGENTA",
 			},
 			deepbreath = {
 				var = "deepbreath", 

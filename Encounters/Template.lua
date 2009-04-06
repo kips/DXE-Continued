@@ -1,13 +1,14 @@
 do
+	-- Remember to add Rev keyword
 	local data = {
 		version = "$Rev$",
-		key = "yoggsaron", 
-		zone = "Ulduar", 
-		name = "Yogg-Saron", 
-		title = "Yogg-Saron", 
-		tracing = {"Yogg-Saron",},
+		key = "boss", 
+		zone = "Zone", 
+		name = "Boss", 
+		title = "Boss", 
+		tracing = {"Boss",},
 		triggers = {
-			scan = "Yogg-Saron", 
+			scan = "Boss", 
 		},
 		onactivate = {
 			autostart = true,
@@ -15,7 +16,9 @@ do
 		},
 		userdata = {},
 		onstart = {},
-		alerts = {},
+		alerts = {
+
+		},
 	}
 
 	DXE:RegisterEncounter(data)
