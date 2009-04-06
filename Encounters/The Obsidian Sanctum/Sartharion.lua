@@ -59,9 +59,9 @@ do
 		alerts = {
 			lavawallcd = {
 				var = "lavawallcd", 
-				varname = "Lava wall cooldown", 
+				varname = "Lava Wall cooldown", 
 				type = "dropdown", 
-				text = "Lava wall cooldown", 
+				text = "Lava Wall cooldown", 
 				time = 25, 
 				flashtime = 5, 
 				sound = "ALERT3", 
@@ -74,14 +74,26 @@ do
 				text = "Incoming Lava Wall", 
 				time = 5, 
 				sound = "ALERT1", 
-				color1 = "ORANGE", 
+				color1 = "RED", 
+				color2 = "ORANGE",
 			},
 			shadowfissurewarn = {
 				var = "shadowfissurewarn", 
-				varname = "Shadow fissure warning", 
+				varname = "Shadow Fissure warning", 
 				type = "simple", 
-				text = "Shadow Fissure Spawned", 
+				text = "Shadow Fissure spawned!", 
+				sound = "ALERT2",
+				color1 = "PURPLE",
 				time = 1.5, 
+			},
+			flamebreathwarn = {
+				var = "flamebreathwarn",
+				varname = "Flame Breath cast",
+				type = "centerpopup",
+				text = "Flame Breath cast",
+				time = 2,
+				color1 = "MAGENTA",
+				sound = "ALERT4",
 			},
 		},
 		events = {
@@ -132,6 +144,17 @@ do
 						{expect = {"#1#","find","^Father was right about you"}},
 						{set = {vesperonarrived = 1}},
 						{scheduletimer = {"updatetracers",0}},
+					},
+				},
+			},
+			-- Flame Breath
+			[4] = {
+				type = "combatevent",
+				eventtype = "SPELL_CAST_START",
+				spellid = {56908,58956},
+				execute = {
+					[1] = {
+						{alert = "flamebreathwarn"},
 					},
 				},
 			},

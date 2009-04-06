@@ -3,11 +3,11 @@ do
 		version = "$Rev$",
 		key = "algalon", 
 		zone = "Ulduar", 
-		name = "Algalon", 
-		title = "Algalon", 
-		tracing = {"Algalon",},
+		name = "Algalon the Observer", 
+		title = "Algalon the Observer", 
+		tracing = {"Algalon the Observer",},
 		triggers = {
-			scan = "Algalon", 
+			scan = "Algalon the Observer", 
 		},
 		onactivate = {
 			autostart = true,

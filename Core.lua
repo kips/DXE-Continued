@@ -500,6 +500,7 @@ function DXE:CHAT_MSG_MONSTER_YELL(_,msg)
 	for fragment,data in pairs(yellTriggers) do
 		if find(msg,fragment) then
 			self:SetActiveEncounter(data.name)
+			self:StopEncounter()
 			self:StartEncounter()
 		end
 	end

@@ -1,0 +1,249 @@
+do
+	local data = {
+		version = "$Rev$",
+		key = "mimiron", 
+		zone = "Ulduar", 
+		name = "Mimiron", 
+		title = "Mimiron", 
+		tracing = {"Leviathan MKII"},
+
+		triggers = {
+			yell = "^We haven't much time, friends",
+		},
+		onactivate = {
+			leavecombat = true,
+		},
+		userdata = {
+			plasmablasttime = {20,30,loop = false},
+		},
+		onstart = {
+			-- Phase 1
+			[1] = {
+				{alert = "plasmablastwarn"},
+			},
+		},
+		-- TODO: Categorize into phases and mob
+		alerts = {
+			--- Unknown
+			flamesuppressantwarn = {
+				type = "centerpopup",
+				var = "flamesuppressantwarn",
+				varname = "Flame Suppressant cast",
+				text = "Flame Suppressant cast",
+				time = 2,
+				sound = "ALERT5",
+				color1 = "TEAL",
+			},
+			frostbombwarn = {
+				type = "centerpopup",
+				var = "frostbombwarn",
+				varname = "Frost Bomb cast",
+				text = "Frost Bomb cast",
+				time = 2,
+				sound = "ALERT5",
+				color1 = "BLUE",
+			},
+			frostbombcd = {
+				type = "dropdown",
+				var = "frostbombcd",
+				varname = "Frost Bomb cooldown",
+				text = "Frost Bomb cooldown",
+				time = 2,
+				sound = "ALERT1",
+				color1 = "BLUE",
+				color2 = "WHITE",
+			},
+			-- Leviathan MKII
+			plasmablastwarn = { 
+				type = "centerpopup",
+				var = "plasmablastwarn",
+				varname = "Plasma Blast warning",
+				text = "Plasma Blast cast",
+				time = 3,
+				color1 = "ORANGE",
+				sound = "ALERT5",
+			},
+			plasmablastcd = {
+				type = "dropdown",
+				var = "plasmablastcd",
+				varname = "Plasma Blast cooldown",
+				text = "Plasma Blast cooldown",
+				time = "<plasmablasttime>",
+				flashtime = 5,
+				color1 = "ORANGE",
+				color2 = "RED",
+				sound = "ALERT2",
+			},
+			shockblastwarn = {
+				type = "centerpopup",
+				var = "shockblastwarn",
+				varname = "Shock Blast cast",
+				text = "Shock Blast cast",
+				time = 4,
+				color1 = "MAGENTA",
+				sound = "ALERT5",
+			},
+			--- VX-001
+			laserbarragedur = {
+				type = "centerpopup",
+				var = "laserbarragedur",
+				varname = "Laser Barrage duration",
+				text = "Laser Barrage duration",
+				time = 15,
+				color1 = "PURPLE",
+				sound = "ALERT6",
+			},
+			laserbarragecd = {
+				var = "laserbarragecd",
+				varname = "Laser Barrage cooldown",
+				type = "dropdown",
+				text = "Next Laser Barrage in...",
+				time = 41,
+				flashtime = 5,
+				color1 = "PURPLE",
+				color2 = "YELLOW",
+				sound = "ALERT3",
+			},
+			spinupwarn = {
+				var = "spinupwarn",
+				varname = "Spin Up warning",
+				type = "centerpopup",
+				text = "Spinning Up!",
+				time = 4,
+				color1 = "WHITE",
+				color2 = "RED",
+				sound = "ALERT4",
+			},
+			--- Leviathan MK11 and VX-001
+			rocketstrikewarn = {
+				var = "rocketstrikewarn",
+				varname = "Rocket Strike warning",
+				type = "simple",
+				text = "Target Circle spawned. Avoid it!",
+				time = 1.5,
+				sound = "ALERT7",
+			},
+		},
+		timers = {
+			startbarragedur = {
+				[1] = {
+					{alert = "laserbarragedur"},
+					{quash = "spinupwarn"},
+				},
+			},
+			startbarragecd = {
+				[1] = {
+					{alert = "laserbarragecd"},
+				},
+			},
+		},
+		events = {
+			[1] = {
+				type = "event",
+				event = "YELL",
+				execute = {
+					-- Phase 2
+					[1] = {
+						{expect = {"#1#","find","^Behold, the VX-001"}},
+						{quash = "plasmablastwarn"},
+						{tracing = {"VX-001"}},
+					},
+					-- Phase 3
+					[2] = {
+						{expect = {"#1#","find","^Mwahahahaha! Isn't it beautiful!"}},
+						{tracing = {"Aerial Command Unit"}},
+						{quash = "laserbarragecd"},
+						{quash = "laserbarragedur"},
+						{quash = "spinupwarn"},
+						{canceltimer = "startbarragedur"},
+						{canceltimer = "startbarragecd"},
+					},
+					-- Phase 4
+					[3] = {
+						{expect = {"#1#","find","^Gaze upon its magnificence! Bask in"}},
+						{tracing = {"Leviathan MKII","VX-001","Aerial Command Unit"}},
+					},
+				},
+			},
+			--- Phase 1 - Leviathan MKII
+			-- Plasma Blast
+			[2] = {
+				type = "combatevent",
+				eventtype = "SPELL_CAST_START",
+				spellid = {62997,64529},
+				execute = {
+					[1] = {
+						{alert = "plasmablastwarn"},
+						{alert = "plasmablastcd"},
+					},	
+				},
+			},
+			-- Shock Blast
+			[3] = {
+				type = "combatevent",
+				eventtype = "SPELL_CAST_START",
+				spellid = 63631, -- TODO: Add heroic spellid
+				execute = {
+					[1] = {
+						{alert  = "shockblastwarn"},
+					},	
+				},
+			},
+			--- Phase 2 - VX-001
+			-- Spinning Up ->  Laser Barrage
+			[4] = {
+				type = "combatevent",
+				eventtype = "SPELL_CAST_SUCCESS",
+				spellid = 63414,
+				execute = {
+					[1] = {
+						{alert = "spinupwarn"},
+						{scheduletimer = {"startbarragedur",4}},
+						{scheduletimer = {"startbarragecd",19}},
+					},
+				},
+			},
+			-- Rocket Strike
+			[5] = {
+				type = "combatevent",
+				eventtype = "SPELL_CAST_SUCCESS",
+				spellid = 63041,
+				execute = {
+					[1] = {
+						{alert = "rocketstrikewarn"},
+					},
+				},
+			},
+			--- Phase 3 - Aerial Command Unit
+			-- Plasma Ball - Always casts on tank?
+
+			--- Unknown
+			-- Flame Suppressant
+			[6] = {
+				type = "combatevent",
+				eventtype = "SPELL_CAST_START",
+				spellid = 64570,
+				execute = {
+					[1] = {
+						{alert = "flamesuppressantwarn"},
+					},
+				},
+			},
+			-- Frost Bomb
+			[7] = {
+				type = "combatevent",
+				eventtype = "SPELL_CAST_START",
+				spellid = 64623,
+				execute = {
+					[1] = {
+						{alert = "frostbombwarn"},
+						{alert = "frostbombcd"},
+					},
+				},
+			},
+		},
+	}
+
+	DXE:RegisterEncounter(data)
+end
+

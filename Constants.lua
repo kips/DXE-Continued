@@ -42,6 +42,10 @@ local Sounds = {
 	ALERT3 = "Interface\\AddOns\\DXE\\Sounds\\LowMana.mp3",
 	ALERT4 = "Interface\\AddOns\\DXE\\Sounds\\LowHealth.mp3",
 	ALERT5 = "Interface\\AddOns\\DXE\\Sounds\\ZingAlarm.mp3",
+	ALERT6 = "Interface\\AddOns\\DXE\\Sounds\\Alarm.mp3",
+	ALERT7 = "Interface\\AddOns\\DXE\\Sounds\\Alert.mp3",
+	ALERT8 = "Interface\\AddOns\\DXE\\Sounds\\Info.mp3",
+	ALERT9 = "Interface\\AddOns\\DXE\\Sounds\\Long.mp3",
 }
 
 Constants.Sounds = Sounds

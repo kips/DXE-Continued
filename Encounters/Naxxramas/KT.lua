@@ -10,7 +10,6 @@ do
 			yell = "Minions, servants, soldiers of the cold dark", 
 		},
 		onactivate = {
-			autostart = true,
 			autostop = true,
 		},
 		userdata = {},
