@@ -21,7 +21,7 @@ local DXE = DXE
 local type,next,select = type,next,select
 local ipairs,pairs,unpack = ipairs,pairs,unpack
 local tostring,tonumber = tostring,tonumber
-local match,gmatch,gsub = string.match,string.gmatch,string.gsub
+local match,gmatch,gsub,find = string.match,string.gmatch,string.gsub,string.find
 
 local db,CE
 local userdata = {}
@@ -96,7 +96,7 @@ conditions['<='] = function(a, b)
 end
 
 conditions['find'] = function(a,b)
-	return tostring(a):find(tostring(b))
+	return find(tostring(a),tostring(b))
 end
 
 do
@@ -168,24 +168,16 @@ local function ReplaceVars(str)
 		local val = userdata[key]
 		if val then
 			-- Series support
+			-- Post increments the index
 			if type(val) == "table" then
-				-- Get the index value
-				local key_index = key.."_index"
-				local i = userdata[key_index]
-				-- Sanity check to make sure we don't go out of bounds
-				if i > #val then i = 1 end
-				-- We are at the end of the series
-				if i >= #val then
-					-- Should we loop?
-					if val.loop then
-						-- Reset back to start
-						userdata[key_index] = 1
-					end
+				local ix,n = key.."_index",#val
+				local i = userdata[ix]
+				if i > n and not val.loop then
+					i = n
 				else
-					-- Not at the end so increment
-					userdata[key_index] = userdata[key_index] + 1
+					i = ((i-1)%n)+1 -- Handles looping
+					userdata[ix] = userdata[ix] + 1
 				end
-				-- Assign table value
 				val = val[i]
 			end
 			-- Replace variable and value
@@ -254,11 +246,11 @@ local function SetUserData(info,...)
 		local flag = true
 		if type(v) == "string" then
 			-- Incr/Decr support
-			if v:find("^INCR") then
-				userdata[k] = userdata[k] + tonumber(v:match("^INCR|(%d+)"))
+			if find(v,"^INCR") then
+				userdata[k] = userdata[k] + tonumber(match(v,"^INCR|(%d+)"))
 				flag = false
-			elseif v:find("^DECR") then
-				userdata[k] = userdata[k] - tonumber(v:match("^DECR|(%d+)"))
+			elseif find(v,"^DECR") then
+				userdata[k] = userdata[k] - tonumber(match(v,"^DECR|(%d+)"))
 				flag = false
 			else
 				v = ReplaceTokens(v,...)
@@ -383,7 +375,10 @@ function Invoker:GetProximityFuncs()
 	return ProximityFuncs
 end
 
--- Range is validated
+-- @param target Name/GUID of a unit
+-- @param range Number of yards to check to see if player is in range of target.
+-- 				 It must be a key in ProximityFuncs. Validator ensures this.
+-- @return boolean 'true' if the player is in range of the target. 'false' otherwise.
 local function CheckProximity(target,range)
 	local uid = DXE:GetUnitID(target)
 	if not uid then return false end
@@ -396,7 +391,11 @@ end
 -- FUNCTIONS TABLE
 ---------------------------------------------
 
+--[[
 local insert = table.insert
+--- Inserts a tuple ... into table t
+-- @usage insertargs({},...)
+-- @return t The table with the tuple inserted
 local function insertargs(t,v,...)
 	if v then
 		insert(t,v)
@@ -405,6 +404,7 @@ local function insertargs(t,v,...)
 		return t
 	end
 end
+]]
 
 local CommandFuncs = {
 	expect = function(info,...)
@@ -429,11 +429,14 @@ local CommandFuncs = {
 
 	scheduletimer = function(info,...)
 		local name,time = info[1],info[2]
+		-- Rescheduled timers are overwritten
 		canceltimer(name)
 		timers[name] = DXE.new()
 		timers[name].handle = Invoker:ScheduleTimer("FireTimer",time,name)
-		-- Easiest way to do this
-		timers[name].args = insertargs(DXE.new(),...)
+		local args = DXE.new()
+		-- Only need the first 5
+		args[1],args[2],args[3],args[4],args[5] = ...
+		timers[name].args = args --insertargs(DXE.new(),...)
 		return true
 	end,
 
