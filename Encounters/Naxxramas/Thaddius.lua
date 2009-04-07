@@ -6,13 +6,15 @@ do
 		zone = "Naxxramas", 
 		name = "Thaddius", 
 		title = "Thaddius", 
-		tracing = {"Feugen","Stalagg","Thaddius"},
+		tracing = {"Thaddius","Stalagg","Feugen"},
 		triggers = {
-			scan = {"Feugen","Stalagg","Thaddius"}, 
+			scan = {"Thaddius","Feugen","Stalagg"},
+			yell = {"Stalagg crush you!","Feed you to master!"},
 		},
 		onactivate = {
 			autostart = true,
 			autostop = true,
+			leavecombat = true,
 		},
 		userdata = { 
 			dead = 0,

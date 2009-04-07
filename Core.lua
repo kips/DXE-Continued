@@ -290,14 +290,16 @@ function DXE:UpgradeEncounters()
 	deleteQueue = self.delete(deleteQueue)
 end
 
+-- Start the current encounter
 function DXE:StartEncounter()
 	if self:IsRunning() then return end
 	self:SendMessage("DXE_StartEncounter")
 	self:StartTimer()
 end
 
---- Stop the current encounter.
+-- Stop the current encounter
 function DXE:StopEncounter()
+	if not self:IsRunning() then return end
 	self:SendMessage("DXE_StopEncounter")
 	self:StopTimer()
 end
@@ -947,7 +949,6 @@ end
 --- Toggles the Pane timer
 function DXE:ToggleTimer()
 	if self:IsRunning() then
-		self:StopTimer()
 		self:StopEncounter()
 	else
 		self:StartTimer()

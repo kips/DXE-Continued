@@ -11,6 +11,7 @@ do
 		},
 		onactivate = {
 			autostop = true,
+			-- No leavecombat because a hunter could feign during phase 1
 		},
 		userdata = {},
 		onstart = {

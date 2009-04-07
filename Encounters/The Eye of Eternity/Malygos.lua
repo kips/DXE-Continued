@@ -13,6 +13,7 @@ do
 		onactivate = {
 			autostart = true,
 			autostop = true,
+			leavecombat = true,
 		},
 		userdata = { 
 			phase = 1,

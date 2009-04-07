@@ -12,6 +12,7 @@ do
 		onactivate = {
 			autostart = true,
 			autostop = true,
+			-- No leavecombat because a hunter could feign when he's on the balcony
 		},
 		userdata = { 
 			roomtime = {90,110,180,loop=false},

@@ -58,9 +58,6 @@ end
 
 function Invoker:OnStop()
 	if not CE then return end
-	if CE.onstop then
-		self:InvokeCommands(CE.onstop)
-	end
 	-- Reset userdata
 	self:ResetUserData()
 	-- Quashes all alerts
