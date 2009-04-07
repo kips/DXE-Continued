@@ -2,7 +2,7 @@ do
 	local data = {
 		version = "$Rev$",
 		key = "emalon", 
-		zone = "Ulduar", 
+		zone = "Vault of Archavon", 
 		name = "Emalon the Storm Watcher", 
 		title = "Emalon the Storm Watcher", 
 		tracing = {"Emalon the Storm Watcher",},

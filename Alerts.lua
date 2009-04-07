@@ -285,7 +285,6 @@ function Alerts:Dropdown(id, text, totalTime, flashTime, sound, c1, c2)
 	if sound then sound = Sounds[sound] end
 	if c1 then c1 = Colors[c1] end
 	if c2 then c2 = Colors[c2] end
-	local ldt = totalTime - flashTime
 	local alert = self:GetAlert()
 	alert:SetColor(c1,c2)
 	alert:SetText(text) 
@@ -296,7 +295,7 @@ function Alerts:Dropdown(id, text, totalTime, flashTime, sound, c1, c2)
 	alert.userdata.forceTop = true
 	self:Countdown(alert,totalTime,flashTime)
 	self:ToTop(alert)
-	if flashTime then Timers[self:ScheduleTimer("ToCenter",ldt, alert)] = alert end
+	if flashTime then Timers[self:ScheduleTimer("ToCenter",totalTime - flashTime, alert)] = alert end
 	Timers[self:ScheduleTimer("Fade",totalTime,alert)] = alert
 	Timers[self:ScheduleTimer("Destroy",totalTime + 3,alert)] = alert
 	self:StartUpdating()

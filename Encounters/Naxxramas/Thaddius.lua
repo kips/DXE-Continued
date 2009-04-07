@@ -1,3 +1,4 @@
+-- TODO: Add side switching warning
 do
 	local data = {
 		version = "$Rev$",
@@ -47,7 +48,7 @@ do
 				var = "tankthrowcd", 
 				varname = "Tank throw cooldown", 
 				type = "dropdown", 
-				text = "Tank throw", 
+				text = "Next Tank Throw", 
 				time = 20.6, 
 				flashtime = 3, 
 				sound = "ALERT2", 
@@ -55,9 +56,9 @@ do
 			},
 			polarityshiftwarn = {
 				var = "polarityshiftwarn", 
-				varname = "Polarity shift warning", 
+				varname = "Polarity Shift cast", 
 				type = "centerpopup", 
-				text = "Polarity Shift", 
+				text = "Polarity Shift Cast", 
 				time = 3, 
 				flashtime = 3, 
 				sound = "ALERT1", 

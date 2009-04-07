@@ -27,7 +27,7 @@ do
 				var = "flamejetswarn",
 				varname = "Flame Jets cast",
 				type = "centerpopup",
-				text = "Flame Jets cast",
+				text = "Flame Jets Cast",
 				time = 2.7,
 				color1 = "RED",
 				sound = "ALERT3",
@@ -47,7 +47,7 @@ do
 				var = "scorchwarnself",
 				varname = "Scorch warning on self",
 				type = "simple",
-				text = "You are scorched!",
+				text = "Scorched: YOU!",
 				time = 1.5,
 				color1 = "MAGENTA",
 				sound = "ALERT5",
@@ -55,7 +55,7 @@ do
 			scorchcd = {
 				var = "scorchcd",
 				varname = "Scorch cooldown",
-				text = "Scorch cooldown",
+				text = "Next Scorch",
 				type = "dropdown",
 				time = 25,
 				flashtime = 5,
@@ -105,11 +105,11 @@ do
 				execute = {
 					[1] = {
 						{expect = {"#4#","==","&playerguid&"}},
-						{set = {slagpotmessage = "Slag Pot duration on YOU"}},
+						{set = {slagpotmessage = "Slag Pot: YOU!"}},
 					},
 					[2] = {
 						{expect = {"#4#","~=","&playerguid&"}},
-						{set = {slagpotmessage = "Slag Pot duration on #5#"}},
+						{set = {slagpotmessage = "Slag Pot: #5#"}},
 					},
 					[3] = {
 						{alert = "slagpotdur"},

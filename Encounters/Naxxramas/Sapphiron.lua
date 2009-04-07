@@ -18,9 +18,9 @@ do
 		alerts = {
 			lifedraincd = {
 				var = "lifedraincd", 
-				varname = "Life drain cooldown", 
+				varname = "Life Drain cooldown", 
 				type = "dropdown", 
-				text = "Lifedrain", 
+				text = "Next Life Drain", 
 				time = 23, 
 				flashtime = 5, 
 				sound = "ALERT3", 
@@ -30,7 +30,7 @@ do
 				var = "airphasedur", 
 				varname = "Air phase duration", 
 				type = "centerpopup", 
-				text = "Air Phase", 
+				text = "Air Phase Duration", 
 				time = 15.5, 
 				flashtime = 5, 
 				sound = "ALERT2", 

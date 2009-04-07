@@ -23,9 +23,9 @@ do
 		alerts = {
 			gothikcomesdown = {
 				var = "gothikcomesdown", 
-				varname = "Gothik comes down",
+				varname = "Gothik arrival",
 				type = "dropdown",
-				text = "Gothik comes down", 
+				text = "Gothik Arrives", 
 				time = 270,
 				flashtime = 5, 
 				sound = "ALERT1", 

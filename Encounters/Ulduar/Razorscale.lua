@@ -28,7 +28,7 @@ do
 				var = "breathwarn",
 				varname = "Flame Breath cast",
 				type = "centerpopup",
-				text = "Flame Breath cast",
+				text = "Flame Breath Cast",
 				time = 2.5,
 				flashtime = 2.5,
 				color1 = "BLUE",
@@ -39,7 +39,7 @@ do
 				var = "chaindur",
 				varname = "Chain duration",
 				type = "dropdown",
-				text = "Chain duration",
+				text = "Chain Duration",
 				time = 38,
 				flashtime = 10,
 				color1 = "BROWN",
@@ -58,7 +58,7 @@ do
 				var = "permlandwarn",
 				varname = "Permanent landing warning",
 				type = "simple",
-				text = "Razorscale permanently lands!",
+				text = "Razorscale permanently landed!",
 				time = 1.5,
 				sound = "ALERT4",
 			},
@@ -80,6 +80,7 @@ do
 				type = "event",
 				event = "YELL",
 				execute = {
+					-- Chain
 					[1] = {
 						{expect = {"#1#","find","^Move quickly! She won't"}},
 						{alert = "chaindur"},

@@ -24,7 +24,7 @@ do
 				var = "decimatecd",
 				varname = "Decimate cooldown",
 				type = "dropdown",
-				text = "Decimate cooldown", 
+				text = "Decimate Cooldown", 
 				time = 105, 
 				flashtime = 5, 
 				sound = "ALERT1", 
