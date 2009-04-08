@@ -146,6 +146,16 @@ do
 				time = 25,
 				flashtime = 10,
 			},
+			-- Hard Mode
+			hardmodetimer = {
+				var = "hardmodetimer",
+				varname = "Hard mode timer",
+				type = "dropdown",
+				text = "Raid Wipe",
+				time = 480,
+				flashtime = 10,
+				color1 = "BROWN",
+			},
 		},
 		timers = {
 			startbarragedur = {
@@ -188,6 +198,11 @@ do
 						{expect = {"#1#","find","^Preliminary testing phase complete"}},
 						{tracing = {"Leviathan MKII","VX-001","Aerial Command Unit"}},
 						{alert = "threetofour"},
+					},
+					-- Hard mode activated
+					[4] = {
+						{expect = {"#1#","find","^Self-destruct sequence initiated"}},
+						{alert = "hardmodetimer"},
 					},
 				},
 			},

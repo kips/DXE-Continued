@@ -12,6 +12,7 @@ do
 		onactivate = {
 			autostart = true,
 			autostop = true,
+			leavecombat = true,
 		},
 		userdata = {
 			flamejetstime = {28,35,loop = false},

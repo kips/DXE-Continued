@@ -36,10 +36,11 @@ do
 				var = "enrage2cd", 
 				varname = "Phase 2 enrage cooldown", 
 				type = "dropdown", 
-				text = "Phase 2 Enrage", 
+				text = "Enrage", 
 				time = 120, 
 				flashtime = 5, 
 				sound = "ALERT1", 
+				color1 = "RED",
 			},
 			hardmodecd = {
 				var = "hardmodecd", 

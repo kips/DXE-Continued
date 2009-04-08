@@ -12,24 +12,27 @@ do
 		onactivate = {
 			autostart = true,
 			autostop = true,
+			leavecombat = true,
 		},
 		userdata = {},
 		onstart = {
 			[1] = {
 				{alert = "enragecd"},
 				{alert = "flashfreezecd"},
+				{alert = "hardmodeends"},
 			},
 		},
 		alerts = {
 			flashfreezewarn = {
 				var = "flashfreezewarn", 
-				varname = "Flash freeze cast", 
+				varname = "Flash Freeze cast", 
 				type = "centerpopup", 
-				text = "Flash Freeze Cast", 
-				time = 9, 
-				flashtime = 0, 
+				text = "Flash Freeze! Hide!", 
+				time = 9,
+				flashtime = 9,
 				sound = "ALERT1", 
-				color1 = "BLUE", 
+				color1 = "BLUE",
+				color2 = "GREEN",
 			},
 			flashfreezecd = {
 				var = "flashfreezecd", 
@@ -40,7 +43,7 @@ do
 				flashtime = 5,
 				sound = "ALERT2", 
 				color1 = "TURQUOISE",
-				color2 = "RED",
+				color2 = "MAGENTA",
 			},
 			enragecd = {
 				var = "enragecd",
@@ -49,6 +52,7 @@ do
 				text = "Enrage",
 				time = 540,
 				flashtime = 5,
+				color1 = "RED",
 			},
 			frozenblowdur = {
 				var = "frozenblowdur", 
@@ -60,6 +64,15 @@ do
 				sound = "ALERT3", 
 				color1 = "MAGENTA",
 				color2 = "GREEN",
+			},
+			hardmodeends = {
+				var = "hardmodeends",
+				varname = "Hard mode ends",
+				type = "dropdown",
+				text = "Hard Mode Ends",
+				time = 165,
+				flashtime = 10,
+				sound = "ALERT4",
 			},
 		},
 		events = {

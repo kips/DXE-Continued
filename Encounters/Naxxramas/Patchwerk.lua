@@ -29,6 +29,7 @@ do
 				time = 360, 
 				flashtime = 5, 
 				sound = "ALERT2", 
+				color1 = "RED",
 			},
 			enragewarn = {
 				var = "enragewarn", 

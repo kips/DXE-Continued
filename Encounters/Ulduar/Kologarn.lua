@@ -5,15 +5,15 @@ do
 		zone = "Ulduar", 
 		name = "Kologarn", 
 		title = "Kologarn", 
-		tracing = {"Kologarn",},
+		tracing = {"Kologarn","Right Arm","Left Arm"},
 		triggers = {
 			scan = "Kologarn", 
 		},
 		onactivate = {
 			autostart = true,
 			autostop = true,
+			leavecombat = true,
 		},
-		userdata = {},
 		onstart = {},
 		alerts = {
 			eyebeamdurself = {
@@ -71,9 +71,7 @@ do
 				type = "dropdown",
 				text = "Left Arm Respawns",
 				time = 60,
-				flashtime = 5,
 				color1 = "CYAN",
-				sound = "ALERT5",
 			},
 			rightarmcd = {
 				var = "rightarmcd",
@@ -81,9 +79,41 @@ do
 				type = "dropdown",
 				text = "Right Arm Respawns",
 				time = 60,
-				flashtime = 5,
 				color1 = "DCYAN",
-				sound = "ALERT5",
+			},
+		},
+		userdata = {
+			rightarmalive = 1,
+			leftarmalive = 1,
+		},
+		timers = {
+			updatetracing = {
+				[1] = {
+					{expect = {"<rightarmalive> <leftarmalive>","==","0 0"}},
+					{tracing = {"Kologarn"}},
+				},
+				[2] = {
+					{expect = {"<rightarmalive> <leftarmalive>","==","0 1"}},
+					{tracing = {"Kologarn","Left Arm"}},
+				},
+				[3] = {
+					{expect = {"<rightarmalive> <leftarmalive>","==","1 0"}},
+					{tracing = {"Kologarn","Right Arm"}},
+				},
+				[4] = {
+					{expect = {"<rightarmalive> <leftarmalive>","==","1 1"}},
+					{tracing = {"Kologarn","Right Arm","Left Arm"}},
+				},
+			},
+			makerightalive = {
+				[1] = {
+					{set = {rightarmalive = 1}},
+				},
+			},
+			makeleftalive = {
+				[1] = {
+					{set = {leftarmalive = 1}},
+				},
 			},
 		},
 		events = {
@@ -123,15 +153,29 @@ do
 					[1] = {
 						{expect = {"#1#","find","^Just a scratch"}},
 						{alert = "leftarmcd"},
+						{set = {leftarmalive = 0}},
+						{scheduletimer = {"makeleftalive",60}},
+						{scheduletimer = {"updatetracing",60.5}},
+						{scheduletimer = {"updatetracing",0}},
 					},
 					-- Right Arm dies
 					[2] = {
 						{expect = {"#1#","find","^Only a flesh wound"}},
 						{alert = "rightarmcd"},
+						{set = {rightarmalive = 0}},
+						{scheduletimer = {"makerightalive",60}},
+						{scheduletimer = {"updatetracing",60.5}},
+						{scheduletimer = {"updatetracing",0}},
 					},
+					--- Remove one of the bottom two
 					-- Shockwave
 					[3] = {
 						{expect = {"#1#","find","^Oblivion"}},
+						{alert = "shockwavecd"},
+					},
+					-- Shockwave -- fix?
+					[4] = {
+						{expect = {"#1#","find","^OBLIVION"}},
 						{alert = "shockwavecd"},
 					},
 				},
