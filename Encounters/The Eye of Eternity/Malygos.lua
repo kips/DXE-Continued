@@ -46,13 +46,23 @@ do
 			},
 			surgewarn = { 
 				var = "surgewarn", 
-				varname = "Surge warning", 
-				type = "simple", 
+				varname = "Surge warning on self", 
+				type = "centerpopup", 
 				text = "Surge: YOU! Careful!", 
-				time = 1.5, 
+				time = 3,
+				flashtime = 3,
 				sound = "ALERT1", 
 				throttle = 5,
 				color1 = "MAGENTA",
+			},
+			presurgewarn = { 
+				var = "surgewarn", 
+				varname = "Surge warning on self", 
+				type = "simple", 
+				text = "Surge: YOU! Soon!", 
+				time = 1.5, 
+				sound = "ALERT5", 
+				color1 = "TURQUOISE",
 			},
 			deepbreath = {
 				var = "deepbreath", 
@@ -108,6 +118,7 @@ do
 				execute = {
 					[1] = {
 						{expect = {"#4#","==","&vehicleguid&"}},
+						{quash = "presurgewarn"},
 						{alert = "surgewarn"},
 					},
 				},
@@ -156,6 +167,17 @@ do
 					[2] = {
 						{expect = {"<phase>","==","2"}},
 						{alert = "deepbreath"},
+					},
+				},
+			},
+			-- Whispers
+			[6] = {
+				type = "event",
+				event = "WHISPER",
+				execute = {
+					[1] = {
+						{expect = {"#1#","find","fixes his eyes on you!$"}},
+						{alert = "presurgewarn"},
 					},
 				},
 			},

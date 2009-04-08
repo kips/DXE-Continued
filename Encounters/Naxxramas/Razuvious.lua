@@ -8,9 +8,9 @@ do
 		tracing = {"Instructor Razuvious",},
 		triggers = {
 			scan = "Instructor Razuvious", 
+			yell = "^The time for practice is over!",
 		},
 		onactivate = {
-			autostart = true,
 			autostop = true,
 			leavecombat = true,
 		},

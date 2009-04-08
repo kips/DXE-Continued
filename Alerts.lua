@@ -41,6 +41,7 @@ end
 ---------------------------------------
 -- The active alerts
 local Active= {}
+Alerts.Active = Active
 local frame = CreateFrame("Frame",nil,UIParent)
 local function OnUpdate(self,elapsed)
 	if #Active == 0 then frame:SetScript("OnUpdate",nil) end
@@ -95,6 +96,7 @@ end
 
 -- Timer cache
 local Timers = {}
+Alerts.Timers = Timers
 
 function Alerts:AlertsScaleChanged()
 	scale = DXE.db.global.AlertsScale
@@ -112,12 +114,18 @@ function Alerts:GetAlert()
 end
 
 function Alerts:RemoveAlert(alert)
-	for i,_alert in ipairs(Active) do
-		if _alert == alert then 
+	for i,nextAlert in ipairs(Active) do
+		if nextAlert == alert then 
 			remove(Active,i) 
 			break 
 		end
 	end
+end
+
+function Alerts:StopAll()
+	self:QuashAllAlerts()
+	-- Just to be safe
+	self:CancelAllTimers()
 end
 
 function Alerts:QuashAllAlerts()
@@ -141,14 +149,9 @@ function Alerts:QuashAlertsByPattern(pattern)
 	end
 end
 
-do
-	local temp = {}
-	function Alerts:CancelAlertTimers(alert)
-		wipe(temp)
-		for handle,_alert in pairs(Timers) do
-			if _alert == alert then temp[handle] = alert end
-		end
-		for handle,_alert in pairs(temp) do
+function Alerts:CancelAlertTimers(alert)
+	for handle,nextAlert in pairs(Timers) do
+		if nextAlert == alert then 
 			self:CancelTimer(handle,true)
 			Timers[handle] = nil
 		end

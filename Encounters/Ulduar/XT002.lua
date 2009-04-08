@@ -12,6 +12,7 @@ do
 		onactivate = {
 			autostart = true,
 			autostop = true,
+			leavecombat = true,
 		},
 		userdata = {},
 		onstart = {},
@@ -33,7 +34,7 @@ do
 				type = "centerpopup",
 				text = "Gravity Bomb: #5#",
 				time = 9,
-				color1 = "ORANGE",
+				color1 = "RED",
 			},
 			lightwarnself = {
 				var = "lightwarnself",
@@ -42,8 +43,8 @@ do
 				text = "Light Bomb: YOU! Move!",
 				time = 9,
 				flashtime = 9,
-				sound = "ALERT1",
-				color1 = "RED",
+				sound = "ALERT3",
+				color1 = "CYAN",
 				color2 = "MAGENTA",
 			},
 			lightwarnother = {
@@ -52,7 +53,7 @@ do
 				type = "centerpopup",
 				text = "Light Bomb: #5#",
 				time = 9,
-				color1 = "ORANGE",
+				color1 = "CYAN",
 			},
 			tympanicwarn = {
 				var = "tympanicwarn",
@@ -61,6 +62,7 @@ do
 				text = "Tympanic Tantrum",
 				time = 12,
 				flashtime = 3,
+				color1 = "BROWN",
 				sound = "ALERT2",
 			},
 			exposedwarn = {
@@ -70,14 +72,15 @@ do
 				text = "Heart Exposed!",
 				time = 30,
 				flashtime = 5,
-				sound = "ALERT2",
+				sound = "ALERT4",
 			},
 			hardmodealert = {
 				var = "hardmodealert",
 				varname = "Hard mode activation",
 				type = "simple",
-				text = "Hard mode activated!",
-				time = 5,
+				text = "Hard Mode Activated!",
+				time = 1.5,
+				sound = "ALERT5",
 			},
 		},
 		timers = {

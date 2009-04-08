@@ -18,6 +18,9 @@ do
 			tenebronarrived = 0,
 			shadronarrived = 0,
 			vesperonarrived = 0,
+			tenebrontimer = 0,
+			shadrontimer = 0,
+			vesperontimer = 0,
 		},
 		onstart = {
 			[1] = {
@@ -70,7 +73,7 @@ do
 			},
 			lavawallwarn = {
 				var = "lavawallwarn", 
-				varname = "Lava wall warning", 
+				varname = "Lava Wall warning", 
 				type = "centerpopup", 
 				text = "Incoming Lava Wall!", 
 				time = 5, 
@@ -95,6 +98,31 @@ do
 				time = 2,
 				color1 = "MAGENTA",
 				sound = "ALERT4",
+			},
+			-- No flash times. It gets too polluted during the fight if everything else is on
+			shadronarrives = {
+				type = "dropdown",
+				var = "sharonarrives",
+				varname = "Shadron arrival",
+				text = "Shadron Arrives",
+				time = 80,
+				color1 = "DCYAN",
+			},
+			tenebronarrives = {
+				type = "dropdown",
+				var = "tenebronarrives",
+				varname = "Tenebron arrival",
+				text = "Tenebron Arrives",
+				time = 30,
+				color1 = "CYAN",
+			},
+			vesperonarrives = {
+				type = "dropdown",
+				var = "vesperonarrives",
+				varname = "Vesperon arrival",
+				text = "Vesperon Arrives",
+				time = 120,
+				color1 = "GREEN",
 			},
 		},
 		events = {
@@ -156,6 +184,32 @@ do
 				execute = {
 					[1] = {
 						{alert = "flamebreathwarn"},
+					},
+				},
+			},
+			-- Drake Arrivals
+			[5] = {
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellid = {58105, 61248, 61251},
+				execute = {
+					[1] = {
+						-- Shadron
+						{expect = {"#7# <shadrontimer>","==","58105 0"}},
+						{set = {shadrontimer = 1}},
+						{alert = "shadronarrives"},
+					},
+					[2] = {
+						-- Tenebron
+						{expect = {"#7# <tenebrontimer>","==","61248 0"}},
+						{set = {tenebrontimer = 1}},
+						{alert = "tenebronarrives"},
+					},
+					[3] = {
+						-- Vesperon
+						{expect = {"#7# <vesperontimer>","==","61251 0"}},
+						{set = {vesperontimer = 1}},
+						{alert = "vesperonarrives"},
 					},
 				},
 			},

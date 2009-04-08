@@ -15,19 +15,23 @@ do
 			leavecombat = true,
 		},
 		userdata = { 
-			swarmcd = {105, 85, loop=false},
+			swarmcd = {90, 85, loop=false},
 		},
 		onstart = {
 			[1] = {
+				{expect = {"&difficulty&","==","1"}},
+				{set = {swarmcd = {102,85,loop = false}}},
+			},
+			[2] = {
 				{alert = "locustswarmcd"},
-			}
+			},
 		},
 		alerts = {
 			locustswarmcd = {
 				var = "locustswarmcd", 
 				varname = "Locust swarm cooldown", 
 				type = "dropdown", 
-				text = "Next Locust Swarm", 
+				text = "Locust Swarm Cooldown", 
 				time = "<swarmcd>",
 				flashtime = 5, 
 				sound = "ALERT1", 

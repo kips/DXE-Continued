@@ -61,8 +61,8 @@ function Invoker:OnStop()
 	-- Reset userdata
 	self:ResetUserData()
 	-- Quashes all alerts
-	Alerts:QuashAllAlerts()
-	-- Remove timers
+	Alerts:StopAll()
+	-- Remove Timers
 	self:RemoveAllTimers()
 	-- Remove throttles
 	self:RemoveThrottles()
@@ -306,28 +306,29 @@ end
 ---------------------------------------------
 -- TIMERS
 ---------------------------------------------
-local timers = {}
-
-function Invoker:RemoveAllTimers()
-	-- Cancel all timers
-	for name in pairs(timers) do
-		Invoker:CancelTimer(timers[name].handle,true)
-		timers[name] = DXE.rdelete(timers[name])
-	end
-end
+local Timers = {}
+Invoker.Timers = Timers
 
 local function canceltimer(name)
-	if timers[name] then
-		Invoker:CancelTimer(timers[name].handle,true)
-		timers[name] = DXE.rdelete(timers[name])
+	if Timers[name] then
+		Invoker:CancelTimer(Timers[name].handle,true)
+		Timers[name] = DXE.rdelete(Timers[name])
 	end
 	return true
 end
 
+function Invoker:RemoveAllTimers()
+	for name in pairs(Timers) do
+		canceltimer(name)
+	end
+	-- Just to be safe
+	self:CancelAllTimers()
+end
+
 function Invoker:FireTimer(name)
-	if CE.timers[name] then
-		-- Don't wipe timers[name], it could be rescheduled
-		self:InvokeCommands(CE.timers[name],unpack(timers[name].args))
+	if CE.Timers[name] then
+		-- Don't wipe Timers[name], it could be rescheduled
+		self:InvokeCommands(CE.Timers[name],unpack(Timers[name].args))
 	end
 end
 
@@ -391,21 +392,6 @@ end
 -- FUNCTIONS TABLE
 ---------------------------------------------
 
---[[
-local insert = table.insert
---- Inserts a tuple ... into table t
--- @usage insertargs({},...)
--- @return t The table with the tuple inserted
-local function insertargs(t,v,...)
-	if v then
-		insert(t,v)
-		return insertargs(t,...)
-	else
-		return t
-	end
-end
-]]
-
 local CommandFuncs = {
 	expect = function(info,...)
 		local flag = expect(ReplaceTokens(info[1],...),info[2],ReplaceTokens(info[3],...))
@@ -429,14 +415,14 @@ local CommandFuncs = {
 
 	scheduletimer = function(info,...)
 		local name,time = info[1],info[2]
-		-- Rescheduled timers are overwritten
+		-- Rescheduled Timers are overwritten
 		canceltimer(name)
-		timers[name] = DXE.new()
-		timers[name].handle = Invoker:ScheduleTimer("FireTimer",time,name)
+		Timers[name] = DXE.new()
+		Timers[name].handle = Invoker:ScheduleTimer("FireTimer",time,name)
 		local args = DXE.new()
 		-- Only need the first 5
 		args[1],args[2],args[3],args[4],args[5] = ...
-		timers[name].args = args --insertargs(DXE.new(),...)
+		Timers[name].args = args
 		return true
 	end,
 
@@ -502,6 +488,7 @@ end
 local REG_ALIASES = {
 	YELL = "CHAT_MSG_MONSTER_YELL",
 	EMOTE = "CHAT_MSG_RAID_BOSS_EMOTE",
+	WHISPER = "CHAT_MSG_RAID_BOSS_WHISPER",
 }
 
 function Invoker:RegisterEvents()

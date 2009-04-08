@@ -8,11 +8,10 @@ do
 		tracing = {"Gothik the Harvester",},
 		triggers = {
 			scan = "Gothik the Harvester", 
-			yell = "^Foolishly you have sought your own demise",
+			yell = {"^Foolishly you have sought","^Teamanare shi rikk"},
 		},
 		onactivate = {
-			autostop = true,
-			-- No leavecombat because a hunter could feign
+			leavecombat = true,
 		},
 		userdata = {},
 		onstart = {
