@@ -15,7 +15,150 @@ do
 		},
 		userdata = {},
 		onstart = {},
-		alerts = {},
+		alerts = {
+			gravitywarnself = {
+				var = "gravitywarnself",
+				varname = "Gravity Bomb on self",
+				type = "centerpopup",
+				text = "Gravity Bomb: YOU! Move!",
+				time = 9,
+				flashtime = 9,
+				sound = "ALERT1",
+				color1 = "RED",
+				color2 = "MAGENTA",
+			},
+			gravitywarnother = {
+				var = "gravitywarnother",
+				varname = "Gravity Bomb on others",
+				type = "centerpopup",
+				text = "Gravity Bomb: #5#",
+				time = 9,
+				color1 = "ORANGE",
+			},
+			lightwarnself = {
+				var = "lightwarnself",
+				varname = "Light Bomb on self",
+				type = "centerpopup",
+				text = "Light Bomb: YOU! Move!",
+				time = 9,
+				flashtime = 9,
+				sound = "ALERT1",
+				color1 = "RED",
+				color2 = "MAGENTA",
+			},
+			lightwarnother = {
+				var = "lightwarnother",
+				varname = "Light Bomb on others",
+				type = "centerpopup",
+				text = "Light Bomb: #5#",
+				time = 9,
+				color1 = "ORANGE",
+			},
+			tympanicwarn = {
+				var = "tympanicwarn",
+				varname = "Tympanic Tantrum cast",
+				type = "centerpopup",
+				text = "Tympanic Tantrum",
+				time = 12,
+				flashtime = 3,
+				sound = "ALERT2",
+			},
+			exposedwarn = {
+				var = "exposedwarn",
+				varname = "Heart exposed warning",
+				type = "dropdown",
+				text = "Heart Exposed!",
+				time = 30,
+				flashtime = 5,
+				sound = "ALERT2",
+			},
+			hardmodealert = {
+				var = "hardmodealert",
+				varname = "Hard mode activation",
+				type = "simple",
+				text = "Hard mode activated!",
+				time = 5,
+			},
+		},
+		timers = {
+			heartunexposed = {
+				[1] = {
+					{tracing = {"XT-002 Deconstructor"}},
+				},
+			},
+		},
+		events = {
+			-- Gravity Bomb
+			[1] = {
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellid = {63024, 64234},
+				execute = {
+					[1] = {
+						{expect = {"#4#", "==", "&playerguid&"}},
+						{alert = "gravitywarnself"},
+					},
+					[2] = {
+						{expect = {"#4#", "~=", "&playerguid&"}},
+						{alert = "gravitywarnother"},
+					},
+				},
+			},
+			-- Light Bomb
+			[2] = {
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellid = 63018,
+				execute = {
+					[1] = {
+						{expect = {"#4#", "==", "&playerguid&"}},
+						{alert = "lightwarnself"},
+					},
+					[2] = {
+						{expect = {"#4#", "~=", "&playerguid&"}},
+						{alert = "lightwarnother"},
+					},
+				},
+			},
+			-- Tympanic
+			[3] = {
+				type = "combatevent",
+				eventtype = "SPELL_CAST_START",
+				spellid = {62775, 62776},
+				execute = {
+					[1] = {
+						{alert = "tympanicwarn"},
+					},
+				},
+			},
+			-- Heart Exposed
+			[4] = {
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellid = 63849,
+				execute = {
+					[1] = {
+						{alert = "exposedwarn"},
+						{scheduletimer = {"heartunexposed", 30}},
+						{tracing = {"XT-002 Deconstructor","Heart of the Deconstructor"}},
+					},
+				},
+			},
+			-- Heartbreak
+			[5] = {
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellid = 64193,
+				execute = {
+					[1] = {
+						{quash = "exposedwarn"},
+						{canceltimer = "heartunexposed"},
+						{tracing = {"XT-002 Deconstructor"}},
+						{alert = "hardmodealert"},
+					},
+				},
+			},
+		},
 	}
 
 	DXE:RegisterEncounter(data)
