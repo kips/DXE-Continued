@@ -96,7 +96,7 @@ do
 				type = "centerpopup",
 				text = "Flame Breath Cast",
 				time = 2,
-				color1 = "MAGENTA",
+				color1 = "DCYAN",
 				sound = "ALERT4",
 			},
 			-- No flash times. It gets too polluted during the fight if everything else is on

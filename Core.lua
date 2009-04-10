@@ -764,7 +764,7 @@ do
 		assert(type(height) == "number" and height > 0,"expected 'height' to be a number > 0")
 		assert(type(text) == "string","expected 'text' to be a string")
 		local frame = CreateFrame("Frame","DXE"..name,UIParent)
-		frame:SetClampedToScreen(true)
+		--frame:SetClampedToScreen(true)
 		frame:EnableMouse(true)
 		frame:SetMovable(true)
 		frame:SetBackdrop(backdrop)

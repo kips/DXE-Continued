@@ -173,7 +173,7 @@ do
 						{expect = {"#1#","find","^Oblivion"}},
 						{alert = "shockwavecd"},
 					},
-					-- Shockwave -- fix?
+					-- Shockwave 2
 					[4] = {
 						{expect = {"#1#","find","^OBLIVION"}},
 						{alert = "shockwavecd"},

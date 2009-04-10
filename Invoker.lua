@@ -64,7 +64,7 @@ function Invoker:OnStop()
 	Alerts:StopAll()
 	-- Remove Timers
 	self:RemoveAllTimers()
-	-- Remove throttles
+	-- Remove Throttles
 	self:RemoveThrottles()
 end
 
@@ -167,7 +167,7 @@ local function ReplaceVars(str)
 		local key = match(var,"<(.+)>")
 		local val = userdata[key]
 		if val then
-			-- Series support
+			--- Series support
 			-- Post increments the index
 			if type(val) == "table" then
 				local ix,n = key.."_index",#val
@@ -235,6 +235,7 @@ function Invoker:ResetUserData()
 	for k,v in pairs(CE.userdata) do
 		userdata[k] = v
 		if type(v) == "table" then
+			-- Indexing for series
 			userdata[k.."_index"] = 1
 		end
 	end
@@ -245,7 +246,7 @@ local function SetUserData(info,...)
 	for k,v in pairs(info) do
 		local flag = true
 		if type(v) == "string" then
-			-- Incr/Decr support
+			-- Increment/Decrement support
 			if find(v,"^INCR") then
 				userdata[k] = userdata[k] + tonumber(match(v,"^INCR|(%d+)"))
 				flag = false
@@ -263,25 +264,25 @@ end
 ---------------------------------------------
 -- ALERTS
 ---------------------------------------------
-local throttles = {}
+local Throttles = {}
 
 function Invoker:RemoveThrottles()
-	wipe(throttles)
+	wipe(Throttles)
 end
 
 local GetTime = GetTime
-local function StartAlert(alert_name,...)
-	local info = CE.alerts[alert_name]
+local function StartAlert(name,...)
+	local info = CE.alerts[name]
 	-- Sanity check
 	if not info then return end
 	-- Throttling
 	if info.throttle then
-		-- Initialize to 0 if non-existant. Note: alert_name or data.var?
-		throttles[alert_name] = throttles[alert_name] or 0
+		-- Initialize to 0 if non-existant
+		Throttles[name] = Throttles[name] or 0
 		-- Check throttle
 		local t = GetTime()
-		if throttles[alert_name] + info.throttle < t then
-			throttles[alert_name] = t
+		if Throttles[name] + info.throttle < t then
+			Throttles[name] = t
 		else
 			-- Failed throttle so exit out
 			return
@@ -420,8 +421,8 @@ local CommandFuncs = {
 		Timers[name] = DXE.new()
 		Timers[name].handle = Invoker:ScheduleTimer("FireTimer",time,name)
 		local args = DXE.new()
-		-- Only need the first 5
-		args[1],args[2],args[3],args[4],args[5] = ...
+		-- Only need the first 7 (up to spellID)
+		args[1],args[2],args[3],args[4],args[5],args[6],args[7] = ...
 		Timers[name].args = args
 		return true
 	end,
