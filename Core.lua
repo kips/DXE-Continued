@@ -379,13 +379,13 @@ function DXE:SetupMinimapIcon()
 	self.launcher = LDB:NewDataObject("DXE", 
 	{
 		type = "launcher",
-		icon = "Interface\\Icons\\Achievement_Dungeon_Ulduar77_Normal",--"Interface\\Icons\\INV_Misc_DragonKite_02",
+		icon = "Interface\\Addons\\DXE\\Textures\\Icon",
 		OnClick = function(_, button)
-			self:OpenConfig() 
+			self:ToggleConfig() 
 		end,
 		OnTooltipShow = function(tooltip)
 			tooltip:AddLine("Deus Vox Encounters")
-			tooltip:AddLine("|cffffff00Click|r to open the settings window",1,1,1)
+			tooltip:AddLine("|cffffff00Click|r to toggle the settings window",1,1,1)
 		end,
 	})
 	if LDBIcon then LDBIcon:Register("DXE",self.launcher,self.db.global._Minimap) end
@@ -644,8 +644,8 @@ function DXE:AddPaneControl(normal,highlight,onclick,anchor,name,text)
 	return control
 end
 
-function DXE:OpenConfig()
-	ACD:Open("DXE")
+function DXE:ToggleConfig()
+	ACD[ACD.OpenFrames.DXE and "Close" or "Open"](ACD,"DXE")
 end
 
 function DXE:SetPlay()
@@ -679,7 +679,8 @@ function DXE:CreatePane()
 	local Pane = CreateFrame("Frame","DXE_Pane",UIParent)
 	Pane:SetClampedToScreen(true)
 	Pane:SetBackdrop(backdrop)
-	Pane:SetBackdropBorderColor(0.66,0.66,0.66)
+	--Pane:SetBackdropBorderColor(0.66,0.66,0.66)
+	Pane:SetBackdropBorderColor(0.33,0.33,0.33)
 	Pane:SetWidth(220)
 	Pane:SetHeight(25)
 	Pane:EnableMouse(true)
@@ -713,10 +714,10 @@ function DXE:CreatePane()
 	Pane.config = self:AddPaneControl(
 		PaneTextures.."Menu",
 		PaneTextures.."Menu",
-		function() self:OpenConfig() end,
+		function() self:ToggleConfig() end,
 		Pane.startStop,
 		"Configuration",
-		"Opens the settings window"
+		"Toggles the settings window"
 	)
 
 	-- Create dropdown menu for folder

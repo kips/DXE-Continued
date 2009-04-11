@@ -113,6 +113,7 @@ do
 		local border = CreateFrame("Frame",nil,frame)
 		border:SetAllPoints(true)
 		border:SetBackdrop(backdropborder)
+		border:SetBackdropBorderColor(0.33,0.33,0.33)
 		border:SetFrameLevel(bar:GetFrameLevel()+1)
 
 		-- Add title text

@@ -385,7 +385,6 @@ local function CheckProximity(target,range)
 	local uid = DXE:GetUnitID(target)
 	if not uid then return false end
 	local test = ProximityFuncs[range]
-	if not test then return false end
 	return test(uid)
 end
 
