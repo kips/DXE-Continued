@@ -1105,8 +1105,6 @@ end
 -- ROSTER
 ---------------------------------------------
 local UnitGUID = UnitGUID
--- All values should be unit ids
-
 -- Keys are [1-40]
 local Roster = {}
 DXE.Roster = Roster
@@ -1201,36 +1199,49 @@ end
 -- COMMS
 ----------------------------------
 
-local last = 0
---- Broadcasts all or a specific one
+--- Broadcasts all or a specific one. Throttles broadcasting all.
 -- @param name Assumed to exist in EDB. It is only used in Distributor after downloading.
 -- @param force Makes it ignore throttling. Used in Distributor.
-function DXE:BroadcastVersion(name,force)
-	-- Throttling
-	-- TODO: Needs testing
-	local t = GetTime()
-	if last > t and not force then return end
-	last = t + 5
-	
-	local msg
-	-- Broadcasts all
-	if not name then
-		local tbl = self.new()
-		tbl[1] = format("%s,%s","DXE",DXE.version)
-		for name, data in pairs(EDB) do
-			if name ~= "Default" then
-				insert(tbl, format("%s,%s",name,data.version))
+do
+	-- Time since we last broadcasted
+	local last = 0
+	-- How long to wait to broadcast
+	local waitTime = 4
+	-- ScheduleTimer handle
+	local handle
+	function DXE:BroadcastVersion(name,force)
+		local msg
+		-- Broadcasts all
+		if not name then
+			-- TODO: Needs testing
+			-- Throttling
+			local t = GetTime()
+			if last + waitTime - 0.5 > t then
+				if not handle then
+					handle = self:ScheduleTimer("BroadcastVersion",waitTime)
+				end
+				return
 			end
+			handle = nil
+			last = t
+
+			local tbl = self.new()
+			tbl[1] = format("%s,%s","DXE",DXE.version)
+			for name, data in pairs(EDB) do
+				if name ~= "Default" then
+					insert(tbl, format("%s,%s",name,data.version))
+				end
+			end
+			msg = format("VERSION:%s",concat(tbl, ":"))
+			tbl = self.delete(tbl)
+		-- Broadcasts a single one
+		else
+			-- TODO: Needs testing
+			if not EDB[name] then return end
+			msg = format("VERSION:%s,%s",name,EDB[name].version)
 		end
-		msg = format("VERSION:%s",concat(tbl, ":"))
-		tbl = self.delete(tbl)
-	-- Broadcasts a single one
-	else
-		-- TODO: Needs testing
-		if not EDB[name] then return end
-		msg = format("VERSION:%s,%s",name,EDB[name].version)
+		self:SendCommMessage("DXE_Core", msg, "RAID")
 	end
-	self:SendCommMessage("DXE_Core", msg, "RAID")
 end
 
 function DXE:OnCommReceived(prefix, msg, dist, sender)
