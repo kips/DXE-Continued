@@ -272,23 +272,16 @@ function DXE:SetActiveEncounter(name)
 end
 
 function DXE:UpgradeEncounters()
-	-- Upgrade from stored encounters
-	local deleteQueue = self.new()
 	for name,data in pairs(RDB) do
 		-- Upgrading to new versions
 		if not EDB[name] or EDB[name].version < data.version then
 			self:UnregisterEncounter(name)
 			self:RegisterEncounter(data)
 		-- Deleting old versions
-		elseif EDB[name] and EDB[name].version > data.version then
-			deleteQueue[data.name] = true
+		elseif EDB[name] and EDB[name].version >= data.version then
+			RDB[name] = self.rdelete(RDB[name])
 		end
 	end
-	-- Actually delete old versions
-	for name in pairs(deleteQueue) do
-		RDB[name] = self.rdelete(RDB[name])
-	end
-	deleteQueue = self.delete(deleteQueue)
 end
 
 -- Start the current encounter
@@ -1123,6 +1116,8 @@ DXE.NameRoster = NameRoster
 -- Keys are the GUIDs
 local GUIDRoster = {}
 DXE.GUIDRoster = GUIDRoster
+-- Keys are unit names
+local SortedRoster = {}
 
 -- Raid Version Tracking
 -- Keys are the names
@@ -1130,8 +1125,12 @@ DXE.GUIDRoster = GUIDRoster
 local RosterVersions = {}
 DXE.RosterVersions = RosterVersions
 
+local sort = table.sort
 function DXE:UpdateRosterTables()
 	wipe(Roster)
+	wipe(NameRoster)
+	wipe(GUIDRoster)
+	wipe(SortedRoster)
 	-- TODO: Throttle broadcasts
 	self:BroadcastVersion()
 	for i,id in ipairs(rID) do
@@ -1139,8 +1138,10 @@ function DXE:UpdateRosterTables()
 			Roster[i] = id
 			NameRoster[UnitName(id)] = id
 			GUIDRoster[UnitGUID(id)] = id
+			SortedRoster[#SortedRoster+1] = UnitName(id)
 		end 
 	end
+	sort(SortedRoster)
 end
 
 function DXE:GetUnitID(target)
@@ -1169,8 +1170,7 @@ function DXE:PrintRosterVersions(info, encname)
 		return
 	end
 
-	for _, id in pairs(Roster) do
-		local unitname = UnitName(id)
+	for _, unitname in ipairs(SortedRoster) do
 		if RosterVersions[unitname] and RosterVersions[unitname][encname] then
 			local vers = RosterVersions[unitname][encname]
 			local myvers
