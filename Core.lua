@@ -1201,7 +1201,6 @@ end
 
 --- Broadcasts all or a specific one. Throttles broadcasting all.
 -- @param name Assumed to exist in EDB. It is only used in Distributor after downloading.
--- @param force Makes it ignore throttling. Used in Distributor.
 do
 	-- Time since we last broadcasted
 	local last = 0
@@ -1209,7 +1208,7 @@ do
 	local waitTime = 4
 	-- ScheduleTimer handle
 	local handle
-	function DXE:BroadcastVersion(name,force)
+	function DXE:BroadcastVersion(name)
 		local msg
 		-- Broadcasts all
 		if not name then

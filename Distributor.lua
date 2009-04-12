@@ -336,7 +336,7 @@ function Distributor:DownloadReceived(prefix, msg, dist, sender)
 	self:DLCompleted(name,dl.sender)
 
 	-- Update versions for everyone
-	DXE:BroadcastVersion(name,true)
+	DXE:BroadcastVersion(name)
 end
 
 ----------------------------------
