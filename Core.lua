@@ -24,7 +24,7 @@ local defaults = {
 -- INITIALIZATION
 ---------------------------------------------
 
-local DXE = LibStub("AceAddon-3.0"):NewAddon("DXE","AceEvent-3.0","AceTimer-3.0","AceConsole-3.0")
+local DXE = LibStub("AceAddon-3.0"):NewAddon("DXE","AceEvent-3.0","AceTimer-3.0","AceConsole-3.0","AceComm-3.0")
 DXE.version = tonumber(("$Rev$"):match("$Rev: (%d+) %$"))
 -- Ensures modules are only enabled if DXE is enabled
 DXE:SetDefaultModuleState(false)
@@ -145,7 +145,8 @@ local RDB
 local ACD = LibStub("AceConfigDialog-3.0")
 local AC = LibStub("AceConfig-3.0")
 local AceGUI = LibStub("AceGUI-3.0")
-local insert,wipe = table.insert,table.wipe
+local insert,wipe,concat = table.insert,table.wipe,table.concat
+local match = string.match
 
 ---------------------------------------------
 -- UNIT IDS
@@ -435,6 +436,7 @@ function DXE:OnEnable()
 	self:UpdateTriggers()
 	self:UpdateLock()
 	self:UpdatePaneVisibility()
+	self:RegisterComm("DXE_Core","OnCommReceived")
 	self:RegisterEvent("RAID_ROSTER_UPDATE")
 	self:RegisterEvent("ZONE_CHANGED_NEW_AREA","UpdateTriggers")
 	self:RegisterEvent("PLAYER_ENTERING_WORLD","UpdateTriggers")
@@ -1122,8 +1124,16 @@ DXE.NameRoster = NameRoster
 local GUIDRoster = {}
 DXE.GUIDRoster = GUIDRoster
 
+-- Raid Version Tracking
+-- Keys are the names
+-- Values are the versions for the mod
+local RosterVersions = {}
+DXE.RosterVersions = RosterVersions
+
 function DXE:UpdateRosterTables()
 	wipe(Roster)
+	-- TODO: Throttle broadcasts
+	self:BroadcastVersion()
 	for i,id in ipairs(rID) do
 		if UnitExists(id) then 
 			Roster[i] = id
@@ -1138,6 +1148,80 @@ function DXE:GetUnitID(target)
 		return GUIDRoster[target]
 	else 
 		return NameRoster[target]
+	end
+end
+
+function DXE:PrintRosterVersions(info, encname)
+	local color = "ff99ff33"
+	if encname == "" then
+		encname = "DXE"
+	end
+
+	print(format("|cff99ff33Deus Vox Encounters|r: Raid Version Check (%s)", encname))
+
+	-- Check that the command is valid (i.e. in a raid with a valid encounter name)
+	if GetNumRaidMembers() == 0 then
+		print("|cffff3300Failed: You are not in a Raid|r")
+		return
+	end
+	if encname ~= "DXE" and not EDB[encname] then
+		print(format("|cffff3300Failed: %s is not a known encounter|r", encname))
+		return
+	end
+
+	for _, id in pairs(Roster) do
+		local unitname = UnitName(id)
+		if RosterVersions[unitname] and RosterVersions[unitname][encname] then
+			local vers = RosterVersions[unitname][encname]
+			local myvers
+			if encname == "DXE" then
+				myvers = DXE.version
+			else
+				myvers = EDB[encname].version
+			end
+
+			if vers < myvers then
+				color = "ffff3300"
+			elseif vers == myvers then
+				color = "ff99ff33"
+			else
+				color = "ff3399ff"
+			end
+
+			print(format("|c%s%s|r: v%s",color,unitname,vers))
+		else
+			color = "ff999999"
+			print(format("|c%s%s|r: None",color,unitname))
+		end
+	end
+end
+
+----------------------------------
+-- COMMS
+----------------------------------
+
+function DXE:BroadcastVersion()
+	local tbl = self.new()
+	tbl[1] = format("%s,%s","DXE",DXE.version)
+	for name, enc in pairs(EDB) do
+		if name ~= "Default" then
+			insert(tbl, format("%s,%s",name,enc.version))
+		end
+	end
+	local msg = format("VERSION:%s",concat(tbl, ":"))
+	self.delete(tbl)
+	self:SendCommMessage("DXE_Core", msg, "RAID")
+end
+
+function DXE:OnCommReceived(prefix, msg, dist, sender)
+	local type,args = match(msg,"^(%w+):(.+)$")
+	if type == "VERSION" then
+		if not RosterVersions[sender] then
+			RosterVersions[sender] = self.new()
+		end
+		for name, vers in args:gmatch("([^:,]+),([^:,]+)") do
+			RosterVersions[sender][name] = tonumber(vers)
+		end
 	end
 end
 

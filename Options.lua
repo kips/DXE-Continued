@@ -174,6 +174,12 @@ function DXE:GetSlashOptions()
 				func = "OpenConfig",
 				order = 300,
 			},
+			versioncheck = {
+				type = "input",
+				name = "Print DXE versions of raid",
+				set = "PrintRosterVersions",
+				order = 400,
+			},
 		},
 	}
 end
