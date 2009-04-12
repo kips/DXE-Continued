@@ -1152,6 +1152,7 @@ function DXE:GetUnitID(target)
 	end
 end
 
+-- TODO: It should categorize them
 function DXE:PrintRosterVersions(info, encname)
 	local color = "ff99ff33"
 	if encname == "" then
@@ -1181,11 +1182,11 @@ function DXE:PrintRosterVersions(info, encname)
 			end
 
 			if vers < myvers then
-				color = "ffff3300"
+				color = "ffff3300" -- red
 			elseif vers == myvers then
-				color = "ff99ff33"
+				color = "ff99ff33" -- green
 			else
-				color = "ff3399ff"
+				color = "ff3399ff" -- blue - above your version
 			end
 
 			print(format("|c%s%s|r: v%s",color,unitname,vers))
@@ -1200,16 +1201,35 @@ end
 -- COMMS
 ----------------------------------
 
-function DXE:BroadcastVersion()
-	local tbl = self.new()
-	tbl[1] = format("%s,%s","DXE",DXE.version)
-	for name, enc in pairs(EDB) do
-		if name ~= "Default" then
-			insert(tbl, format("%s,%s",name,enc.version))
+local last = 0
+--- Broadcasts all or a specific one
+-- @param name Assumed to exist in EDB. It is only used in Distributor after downloading.
+-- @param force Makes it ignore throttling. Used in Distributor.
+function DXE:BroadcastVersion(name,force)
+	-- Throttling
+	-- TODO: Needs testing
+	local t = GetTime()
+	if last > t and not force then return end
+	last = t + 5
+	
+	local msg
+	-- Broadcasts all
+	if not name then
+		local tbl = self.new()
+		tbl[1] = format("%s,%s","DXE",DXE.version)
+		for name, data in pairs(EDB) do
+			if name ~= "Default" then
+				insert(tbl, format("%s,%s",name,data.version))
+			end
 		end
+		msg = format("VERSION:%s",concat(tbl, ":"))
+		tbl = self.delete(tbl)
+	-- Broadcasts a single one
+	else
+		-- TODO: Needs testing
+		if not EDB[name] then return end
+		msg = format("VERSION:%s,%s",name,EDB[name].version)
 	end
-	local msg = format("VERSION:%s",concat(tbl, ":"))
-	self.delete(tbl)
 	self:SendCommMessage("DXE_Core", msg, "RAID")
 end
 
@@ -1219,6 +1239,7 @@ function DXE:OnCommReceived(prefix, msg, dist, sender)
 		if not RosterVersions[sender] then
 			RosterVersions[sender] = self.new()
 		end
+		-- TODO: Should inform you that you can get an upgrade from raid member x
 		for name, vers in args:gmatch("([^:,]+),([^:,]+)") do
 			RosterVersions[sender][name] = tonumber(vers)
 		end

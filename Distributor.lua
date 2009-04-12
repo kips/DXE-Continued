@@ -198,7 +198,7 @@ end
 -- API
 ----------------------------------
 -- The active uploads
-Uploads = {}
+local Uploads = {}
 -- The queues uploads
 local UploadQueue = {}
 
@@ -217,7 +217,20 @@ function Distributor:Distribute(name, dist, target)
 	bar:SetColor(Colors.GREY)
 	local dest = (dist == "WHISPER") and 1 or (GetNumRaidMembers() - 1)
 
-	-- TODO: Make it use DXE.new()
+	-- TODO: Needs testing
+	local info = DXE.new()
+	info.accepts = 0
+	info.declines = 0
+	info.sent = 0
+	info.length = length
+	info.bar = bar
+	info.dest = dest
+	info.serialData = serialData
+	info.timer = self:ScheduleTimer("StartUpload",30,name)
+	info.dist = dist
+	info.target = target
+	Uploads[name] = info
+	--[[
 	Uploads[name] = {
 		accepts = 0,
 		declines = 0,
@@ -230,6 +243,7 @@ function Distributor:Distribute(name, dist, target)
 		dist = dist,
 		target = target,
 	}
+	]]
 
 	bar.userdata.timeleft = 30
 	bar.userdata.totaltime = 30
@@ -265,7 +279,21 @@ function Distributor:StartReceiving(name,length,sender,dist)
 	local bar = self:GetProgressBar()
 	bar:SetText(format("In queue for %s download",firstword(name)))
 	bar:SetColor(Colors.GREY)
+	bar.userdata.timeleft = 40
+	bar.userdata.totaltime = 40
 
+	-- TODO: Needs testing
+	local info = DXE.new()
+	info.name = name
+	info.sender = sender
+	info.received = 0
+	info.length = length
+	info.bar = bar
+	info.timer = self:ScheduleTimer("DLTimeout",40,name)
+	info.dist = dist
+	Downloads[name] = info
+
+	--[[
 	Downloads[name] = {
 		name = name,
 		sender = sender,
@@ -275,8 +303,8 @@ function Distributor:StartReceiving(name,length,sender,dist)
 		timer = self:ScheduleTimer("DLTimeout",40,name),
 		dist = dist,
 	}
-	bar.userdata.timeleft = 40
-	bar.userdata.totaltime = 40
+	]]
+	
 	self:StartUpdating(name.."DL",bar)
 	self:RegisterComm(prefix, "DownloadReceived")
 end
@@ -306,6 +334,9 @@ function Distributor:DownloadReceived(prefix, msg, dist, sender)
 	DXE.RDB[name] = data	
 
 	self:DLCompleted(name,dl.sender)
+
+	-- Update versions for everyone
+	DXE:BroadcastVersion(name,true)
 end
 
 ----------------------------------
