@@ -29,6 +29,7 @@ Widgets\Timer.lua
 Widgets\Alert.lua
 Widgets\ProgressBar.lua
 Widgets\HealthWatcher.lua
+Widgets\LogLabel.lua
 
 # Main files
 Core.lua
@@ -40,6 +41,7 @@ HOT.lua
 Config.lua
 Distributor.lua
 Validator.lua
+Logger.lua
 
 # Encounters
 ## Naxxramas

@@ -253,6 +253,7 @@ function DXE:SetActiveEncounter(name)
 	CE = EDB[name]
 	-- Update Encounter data
 	self.Invoker:SetData(CE)
+	self.Logger:SetData(CE)
 	-- Set folder value
 	self.Pane.SetFolderValue(name)
 	-- Set pane updating and starting/stopping
@@ -738,6 +739,23 @@ function DXE:CreatePane()
 		"Locking",
 		"Toggle frame anchors"
 	)
+
+	-- Add Logger control
+	Pane.eye = self:AddPaneControl(
+		PaneTextures.."Eye",
+		PaneTextures.."Eye",
+		function(_,press)
+			if(press == "RightButton") then
+				DXE.Logger:OpenViewer()
+			else
+				DXE.Logger:RegisterBoss(UnitName("target"))
+			end
+		end,
+		Pane.lock,
+		"Logging",
+		"Log target's encounter data\nRight click opens view"
+	)
+	Pane.eye:RegisterForClicks("LeftButtonUp","RightButtonUp")
 end
 
 ---------------------------------------------
