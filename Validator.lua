@@ -307,8 +307,6 @@ local function validateEvent(data,info,errlvl,...)
 			if info.type == "combatevent" and not info.eventtype then
 				err(": missing eventtype key",errlvl,k,...)
 			end
-		-- Uncomment when 3.1 hits. It causes errors in 3.0
-		--[[
 		elseif k == "spellid" then
 			if info.spellid and type(info.spellid) == "number" then
 				local exists = GetSpellInfo(info.spellid)
@@ -324,7 +322,6 @@ local function validateEvent(data,info,errlvl,...)
 					end
 				end
 			end
-			]]
 		elseif k == "execute" then
 			validateCommandBundle(data,info.execute,errlvl,"execute",...)
 		end
