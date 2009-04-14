@@ -31,6 +31,7 @@ do
 				},
 			},
 		},
+		-- TODO: Add Impale warning?
 		alerts = {
 			enrage2cd = {
 				var = "enrage2cd", 

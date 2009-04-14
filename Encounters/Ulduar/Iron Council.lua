@@ -24,6 +24,7 @@ do
 				{set = {overwhelmtime = 60}},
 			},
 		},
+		-- TODO: Add Fusion Punch applications
 		alerts = {
 			enragecd = {
 				var = "enragecd",
@@ -62,8 +63,8 @@ do
 				varname = "Overload cast",
 				type = "centerpopup",
 				text = "Overload. Move Away!",
-				time = 10,
-				flashtime = 5,
+				time = 6, -- Should this be 10 or 6?
+				flashtime = 6,
 				sound = "ALERT2",
 				color1 = "MAGENTA",
 			},

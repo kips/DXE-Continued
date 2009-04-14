@@ -176,7 +176,7 @@ function DXE:GetSlashOptions()
 			},
 			versioncheck = {
 				type = "input",
-				name = "Print DXE versions of raid",
+				name = "Print versions of encounters",
 				set = "PrintRosterVersions",
 				order = 400,
 			},
