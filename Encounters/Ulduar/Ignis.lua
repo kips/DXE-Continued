@@ -1,4 +1,5 @@
 do
+	-- TODO: CHANGE COLORS SO THEYRE MORE DISTINCT- USE NON RED COLORS
 	local data = {
 		version = "$Rev$",
 		key = "ignis", 

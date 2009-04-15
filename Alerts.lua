@@ -195,7 +195,7 @@ function Alerts:Move(alert,dt,tox,toy,froma,toa)
 	userdata.movetox = tox*worldscale/escale
 	userdata.movetoy = toy*worldscale/escale
 	userdata.movefroma = froma
-	userdata.movetoa = 0.6--1
+	userdata.movetoa = 0.9
 	userdata.movet0 = t0
 	userdata.movedt = dt
 	userdata.animFunc = MoveFunc

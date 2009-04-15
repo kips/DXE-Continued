@@ -26,8 +26,8 @@ do
 				time = 9,
 				flashtime = 9,
 				sound = "ALERT1",
-				color1 = "RED",
-				color2 = "MAGENTA",
+				color1 = "GREEN",
+				color2 = "PINK",
 			},
 			gravitywarnother = {
 				var = "gravitywarnother",
@@ -35,7 +35,7 @@ do
 				type = "centerpopup",
 				text = "Gravity Bomb: #5#",
 				time = 9,
-				color1 = "RED",
+				color1 = "GREEN",
 			},
 			lightwarnself = {
 				var = "lightwarnself",
@@ -63,17 +63,19 @@ do
 				text = "Tympanic Tantrum",
 				time = 12,
 				flashtime = 3,
-				color1 = "BROWN",
+				color1 = "YELLOW",
 				sound = "ALERT2",
 			},
 			exposedwarn = {
 				var = "exposedwarn",
 				varname = "Heart exposed warning",
-				type = "dropdown",
+				type = "centerpopup",
 				text = "Heart Exposed!",
 				time = 30,
-				flashtime = 5,
+				flashtime = 30,
 				sound = "ALERT4",
+				color1 = "GREY",
+				color2 = "BLUE",
 			},
 			hardmodealert = {
 				var = "hardmodealert",
@@ -112,7 +114,7 @@ do
 			[2] = {
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellid = 63018,
+				spellid = {63018,65121},
 				execute = {
 					[1] = {
 						{expect = {"#4#", "==", "&playerguid&"}},
