@@ -327,9 +327,9 @@ function Invoker:RemoveAllTimers()
 end
 
 function Invoker:FireTimer(name)
-	if CE.Timers[name] then
+	if CE.timers[name] then
 		-- Don't wipe Timers[name], it could be rescheduled
-		self:InvokeCommands(CE.Timers[name],unpack(Timers[name].args))
+		self:InvokeCommands(CE.timers[name],unpack(Timers[name].args))
 	end
 end
 
