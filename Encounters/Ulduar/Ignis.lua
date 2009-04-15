@@ -134,7 +134,6 @@ do
 				spellid = {63472,62680},
 				execute = {
 					[1] = {
-						{quash = "flamejetscd"},
 						{alert = "flamejetswarn",},
 					},
 				},
