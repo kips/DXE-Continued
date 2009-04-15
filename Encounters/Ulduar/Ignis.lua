@@ -15,7 +15,7 @@ do
 			leavecombat = true,
 		},
 		userdata = {
-			flamejetstime = {25,23.3,loop = false},
+			flamejetstime = {24,22.3,loop = false},
 			slagpotmessage = "",
 		},
 		onstart = {
