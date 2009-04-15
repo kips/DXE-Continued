@@ -15,7 +15,7 @@ do
 			leavecombat = true,
 		},
 		userdata = {
-			flamejetstime = {28,35,loop = false},
+			--flamejetstime = {28,loop = false},
 			slagpotmessage = "",
 		},
 		onstart = {
@@ -37,11 +37,11 @@ do
 				var = "flamejetscd",
 				varname = "Flame Jets cooldown",
 				type = "dropdown",
-				time = "<flamejetstime>",
+				time = 28,
 				text = "Next Flame Jets",
 				flashtime = 5,
 				color1 = "RED",
-				color2 = "ORANGE",
+				color2 = "MAGENTA",
 				sound = "ALERT1",
 			},
 			scorchwarnself = {
@@ -70,7 +70,7 @@ do
 				type = "centerpopup",
 				text = "<slagpotmessage>",
 				time = 10,
-				color1 = "BROWN",
+				color1 = "GREEN",
 				sound = "ALERT4",
 			},
 		},
@@ -134,6 +134,7 @@ do
 				spellid = {63472,62680},
 				execute = {
 					[1] = {
+						{quash = "flamejetscd"},
 						{alert = "flamejetswarn",},
 					},
 				},
