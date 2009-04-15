@@ -1145,7 +1145,7 @@ local sort = table.sort
 function DXE:UpdateRosterTables()
 	wipe(Roster)
 	wipe(NameRoster)
-	wipe(GUIDRoster)
+	wipe(GUIDRoster) 
 	wipe(SortedRoster)
 	-- TODO: Throttle broadcasts
 	self:BroadcastVersion()
