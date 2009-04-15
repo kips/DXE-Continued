@@ -15,7 +15,7 @@ do
 			leavecombat = true,
 		},
 		userdata = {
-			--flamejetstime = {28,loop = false},
+			flamejetstime = {25,23.3,loop = false},
 			slagpotmessage = "",
 		},
 		onstart = {
@@ -37,7 +37,7 @@ do
 				var = "flamejetscd",
 				varname = "Flame Jets cooldown",
 				type = "dropdown",
-				time = 25,
+				time = "<flamejetstime>",
 				text = "Flame Jets Cooldown",
 				flashtime = 5,
 				color1 = "RED",
@@ -72,6 +72,13 @@ do
 				time = 10,
 				color1 = "GREEN",
 				sound = "ALERT4",
+			},
+		},
+		timers = {
+			flamejet = {
+				[1] = {
+					{alert = "flamejetscd"},
+				},
 			},
 		},
 		events = {
@@ -116,7 +123,7 @@ do
 						{alert = "slagpotdur"},
 					},
 				},
-			},
+			},--[[
 			-- Flame Jets cooldown
 			[4] = {
 				type = "event",
@@ -126,15 +133,17 @@ do
 						{alert = "flamejetscd"},
 					},
 				},
-			},
+			},]]
 			-- Flame Jets cast
-			[5] = {
+			[4] = {
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
 				spellid = {63472,62680},
 				execute = {
 					[1] = {
+						{quash = "flamejetscd"},
 						{alert = "flamejetswarn",},
+						{scheduletimer = {"flamejet",2.7}},
 					},
 				},
 			},
