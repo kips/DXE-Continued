@@ -74,8 +74,8 @@ do
 				time = 30,
 				flashtime = 30,
 				sound = "ALERT4",
-				color1 = "GREY",
-				color2 = "BLUE",
+				color1 = "BLUE",
+				color2 = "RED",
 			},
 			hardmodealert = {
 				var = "hardmodealert",

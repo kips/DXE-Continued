@@ -39,7 +39,7 @@ local MAIN_PREFIX = "DXE_Dist"
 
 -- @return The first word of a string
 local function firstword(str)
-	return match(str,"[%w']+")
+	return match(str,"[%w'%-]+")
 end
 
 ----------------------------------
@@ -311,7 +311,7 @@ end
 
 function Distributor:DownloadReceived(prefix, msg, dist, sender)
 	self:UnregisterComm(prefix)
-	local name = match(prefix, "DXE_DistR_([%w' ]+)")
+	local name = match(prefix, "DXE_DistR_([%w'%- ]+)")
 
 	local dl = Downloads[name]
 	if not dl then return end
@@ -406,7 +406,7 @@ end
 
 function Distributor:CHAT_MSG_ADDON(_,prefix, msg, dist, sender)
 	if dist == "RAID" and (next(Downloads) or next(Uploads)) then
-		local name, mark = match(prefix, "DXE_DistR_([%w' ]+)(.)")
+		local name, mark = match(prefix, "DXE_DistR_([%w'%- ]+)(.)")
 		if not name then return end
 		-- For WHISPER distributions
 		if msg == "COMPLETED" and Uploads[name] then
