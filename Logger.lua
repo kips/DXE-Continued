@@ -1,6 +1,12 @@
+local Colors = DXE.Constants.Colors
+
 local logdata, statusbar
 local activelog
 local CE
+local spellfilter = {
+	[32409] = 1,	-- SW:D
+	[55710] = 1		-- Desecration
+}
 local concat = table.concat
 
 -- Reactions
@@ -96,10 +102,18 @@ function Logger.InsertBossLog(name, id, log, check)
 	local idlog = args[id].args
 	for mob,mlog in pairs(log) do
 		local safe_name = string.gsub(mob, "%s", "_")
+		local order = 100
+		if mob == name then
+			order = 0
+		elseif string.find(mob, "^>>") then
+			order = 200
+		end
+
 		idlog[safe_name] = {
 			type = "group",
 			childGroups = "tab",
 			name = mob,
+			order = order,
 			args = {},
 		}
 		local moblog = idlog[safe_name].args
@@ -219,12 +233,17 @@ function Logger:RegisterBoss(name)
 	Logger.InsertBoss(name)
 end
 
+---------------------------------------------
+-- SETUP ENCOUNTER
+---------------------------------------------
+
 function Logger:SetData(data)
 	assert(type(data) == "table","Expected 'data' table as argument #1 in SetData. Got '"..tostring(data).."'")
 	
 	-- Set data upvalue
 	CE = data
-	local safe_name = CE.key
+
+	local safe_name = string.gsub(CE.name, "%s", "_")
 
 	-- Log only for the appropriate encounters
 	if not logdata[safe_name] then
@@ -272,13 +291,17 @@ end
 
 function Logger:OnStart()
 	local name = CE.name
-	local safe_name = CE.key
+
+	local safe_name = string.gsub(name, "%s", "_")
 	
 	-- Log only for the appropriate encounters
 	if not logdata[safe_name] then
 		return
 	end
 
+	local color = Colors.RED
+	DXE.Pane.eye:GetNormalTexture():SetVertexColor(color.r,color.g,color.b)
+	DXE.Pane.eye:GetHighlightTexture():SetVertexColor(color.r,color.g,color.b)
 	self.bossname = name
 	self.starttime = GetTime()
 	self.id = date("%m/%d/%y-%H:%M:%S")
@@ -291,6 +314,8 @@ function Logger:OnStop()
 	if self.log then
 		Logger.InsertBossLog(self.bossname, self.id, self.log)
 		self.starttime = nil
+		DXE.Pane.eye:GetNormalTexture():SetVertexColor(1,1,1)
+		DXE.Pane.eye:GetHighlightTexture():SetVertexColor(1,1,1)
 	end
 end
 
@@ -302,93 +327,91 @@ function Logger:CombatEvent(event, timestamp, eventtype, srcGUID, srcName, srcFl
 	if not self.starttime then return end -- Only monitor during fight
 
 	if bit.band(srcFlags, COMBATLOG_OBJECT_REACTION_MASK) ~= COMBATLOG_OBJECT_REACTION_FRIENDLY then
+		-- Source of event is not friendly so record it
+
 		local enctime = GetTime()-self.starttime
 
-		-- Source of event is not friendly
 		if not srcName then
 			if eventtype == "SPELL_AURA_REFRESH" then
-				-- Ignore refreshing debuff				return
+				-- Ignore refreshing debuff
+				return
 			end
+			-- Set source name to ">> dest" if no source of event
 			srcName = ">> "..dstName
 		end
 
-		if string.find(eventtype, "^SWING_") then
-			-- Melee Swing
-			local entry = {
-				target = dstName,
-				time = enctime,
-				hp = statusbar:GetValue() or 1,
-				type = "MELEE",
-				event = eventtype,
-				damage = nil,
-			}
-			if(eventtype == "SWING_DAMAGE") then
-				entry.damage = select(1,...)
-			end
+		local hp, evttype, damage, deltatime, log
 
-			-- Store melee attack
-			local log = self.log
-			log[srcName] = log[srcName] or DXE.new()
+		if string.find(eventtype, "^SWING_") then
+			evttype = "MELEE"
+		elseif string.find(eventtype, "^SPELL_AURA") then
+			if spellfilter[select(1,...)] then
+				-- Filter out this spell
+				return
+			end
+			evttype = "SPELL"
+		else
+			-- Don't record this event
+			return
+		end
+
+		hp = statusbar:GetValue() or 1
+		deltatime = 0
+		local log = self.log
+		log[srcName] = log[srcName] or DXE.new()
+		log = log[srcName]
+
+		if evttype == "MELEE" then
+			if(eventtype == "SWING_DAMAGE") then
+				damage = select(1,...)
+			end
 
 			local lasttime = 0
-			local lastlog
-			if log[srcName]["MELEE"] then
-				lastlog = log[srcName]["MELEE"]
-				lasttime = lastlog.lasttime
+			if log["MELEE"] then
+				log = log["MELEE"]
+				lasttime = log.lasttime
 			else
-				log[srcName]["MELEE"] = DXE.new()
-				lastlog = log[srcName]["MELEE"]
+				log["MELEE"] = DXE.new()
+				log = log["MELEE"]
 			end
-			entry.deltatime = entry.time-lasttime
-			lastlog.lasttime = entry.time
+			deltatime = enctime-lasttime
+			log.lasttime = enctime
 
-			local dmg = entry.damage and string.format("%d", entry.damage) or "-"
-			local line = string.format("%6.2f %6.2f %-20s %-20s %-7s +%6.3f", entry.time,
-				entry.hp*100, entry.event, (entry.target or "<NONE>"), dmg,
-				entry.deltatime)
-			tinsert(lastlog, line)
 		elseif string.find(eventtype, "^SPELL_") then
 			-- Spell Cast
-			local entry = {
-				target = dstName,
-				time = enctime,
-				hp = statusbar:GetValue() or 1,
-				type = "SPELL",
-				event = eventtype,
-				damage = nil,
-			}
-			entry.spellId = select(1,...)
+
+			local spellId = select(1,...)
+
 			if string.find(eventtype, "^SPELL_AURA") then
-				entry.type = "AURA"
-			end
-			local dmg = select(4,...)
-			if type(dmg)=="number"	then
-				entry.damage = dmg
+				evttype = "AURA"
 			end
 
-			-- Store melee attack
-			local log = self.log
-			log[srcName] = log[srcName] or DXE.new()
-			log[srcName][entry.type] = log[srcName][entry.type] or DXE.new()
+			local dmg = select(4,...)
+			if type(dmg)=="number" then
+				damage = dmg
+			end
+
+			log[evttype] = log[evttype] or DXE.new()
+			log = log[evttype]
 
 			local lasttime = 0
-			local lastlog
-			if log[srcName][entry.type][entry.spellId] then
-				lastlog = log[srcName][entry.type][entry.spellId]
-				lasttime = lastlog.lasttime
+			if log[spellId] then
+				log = log[spellId]
+				lasttime = log.lasttime
 			else
-				log[srcName][entry.type][entry.spellId] = DXE.new()
-				lastlog = log[srcName][entry.type][entry.spellId]
+				log[spellId] = DXE.new()
+				log = log[spellId]
 			end
-			entry.deltatime = entry.time-lasttime
-			lastlog.lasttime = entry.time
-
-			local dmg = entry.damage and string.format("%d", entry.damage) or "-"
-			local line = string.format("%6.2f %6.2f %-20s %-20s %-7s +%6.3f", entry.time,
-				entry.hp*100, entry.event, (entry.target or "<NONE>"), dmg,
-				entry.deltatime)
-			tinsert(lastlog, line)
+			deltatime = enctime-lasttime
+			log.lasttime = enctime
 		end
+
+		-- Save event text
+		local dmg = damage and string.format("%d", damage) or "-"
+		local line = string.format("%6.2f %6.2f %-20s %-20s %-7s +%6.3f", enctime,
+			hp, eventtype, (dstName or "<NONE>"), dmg, deltatime)
+		tinsert(log, line)
+
 	-- elseif bit.band(dstFlags, COMBATLOG_OBJECT_REACTION_MASK) ~= COMBATLOG_OBJECT_REACTION_FRIENDLY then
 		-- Destination of event is not friendly
 	end
