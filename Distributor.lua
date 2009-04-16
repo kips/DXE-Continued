@@ -405,7 +405,10 @@ function Distributor:OnCommReceived(prefix, msg, dist, sender)
 end
 
 function Distributor:CHAT_MSG_ADDON(_,prefix, msg, dist, sender)
-	if dist == "RAID" and (next(Downloads) or next(Uploads)) then
+	if dist == "RAID" or DIST == "WHISPER" and (next(Downloads) or next(Uploads)) then
+		--@debug@
+		if prefix:find("DXE_DistR") then print(prefix,msg,dist,sender) end
+		--@end-debug@
 		local name, mark = match(prefix, "DXE_DistR_([%w'%- ]+)(.)")
 		if not name then return end
 		-- For WHISPER distributions

@@ -247,7 +247,7 @@ function Logger:SetData(data)
 	local safe_name = string.gsub(CE.name, "%s", "_")
 
 	-- Only look at the appropriate encounters
-	if not logdata[safe_name] then
+	if not DXE.db.profile.logdb.bosses[safe_name] then
 		self:UnregisterAllEvents()
 		activelog = nil
 		return

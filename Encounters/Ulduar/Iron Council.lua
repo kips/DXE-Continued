@@ -141,8 +141,8 @@ do
 			-- Stormcaller Brundir - Overload cast
 			[1] = {
 				type = "combatevent",
-				eventtype = "SPELL_CAST_START",
-				spellid = 63481,
+				eventtype = "SPELL_AURA_APPLIED",
+				spellid = {61869, 63481},
 				execute = {
 					[1] = {
 						{alert = "overloadwarn"},
@@ -153,7 +153,7 @@ do
 			[2] = {
 				type = "combatevent", 
 				eventtype = "SPELL_AURA_APPLIED", 
-				spellid = 63485, 
+				spellid = {61886, 63485}, 
 				execute = {
 					[1] = {
 						{alert = "tendrilsdur"},
@@ -165,7 +165,7 @@ do
 			-- Runemaster Molgeim - Rune of Summoning - Elementals spawn - 2 dead
 			[3] = {
 				type = "combatevent", 
-				eventtype = "SPELL_AURA_APPLIED", 
+				eventtype = "SPELL_CAST_START", 
 				spellid = 62273,
 				execute = {
 					[1] = {
@@ -177,7 +177,7 @@ do
 			[4] = {
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
-				spellid = 61974,
+				spellid = {61974,61973},
 				execute = {
 					[1] = {
 						{alert = "runeofpowerwarn"},

@@ -402,6 +402,9 @@ function DXE:OnInitialize()
 	self.db = LibStub("AceDB-3.0"):New("DXEDB",self.defaults)
 	self.options = self:InitializeOptions()
 	self.InitializeOptions = nil
+	-- Pane
+	self:CreatePane()
+	self:CreateHealthWatchers()
 	-- GUI Options
 	AC:RegisterOptionsTable("DXE", self.options)
 	ACD:SetDefaultSize("DXE", 730,500)
@@ -410,6 +413,7 @@ function DXE:OnInitialize()
 	self.GetSlashOptions = nil
 	-- The default encounter
 	self:RegisterEncounter({name = "Default", title = "Default", zone = ""})
+	self:SetActiveEncounter("Default")
 	-- Register queued data TODO: Check for versions between RDB and EDB before registering
 	for _,data in ipairs(loadQueue) do self:RegisterEncounter(data) end
 	loadQueue = self.delete(loadQueue)
@@ -423,8 +427,6 @@ function DXE:OnInitialize()
 end
 
 function DXE:OnEnable()
-	self:CreatePane()
-	self:CreateHealthWatchers()
 	self:LoadPositions()
 	self:UpdateRosterTables()
 	self:UpdateTriggers()
@@ -681,6 +683,7 @@ function DXE:CreatePane()
 	Pane:SetHeight(25)
 	Pane:EnableMouse(true)
 	Pane:SetMovable(true)
+	Pane:SetPoint("CENTER")
 	self:RegisterMoveSaving(Pane,"CENTER","UIParent","CENTER",nil,nil,true)
 	self:AddTooltipText(Pane,"Pane","|cffffff00Shift + Click|r to move")
 	local function onupdate() DXE:LayoutHealthWatchers() end
