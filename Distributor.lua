@@ -199,8 +199,10 @@ end
 ----------------------------------
 -- The active uploads
 local Uploads = {}
+Distributor.Uploads = Uploads
 -- The queues uploads
 local UploadQueue = {}
+Distributor.UploadQueue = UploadQueue
 
 function Distributor:Distribute(name, dist, target)
 	dist = dist or "RAID"
@@ -404,12 +406,10 @@ function Distributor:OnCommReceived(prefix, msg, dist, sender)
 	end
 end
 
+local find = string.find
 function Distributor:CHAT_MSG_ADDON(_,prefix, msg, dist, sender)
-	if dist == "RAID" or DIST == "WHISPER" and (next(Downloads) or next(Uploads)) then
-		--@debug@
-		if prefix:find("DXE_DistR") then print(prefix,msg,dist,sender) end
-		--@end-debug@
-		local name, mark = match(prefix, "DXE_DistR_([%w'%- ]+)(.)")
+	if find(prefix,"DXE_DistR") and dist == "RAID" or dist == "WHISPER" and (next(Downloads) or next(Uploads)) then
+		local name, mark = match(prefix, "DXE_DistR_([%w'%- ]+)(.-)")
 		if not name then return end
 		-- For WHISPER distributions
 		if msg == "COMPLETED" and Uploads[name] then
@@ -462,7 +462,7 @@ end
 
 function Distributor:DLTimeout(name)
 	DXE:Print(format("%s updating timed out",name))
-	self:LoadCompleted(name,Downloads[name],"Download Timedout",Colors.Red,"RemoveDL")
+	self:LoadCompleted(name,Downloads[name],"Download Timed Out",Colors.Red,"RemoveDL")
 end
 
 function Distributor:QueueNextUL()
@@ -481,7 +481,7 @@ end
 
 function Distributor:ULTimeout(name)
 	DXE:Print(format("%s sending timed out",name))
-	self:LoadCompleted(name,Uploads[name],"Upload Timedout",Colors.RED,"RemoveUL")
+	self:LoadCompleted(name,Uploads[name],"Upload Timed Out",Colors.RED,"RemoveUL")
 	self:QueueNextUL()
 end
 
