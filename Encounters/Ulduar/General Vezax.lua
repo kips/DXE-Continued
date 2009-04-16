@@ -187,10 +187,11 @@ do
 			-- Saronite Animus spawns
 			[7] = {
 				type = "combatevent",
-				eventtype = "SPELL_SUMMON",
+				eventtype = "SPELL_CAST_START",
 				spellid = 63145,
 				execute = {
 					[1] = {
+						{alert = "animuswarn"},
 						{tracing = {"General Vezax","Saronite Animus"}},
 					},
 				},
