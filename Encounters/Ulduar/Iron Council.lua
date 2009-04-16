@@ -5,9 +5,9 @@ do
 		zone = "Ulduar", 
 		name = "Iron Council", 
 		title = "Iron Council", 
-		tracing = {"Steelbreaker, Runemaster Molgeim, Stormcaller Brundir",},
+		tracing = {"Steelbreaker", "Runemaster Molgeim", "Stormcaller Brundir",},
 		triggers = {
-			scan = {"Steelbreaker, Runemaster Molgeim, Stormcaller Brundir",},
+			scan = {"Steelbreaker", "Runemaster Molgeim", "Stormcaller Brundir",},
 		},
 		onactivate = {
 			autostart = true,

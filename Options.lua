@@ -170,8 +170,8 @@ function DXE:GetSlashOptions()
 			},
 			config = {
 				type = "execute",
-				name = "Open the configuration",
-				func = "OpenConfig",
+				name = "Toggles the configuration",
+				func = "ToggleConfig",
 				order = 300,
 			},
 			versioncheck = {
