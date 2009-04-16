@@ -1,13 +1,13 @@
 do
 	local data = {
 		version = "$Rev$",
-		key = "auriya", 
+		key = "auriaya", 
 		zone = "Ulduar", 
-		name = "Auriya", 
-		title = "Auriya", 
-		tracing = {"Auriya",},
+		name = "Auriaya", 
+		title = "Auriaya", 
+		tracing = {"Auriaya",},
 		triggers = {
-			scan = "Auriya", 
+			scan = "Auriaya", 
 		},
 		onactivate = {
 			autostart = true,
