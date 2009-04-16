@@ -50,7 +50,7 @@ do
 				varname = "Enrage cooldown",
 				type = "dropdown",
 				text = "Enrage",
-				time = 540,
+				time = 480,
 				flashtime = 5,
 				color1 = "RED",
 			},
