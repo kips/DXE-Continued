@@ -5,7 +5,8 @@ local activelog
 local CE
 local spellfilter = {
 	[32409] = 1,	-- SW:D
-	[55710] = 1		-- Desecration
+	[55710] = 1,	-- Desecration
+	[58875] = 1,	-- Spirit Walk
 }
 local concat = table.concat
 
@@ -245,16 +246,13 @@ function Logger:SetData(data)
 
 	local safe_name = string.gsub(CE.name, "%s", "_")
 
-	-- Log only for the appropriate encounters
+	-- Only look at the appropriate encounters
 	if not logdata[safe_name] then
 		self:UnregisterAllEvents()
 		activelog = nil
 		return
 	end
 
-	self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED", "CombatEvent")
-
-	activelog = logdata[safe_name]
 end
 
 
@@ -290,6 +288,7 @@ function Logger:CreateEncLog(name, zone)
 end
 
 function Logger:OnStart()
+	if not CE then return end
 	local name = CE.name
 
 	local safe_name = string.gsub(name, "%s", "_")
@@ -298,6 +297,10 @@ function Logger:OnStart()
 	if not logdata[safe_name] then
 		return
 	end
+
+	-- Better to put this here
+	self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED", "CombatEvent")
+	activelog = logdata[safe_name]
 
 	local color = Colors.RED
 	DXE.Pane.eye:GetNormalTexture():SetVertexColor(color.r,color.g,color.b)
@@ -344,7 +347,7 @@ function Logger:CombatEvent(event, timestamp, eventtype, srcGUID, srcName, srcFl
 
 		if string.find(eventtype, "^SWING_") then
 			evttype = "MELEE"
-		elseif string.find(eventtype, "^SPELL_AURA") then
+		elseif string.find(eventtype, "^SPELL_") then
 			if spellfilter[select(1,...)] then
 				-- Filter out this spell
 				return
@@ -356,6 +359,7 @@ function Logger:CombatEvent(event, timestamp, eventtype, srcGUID, srcName, srcFl
 		end
 
 		hp = statusbar:GetValue() or 1
+		hp = hp*100
 		deltatime = 0
 		local log = self.log
 		log[srcName] = log[srcName] or DXE.new()
@@ -377,7 +381,7 @@ function Logger:CombatEvent(event, timestamp, eventtype, srcGUID, srcName, srcFl
 			deltatime = enctime-lasttime
 			log.lasttime = enctime
 
-		elseif string.find(eventtype, "^SPELL_") then
+		elseif evttype == "SPELL" then
 			-- Spell Cast
 
 			local spellId = select(1,...)
