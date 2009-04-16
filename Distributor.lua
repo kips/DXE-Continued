@@ -219,7 +219,6 @@ function Distributor:Distribute(name, dist, target)
 	bar:SetColor(Colors.GREY)
 	local dest = (dist == "WHISPER") and 1 or (GetNumRaidMembers() - 1)
 
-	-- TODO: Needs testing
 	local info = DXE.new()
 	info.accepts = 0
 	info.declines = 0
@@ -232,20 +231,6 @@ function Distributor:Distribute(name, dist, target)
 	info.dist = dist
 	info.target = target
 	Uploads[name] = info
-	--[[
-	Uploads[name] = {
-		accepts = 0,
-		declines = 0,
-		sent = 0,
-		length = length,
-		bar = bar,
-		dest = dest,
-		serialData = serialData,
-		timer = self:ScheduleTimer("StartUpload",30,name),
-		dist = dist,
-		target = target,
-	}
-	]]
 
 	bar.userdata.timeleft = 30
 	bar.userdata.totaltime = 30
@@ -284,7 +269,6 @@ function Distributor:StartReceiving(name,length,sender,dist)
 	bar.userdata.timeleft = 40
 	bar.userdata.totaltime = 40
 
-	-- TODO: Needs testing
 	local info = DXE.new()
 	info.name = name
 	info.sender = sender
@@ -294,18 +278,6 @@ function Distributor:StartReceiving(name,length,sender,dist)
 	info.timer = self:ScheduleTimer("DLTimeout",40,name)
 	info.dist = dist
 	Downloads[name] = info
-
-	--[[
-	Downloads[name] = {
-		name = name,
-		sender = sender,
-		received = 0,
-		length = length,
-		bar = bar,
-		timer = self:ScheduleTimer("DLTimeout",40,name),
-		dist = dist,
-	}
-	]]
 	
 	self:StartUpdating(name.."DL",bar)
 	self:RegisterComm(prefix, "DownloadReceived")
@@ -409,7 +381,7 @@ end
 local find = string.find
 function Distributor:CHAT_MSG_ADDON(_,prefix, msg, dist, sender)
 	if find(prefix,"DXE_DistR") and dist == "RAID" or dist == "WHISPER" and (next(Downloads) or next(Uploads)) then
-		local name, mark = match(prefix, "DXE_DistR_([%w'%- ]+)(.-)")
+		local name, mark = match(prefix, "DXE_DistR_([%w'%- ]+)(.*)")
 		if not name then return end
 		-- For WHISPER distributions
 		if msg == "COMPLETED" and Uploads[name] then
@@ -417,6 +389,8 @@ function Distributor:CHAT_MSG_ADDON(_,prefix, msg, dist, sender)
 			return
 		end
 
+		-- Make sure the mark exists
+		if #mark == 0 then return end
 		-- Track downloads
 		local dl = Downloads[name]
 		if dl and dl.sender == sender then
@@ -543,7 +517,7 @@ end
 -- Move between center and top
 local StackAnchor = CreateFrame("Frame",nil,UIParent)
 StackAnchor:SetHeight(1); StackAnchor:SetWidth(1)
-StackAnchor:SetPoint("TOP",0,-GetScreenHeight()/4)
+StackAnchor:SetPoint("TOP",0,-GetScreenHeight()/3)
 function Distributor:LayoutProgBarStack()
 	local anchor = StackAnchor
 	for i=1,#ProgressStack do
