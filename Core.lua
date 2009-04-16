@@ -432,12 +432,13 @@ function DXE:OnEnable()
 	self:UpdateTriggers()
 	self:UpdateLock()
 	self:UpdatePaneVisibility()
-	self:RegisterComm("DXE_Core","OnCommReceived")
 	self:RegisterEvent("RAID_ROSTER_UPDATE")
 	self:RegisterEvent("ZONE_CHANGED_NEW_AREA","UpdateTriggers")
 	self:RegisterEvent("PLAYER_ENTERING_WORLD","UpdateTriggers")
 	self:SetActiveEncounter("Default")
 	self:EnableAllModules()
+	self:RegisterComm("DXE_Core","OnCommReceived")
+	self:RequestVersions()
 end
 
 function DXE:OnDisable()
@@ -1216,9 +1217,15 @@ function DXE:PrintRosterVersions(info, encname)
 	end
 end
 
+
+
 ----------------------------------
 -- COMMS
 ----------------------------------
+
+function DXE:RequestVersions()
+	self:SendCommMessage("DXE_Core", "REQUESTVERSIONS", "RAID")
+end
 
 --- Broadcasts all or a specific one. Throttles broadcasting all.
 -- @param name Assumed to exist in EDB. It is only used in Distributor after downloading.
@@ -1252,13 +1259,13 @@ do
 					insert(tbl, format("%s,%s",name,data.version))
 				end
 			end
-			msg = format("VERSION:%s",concat(tbl, ":"))
+			msg = format("VERSIONBROADCAST:%s",concat(tbl, ":"))
 			tbl = self.delete(tbl)
 		-- Broadcasts a single one
 		else
 			-- TODO: Needs testing
 			if not EDB[name] then return end
-			msg = format("VERSION:%s,%s",name,EDB[name].version)
+			msg = format("VERSIONBROADCAST:%s,%s",name,EDB[name].version)
 		end
 		self:SendCommMessage("DXE_Core", msg, "RAID")
 	end
@@ -1266,7 +1273,7 @@ end
 
 function DXE:OnCommReceived(prefix, msg, dist, sender)
 	local type,args = match(msg,"^(%w+):(.+)$")
-	if type == "VERSION" then
+	if type == "VERSIONBROADCAST" then
 		if not RosterVersions[sender] then
 			RosterVersions[sender] = self.new()
 		end
@@ -1274,6 +1281,8 @@ function DXE:OnCommReceived(prefix, msg, dist, sender)
 		for name, vers in args:gmatch("([^:,]+),([^:,]+)") do
 			RosterVersions[sender][name] = tonumber(vers)
 		end
+	elseif type == "REQUESTVERSIONS" then
+		self:BroadcastVersion()
 	end
 end
 

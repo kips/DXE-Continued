@@ -204,11 +204,17 @@ Distributor.Uploads = Uploads
 local UploadQueue = {}
 Distributor.UploadQueue = UploadQueue
 
+-- TODO: Test this
+function Distributor:DispatchDistribute(info)
+	local success,name,dist,target = self:Deserialize(info)
+	if success then self:Distribute(name,dist,target) end
+end
+
 function Distributor:Distribute(name, dist, target)
 	dist = dist or "RAID"
 	local data = DXE:GetEncounterData(name)
 	if not data or Uploads[name] or name == "Default" or GetNumRaidMembers() == 0 then return end
-	if DXE.tablesize(Uploads) == 4 then UploadQueue[name] = true return end
+	if DXE.tablesize(Uploads) == 4 then UploadQueue[name] = self:Serialize(name,dist,target) return end
 	local serialData = self:Serialize(data)
 	local length = len(serialData)
 	local message = format("UPDATE:%s:%d:%d",name,data.version,length)
@@ -440,10 +446,10 @@ function Distributor:DLTimeout(name)
 end
 
 function Distributor:QueueNextUL()
-	local qname = next(UploadQueue)
+	local qname,info = next(UploadQueue)
 	if qname then
 		UploadQueue[qname] = nil
-		self:ScheduleTimer("Distribute",3.5,qname)
+		self:ScheduleTimer("DispatchDistribute",3.5,info)
 	end
 end
 
