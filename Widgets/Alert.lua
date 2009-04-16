@@ -71,7 +71,6 @@ do
 		frame:SetWidth(250) 
 		frame:SetHeight(30)
 		frame:SetBackdrop(backdrop)
-		frame:SetBackdropBorderColor(0.33,0.33,0.33)
 
 		local bar = CreateFrame("StatusBar",nil,frame)
 		bar:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
@@ -84,7 +83,7 @@ do
 		local border = CreateFrame("Frame",nil,frame)
 		border:SetAllPoints(true)
 		border:SetBackdrop(backdropborder)
-		border:SetBackdropBorderColor(0.33,0.33,0.33)
+		--border:SetBackdropBorderColor(0.33,0.33,0.33)
 		border:SetFrameLevel(bar:GetFrameLevel()+1)
 		
 		local text = bar:CreateFontString(nil,"ARTWORK")

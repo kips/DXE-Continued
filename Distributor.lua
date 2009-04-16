@@ -2,7 +2,9 @@
 	Credits to Bazaar
 ]]
 
-local AceGUI = LibStub("AceGUI-3.0")
+-- TODO: ONLY SEND TO PEOPLE WITH THE MOD
+
+local AceGUI = DXE.AceGUI
 local DXE,Colors = DXE,DXE.Constants.Colors
 local PlayerName
 
@@ -15,10 +17,14 @@ local match,len,format,split = string.match,string.len,string.format,string.spli
 ----------------------------------
 
 local Distributor = DXE:NewModule("Distributor","AceEvent-3.0","AceTimer-3.0","AceComm-3.0","AceSerializer-3.0")
+local StackAnchor
 
 function Distributor:OnInitialize()
 	PlayerName = UnitName("player")
 	DXE:AddPluginOptions("distributor",self:GetOptions())
+
+	StackAnchor = DXE:CreateLockableFrame("DistributorStackAnchor",200,10,"Download/Upload Anchor")
+	DXE:RegisterMoveSaving(StackAnchor,"CENTER","UIParent","CENTER",0,300)
 end
 
 function Distributor:OnEnable()
@@ -520,10 +526,6 @@ function Distributor:RemoveProgressBar(bar)
 	self:LayoutProgBarStack()
 end
 
--- Move between center and top
-local StackAnchor = CreateFrame("Frame",nil,UIParent)
-StackAnchor:SetHeight(1); StackAnchor:SetWidth(1)
-StackAnchor:SetPoint("TOP",0,-GetScreenHeight()/3)
 function Distributor:LayoutProgBarStack()
 	local anchor = StackAnchor
 	for i=1,#ProgressStack do

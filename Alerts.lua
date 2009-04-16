@@ -1,5 +1,6 @@
 local UIParent = UIParent
-local AceGUI = LibStub("AceGUI-3.0")
+local DXE = DXE
+local AceGUI = DXE.AceGUI
 local Colors,Sounds = DXE.Constants.Colors,DXE.Constants.Sounds
 
 local GetTime,PlaySoundFile = GetTime,PlaySoundFile

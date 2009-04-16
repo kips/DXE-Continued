@@ -87,14 +87,36 @@ function DXE:InitializeOptions()
 				inline = true,
 				order = 100,
 				args = {
-					PaneOnlyInRaid = {
+					ShowPane = {
 						order = 100,
+						type = "toggle",
+						name = "Show Pane",
+						set = function(info,v)
+							self.db.global.ShowPane = v
+							self:UpdatePaneVisibility()
+						end,
+					},
+					PaneOnlyInRaid = {
+						order = 200,
 						type = "toggle",
 						name = "Show Pane only in raid",
 						set = function(info,v)
 							self.db.global.PaneOnlyInRaid = v
 							self:UpdatePaneVisibility()
 						end,
+						disabled = function() return not self.db.global.ShowPane end,
+					},
+					PaneScale = {
+						order = 300,
+						type = "range",
+						name = "Pane scale",
+						set = function(info,v)
+							self.db.global.PaneScale = v
+							self:UpdatePaneScale()
+						end,
+						min = 0.1,
+						max = 2,
+						step = 0.1,
 					},
 				},
 			},

@@ -34,9 +34,10 @@ local Invoker = DXE:NewModule("Invoker","AceEvent-3.0","AceTimer-3.0")
 local HW = DXE.HW
 local Alerts = DXE.Alerts
 
-function Invoker:OnEnable()
-	self:RegisterMessage("DXE_StartEncounter","OnStart")
-	self:RegisterMessage("DXE_StopEncounter","OnStop")
+function Invoker:OnInitialize()
+	DXE.RegisterCallback(self,"SetActiveEncounter","OnSet")
+	DXE.RegisterCallback(self,"StartEncounter","OnStart")
+	DXE.RegisterCallback(self,"StopEncounter","OnStop")
 end
 
 ---------------------------------------------
@@ -556,8 +557,8 @@ DXE.RegisterCallback(Invoker,"HW_TRACER_ACQUIRED")
 -- API
 ---------------------------------------------
 
-function Invoker:SetData(data)
-	assert(type(data) == "table","Expected 'data' table as argument #1 in SetData. Got '"..tostring(data).."'")
+function Invoker:OnSet(_,data)
+	assert(type(data) == "table","Expected 'data' table as argument #1 in OnSet. Got '"..tostring(data).."'")
 	-- Set data upvalue
 	CE = data
 	-- Set db upvalue

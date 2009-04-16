@@ -1,16 +1,9 @@
 local AceGUI = LibStub("AceGUI-3.0")
 local UIParent = UIParent
 
-local Backdrop = {
-	bgFile="Interface\\DialogFrame\\UI-DialogBox-Background",
-	edgeFile="Interface\\Tooltips\\UI-Tooltip-Border",
-	tileSize=16,
-	edgeSize=16, 
-	insets= {left=4,right=4,top=4,bottom=4}
-}
 
-local White = {r = 1, g = 1, b = 1}
-local Blue = {r = 0, g = 0, b = 1} 
+local WHITE = {r=1,g=1,b=1}
+local BLUE = {r=0,g=0,b=1} 
 
 do
 	local WidgetType = "DXE_ProgressBar"
@@ -19,7 +12,7 @@ do
 	local function OnAcquire(self)
 		self.frame:Show()
 		self.frame:SetParent(UIParent)
-		self:SetColor(Blue,White)
+		self:SetColor(BLUE,WHITE)
 	end
 
 	local function OnRelease(self)
@@ -60,22 +53,39 @@ do
 		self.bar:SetValue(value)
 	end
 
+	local backdrop = {
+		bgFile="Interface\\DialogFrame\\UI-DialogBox-Background",
+		tileSize=16,
+		insets = {left = 2, right = 2, top = 1, bottom = 2}
+	}
+
+	local backdropborder = {
+		edgeFile="Interface\\Tooltips\\UI-Tooltip-Border", 
+		edgeSize = 9,             
+		insets = {left = 2, right = 2, top = 3, bottom = 2}
+	}
+
 	local function Constructor()
 		local self = {}
 		self.type = WidgetType
 		local frame = CreateFrame("Frame",nil,UIParent)
 
 		frame:SetWidth(222) 
-		frame:SetHeight(30)
-		frame:SetBackdrop(Backdrop)
+		frame:SetHeight(24)
+		frame:SetBackdrop(backdrop)
 		
 		local bar = CreateFrame("StatusBar",nil,frame)
 		bar:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
-		bar:SetPoint("TOPLEFT",5,-5)
-		bar:SetPoint("BOTTOMRIGHT",-5,5)
+		bar:SetPoint("TOPLEFT",2,-2)
+		bar:SetPoint("BOTTOMRIGHT",-2,2)
 		bar:SetMinMaxValues(0,1) 
 		bar:SetValue(0)
 		self.bar = bar
+
+		local border = CreateFrame("Frame",nil,frame)
+		border:SetAllPoints(true)
+		border:SetBackdrop(backdropborder)
+		border:SetFrameLevel(bar:GetFrameLevel()+1)
 		
 		local text = bar:CreateFontString(nil,"ARTWORK")
 		text:SetFont("Interface\\Addons\\DXE\\Fonts\\FGM.ttf",10)

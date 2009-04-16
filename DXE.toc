@@ -1,7 +1,7 @@
 ## Interface: 30100
 ## Title: Deus Vox Encounters
 ## Author: Kollektiv, Fariel
-## SavedVariables: DXEDB, DXERecDB
+## SavedVariables: DXEDB
 ## OptionalDeps: Ace3
 
 # Libraries

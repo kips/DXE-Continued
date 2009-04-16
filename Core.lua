@@ -10,7 +10,10 @@ local defaults = {
 			AutoAccept = true,
 		},
 		AlertsScale = 1,
+		PaneScale = 1,
+		ShowPane = true,
 		PaneOnlyInRaid = false,
+		PaneScale = 1,
 		ShowMinimap = true,
 		_Minimap = {},
 	},
@@ -131,12 +134,6 @@ function DXE:DisableAllModules()
 	end
 end
 
----------------------------------------------
--- RECEIVED DATABASE
----------------------------------------------
-
-DXERecDB = DXERecDB or {}
-local RDB
 
 ---------------------------------------------
 -- UPVALUES
@@ -145,6 +142,7 @@ local RDB
 local ACD = LibStub("AceConfigDialog-3.0")
 local AC = LibStub("AceConfig-3.0")
 local AceGUI = LibStub("AceGUI-3.0")
+DXE.ACD,DXE.AC,DXE.AceGUI = ACD,AC,AceGUI
 local insert,wipe,concat = table.insert,table.wipe,table.concat
 local match = string.match
 
@@ -252,8 +250,6 @@ function DXE:SetActiveEncounter(name)
 	-- Update CE upvalue
 	CE = EDB[name]
 	-- Update Encounter data
-	self.Invoker:SetData(CE)
-	self.Logger:SetData(CE)
 	-- Set folder value
 	self.Pane.SetFolderValue(name)
 	-- Set pane updating and starting/stopping
@@ -262,14 +258,12 @@ function DXE:SetActiveEncounter(name)
 		self:SetAutoStop(CE.onactivate.autostop)
 		self:SetRegenChecks(CE.onactivate)
 	end
-
 	self:CloseAllHW()
 	self:SetTracing(CE.tracing)
-
 	-- For the empty encounter
 	self:ShowFirstHW()
-
 	self:LayoutHealthWatchers()
+	self.callbacks:Fire("SetActiveEncounter",CE)
 end
 
 function DXE:UpgradeEncounters()
@@ -288,14 +282,16 @@ end
 -- Start the current encounter
 function DXE:StartEncounter()
 	if self:IsRunning() then return end
-	self:SendMessage("DXE_StartEncounter")
+	self.callbacks:Fire("StartEncounter")
+	--self:SendMessage("DXE_StartEncounter")
 	self:StartTimer()
 end
 
 -- Stop the current encounter
 function DXE:StopEncounter()
 	if not self:IsRunning() then return end
-	self:SendMessage("DXE_StopEncounter")
+	self.callbacks:Fire("StopEncounter")
+	--self:SendMessage("DXE_StopEncounter")
 	self:StopTimer()
 end
 
@@ -396,12 +392,14 @@ end
 function DXE:OnInitialize()
 	self.loaded = true
 	-- Received DB
-	RDB = DXERecDB
-	DXE.RDB = RDB
 	-- Options
 	self.db = LibStub("AceDB-3.0"):New("DXEDB",self.defaults)
 	self.options = self:InitializeOptions()
 	self.InitializeOptions = nil
+	-- Received database
+	RDB = self.db:RegisterNamespace("RDB", {global = {}})
+	RDB = RDB.global
+	DXE.RDB = RDB
 	-- Pane
 	self:CreatePane()
 	self:CreateHealthWatchers()
@@ -414,7 +412,8 @@ function DXE:OnInitialize()
 	-- The default encounter
 	self:RegisterEncounter({name = "Default", title = "Default", zone = ""})
 	self:SetActiveEncounter("Default")
-	-- Register queued data TODO: Check for versions between RDB and EDB before registering
+	-- Register queued data 
+	-- TODO: Check for versions between RDB and EDB before registering
 	for _,data in ipairs(loadQueue) do self:RegisterEncounter(data) end
 	loadQueue = self.delete(loadQueue)
 	-- Upgrade
@@ -432,6 +431,8 @@ function DXE:OnEnable()
 	self:UpdateTriggers()
 	self:UpdateLock()
 	self:UpdatePaneVisibility()
+	self:UpdatePaneScale()
+	self:LayoutHealthWatchers()
 	self:RegisterEvent("RAID_ROSTER_UPDATE")
 	self:RegisterEvent("ZONE_CHANGED_NEW_AREA","UpdateTriggers")
 	self:RegisterEvent("PLAYER_ENTERING_WORLD","UpdateTriggers")
@@ -664,11 +665,21 @@ local backdrop = {
 	insets = {left = 2, right = 2, top = 2, bottom = 2}
 }
 
+function DXE:UpdatePaneScale()
+	local scale = self.db.global.PaneScale
+	self.Pane:SetScale(scale)
+	DXE:SavePosition(self.Pane)
+end
+
 function DXE:UpdatePaneVisibility()
-	if self.db.global.PaneOnlyInRaid then
-		self.Pane[GetNumRaidMembers() > 0 and "Show" or "Hide"](self.Pane)
+	if self.db.global.ShowPane then
+		if self.db.global.PaneOnlyInRaid then
+			self.Pane[GetNumRaidMembers() > 0 and "Show" or "Hide"](self.Pane)
+		else
+			self.Pane:Show()
+		end
 	else
-		self.Pane:Show()
+		self.Pane:Hide()
 	end
 end
 
@@ -1038,8 +1049,10 @@ function DXE:SetTracing(names)
 end
 
 function DXE:LayoutHealthWatchers()
-	local midY = GetScreenHeight()/2
+	local midY = (GetScreenHeight()/2)*UIParent:GetEffectiveScale()
 	local x,y = self.Pane:GetCenter()
+	local s = self.Pane:GetEffectiveScale()
+	x,y = x*s,y*s
 	local point = y > midY and "TOP" or "BOTTOM"
 	local relPoint = y > midY and "BOTTOM" or "TOP"
 	local anchor = self.Pane

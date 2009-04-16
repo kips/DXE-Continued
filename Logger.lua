@@ -1,5 +1,6 @@
 local Colors = DXE.Constants.Colors
 
+local db
 local logdata, statusbar
 local activelog
 local CE
@@ -15,6 +16,8 @@ local COMBATLOG_OBJECT_REACTION_FRIENDLY = 0x00000010;
 local COMBATLOG_OBJECT_REACTION_NEUTRAL = 0x00000020; 
 local COMBATLOG_OBJECT_REACTION_HOSTILE = 0x00000040; 
 local COMBATLOG_OBJECT_REACTION_MASK = 0x000000F0;
+
+local ACD,AC = DXE.ACD,DXE.AC
 
 ---------------------------------------------
 -- INITIALIZATION
@@ -39,25 +42,27 @@ local boss_args = {}
 Logger.options = options
 
 function Logger:OnInitialize()
-	self.loaded = true
-	self.defaults = {}
-	DXE.db.profile.logdb = DXE.db.profile.logdb or {}
-	self.db = DXE.db.profile.logdb
-	self.db.bosses = self.db.bosses or {}
-	logdata = self.db.bosses
+	self.db = DXE.db:RegisterNamespace("Logger", {
+		global = {
+			logdata = {},
+		},
+	})
+	db = self.db
+	logdata = db.global.logdata
 	for k,v in pairs(logdata) do
-		k = string.gsub(k, "_", " ") --De-safe string cause config is lame
+		k = string.gsub(k, "_", " ")
 		self:CreateEncLog(k)
 		Logger.InsertBoss(k)
 		for t,l in pairs(v) do
 			Logger.InsertBossLog(k, t, l, false)
 		end
 	end
-	LibStub("AceConfig-3.0"):RegisterOptionsTable("Logger", self.options)
-	LibStub("AceConfigDialog-3.0"):SetDefaultSize("Logger", 900, 600)
+	AC:RegisterOptionsTable("Logger", self.options)
+	ACD:SetDefaultSize("Logger", 900, 600)
 
-	self:RegisterMessage("DXE_StartEncounter","OnStart")
-	self:RegisterMessage("DXE_StopEncounter","OnStop")
+	DXE.RegisterCallback(self,"StartEncounter","OnStart")
+	DXE.RegisterCallback(self,"StopEncounter","OnStop")
+	DXE.RegisterCallback(self,"SetActiveEncounter","OnSet")
 end
 
 
@@ -238,18 +243,20 @@ end
 -- SETUP ENCOUNTER
 ---------------------------------------------
 
-function Logger:SetData(data)
-	assert(type(data) == "table","Expected 'data' table as argument #1 in SetData. Got '"..tostring(data).."'")
+function Logger:OnSet(_,data)
+	assert(type(data) == "table","Expected 'data' table as argument #1 in OnSet. Got '"..tostring(data).."'")
 	
 	-- Set data upvalue
 	CE = data
 
 	local safe_name = string.gsub(CE.name, "%s", "_")
 
-	DXE.db.profile.logdb = DXE.db.profile.logdb or {}
-	DXE.db.profile.logdb.bosses = DXE.db.profile.logdb.bosses or {}
+	--DXE.db.profile.logdb = DXE.db.profile.logdb or {}
+	--DXE.db.profile.logdb.bosses = DXE.db.profile.logdb.bosses or {}
 	-- Only look at the appropriate encounters
-	if not DXE.db.profile.logdb.bosses[safe_name] then
+
+	if not logdata[safe_name] then
+	--if not DXE.db.profile.logdb.bosses[safe_name] then
 		self:UnregisterAllEvents()
 		activelog = nil
 		return
@@ -428,7 +435,7 @@ end
 ---------------------------------------------
 
 function Logger:OpenViewer()
-	LibStub("AceConfigDialog-3.0"):Open("Logger")
+	ACD:Open("Logger")
 end
 
 DXE.Logger = Logger
