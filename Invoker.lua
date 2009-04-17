@@ -197,7 +197,7 @@ local function ReplaceFuncs(str)
 		if func then
 			local val = func()
 			--@debug@
-			debug(format("ReplaceFuncs - func: %s val: %s",tostring(func),tostring(val)))
+			debug(format("ReplaceFuncs - func: %s val: %s",tostring(match(rep,"&(.+)&")),tostring(val)))
 			--@end-debug@
 			str = str:gsub(rep,val)
 		end

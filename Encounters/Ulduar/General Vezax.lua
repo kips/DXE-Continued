@@ -96,6 +96,15 @@ do
 				time = 10,
 				color1 = "RED",
 			},
+			facelessproxwarn = {
+				var = "facelessproxwarn",
+				varname = "Mark of the Faceless proximity warn",
+				type = "simple",
+				text = "#5# is Marked! YOU ARE CLOSE!",
+				time = 1.5,
+				color1 = "MAGENTA",
+				sound = "ALERT5",
+			},
 		},
 		timers = {
 			shadowcrash = {
@@ -108,7 +117,7 @@ do
 				[2] = {
 					{expect = {"&tft_unitexists& &tft_isplayer&","==","1 nil"}},
 					{proximitycheck = {"&tft_unitname&",18}},
-					{set = {shadowcrashmessage = "Shadow Crash: &tft_unitname&! GET THE FUCK AWAY!"}},
+					{set = {shadowcrashmessage = "Shadow Crash: &tft_unitname&! MOVE!"}},
 					{alert = "shadowcrashwarn"},
 				},
 			},
@@ -172,6 +181,8 @@ do
 					[2] = {
 						{expect = {"#4#","~=","&playerguid&"}},
 						{alert = "facelessdurothers"},
+						{proximitycheck = {"#5#",18}},
+						{alert = "facelessproxwarn"},
 					},
 				},
 			},
