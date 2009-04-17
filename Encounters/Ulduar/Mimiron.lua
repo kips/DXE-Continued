@@ -156,6 +156,14 @@ do
 				flashtime = 10,
 				color1 = "BROWN",
 			},
+			-- Bomb bot
+			bombbotwarn = {
+				var = "bombbotwarn",
+				varname = "Warning when bombbot spawns",
+				type = "simple",
+				text = "Bomb bot spawned",
+				time = 5,
+			},
 		},
 		timers = {
 			startbarragedur = {
@@ -196,7 +204,7 @@ do
 					-- Transition from Phase 3 to Phase 4
 					[3] = {
 						{expect = {"#1#","find","^Preliminary testing phase complete"}},
-						{tracing = {"Leviathan MKII","VX-001","Aerial Command Unit"}},
+						{tracing = {"Leviathan Mk II","VX-001","Aerial Command Unit"}},
 						{alert = "threetofour"},
 					},
 					-- Hard mode activated
@@ -282,6 +290,17 @@ do
 						{alert = "frostbombwarn"},
 						{alert = "frostbombcd"},
 					},
+				},
+			},
+			-- Bomb Bot
+			[8] = {
+				type = "combatevent",
+				eventtype = "SPELL_CAST_START",
+				spellid = 63811,
+				execute = {
+					[1] = {
+						{alert = "bombbotwarn"},
+					},	
 				},
 			},
 		},
