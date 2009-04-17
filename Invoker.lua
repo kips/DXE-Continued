@@ -196,9 +196,6 @@ local function ReplaceFuncs(str)
 		local func = RepFuncs[match(rep,"&(.+)&")]
 		if func then
 			local val = func()
-			--@debug@
-			debug(format("ReplaceFuncs - func: %s val: %s",tostring(match(rep,"&(.+)&")),tostring(val)))
-			--@end-debug@
 			str = str:gsub(rep,val)
 		end
 	end
@@ -474,6 +471,11 @@ end
 ---------------------------------------------
 
 local RegEvents,CombatEvents = {},{}
+
+--@debug@
+--function Invoker:SetIcon
+--SetIcon(player, 8)
+--@end-debug@
 
 --event, timestamp, eventtype, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, spellID, spellName,...
 function Invoker:COMBAT_EVENT(event,timestamp,eventtype,...)

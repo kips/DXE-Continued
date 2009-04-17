@@ -16,10 +16,12 @@ do
 		},
 		userdata = {
 			shadowcrashmessage = "",
+			saronitecount = 1,
 		},
 		onstart = {
 			[1] = {
 				{alert = "vaporcd"},
+				{set = {saronitecount = "INCR|1"}},
 			},
 		},
 		alerts = {
@@ -64,7 +66,7 @@ do
 				var = "vaporcd",
 				varname = "Saronite Vapor cooldown",
 				type = "dropdown",
-				text = "Next Saronite Vapor",
+				text = "Next Saronite Vapor <saronitecount>",
 				time = 30,
 				flashtime = 5,
 				color1 = "GREEN",
@@ -194,6 +196,7 @@ do
 					[1] = {
 						{expect = {"#1#","find","^A cloud of saronite vapors"}},
 						{alert = "vaporcd"},
+						{set = {saronitecount = "INCR|1"}},
 					},
 				},
 			},
