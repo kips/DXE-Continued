@@ -16,11 +16,12 @@ do
 		},
 		userdata = {
 			spawnmessage = "Minions",
-			spawntime = {11,60,loop=false}
+			spawntime = {8,60,loop=false}
 		},
 		onstart = {
 			[1] = {
 				{alert = "spawncd"},
+				{alert = "enragecd"},
 			},
 		},
 		alerts = {
@@ -95,6 +96,15 @@ do
 				time = 1.5,
 				color1 = "GREEN",
 				throttle = 5,
+			},
+			enragecd = {
+				var = "enragecd",
+				varname = "Enrage cooldown",
+				type = "dropdown",
+				text = "Enrage",
+				time = 600,
+				flashtime = 5,
+				color1 = "RED",
 			},
 		},
 		timers = {
