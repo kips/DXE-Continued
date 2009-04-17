@@ -15,7 +15,6 @@ do
 			leavecombat = true,
 		},
 		userdata = {
-			vaporcount = 1,
 			shadowcrashmessage = "",
 		},
 		onstart = {
@@ -65,7 +64,7 @@ do
 				var = "vaporcd",
 				varname = "Saronite Vapor cooldown",
 				type = "dropdown",
-				text = "Next Saronite Vapor (<vaporcount>)",
+				text = "Next Saronite Vapor",
 				time = 30,
 				flashtime = 5,
 				color1 = "GREEN",
@@ -101,13 +100,13 @@ do
 		timers = {
 			shadowcrash = {
 				[1] = {
-					{expect = {"&tft_unitexists& &tft_isplayer&","==","true true"}},
+					{expect = {"&tft_unitexists& &tft_isplayer&","==","1 1"}},
 					{set = {shadowcrashmessage = "Shadow Crash: YOU! Move!"}},
 					{alert = "shadowcrashwarn"},
 				},
 				
 				[2] = {
-					{expect = {"&tft_unitexists& &tft_isplayer&","==","true false"}},
+					{expect = {"&tft_unitexists& &tft_isplayer&","==","1 nil"}},
 					{proximitycheck = {"&tft_unitname&",18}},
 					{set = {shadowcrashmessage = "Shadow Crash: &tft_unitname&! GET THE FUCK AWAY!"}},
 					{alert = "shadowcrashwarn"},
@@ -184,7 +183,6 @@ do
 					[1] = {
 						{expect = {"#1#","find","^A cloud of saronite vapors"}},
 						{alert = "vaporcd"},
-						{set = {vaporcount = "INCR|1"}},
 					},
 				},
 			},
