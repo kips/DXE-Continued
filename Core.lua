@@ -1286,7 +1286,7 @@ end
 
 function DXE:OnCommReceived(prefix, msg, dist, sender)
 	local type,args = match(msg,"^(%w+):(.+)$")
-	if type == "VERSIONBROADCAST" then
+	if type == "VERSIONBROADCAST" or type == "VERSION" then
 		if not RosterVersions[sender] then
 			RosterVersions[sender] = self.new()
 		end

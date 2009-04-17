@@ -18,7 +18,11 @@ do
 			vaporcount = 1,
 			shadowcrashmessage = "",
 		},
-		onstart = {},
+		onstart = {
+			[1] = {
+				{alert = "vaporcd"},
+			},
+		},
 		alerts = {
 			searingflamewarn = {
 				var = "searingflamewarn",
@@ -44,7 +48,7 @@ do
 				type = "centerpopup",
 				text = "Surge of Darkness Ends",
 				time = 10,
-				flashtime = 3,
+				flashtime = 10,
 				color1 = "VIOLET",
 				color2 = "AQUA",
 				sound = "ALERT2",
@@ -91,7 +95,6 @@ do
 				type = "centerpopup",
 				text = "Mark of the Faceless: #5#",
 				time = 10,
-				flashtime = 10,
 				color1 = "RED",
 			},
 		},
@@ -102,10 +105,11 @@ do
 					{set = {shadowcrashmessage = "Shadow Crash: YOU! Move!"}},
 					{alert = "shadowcrashwarn"},
 				},
+				
 				[2] = {
 					{expect = {"&tft_unitexists& &tft_isplayer&","==","true false"}},
-					{proximitycheck = {"#5#",18}},
-					{set = {shadowcrashmessage = "Shadow Crash: #5#! GET THE FUCK AWAY!"}},
+					{proximitycheck = {"&tft_unitname&",18}},
+					{set = {shadowcrashmessage = "Shadow Crash: &tft_unitname&! GET THE FUCK AWAY!"}},
 					{alert = "shadowcrashwarn"},
 				},
 			},
@@ -152,7 +156,7 @@ do
 				spellid = {60835,62660},
 				execute = {
 					[1] = {
-						{scheduletimer = {"shadowcrash",0.1}},
+						{scheduletimer = {"shadowcrash",0}},
 					},
 				},
 			},
@@ -175,10 +179,10 @@ do
 			-- Saronite Vapors
 			[6] = {
 				type = "combatevent",
-				eventtype = "SPELL_SUMMON",
-				spellid = 63081,
+				eventtype = "EMOTE",
 				execute = {
 					[1] = {
+						{expect = {"#1#","find","^A cloud of saronite vapors"}},
 						{alert = "vaporcd"},
 						{set = {vaporcount = "INCR|1"}},
 					},
