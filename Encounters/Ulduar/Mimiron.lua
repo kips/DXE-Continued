@@ -5,7 +5,7 @@ do
 		zone = "Ulduar", 
 		name = "Mimiron", 
 		title = "Mimiron", 
-		tracing = {"Leviathan MKII"},
+		tracing = {"Leviathan Mk II"},
 		triggers = {
 			yell = "^We haven't much time, friends",
 		},
@@ -102,6 +102,17 @@ do
 				color2 = "YELLOW",
 				sound = "ALERT3",
 			},
+			shockblastcd = {
+				var = "shockblastcd",
+				varname = "Shock Blast cooldown",
+				type = "dropdown",
+				text = "Next Shock Blast",
+				time = 25,
+				flashtime = 5,
+				color1 = "MAGENTA",
+				color2 = "ORANGE",
+				sound = "ALERT3",
+			},
 			spinupwarn = {
 				var = "spinupwarn",
 				varname = "Spin Up warning",
@@ -112,7 +123,7 @@ do
 				color2 = "RED",
 				sound = "ALERT4",
 			},
-			--- Leviathan MK11 and VX-001
+			--- Leviathan MK II and VX-001
 			rocketstrikewarn = {
 				var = "rocketstrikewarn",
 				varname = "Rocket Strike warning",
@@ -159,7 +170,7 @@ do
 			-- Bomb bot
 			bombbotwarn = {
 				var = "bombbotwarn",
-				varname = "Warning when bombbot spawns",
+				varname = "Bomb bot warning",
 				type = "simple",
 				text = "Bomb bot spawned",
 				time = 5,
@@ -175,6 +186,11 @@ do
 			startbarragecd = {
 				[1] = {
 					{alert = "laserbarragecd"},
+				},
+			},
+			startblastcd = {
+				[1] = {
+					{alert = "shockblastcd"},
 				},
 			},
 		},
@@ -205,6 +221,8 @@ do
 					[3] = {
 						{expect = {"#1#","find","^Preliminary testing phase complete"}},
 						{tracing = {"Leviathan Mk II","VX-001","Aerial Command Unit"}},
+						{scheduletimer = {"startbarragecd",9}},
+						{scheduletimer = {"startblastcd",25}},
 						{alert = "threetofour"},
 					},
 					-- Hard mode activated
@@ -235,6 +253,7 @@ do
 				execute = {
 					[1] = {
 						{alert = "shockblastwarn"},
+						{scheduletimer = {"startblastcd",10}},
 					},	
 				},
 			},
