@@ -17,6 +17,7 @@
 ]]
 
 local DXE = DXE
+local debug = DXE.debug
 
 local type,next,select = type,next,select
 local ipairs,pairs,unpack = ipairs,pairs,unpack
@@ -195,6 +196,9 @@ local function ReplaceFuncs(str)
 		local func = RepFuncs[match(rep,"&(.+)&")]
 		if func then
 			local val = func()
+			--@debug@
+			debug(format("ReplaceFuncs - func: %s val: %s",tostring(func),tostring(val)))
+			--@end-debug@
 			str = str:gsub(rep,val)
 		end
 	end

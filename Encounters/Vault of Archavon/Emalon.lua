@@ -21,4 +21,6 @@ do
 
 	DXE:RegisterEncounter(data)
 end
+-- Lightning Nova 25s cooldown
+-- Overcharge every 45 seconds
 

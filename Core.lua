@@ -46,6 +46,7 @@ local ipairs,pairs = ipairs,pairs
 DXE.noop = function() end
 
 -- Requires a ChatWindow named "DXE Debug"
+DXE._Print = DXE.Print
 DXE.debug = function(...)
 	local debugframe
 	for i=1,NUM_CHAT_WINDOWS do
@@ -56,7 +57,7 @@ DXE.debug = function(...)
 		end
 	end
 	if debugframe then
-		DXE:Print(debugframe,...)
+		DXE:_Print(debugframe,...)
 	end
 end
 

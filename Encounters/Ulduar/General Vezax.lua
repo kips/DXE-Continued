@@ -178,8 +178,8 @@ do
 			},
 			-- Saronite Vapors
 			[6] = {
-				type = "combatevent",
-				eventtype = "EMOTE",
+				type = "event",
+				event = "EMOTE",
 				execute = {
 					[1] = {
 						{expect = {"#1#","find","^A cloud of saronite vapors"}},
