@@ -7,6 +7,7 @@ do
 		title = "Yogg-Saron", 
 		tracing = {"Yogg-Saron",},
 		triggers = {
+			scan = "Sara",
 			yell = "^The time to strike at the head of the beast",
 		},
 		onactivate = {
