@@ -14,11 +14,20 @@ do
 		},
 		userdata = {
 			portaltime = {78,90,loop = false},
+			weakenedtimer = 60,
 		},
 		onstart = {
 			[1] = {
 				{alert = "enragecd"},
 			},
+		},
+		timers = {
+			decrweakenedtimer = {
+				[1] = {
+					{set = {weakenedtimer = "DECR|1"}},
+					{scheduletimer = {"decrweakenedtimer",1}},
+				},
+			}
 		},
 		alerts = {
 			lunaticgazewarn = {
@@ -76,11 +85,11 @@ do
 				varname = "Weakened warning",
 				type = "centerpopup",
 				text = "Weakened!",
-				time = 10,
-				flashtime = 10,
+				time = "<weakenedtimer>",
+				--flashtime = 10,
 				color1 = "ORANGE",
-				color2 = "YELLOW",
-				sound = "ALERT4"
+				--color2 = "YELLOW",
+				--sound = "ALERT4"
 			},
 			inducewarn = {
 				var = "inducewarn",
@@ -150,6 +159,7 @@ do
 					-- Phase 3
 					[2] = {
 						{expect = {"#1#","find","^Look upon the true face"}},
+						{canceltimer = "decrweakenedtimer"},
 						{quash = "inducewarn"},
 						{quash = "portalcd"},
 					},
@@ -163,12 +173,15 @@ do
 					[1] = {
 						{expect = {"#1#","find","^Portals open"}},
 						{alert = "inducewarn"},
+						{scheduletimer = {"decrweakenedtimer",1}},
 						{alert = "portalcd"},
 					},
 					[2] = {
 						{expect = {"#1#","find","^The illusion shatters and a path"}},
-						{alert = "inducewarn"},
 						{alert = "weakenedwarn"},
+						{set = {weakenedtimer = 60}},
+						{scheduletimer = {"decrweakenedtimer",1}},
+						{alert = "inducewarn"},
 					},
 				},
 			},
