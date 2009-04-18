@@ -48,6 +48,7 @@ do
 				time = 20,
 				flashtime = 20,
 				color1 = "PEACH",
+				color2 = "PEACH",
 				sound = "ALERT1",
 			},
 			enragecd = {
@@ -74,11 +75,12 @@ do
 				var = "weakeneddur",
 				varname = "Weakened duration",
 				type = "centerpopup",
-				text = "Weakened!",
+				text = "Weakened State",
 				time = 45,
-				flashtime = 10,
+				flashtime = 45,
 				color1 = "ORANGE",
 				color2 = "YELLOW",
+				sound = "ALERT4"
 			},
 			inducewarn = {
 				var = "inducewarn",
@@ -115,7 +117,7 @@ do
 			[1] = {
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
-				spellid = 64163,
+				spellid = {64163,64163},
 				execute = {
 					[1] = {
 						{alert = "lunaticgazewarn"},
@@ -144,6 +146,7 @@ do
 						{tracing = {"Yogg-Saron","Brain of Yogg-Saron"}},
 						{alert = "yoggsaronarrives"},
 						{alert = "portalcd"},
+						{alert = "inducewarn"},
 					},
 					-- Phase 3
 					[2] = {
@@ -159,12 +162,12 @@ do
 				execute = {
 					-- Portal
 					[1] = {
-						{expect = {"#1#","find","^Portals open into Yogg-Saron"}},
+						{expect = {"#1#","find","^Portals open"}},
 						{alert = "inducewarn"},
 						{alert = "portalcd"},
 					},
 					[2] = {
-						{expect = {"#1#","find","^The Illusion shatters and a path"}},
+						{expect = {"#1#","find","^The illusion shatters and a path"}},
 						{quash = "inducewarn"},
 						{alert = "weakeneddur"},
 					},
