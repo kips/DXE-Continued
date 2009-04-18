@@ -22,12 +22,14 @@ do
 			},
 		},
 		timers = {
+			-- TODO: Add possibility to do this in invoker without ugly scheduling
 			decrweakenedtimer = {
 				[1] = {
 					{set = {weakenedtimer = "DECR|1"}},
 					{scheduletimer = {"decrweakenedtimer",1}},
 				},
 			},
+			--[[
 			inducemadness = {
 				[1] = {
 					{alert = "inducewarn"},
@@ -35,6 +37,7 @@ do
 					{scheduletimer = {"decrweakenedtimer",1}},
 				},
 			},
+			]]
 		},
 		alerts = {
 			lunaticgazewarn = {
@@ -179,14 +182,14 @@ do
 					-- Portal
 					[1] = {
 						{expect = {"#1#","find","^Portals open"}},
-						{scheduletimer = {"inducemadness",8}},
+						--{scheduletimer = {"inducemadness",8}},
 						{alert = "portalcd"},
 					},
 					[2] = {
 						{expect = {"#1#","find","^The illusion shatters and a path"}},
 						{quash = "inducewarn"},
 						{alert = "weakenedwarn"},
-						{canceltimer = "decrweakenedtimer"},
+						--{canceltimer = "decrweakenedtimer"},
 					},
 				},
 			},
@@ -212,6 +215,19 @@ do
 						{expect = {"#4#","~=","&playerguid&"}},
 						{proximitycheck = {"#5#",18}},
 						{alert = "maladywarn"},
+					},
+				},
+			},
+			-- Induce Madness - Does everyone in the raid always see this?
+			[7] = {
+				type = "combatevent",
+				eventtype = "SPELL_CAST_START",
+				spellid = 64059,
+				execute = {
+					[1] = {
+						{alert = "inducewarn"},
+						{set = {weakenedtimer = 60}},
+						{scheduletimer = {"decrweakenedtimer",1}},
 					},
 				},
 			},
