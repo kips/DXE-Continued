@@ -46,8 +46,7 @@ do
 				type = "centerpopup",
 				text = "Yogg'Saron Arrives",
 				time = 20,
-				color1 = "GREY",
-				sound = "ALERT4",
+				color1 = "PEACH",
 			},
 			enragecd = {
 				var = "enragecd",
