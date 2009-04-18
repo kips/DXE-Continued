@@ -87,7 +87,7 @@ do
 				varname = "Induce Madness cast",
 				type = "dropdown",
 				text = "Induce Madness Cast",
-				time = 60,
+				time = 58,
 				flashtime = 5,
 				color1 = "BROWN",
 				color2 = "MIDGREY",
@@ -116,7 +116,7 @@ do
 			-- Lunatic Gaze
 			[1] = {
 				type = "combatevent",
-				eventtype = "SPELL_CAST_START",
+				eventtype = "SPELL_AURA_APPLIED",
 				spellid = {64163,64164},
 				execute = {
 					[1] = {
