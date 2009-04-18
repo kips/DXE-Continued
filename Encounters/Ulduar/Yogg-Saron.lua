@@ -146,7 +146,6 @@ do
 						{tracing = {"Yogg-Saron","Brain of Yogg-Saron"}},
 						{alert = "yoggsaronarrives"},
 						{alert = "portalcd"},
-						{alert = "inducewarn"},
 					},
 					-- Phase 3
 					[2] = {
