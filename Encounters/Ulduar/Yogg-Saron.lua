@@ -42,7 +42,7 @@ do
 			},
 			yoggsaronarrives = {
 				var = "yoggsaronarrives",
-				varname = "Yogg'Saron arrival",
+				varname = "Yogg-Saron arrival",
 				type = "centerpopup",
 				text = "Yogg'Saron Arrives",
 				time = 20,
@@ -117,7 +117,7 @@ do
 			[1] = {
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
-				spellid = {64163,64163},
+				spellid = {64163,64164},
 				execute = {
 					[1] = {
 						{alert = "lunaticgazewarn"},
