@@ -141,7 +141,7 @@ do
 					-- Phase 2
 					[1] = {
 						{expect = {"#1#","find","^I am the lucid dream"}},
-						{tracing = {"Yogg-Saron","Sara"}},
+						{tracing = {"Yogg-Saron","Brain of Yogg-Saron"}},
 						{alert = "yoggsaronarrives"},
 						{alert = "portalcd"},
 					},
