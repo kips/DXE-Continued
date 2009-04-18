@@ -10,8 +10,6 @@ do
 			yell = "^The time to strike at the head of the beast",
 		},
 		onactivate = {
-			autostart = true,
-			autostop = true,
 			leavecombat = true,
 		},
 		userdata = {},

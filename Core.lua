@@ -531,13 +531,15 @@ function DXE:CHAT_MSG_MONSTER_YELL(_,msg)
 end
 
 local UnitName = UnitName
+local UnitIsEnemy = UnitIsEnemy
 function DXE:Scan()
 	for i,unit in pairs(DXE.Roster) do
 		local target = rIDtarget[i]
 		local name = UnitName(target)
 		if UnitExists(target) and 
 			nameTriggers[name] and 
-			not UnitIsDead(target) then
+			not UnitIsDead(target) 
+			and UnitIsEnemy("player",target) then
 			-- Return name
 			return nameTriggers[name].name
 		end
