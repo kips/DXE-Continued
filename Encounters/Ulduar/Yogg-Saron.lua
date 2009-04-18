@@ -47,6 +47,7 @@ do
 				text = "Yogg'Saron Arrives",
 				time = 20,
 				color1 = "GREY",
+				sound = "ALERT4",
 			},
 			enragecd = {
 				var = "enragecd",
@@ -87,6 +88,7 @@ do
 				flashtime = 5,
 				color1 = "BROWN",
 				color2 = "MIDGREY",
+				sound = "ALERT6",
 			},
 			squeezewarn = {
 				var = "squeezewarn",
@@ -95,21 +97,13 @@ do
 				text = "Squeeze: #5#",
 				time = 1.5,
 				color1 = "AQUA",
+				sound = "ALERT7",
 			},
-			maladywarnself = {
+			maladywarn = {
 				var = "maladywarn",
 				varname = "Malady of the Mind warn",
 				type = "simple",
-				text = "Malady of the Mind: YOU!",
-				time = 1.5,
-				sound = "ALERT5",
-				color1 = "GREEN",
-			},
-			maladywarnother = {
-				var = "maladywarn",
-				varname = "Malady of the Mind warn",
-				type = "simple",
-				text = "Malady of the Mind: #5#",
+				text = "Malady: #5#! MOVE AWAY!",
 				time = 1.5,
 				sound = "ALERT5",
 				color1 = "GREEN",
@@ -195,11 +189,8 @@ do
 				execute = {
 					[1] = {
 						{expect = {"#4#","==","&playerguid&"}},
-						{alert = "maladywarnself"},
-					},
-					[2] = {
-						{expect = {"#4#","~=","&playerguid&"}},
-						{alert = "maladywarnother"},
+						{proximitycheck = {"#5#",18}},
+						{alert = "maladywarn"},
 					},
 				},
 			},
