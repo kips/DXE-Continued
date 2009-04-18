@@ -27,7 +27,14 @@ do
 					{set = {weakenedtimer = "DECR|1"}},
 					{scheduletimer = {"decrweakenedtimer",1}},
 				},
-			}
+			},
+			inducemadness = {
+				[1] = {
+					{alert = "inducewarn"},
+					{set = {weakenedtimer = 60}},
+					{scheduletimer = {"decrweakenedtimer",1}},
+				},
+			},
 		},
 		alerts = {
 			lunaticgazewarn = {
@@ -172,16 +179,14 @@ do
 					-- Portal
 					[1] = {
 						{expect = {"#1#","find","^Portals open"}},
-						{alert = "inducewarn"},
-						{scheduletimer = {"decrweakenedtimer",1}},
+						{scheduletimer = {"inducemadness",8}},
 						{alert = "portalcd"},
 					},
 					[2] = {
 						{expect = {"#1#","find","^The illusion shatters and a path"}},
+						{quash = "inducewarn"},
 						{alert = "weakenedwarn"},
-						{set = {weakenedtimer = 60}},
-						{scheduletimer = {"decrweakenedtimer",1}},
-						{alert = "inducewarn"},
+						{canceltimer = "decrweakenedtimer"},
 					},
 				},
 			},
