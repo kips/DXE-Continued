@@ -46,7 +46,9 @@ do
 				type = "centerpopup",
 				text = "Yogg'Saron Arrives",
 				time = 20,
+				flashtime = 20,
 				color1 = "PEACH",
+				sound = "ALERT1",
 			},
 			enragecd = {
 				var = "enragecd",
@@ -187,7 +189,7 @@ do
 				spellid = 63830,
 				execute = {
 					[1] = {
-						{expect = {"#4#","==","&playerguid&"}},
+						{expect = {"#4#","~=","&playerguid&"}},
 						{proximitycheck = {"#5#",18}},
 						{alert = "maladywarn"},
 					},
