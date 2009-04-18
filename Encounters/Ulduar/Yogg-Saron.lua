@@ -5,9 +5,8 @@ do
 		zone = "Ulduar", 
 		name = "Yogg-Saron", 
 		title = "Yogg-Saron", 
-		tracing = {"Sara",},
+		tracing = {"Sara"},
 		triggers = {
-			scan = "Sara",
 			yell = "^The time to strike at the head of the beast",
 		},
 		onactivate = {
@@ -146,8 +145,8 @@ do
 				execute = {
 					-- Phase 2
 					[1] = {
-						{tracing = {"Yogg-Saron","Sara"}},
 						{expect = {"#1#","find","^I am the lucid dream"}},
+						{tracing = {"Yogg-Saron","Sara"}},
 						{alert = "yoggsaronarrives"},
 						{alert = "portalcd"},
 					},
@@ -176,6 +175,7 @@ do
 					},
 				},
 			},
+			-- Squeeze
 			[5] = {
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
@@ -187,6 +187,7 @@ do
 					},
 				},
 			},
+			-- Malady of the Mind
 			[6] = {
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
