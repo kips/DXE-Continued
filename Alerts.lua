@@ -5,7 +5,7 @@ local Colors,Sounds = DXE.Constants.Colors,DXE.Constants.Sounds
 
 local GetTime,PlaySoundFile = GetTime,PlaySoundFile
 local ipairs, pairs = ipairs, pairs
-local insert,remove= table.insert,table.remove
+local remove= table.remove
 
 local scale
 
@@ -110,7 +110,7 @@ DXE.RegisterCallback(Alerts,"AlertsScaleChanged")
 function Alerts:GetAlert()
 	local alert = AceGUI:Create("DXE_Alert")
 	alert.frame:SetScale(scale)
-	insert(Active, alert)
+	Active[#Active+1] = alert
 	return alert
 end
 
@@ -210,7 +210,7 @@ end
 function Alerts:ToTop(alert)
 	self:RemoveFromStacks(alert)
 	if alert.userdata.forceTop then
-		insert(TopAlertStack, alert)
+		TopAlertStack[#TopAlertStack+1] = alert
 		self:LayoutAlertStack(TopAlertStack, TopStackAnchor)
 	else
 		local x,y = TopStackAnchor:GetCenter()
@@ -224,7 +224,7 @@ end
 function Alerts:ToCenter(alert)
 	self:RemoveFromStacks(alert)
 	if alert.userdata.forceCenter then 
-		insert(CenterAlertStack, alert)
+		CenterAlertStack[#CenterAlertStack+1] = alert
 		self:LayoutAlertStack(CenterAlertStack, CenterStackAnchor)
 	else
 		if alert.userdata.sound then PlaySoundFile(alert.userdata.sound) end

@@ -130,7 +130,7 @@ do
 			[3] = {
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
-				spellid = {62775, 62776},
+				spellid = {62776},
 				execute = {
 					[1] = {
 						{alert = "tympanicwarn"},

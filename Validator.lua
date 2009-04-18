@@ -6,7 +6,7 @@
 local ipairs,pairs = ipairs,pairs
 local gmatch,match = string.gmatch,string.match
 local assert,type,select = assert,type,select
-local insert,select,concat,wipe = table.insert,select,table.concat,wipe
+local select,concat,wipe = select,table.concat,wipe
 
 local Sounds = DXE.Constants.Sounds
 local Colors = DXE.Constants.Colors
@@ -120,7 +120,7 @@ local function err(msg, errlvl, ...)
 		else
 			key = "["..key.."]: data"
 		end
-		insert(temp, key)
+		temp[#temp+1] = key
 	end
 	error("DXE:ValidateOptions() "..concat(temp)..msg, errlvl+2)
 end

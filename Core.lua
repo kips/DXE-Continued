@@ -144,7 +144,7 @@ local ACD = LibStub("AceConfigDialog-3.0")
 local AC = LibStub("AceConfig-3.0")
 local AceGUI = LibStub("AceGUI-3.0")
 DXE.ACD,DXE.AC,DXE.AceGUI = ACD,AC,AceGUI
-local insert,wipe,concat = table.insert,table.wipe,table.concat
+local wipe,concat = table.wipe,table.concat
 local match = string.match
 
 ---------------------------------------------
@@ -190,9 +190,11 @@ function DXE:RegisterEncounter(data,forceValid)
 	EDB[data.name] = data
 	-- Build trigger lists
 	self:UpdateTriggers()
+	if self.enabled then self:UpdateVersionString() end
 end
 
 --- Remove an encounter previously added with RegisterEncounter.
+-- There's no need to update the version string because we always register after an unregister
 function DXE:UnregisterEncounter(name)
 	-- Sanity checks
 	if name == "Default" or not EDB[name] then return end
@@ -361,6 +363,12 @@ function DXE:RAID_ROSTER_UPDATE()
 	self:UpdateRosterTables()
 end
 
+function DXE:PLAYER_ENTERING_WORLD()
+	self.pGUID = self.pGUID or UnitGUID("player")
+	self.pName = self.pName or UnitName("player")
+	self:UpdateTriggers()
+end
+
 ---------------------------------------------
 -- MAIN
 ---------------------------------------------
@@ -427,8 +435,8 @@ function DXE:OnInitialize()
 end
 
 function DXE:OnEnable()
+	self.enabled = true
 	self:LoadPositions()
-	self:UpdateRosterTables()
 	self:UpdateTriggers()
 	self:UpdateLock()
 	self:UpdatePaneVisibility()
@@ -436,14 +444,17 @@ function DXE:OnEnable()
 	self:LayoutHealthWatchers()
 	self:RegisterEvent("RAID_ROSTER_UPDATE")
 	self:RegisterEvent("ZONE_CHANGED_NEW_AREA","UpdateTriggers")
-	self:RegisterEvent("PLAYER_ENTERING_WORLD","UpdateTriggers")
+	self:RegisterEvent("PLAYER_ENTERING_WORLD")
 	self:SetActiveEncounter("Default")
 	self:EnableAllModules()
 	self:RegisterComm("DXE_Core","OnCommReceived")
+	self:UpdateVersionString()
 	self:RequestVersions()
+	self:UpdateRosterTables()
 end
 
 function DXE:OnDisable()
+	self.enabled = false
 	self:UpdateLockedFrames("Hide")
 	self:StopEncounter()
 	self:SetActiveEncounter("Default")
@@ -460,7 +471,7 @@ function DXE:SavePosition(f)
 	local point, relativeTo, relativePoint, xOfs, yOfs = f:GetPoint()
 	local name = f:GetName()
 	self.db.profile.Positions[name].point = point
-	self.db.profile.Positions[name].relativeTo = relativeTo
+	self.db.profile.Positions[name].relativeTo = relativeTo and relativeTo:GetName()
 	self.db.profile.Positions[name].relativePoint = relativePoint
 	self.db.profile.Positions[name].xOfs = xOfs
 	self.db.profile.Positions[name].yOfs = yOfs
@@ -883,7 +894,7 @@ do
 					info.func = onclick
 					info.colorCode = "|cffffff00"
 					info.owner = self
-					insert(infoTable,info)
+					infoTable[#infoTable+1] = info
 				elseif not cats[data.zone]  then
 					cats[data.zone] = true
 					info.text = data.zone
@@ -891,7 +902,7 @@ do
 					info.hasArrow = true
 					info.notCheckable = true
 					info.owner = self
-					insert(infoTable,info)
+					infoTable[#infoTable+1] = info
 				end
 			end
 		elseif level == 2 then
@@ -904,7 +915,7 @@ do
 					info.owner = self
 					info.value = name
 					info.func = onclick
-					insert(infoTable,info)
+					infoTable[#infoTable+1] = info
 				end
 			end
 		end
@@ -1239,8 +1250,24 @@ end
 -- COMMS
 ----------------------------------
 
+-- Redo system to use a dispatch system for comms
+
 function DXE:RequestVersions()
-	self:SendCommMessage("DXE_Core", "REQUESTVERSIONS", "RAID")
+	self:SendCommMessage("DXE_Core", "REQUESTVERSIONS:ARGS", "RAID")
+end
+
+local versionString
+function DXE:UpdateVersionString()
+	local tbl = self.new()
+	tbl[1] = "VERSIONBROADCAST"
+	tbl[2] = format("%s,%s","DXE",DXE.version)
+	for name, data in pairs(EDB) do
+		if name ~= "Default" then
+			tbl[#tbl+1] = format("%s,%s",name,data.version)
+		end
+	end
+	versionString = concat(tbl,":")
+	tbl = self.delete(tbl)
 end
 
 --- Broadcasts all or a specific one. Throttles broadcasting all.
@@ -1256,7 +1283,6 @@ do
 		local msg
 		-- Broadcasts all
 		if not name then
-			-- TODO: Needs testing
 			-- Throttling
 			local t = GetTime()
 			if last + waitTime - 0.5 > t then
@@ -1267,19 +1293,9 @@ do
 			end
 			handle = nil
 			last = t
-
-			local tbl = self.new()
-			tbl[1] = format("%s,%s","DXE",DXE.version)
-			for name, data in pairs(EDB) do
-				if name ~= "Default" then
-					insert(tbl, format("%s,%s",name,data.version))
-				end
-			end
-			msg = format("VERSIONBROADCAST:%s",concat(tbl, ":"))
-			tbl = self.delete(tbl)
+			msg = versionString
 		-- Broadcasts a single one
 		else
-			-- TODO: Needs testing
 			if not EDB[name] then return end
 			msg = format("VERSIONBROADCAST:%s,%s",name,EDB[name].version)
 		end
@@ -1297,7 +1313,7 @@ function DXE:OnCommReceived(prefix, msg, dist, sender)
 		for name, vers in args:gmatch("([^:,]+),([^:,]+)") do
 			RosterVersions[sender][name] = tonumber(vers)
 		end
-	elseif type == "REQUESTVERSIONS" then
+	elseif type == "REQUESTVERSIONS" and sender ~= self.pName then
 		self:BroadcastVersion()
 	end
 end

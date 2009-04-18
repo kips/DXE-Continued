@@ -31,7 +31,7 @@ do
 				},
 			},
 		},
-		-- TODO: Add Impale warning?
+		-- TODO: Add Impale, Runic Barrier warning?
 		alerts = {
 			enrage2cd = {
 				var = "enrage2cd", 

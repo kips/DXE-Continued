@@ -423,7 +423,7 @@ function Logger:CombatEvent(event, timestamp, eventtype, srcGUID, srcName, srcFl
 		local dmg = damage and string.format("%d", damage) or "-"
 		local line = string.format("%6.2f %6.2f %-20s %-20s %-7s +%6.3f", enctime,
 			hp, eventtype, (dstName or "<NONE>"), dmg, deltatime)
-		tinsert(log, line)
+		log[#log+1] = line
 
 	-- elseif bit.band(dstFlags, COMBATLOG_OBJECT_REACTION_MASK) ~= COMBATLOG_OBJECT_REACTION_FRIENDLY then
 		-- Destination of event is not friendly

@@ -9,7 +9,7 @@ local DXE,Colors = DXE,DXE.Constants.Colors
 local PlayerName
 
 local ipairs, pairs = ipairs, pairs
-local insert,remove,wipe = table.insert,table.remove,table.wipe
+local remove,wipe = table.remove,table.wipe
 local match,len,format,split = string.match,string.len,string.format,string.split
 
 ----------------------------------
@@ -511,7 +511,7 @@ local ProgressStack = {}
 
 function Distributor:GetProgressBar()
 	local bar = AceGUI:Create("DXE_ProgressBar")
-	insert(ProgressStack, bar)
+	ProgressStack[#ProgressStack+1] = bar
 	self:LayoutProgBarStack()
 	return bar
 end

@@ -132,10 +132,9 @@ local function tft()
 end
 
 -- IMPORTANT - Return values should all be strings
-local pguid,pname
 local RepFuncs = {
-	playerguid = function() pguid = pguid or UnitGUID("player"); return pguid end,
-	playername = function() pname = pname or UnitName("player"); return pname end,
+	playerguid = function() return DXE.pGUID end,
+	playername = function() return DXE.pName end,
 	vehicleguid  = function() return UnitGUID("vehicle") or "" end,
 	difficulty = function() return tostring(GetCurrentDungeonDifficulty()) end,
 	-- First health watcher

@@ -24,7 +24,8 @@ do
 				{set = {overwhelmtime = 60}},
 			},
 		},
-		-- TODO: Add Fusion Punch applications
+		-- TODO: Add Fusion Punch Cast, Runic Barrier Duration, Lightning Whirl Cooldown, Static Disruption Cooldown, Rune of Summoning Cooldown, 
+		--       Lightning Tendrils Cooldown, Overwhelm Cooldown, Overload Cooldown
 		alerts = {
 			enragecd = {
 				var = "enragecd",
@@ -62,8 +63,8 @@ do
 				var = "overloadwarn",
 				varname = "Overload cast",
 				type = "centerpopup",
-				text = "Overload. Move Away!",
-				time = 6, -- Should this be 10 or 6?
+				text = "Overload! Move Away!",
+				time = 6, 
 				flashtime = 6,
 				sound = "ALERT2",
 				color1 = "MAGENTA",
@@ -149,7 +150,7 @@ do
 					},
 				},
 			},
-			-- Stormcaller Brundir - Lightning Tendrils
+			-- Stormcaller Brundir - Lightning Tendrils +2
 			[2] = {
 				type = "combatevent", 
 				eventtype = "SPELL_AURA_APPLIED", 
@@ -162,19 +163,8 @@ do
 					},
 				},
 			},
-			-- Runemaster Molgeim - Rune of Summoning - Elementals spawn - 2 dead
+			-- Runemaster Molgeim - Rune of Power
 			[3] = {
-				type = "combatevent", 
-				eventtype = "SPELL_CAST_START", 
-				spellid = 62273,
-				execute = {
-					[1] = {
-						{alert = "runeofsummoningwarn"},
-					},
-				},
-			},
-			-- Steelbreaker - Rune of Power
-			[4] = {
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
 				spellid = {61974,61973},
@@ -184,8 +174,8 @@ do
 					},
 				},
 			},
-			-- Runemaster Molgeim - Rune of Death
-			[5] = {
+			-- Runemaster Molgeim - Rune of Death +1
+			[4] = {
 				type = "combatevent", 
 				eventtype = "SPELL_AURA_APPLIED", 
 				spellid = {62269, 63490},
@@ -196,7 +186,18 @@ do
 					},
 				},
 			},
-			-- Steelbreaker - Overwhelm - 2 dead
+			-- Runemaster Molgeim - Rune of Summoning +2
+			[5] = {
+				type = "combatevent", 
+				eventtype = "SPELL_CAST_START", 
+				spellid = 62273,
+				execute = {
+					[1] = {
+						{alert = "runeofsummoningwarn"},
+					},
+				},
+			},
+			-- Steelbreaker - Overwhelm - +2
 			[6] = {
 				type = "combatevent",
 				spellid = {64637, 61888},

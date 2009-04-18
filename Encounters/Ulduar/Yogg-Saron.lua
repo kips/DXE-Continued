@@ -22,22 +22,12 @@ do
 			},
 		},
 		timers = {
-			-- TODO: Add possibility to do this in invoker without ugly scheduling
 			decrweakenedtimer = {
 				[1] = {
 					{set = {weakenedtimer = "DECR|1"}},
 					{scheduletimer = {"decrweakenedtimer",1}},
 				},
 			},
-			--[[
-			inducemadness = {
-				[1] = {
-					{alert = "inducewarn"},
-					{set = {weakenedtimer = 60}},
-					{scheduletimer = {"decrweakenedtimer",1}},
-				},
-			},
-			]]
 		},
 		alerts = {
 			lunaticgazewarn = {
@@ -49,14 +39,25 @@ do
 				color1 = "PURPLE",
 				sound = "ALERT1",
 			},
+			lunaticgazecd = {
+				var = "lunaticgazecd",
+				varname = "Lunatic Gaze cooldown",
+				type = "dropdown",
+				text = "Lunatic Gaze Cooldown",
+				time = 11, -- It could be lower
+				flashtime = 5,
+				color1 = "GREEN",
+				color2 = "YELLOW",
+				sound = "ALERT2",
+			},
 			brainlinkdur = {
 				var = "brainlinkdur",
 				varname = "Brain Link on self",
 				type = "centerpopup",
 				text = "Brain Link: YOU",
 				time = 30,
+				flashtime = 30,
 				color1 = "BLUE",
-				color2 = "INDIGO",
 				sound = "ALERT3",
 			},
 			yoggsaronarrives = {
@@ -64,8 +65,8 @@ do
 				varname = "Yogg-Saron arrival",
 				type = "centerpopup",
 				text = "Yogg'Saron Arrives",
-				time = 20,
-				flashtime = 20,
+				time = 14,
+				flashtime = 14,
 				color1 = "PEACH",
 				color2 = "PEACH",
 				sound = "ALERT1",
@@ -96,10 +97,7 @@ do
 				type = "centerpopup",
 				text = "Weakened!",
 				time = "<weakenedtimer>",
-				--flashtime = 10,
 				color1 = "ORANGE",
-				--color2 = "YELLOW",
-				--sound = "ALERT4"
 			},
 			inducewarn = {
 				var = "inducewarn",
@@ -118,7 +116,7 @@ do
 				type = "simple",
 				text = "Squeeze: #5#",
 				time = 1.5,
-				color1 = "AQUA",
+				color1 = "YELLOW",
 				sound = "ALERT7",
 			},
 			maladywarn = {
@@ -130,6 +128,24 @@ do
 				sound = "ALERT5",
 				color1 = "GREEN",
 			},
+			empoweringshadowscd = {
+				var = "empoweringshadowscd",
+				varname = "empoweringshadowscd",
+				type = "dropdown",
+				text = "Empowering Shadows Cooldown",
+				time = 45,
+				flashtime = 5,
+				sound = "ALERT8",
+				color1 = "INDIGO",
+				color2 = "RED",
+			},
+			-- If it's already spawning and weakened ends before it's scheduled to spawn then it spawns on time
+			-- If weakened ends after it's scheduled to spawn then it spawns 1s after weakened ends
+			-- Implement timeleft|alertname so we don't have to do ugly scheduling
+			--[[
+			crushertentaclespawn = {
+			},
+			]]
 		},
 		events = {
 			-- Lunatic Gaze
@@ -140,6 +156,7 @@ do
 				execute = {
 					[1] = {
 						{alert = "lunaticgazewarn"},
+						{alert = "lunaticgazecd"},
 					},
 				},
 			},
@@ -168,6 +185,7 @@ do
 					},
 					-- Phase 3
 					[2] = {
+						{tracing = {"Yogg-Saron"}},
 						{expect = {"#1#","find","^Look upon the true face"}},
 						{canceltimer = "decrweakenedtimer"},
 						{quash = "inducewarn"},
@@ -182,14 +200,18 @@ do
 					-- Portal
 					[1] = {
 						{expect = {"#1#","find","^Portals open"}},
-						--{scheduletimer = {"inducemadness",8}},
 						{alert = "portalcd"},
 					},
+					-- Weakened
 					[2] = {
 						{expect = {"#1#","find","^The illusion shatters and a path"}},
 						{quash = "inducewarn"},
 						{alert = "weakenedwarn"},
-						--{canceltimer = "decrweakenedtimer"},
+					},
+					-- Empowering Shadows
+					[3] = {
+						{expect = {"#1#","find","prepares to unleash Empowering Shadows!$"}},
+						{alert = "empoweringshadowscd"},
 					},
 				},
 			},
@@ -218,7 +240,7 @@ do
 					},
 				},
 			},
-			-- Induce Madness - Does everyone in the raid always see this?
+			-- Induce Madness
 			[7] = {
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
@@ -228,6 +250,18 @@ do
 						{alert = "inducewarn"},
 						{set = {weakenedtimer = 60}},
 						{scheduletimer = {"decrweakenedtimer",1}},
+					},
+				},
+			},
+			-- Brain Link removal
+			[8] = {
+				type = "combatevent",
+				eventtype = "SPELL_AURA_REMOVED",
+				spellid = {63802,63803,63804},
+				execute = {
+					[1] = {
+						{expect = {"#4#","==","&playerguid&"}},
+						{quash = "brainlinkdur"},
 					},
 				},
 			},

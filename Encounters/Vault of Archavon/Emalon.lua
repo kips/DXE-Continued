@@ -49,7 +49,7 @@ do
 				type = "centerpopup",
 				time = 25,
 				flashtime = 5,
-				text = "Overcharged Blast",
+				text = "Explosion!",
 				color1 = "YELLOW",
 				color2 = "VIOLET",
 				sound = "ALERT3",
