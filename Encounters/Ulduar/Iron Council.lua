@@ -53,7 +53,6 @@ do
 				flashtime = 5,
 				color1 = "TEAL",
 				color2 = "BLUE",
-				sound = "ALERT4",
 			},
 			runeofsummoningwarn = {
 				var = "runeofsummoningwarn",
