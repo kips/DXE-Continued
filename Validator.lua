@@ -149,7 +149,7 @@ local function validateReplaces(data,text,errlvl,...)
 	errlvl=(errlvl or 0)+1
 	for rep in gmatch(text,"%b&&") do
 		local func = match(rep,"&(.+)&")
-		if func:find("|") then func = match(func,"^(.+)|.+") end
+		if func:find("|") then func = match(func,"^([^|]+)|(.+)") end
 		if not RepFuncs[func] then
 			err(": replace func doesn't exist, got '"..rep.."'",errlvl,...)
 		end

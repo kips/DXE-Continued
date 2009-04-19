@@ -773,8 +773,8 @@ function DXE:CreatePane()
 	Pane.eye = self:AddPaneControl(
 		PaneTextures.."Eye",
 		PaneTextures.."Eye",
-		function(_,press)
-			if(press == "RightButton") then
+		function(_,button)
+			if button == "RightButton" then
 				DXE.Logger:OpenViewer()
 			else
 				DXE.Logger:RegisterBoss(UnitName("target"))

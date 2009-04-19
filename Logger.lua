@@ -27,7 +27,7 @@ local Logger = DXE:NewModule("Logger","AceEvent-3.0")
 
 local options = {
 	type = "group",
-	name = "DXE Logger",
+	name = "Logger",
 	handler = Logger,
 	args = {},
 	plugins = {
