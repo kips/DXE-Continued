@@ -303,9 +303,9 @@ local function StartAlert(name,...)
 	local time = info.time
 	if type(time) == "string" then
 		-- Vars
-		time = tonumber(ReplaceVars(tostring(info.time)))
+		time = tonumber(ReplaceVars(tostring(time)))
 		-- Alert timeleft
-		time = tonumber(ReplaceFuncs(tostring(info.time)))
+		time = tonumber(ReplaceFuncs(tostring(time)))
 	end
 	-- Sanity check
 	if not time or time < 0 then return end
@@ -484,11 +484,6 @@ end
 ---------------------------------------------
 
 local RegEvents,CombatEvents = {},{}
-
---@debug@
---function Invoker:SetIcon
---SetIcon(player, 8)
---@end-debug@
 
 --event, timestamp, eventtype, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, spellID, spellName,...
 function Invoker:COMBAT_EVENT(event,timestamp,eventtype,...)
