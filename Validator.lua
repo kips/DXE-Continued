@@ -149,6 +149,7 @@ local function validateReplaces(data,text,errlvl,...)
 	errlvl=(errlvl or 0)+1
 	for rep in gmatch(text,"%b&&") do
 		local func = match(rep,"&(.+)&")
+		if func:find("|") then func = match(func,"^(.+)|.+") end
 		if not RepFuncs[func] then
 			err(": replace func doesn't exist, got '"..rep.."'",errlvl,...)
 		end
@@ -208,7 +209,7 @@ local function validateCommandLine(data,line,errlvl,...)
 		validateVal(timer,isstring,errlvl,type,...)
 		validateVal(time,isnumber,errlvl,type,...)
 		if not data.timers or not data.timers[timer] then
-			err(": scheduling a non-existent timer '"..info.."'",errlvl,type,...)
+			err(": scheduling a non-existent timer '"..info[1].."'",errlvl,type,...)
 		end
 	elseif type == "canceltimer" then
 		if not data.timers or not data.timers[info] then

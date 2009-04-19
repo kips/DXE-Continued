@@ -14,19 +14,11 @@ do
 		},
 		userdata = {
 			portaltime = {78,90,loop = false},
-			weakenedtimer = 60,
+			crushertime = 14,
 		},
 		onstart = {
 			[1] = {
 				{alert = "enragecd"},
-			},
-		},
-		timers = {
-			decrweakenedtimer = {
-				[1] = {
-					{set = {weakenedtimer = "DECR|1"}},
-					{scheduletimer = {"decrweakenedtimer",1}},
-				},
 			},
 		},
 		alerts = {
@@ -60,17 +52,6 @@ do
 				color1 = "BLUE",
 				sound = "ALERT3",
 			},
-			yoggsaronarrives = {
-				var = "yoggsaronarrives",
-				varname = "Yogg-Saron arrival",
-				type = "centerpopup",
-				text = "Yogg'Saron Arrives",
-				time = 14,
-				flashtime = 14,
-				color1 = "PEACH",
-				color2 = "PEACH",
-				sound = "ALERT1",
-			},
 			enragecd = {
 				var = "enragecd",
 				varname = "Enrage",
@@ -89,14 +70,15 @@ do
 				flashtime = 10,
 				sound = "ALERT2",
 				color1 = "MAGENTA",
-				color2 = "DCYAN",
+				color2 = "MAGENTA",
 			},
-			weakenedwarn = {
-				var = "weakenedwarn",
-				varname = "Weakened warning",
+			weakeneddur = {
+				var = "weakeneddur",
+				varname = "Weakened duration",
 				type = "centerpopup",
 				text = "Weakened!",
-				time = "<weakenedtimer>",
+				time = "&timeleft|inducewarn&",
+				flashtime = 5,
 				color1 = "ORANGE",
 			},
 			inducewarn = {
@@ -130,22 +112,25 @@ do
 			},
 			empoweringshadowscd = {
 				var = "empoweringshadowscd",
-				varname = "empoweringshadowscd",
+				varname = "Empowering Shadows cooldown",
 				type = "dropdown",
 				text = "Empowering Shadows Cooldown",
-				time = 45,
+				time = 45, -- 46 or 45
 				flashtime = 5,
 				sound = "ALERT8",
 				color1 = "INDIGO",
 				color2 = "RED",
 			},
-			-- If it's already spawning and weakened ends before it's scheduled to spawn then it spawns on time
-			-- If weakened ends after it's scheduled to spawn then it spawns 1s after weakened ends
-			-- Implement timeleft|alertname so we don't have to do ugly scheduling
-			--[[
 			crushertentaclespawn = {
+				var = "crushertentaclespawn",
+				varname = "Crusher Tentacle spawn",
+				type = "dropdown",
+				text = "Crusher Tentacle Spawns",
+				time = "<crushertime>",
+				flashtime = 7,
+				color1 = "DCYAN",
+				color2 = "INDIGO",
 			},
-			]]
 		},
 		events = {
 			-- Lunatic Gaze
@@ -180,14 +165,14 @@ do
 					[1] = {
 						{expect = {"#1#","find","^I am the lucid dream"}},
 						{tracing = {"Yogg-Saron","Brain of Yogg-Saron"}},
-						{alert = "yoggsaronarrives"},
 						{alert = "portalcd"},
+						{alert = "crushertentaclespawn"},
 					},
 					-- Phase 3
 					[2] = {
 						{tracing = {"Yogg-Saron"}},
 						{expect = {"#1#","find","^Look upon the true face"}},
-						{canceltimer = "decrweakenedtimer"},
+						{quash = "crushertentaclespawn"},
 						{quash = "inducewarn"},
 						{quash = "portalcd"},
 					},
@@ -205,8 +190,13 @@ do
 					-- Weakened
 					[2] = {
 						{expect = {"#1#","find","^The illusion shatters and a path"}},
+						{alert = "weakeneddur"},
 						{quash = "inducewarn"},
-						{alert = "weakenedwarn"},
+
+						{expect = {"&timeleft|weakeneddur&",">","&timeleft|crushertentaclespawn&"}},
+						{set = {crushertime = "&timeleft|weakeneddur|1&"}},
+						{quash = "crushertentaclespawn"},
+						{alert = "crushertentaclespawn"},
 					},
 					-- Empowering Shadows
 					[3] = {
@@ -248,8 +238,6 @@ do
 				execute = {
 					[1] = {
 						{alert = "inducewarn"},
-						{set = {weakenedtimer = 60}},
-						{scheduletimer = {"decrweakenedtimer",1}},
 					},
 				},
 			},
@@ -262,6 +250,18 @@ do
 					[1] = {
 						{expect = {"#4#","==","&playerguid&"}},
 						{quash = "brainlinkdur"},
+					},
+				},
+			},
+			-- Crusher Tentacle spawn
+			[9] = {
+				type = "combatevent",
+				eventtype = "SPELL_CAST_SUCCESS",
+				spellid = 64144,
+				execute = {
+					[1] = {
+						{set = {crushertime = 50}},
+						{alert = "crushertentaclespawn"},
 					},
 				},
 			},

@@ -47,7 +47,7 @@ do
 				var = "overchargedblastcd",
 				varname = "Overcharged blast cooldown",
 				type = "centerpopup",
-				time = 25,
+				time = 20,
 				flashtime = 5,
 				text = "Explosion!",
 				color1 = "YELLOW",

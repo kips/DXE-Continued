@@ -166,7 +166,7 @@ do
 				spellid = {60835,62660},
 				execute = {
 					[1] = {
-						{scheduletimer = {"shadowcrash",0}},
+						{scheduletimer = {"shadowcrash",0.1}},
 					},
 				},
 			},

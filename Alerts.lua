@@ -159,6 +159,16 @@ function Alerts:CancelAlertTimers(alert)
 	end
 end
 
+function Alerts:GetAlertTimeleft(name)
+	for i=1,#Active do
+		local alert = Active[i]
+		if alert.userdata.name == name then
+			return alert.userdata.timeleft
+		end
+	end
+	return -1
+end
+
 local UIFrameFadeOut = UIFrameFadeOut
 function Alerts:Fade(alert)
 	UIFrameFadeOut(alert.frame,2,alert.frame:GetAlpha(),0)
@@ -238,6 +248,7 @@ end
 
 local function CountdownFunc(self,time)
 	local timeleft = self.userdata.endt - time
+	self.userdata.timeleft = timeleft
 	if timeleft < 0 then return end
 	self.timer:SetTime(timeleft)
 	local value = 1 - (timeleft / self.userdata.dt)
@@ -255,6 +266,7 @@ local cos = math.cos
 local function CountdownFlashFunc(self,time)
 	local userdata = self.userdata
 	local timeleft = userdata.endt - time
+	self.userdata.timeleft = timeleft
 	if timeleft < 0 then return end
 	self.timer:SetTime(timeleft)
 	local value = 1 - (timeleft / userdata.dt)
@@ -285,7 +297,7 @@ end
 -- This alert counts down a timer at the top of the screen.
 -- When a "Lead Time" is achieved, it drops to the center, announces a message, and plays a sound effect.
 -- When it expires, it fades off the screen.
-function Alerts:Dropdown(id, text, totalTime, flashTime, sound, c1, c2)
+function Alerts:Dropdown(name, text, totalTime, flashTime, sound, c1, c2)
 	if sound then sound = Sounds[sound] end
 	if c1 then c1 = Colors[c1] end
 	if c2 then c2 = Colors[c2] end
@@ -293,7 +305,7 @@ function Alerts:Dropdown(id, text, totalTime, flashTime, sound, c1, c2)
 	alert:SetColor(c1,c2)
 	alert:SetText(text) 
 	alert:SetAlpha(0.6) 
-	alert.userdata.name = id
+	alert.userdata.name = name
 	alert.userdata.sound = sound
 	alert.userdata.animTime = 0.3
 	alert.userdata.forceTop = true
@@ -309,12 +321,12 @@ end
 
 -- Center popup countdown alert
 -- This alert plays a sound right away, then displays a (short) countdown midscreen.
-function Alerts:CenterPopup(id, text, time, flashTime, sound, c1, c2)
+function Alerts:CenterPopup(name, text, time, flashTime, sound, c1, c2)
 	if sound then sound = Sounds[sound] end
 	if c1 then c1 = Colors[c1] end
 	if c2 then c2 = Colors[c2] end
 	local alert = self:GetAlert()
-	alert.userdata.name = id 
+	alert.userdata.name = name 
 	alert.userdata.forceCenter = true
 	alert:SetColor(c1,c2)
 	alert:SetText(text)

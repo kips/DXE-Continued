@@ -142,6 +142,8 @@ local RepFuncs = {
 	tft_unitexists = function() return tostring(UnitExists(tft())) end,
 	tft_isplayer = function() return tostring(UnitIsUnit(tft(),"player")) end,
 	tft_unitname = function() return tostring(UnitName(tft())) end,
+	-- Get's an alert's timeleft
+	timeleft = function(name,delta) return tostring(Alerts:GetAlertTimeleft(name) + (tonumber(delta) or 0)) end,
 }
 
 -- Add funcs for the other health watchers
@@ -188,14 +190,20 @@ local function ReplaceVars(str)
 	return str
 end
 
--- TODO: Add possibility to pass arguments delimited by '|'
+local split = string.split
 local function ReplaceFuncs(str)
 	-- Enclosed in &&
 	for rep in gmatch(str,"%b&&") do
-		local func = RepFuncs[match(rep,"&(.+)&")]
+		local info = match(rep,"&(.+)&")
+		local funcid,args
+		if find(info,"|") then funcid,args = match(info,"^([^|]+)|(.+)") 
+		else funcid = info end
+		local func = RepFuncs[funcid]
 		if func then
-			local val = func()
-			str = str:gsub(rep,val)
+			local val
+			if args then val = func(split("|",args))
+			else val = func() end
+			str = gsub(str,rep,val)
 		end
 	end
 	return str
@@ -208,7 +216,7 @@ local function ReplaceNums(str,...)
 			local num = tonumber(match(index,"#(%d)#"))
 			local val = num and select(num,...)
 			if num and val then
-				str = str:gsub(index,val)
+				str = gsub(str,index,val)
 			end
 		end
 	end
@@ -292,14 +300,20 @@ local function StartAlert(name,...)
 	-- Replace text
 	local text = ReplaceTokens(info.text,...)
 	-- Replace time
-	local time = tonumber(ReplaceVars(tostring(info.time)))
+	local time = info.time
+	if type(time) == "string" then
+		-- Vars
+		time = tonumber(ReplaceVars(tostring(info.time)))
+		-- Alert timeleft
+		time = tonumber(ReplaceFuncs(tostring(info.time)))
+	end
 	-- Sanity check
-	if not time then return end
+	if not time or time < 0 then return end
 	-- Pass in appropriate arguments
 	if info.type == "dropdown" then
-		Alerts:Dropdown(CE.key..info.var,text,time,info.flashtime,info.sound,info.color1,info.color2)
+		Alerts:Dropdown(name,text,time,info.flashtime,info.sound,info.color1,info.color2)
 	elseif info.type == "centerpopup" then
-		Alerts:CenterPopup(CE.key..info.var,text,time,info.flashtime,info.sound,info.color1,info.color2)
+		Alerts:CenterPopup(name,text,time,info.flashtime,info.sound,info.color1,info.color2)
 	elseif info.type == "simple" then
 		Alerts:Simple(text,info.sound,time,info.color1)
 	end
