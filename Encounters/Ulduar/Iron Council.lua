@@ -48,7 +48,7 @@ do
 				var = "fushionpunchcd",
 				varname = "Fushion Punch cooldown",
 				type = "dropdown",
-				text = "Fusion Punch cooldown",
+				text = "Fusion Punch Cooldown",
 				time = 12,
 				flashtime = 5,
 				color1 = "TEAL",
@@ -89,6 +89,17 @@ do
 				flashtime = 6,
 				sound = "ALERT2",
 				color1 = "MAGENTA",
+			},
+			overloadcd = {
+				var = "overloadcd",
+				varname = "Overload cooldown",
+				type = "dropdown",
+				text = "Overload Cooldown",
+				time = 60, 
+				flashtime = 5,
+				sound = "ALERT8",
+				color1 = "MAGENTA",
+				color2 = "MAGENTA",
 			},
 			tendrilsdur = {
 				var = "tendrilscd", 
@@ -170,6 +181,7 @@ do
 				execute = {
 					[1] = {
 						{alert = "overloadwarn"},
+						{alert = "overloadcd"},
 					},
 				},
 			},
