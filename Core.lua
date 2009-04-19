@@ -1279,7 +1279,13 @@ do
 	local waitTime = 4
 	-- ScheduleTimer handle
 	local handle
+	-- Previous raid member number
+	local prevNumRaidMembers
+
 	function DXE:BroadcastVersion(name)
+		local numRaidMembers = GetNumRaidMembers()
+		if prevNumRaidMembers == numRaidMembers then return end
+		prevNumRaidMembers = numRaidMembers
 		local msg
 		-- Broadcasts all
 		if not name then

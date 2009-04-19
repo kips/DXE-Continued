@@ -43,9 +43,9 @@ do
 				color2 = "DCYAN",
 				sound = "ALERT2",
 			},
-			overchargedblastcd = {
-				var = "overchargedblastcd",
-				varname = "Overcharged blast cooldown",
+			overchargedblastdur = {
+				var = "overchargedblastdur",
+				varname = "Overcharged Blast timeleft",
 				type = "centerpopup",
 				time = 20,
 				flashtime = 5,
@@ -60,7 +60,7 @@ do
 			[1] = {
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
-				spellid = 65279,
+				spellid = {65279,64216},
 				execute = {
 					[1] = {
 						{alert = "novacd"},
@@ -75,7 +75,7 @@ do
 				execute = {
 					[1] = {
 						{alert = "overchargecd"},
-						{alert = "overchargedblastcd"},
+						{alert = "overchargedblastdur"},
 					},
 				},
 			},

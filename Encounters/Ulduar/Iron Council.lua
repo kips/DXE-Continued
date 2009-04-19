@@ -35,12 +35,33 @@ do
 				time = 600,
 				flashtime = 5,
 			},
+			fusionpunchcast = {
+				var = "fushionpunchcast",
+				varname = "Fushion Punch cast",
+				type = "centerpopup",
+				text = "Fusion Punch Cast",
+				time = 3,
+				color1 = "BROWN",
+				sound = "ALERT4",
+			},
+			fusionpunchcd = {
+				var = "fushionpunchcd",
+				varname = "Fushion Punch cooldown",
+				type = "dropdown",
+				text = "Fusion Punch cooldown",
+				time = 12,
+				flashtime = 5,
+				color1 = "TEAL",
+				color2 = "BLUE",
+				sound = "ALERT4",
+			},
 			runeofsummoningwarn = {
 				var = "runeofsummoningwarn",
 				varname = "Rune of Summoning warning",
 				type = "simple",
 				text = "Rune of Summoning Casted!",
 				sound = "ALERT1",
+				color2 = "MAGENTA",
 				time = 1.5,
 			},
 			runeofdeathwarn = {
@@ -57,6 +78,7 @@ do
 				type = "centerpopup",
 				text = "Rune of Power Cast",
 				sound = "ALERT4",
+				color1 = "GREEN",
 				time = 1.5,
 			},
 			overloadwarn = {
@@ -83,7 +105,7 @@ do
 				type = "simple",
 				text = "Lightning Tendrils: YOU! Run!",
 				time = 1.5,
-				color1 = "RED",
+				color1 = "DCYAN",
 				sound = "ALERT5",
 			},
 			tendrilswarnother = {
@@ -91,6 +113,7 @@ do
 				varname = "Lightning Tendrils targeting warning",
 				type = "simple",
 				text = "Lightning Tendrils: <previoustarget>",
+				color1 = "YELLOW",
 				time = 1.5,
 			},
 			overwhelmdurself = {
@@ -108,7 +131,8 @@ do
 				type = "centerpopup",
 				text = "Overwhelm: #4#",
 				time = "<overwhelmtime>",
-				color1 = "CYAN",
+				color1 = "YELLOW",
+				color2 = "DCYAN",
 				sound = "ALERT7",
 			},
 		},
@@ -197,6 +221,16 @@ do
 					},
 				},
 			},
+			--[[
+			[6] = {
+				type = "combatevent",
+				spellid = 
+				eventtype = "SPELL_CAST_SUCCESS",
+				execute = {
+					[1] = {
+					},
+				},
+			},]]
 			-- Steelbreaker - Overwhelm - +2
 			[6] = {
 				type = "combatevent",
@@ -210,6 +244,18 @@ do
 					[2] = {
 						{expect = {"&playerguid&","~=","#4#"}},
 						{alert = "overwhelmdurother"},
+					},
+				},
+			},
+			-- Fusion Punch
+			[7] = {
+				type = "combatevent",
+				spellid = 63493,
+				eventtype = "SPELL_CAST_START",
+				execute = {
+					[1] = {
+						{alert = "fusionpunchcd"},
+						{alert = "fusionpunchcast",},
 					},
 				},
 			},
