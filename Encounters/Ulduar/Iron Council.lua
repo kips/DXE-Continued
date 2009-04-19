@@ -128,7 +128,7 @@ do
 				var = "overwhelmdurother",
 				varname = "Overwhelm duration on others",
 				type = "centerpopup",
-				text = "Overwhelm: #4#",
+				text = "Overwhelm: #5#",
 				time = 25,--"<overwhelmtime>",
 				color1 = "YELLOW",
 				color2 = "DCYAN",

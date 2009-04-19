@@ -302,10 +302,7 @@ local function StartAlert(name,...)
 	-- Replace time
 	local time = info.time
 	if type(time) == "string" then
-		-- Vars
-		time = tonumber(ReplaceVars(tostring(time)))
-		-- Alert timeleft
-		time = tonumber(ReplaceFuncs(tostring(time)))
+		time = tonumber(ReplaceFuncs(ReplaceVars(tostring(time))))
 	end
 	-- Sanity check
 	if not time or time < 0 then return end
