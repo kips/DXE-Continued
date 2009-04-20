@@ -36,7 +36,7 @@ local Alerts = DXE.Alerts
 
 --@debug@
 local debug
---@end-debug
+--@end-debug@
 
 function Invoker:OnInitialize()
 	DXE.RegisterCallback(self,"SetActiveEncounter","OnSet")
@@ -59,7 +59,7 @@ function Invoker:OnInitialize()
 
 	debug = DXE:CreateDebugger("Invoker",self.db.global.debug)
 	self.debug = debug
-	--@end-debug
+	--@end-debug@
 end
 
 ---------------------------------------------
@@ -287,7 +287,7 @@ local function SetUserData(info,...)
 		local flag = true
 		--@debug@
 		local before = userdata[k]
-		--@end-debug
+		--@end-debug@
 		if type(v) == "string" then
 			-- Increment/Decrement support
 			if find(v,"^INCR") then
@@ -295,7 +295,7 @@ local function SetUserData(info,...)
 				userdata[k] = userdata[k] + delta
 				--@debug@
 				debug("SetUserData","INCR var: %s before: %s after: %s delta: %d",k,before,userdata[k],delta)
-				--@end-debug
+				--@end-debug@
 				flag = false
 			elseif find(v,"^DECR") then
 				local delta = tonumber(match(v,"^DECR|(%d+)"))
@@ -303,7 +303,7 @@ local function SetUserData(info,...)
 				flag = false
 				--@debug@
 				debug("SetUserData","DECR var: %s before: %s after: %s delta: %d",k,before,userdata[k],delta)
-				--@end-debug
+				--@end-debug@
 			else
 				v = ReplaceTokens(v,...)
 			end
@@ -311,7 +311,7 @@ local function SetUserData(info,...)
 		if flag then 
 			--@debug@
 			debug("SetUserData","var: %s before: %s after: %s",k,userdata[k],v)
-			--@end-debug
+			--@end-debug@
 			userdata[k] = v 
 		end
 	end
@@ -353,7 +353,7 @@ local function StartAlert(name,...)
 	end
 	--@debug@
 	debug("Alerts","name: %s text: %s time: %d flashtime: %d sound: %s color1: %s color2: %s",name,text,time,info.flashtime,info.sound,info.color1,info.color2)
-	--@end-debug
+	--@end-debug@
 	-- Sanity check
 	if not time or time < 0 then return end
 	-- Pass in appropriate arguments
