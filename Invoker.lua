@@ -17,14 +17,13 @@
 ]]
 
 local DXE = DXE
-local debug = DXE.debug
 
 local type,next,select = type,next,select
 local ipairs,pairs,unpack = ipairs,pairs,unpack
 local tostring,tonumber = tostring,tonumber
 local match,gmatch,gsub,find = string.match,string.gmatch,string.gsub,string.find
 
-local db,CE
+local EncDB,CE
 local userdata = {}
 
 ---------------------------------------------
@@ -35,10 +34,32 @@ local Invoker = DXE:NewModule("Invoker","AceEvent-3.0","AceTimer-3.0")
 local HW = DXE.HW
 local Alerts = DXE.Alerts
 
+--@debug@
+local debug
+--@end-debug
+
 function Invoker:OnInitialize()
 	DXE.RegisterCallback(self,"SetActiveEncounter","OnSet")
 	DXE.RegisterCallback(self,"StartEncounter","OnStart")
 	DXE.RegisterCallback(self,"StopEncounter","OnStop")
+
+	--@debug@
+	self.db = DXE.db:RegisterNamespace("Invoker", {
+		global = {
+			debug = {
+				-- Related to function names
+				ReplaceFuncs = false,
+				ReplaceVars = false,
+				ReplaceNums = false,
+				SetUserData = false,
+				Alerts = false,
+			},
+		},
+	})
+
+	debug = DXE:CreateDebugger("Invoker",self.db.global.debug)
+	self.debug = debug
+	--@end-debug
 end
 
 ---------------------------------------------
@@ -183,6 +204,10 @@ local function ReplaceVars(str)
 				end
 				val = val[i]
 			end
+			--@debug@
+			debug("ReplaceVars","str: %s var: %s val: %s",str,var,val)
+			--@end-debug@
+
 			-- Replace variable and value
 			str = gsub(str,var,val)
 		end
@@ -203,6 +228,9 @@ local function ReplaceFuncs(str)
 			local val
 			if args then val = func(split("|",args))
 			else val = func() end
+			--@debug@
+			debug("ReplaceFuncs","funcid: %s str: %s rep: %s val: %s",funcid,str,rep,val)
+			--@end-debug@
 			str = gsub(str,rep,val)
 		end
 	end
@@ -216,6 +244,9 @@ local function ReplaceNums(str,...)
 			local num = tonumber(match(index,"#(%d)#"))
 			local val = num and select(num,...)
 			if num and val then
+				--@debug@
+				debug("ReplaceNums","str: %s index: %s val: %s",str,index,val)
+				--@end-debug@
 				str = gsub(str,index,val)
 			end
 		end
@@ -254,19 +285,35 @@ end
 local function SetUserData(info,...)
 	for k,v in pairs(info) do
 		local flag = true
+		--@debug@
+		local before = userdata[k]
+		--@end-debug
 		if type(v) == "string" then
 			-- Increment/Decrement support
 			if find(v,"^INCR") then
-				userdata[k] = userdata[k] + tonumber(match(v,"^INCR|(%d+)"))
+				local delta = tonumber(match(v,"^INCR|(%d+)"))
+				userdata[k] = userdata[k] + delta
+				--@debug@
+				debug("SetUserData","INCR var: %s before: %s after: %s delta: %d",k,before,userdata[k],delta)
+				--@end-debug
 				flag = false
 			elseif find(v,"^DECR") then
-				userdata[k] = userdata[k] - tonumber(match(v,"^DECR|(%d+)"))
+				local delta = tonumber(match(v,"^DECR|(%d+)"))
+				userdata[k] = userdata[k] - delta
 				flag = false
+				--@debug@
+				debug("SetUserData","DECR var: %s before: %s after: %s delta: %d",k,before,userdata[k],delta)
+				--@end-debug
 			else
 				v = ReplaceTokens(v,...)
 			end
 		end
-		if flag then userdata[k] = v end
+		if flag then 
+			--@debug@
+			debug("SetUserData","var: %s before: %s after: %s",k,userdata[k],v)
+			--@end-debug
+			userdata[k] = v 
+		end
 	end
 end
 
@@ -302,8 +349,11 @@ local function StartAlert(name,...)
 	-- Replace time
 	local time = info.time
 	if type(time) == "string" then
-		time = tonumber(ReplaceFuncs(ReplaceVars(tostring(time))))
+		time = tonumber(ReplaceFuncs(ReplaceVars(time)))
 	end
+	--@debug@
+	debug("Alerts","name: %s text: %s time: %d flashtime: %d sound: %s color1: %s color2: %s",name,text,time,info.flashtime,info.sound,info.color1,info.color2)
+	--@end-debug
 	-- Sanity check
 	if not time or time < 0 then return end
 	-- Pass in appropriate arguments
@@ -421,7 +471,7 @@ local CommandFuncs = {
 	end,
 
 	alert = function(info,...)
-		if db[CE.alerts[info].var] then StartAlert(info,...) end
+		if EncDB[CE.alerts[info].var] then StartAlert(info,...) end
 		return true
 	end,
 
@@ -573,7 +623,7 @@ function Invoker:OnSet(_,data)
 	-- Set data upvalue
 	CE = data
 	-- Set db upvalue
-	db = DXE.db.profile.Encounters[CE.key]
+	EncDB = DXE.db.profile.Encounters[CE.key]
 	-- Wipe events
 	self:WipeEvents()
 	-- Register events

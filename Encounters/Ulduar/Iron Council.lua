@@ -24,8 +24,13 @@ do
 				--{set = {overwhelmtime = 60}},
 			},
 		},
-		-- TODO: Add Fusion Punch Cast, Runic Barrier Duration, Lightning Whirl Cooldown, Static Disruption Cooldown, Rune of Summoning Cooldown, 
-		--       Lightning Tendrils Cooldown, Overwhelm Cooldown, Overload Cooldown
+		--- TODO:
+		-- Runic Barrier Duration 
+		-- Lightning Whirl Cooldown 
+		-- Static Disruption Cooldown 
+		-- Rune of Summoning Cooldown
+		-- Lightning Tendrils Cooldown
+		-- Overwhelm Cooldown
 		alerts = {
 			enragecd = {
 				var = "enragecd",
@@ -88,7 +93,7 @@ do
 				time = 6, 
 				flashtime = 6,
 				sound = "ALERT2",
-				color1 = "MAGENTA",
+				color1 = "PURPLE",
 			},
 			overloadcd = {
 				var = "overloadcd",
@@ -97,9 +102,9 @@ do
 				text = "Overload Cooldown",
 				time = 60, 
 				flashtime = 5,
-				sound = "ALERT8",
-				color1 = "MAGENTA",
-				color2 = "MAGENTA",
+				sound = "ALERT9",
+				color1 = "PURPLE",
+				color2 = "PURPLE",
 			},
 			tendrilsdur = {
 				var = "tendrilscd", 
@@ -132,7 +137,9 @@ do
 				type = "centerpopup",
 				text = "Overwhelm: YOU!",
 				time = 25,--"<overwhelmtime>",
+				flashtime = 25,
 				color1 = "DCYAN",
+				color2 = "YELLOW",
 				sound = "ALERT6",
 			},
 			overwhelmdurother = {
@@ -141,9 +148,7 @@ do
 				type = "centerpopup",
 				text = "Overwhelm: #5#",
 				time = 25,--"<overwhelmtime>",
-				color1 = "YELLOW",
 				color2 = "DCYAN",
-				sound = "ALERT7",
 			},
 		},
 		timers = {
@@ -232,16 +237,6 @@ do
 					},
 				},
 			},
-			--[[
-			[6] = {
-				type = "combatevent",
-				spellid = 
-				eventtype = "SPELL_CAST_SUCCESS",
-				execute = {
-					[1] = {
-					},
-				},
-			},]]
 			-- Steelbreaker - Overwhelm - +2
 			[6] = {
 				type = "combatevent",
@@ -258,16 +253,38 @@ do
 					},
 				},
 			},
-			-- Fusion Punch
+			-- Steelbreaker Fusion Punch
 			[7] = {
 				type = "combatevent",
-				spellid = 63493,
 				eventtype = "SPELL_CAST_START",
+				spellid = 63493,
 				execute = {
 					[1] = {
 						{alert = "fusionpunchcd"},
 						{alert = "fusionpunchcast",},
 					},
+				},
+			},
+			-- Deaths
+			[8] = {
+				type = "combatevent",
+				eventtype = "UNIT_DIED",
+				execute = {
+					[1] = {
+						{expect = {"#5#","==","Steelbreaker"}},
+						{quash = "fusionpunchcd"},
+						{quash = "fusionpunchcast"},
+					},
+					[2] = {
+						{expect = {"#5#","==","Stormcaller Brundir"}},
+						{quash = "overloadcd"},
+						{quash = "overloadwarn"},
+					},
+					--[[
+					[3] = {
+						{expect = {"#5#","==","Runemaster Molgeim"}},
+					},
+					]]
 				},
 			},
 		},

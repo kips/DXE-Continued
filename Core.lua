@@ -39,27 +39,28 @@ function DXE:RefreshDefaults()
 end
 
 ---------------------------------------------
+-- UPVALUES
+---------------------------------------------
+
+local ACD = LibStub("AceConfigDialog-3.0")
+local AC = LibStub("AceConfig-3.0")
+local AceGUI = LibStub("AceGUI-3.0")
+DXE.ACD,DXE.AC,DXE.AceGUI = ACD,AC,AceGUI
+local wipe,concat = table.wipe,table.concat
+local match = string.match
+local find = string.find
+local _G,select = _G,select
+local tostring = tostring
+local wipe = table.wipe
+
+---------------------------------------------
 -- UTILITY 
 ---------------------------------------------
 local ipairs,pairs = ipairs,pairs
 
 DXE.noop = function() end
 
--- Requires a ChatWindow named "DXE Debug"
-DXE._Print = DXE.Print
-DXE.debug = function(...)
-	local debugframe
-	for i=1,NUM_CHAT_WINDOWS do
-		local windowName = GetChatWindowInfo(i);
-		if windowName == "DXE Debug" then
-			debugframe = _G["ChatFrame"..i]
-			break
-		end
-	end
-	if debugframe then
-		DXE:_Print(debugframe,...)
-	end
-end
+
 
 do
 	local cache = {}
@@ -69,7 +70,7 @@ do
 		cache[t] = nil
 		return t
 	end
-	local type,wipe = type,table.wipe
+	local type = type
 	local delete = function(t)
 		if type(t) == "table" then
 			wipe(t)
@@ -134,18 +135,6 @@ function DXE:DisableAllModules()
 		self:DisableModule(name)
 	end
 end
-
-
----------------------------------------------
--- UPVALUES
----------------------------------------------
-
-local ACD = LibStub("AceConfigDialog-3.0")
-local AC = LibStub("AceConfig-3.0")
-local AceGUI = LibStub("AceGUI-3.0")
-DXE.ACD,DXE.AC,DXE.AceGUI = ACD,AC,AceGUI
-local wipe,concat = table.wipe,table.concat
-local match = string.match
 
 ---------------------------------------------
 -- UNIT IDS
@@ -530,7 +519,6 @@ end
 -- TRIGGERING
 ---------------------------------------------
 
-local find = string.find
 function DXE:CHAT_MSG_MONSTER_YELL(_,msg)
 	for fragment,data in pairs(yellTriggers) do
 		if find(msg,fragment) then
@@ -1282,7 +1270,10 @@ do
 	-- Previous raid member number
 	local prevNumRaidMembers
 
+	-- current 30 prev = 30
+	-- current 29 prev 30
 	function DXE:BroadcastVersion(name)
+		-- We only want to broadcast if a player joins the raid
 		local numRaidMembers = GetNumRaidMembers()
 		if prevNumRaidMembers == numRaidMembers then return end
 		prevNumRaidMembers = numRaidMembers
