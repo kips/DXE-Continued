@@ -145,20 +145,32 @@ local function validateVal(v, oktypes, errlvl, ...)
 	end
 end
 
-local function validateReplaces(data,text,errlvl,...)
-	errlvl=(errlvl or 0)+1
+local function validateReplaceFuncs(data,text,errlvl,...)
 	for rep in gmatch(text,"%b&&") do
 		local func = match(rep,"&(.+)&")
 		if func:find("|") then func = match(func,"^([^|]+)|(.+)") end
 		if not RepFuncs[func] then
-			err(": replace func doesn't exist, got '"..rep.."'",errlvl,...)
+			err(": replace func does not exist, got '"..rep.."'",errlvl,...)
 		end
 	end
+end
+
+local function validateReplaces(data,text,errlvl,...)
+	errlvl=(errlvl or 0)+1
+
+	validateReplaceFuncs(data,text,errlvl,...)
 
 	for var in gmatch(text,"%b<>") do 
 		local key = match(var,"<(.+)>")
 		if not data.userdata[key] then
-			err(": replace var doesn't exist, got '"..var.."'",errlvl,...)
+			err(": replace var does not exist, got '"..var.."'",errlvl,...)
+		end
+	end
+
+	for var in gmatch(text,"%b##") do 
+		local key = tonumber(match(var,"#(%d)#"))
+		if not key or key < 1 or key > 7 then
+			err(": replace num is invalid. it should be [1,7] - got '"..var.."'",errlvl,...)
 		end
 	end
 end
@@ -225,8 +237,11 @@ local function validateCommandLine(data,line,errlvl,...)
 		local target,range = info[1],info[2]
 		validateVal(target,isstring,errlvl,type,...)
 		validateVal(range,isnumber,errlvl,type,...)
-		if not target:match("^#[^#]*%d[^#]*#$") and not target:match("^&[^&]+&$") then
-			err(": invalid target, has to be exactly of the form #%d# or &func& - got '"..target.."'",errlvl,type,...)
+		if not target:match("^#[1-7]#$") and not target:match("^&[^&]+&$") then
+			err(": invalid target, has to be exactly of the form #[1-7]# or &func& - got '"..target.."'",errlvl,type,...)
+		end
+		if target:match("^&[^&]+&$") then
+			validateReplaceFuncs(data,target,errlvl,type,...)
 		end
 		if not ProximityFuncs[range] then
 			err(": invalid range - got '"..range.."'",errlvl,type,...)

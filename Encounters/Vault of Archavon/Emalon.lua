@@ -55,6 +55,8 @@ do
 				sound = "ALERT3",
 			},
 		},
+		-- TODO
+		-- Add Enrage
 		events = {
 			-- Lightning Nova
 			[1] = {

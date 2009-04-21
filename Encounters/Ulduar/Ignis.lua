@@ -82,6 +82,8 @@ do
 				},
 			},
 		},
+		-- TODO
+		-- Construct Spawns, Brittle Warning
 		events = {
 			-- Scorch cooldown",
 			[1] = {

@@ -33,6 +33,9 @@ Widgets\LogLabel.lua
 
 # Main files
 Core.lua
+#@debug@
+Debug.lua
+#@end-debug@
 Options.lua
 Constants.lua
 Alerts.lua

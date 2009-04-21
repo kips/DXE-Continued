@@ -229,7 +229,7 @@ function Distributor:Distribute(name, dist, target)
 	local bar = self:GetProgressBar()
 	bar:SetText(format("Waiting for %s responses",firstword(name)))
 	bar:SetColor(Colors.GREY)
-	local dest = (dist == "WHISPER") and 1 or (GetNumRaidMembers() - 1)
+	local dest = (dist == "WHISPER") and 1 or (DXE.tablesize(DXE.RosterVersions) - 1)
 
 	local info = DXE.new()
 	info.accepts = 0
@@ -354,21 +354,24 @@ function Distributor:OnCommReceived(prefix, msg, dist, sender)
 			return
 		end
 
-		local STATIC_CONFIRM = {
-			text = format("%s is sharing an update for %s",sender,firstword(name)),
-			OnAccept = function() self:StartReceiving(name,length,sender,dist)
-										 self:Respond(format("RESPONSE:%s:%s",name,"YES"),sender)
-						  end,
-			OnCancel = function() self:Respond(format("RESPONSE:%s:%s",name,"NO"),sender) end,
-			button1 = "Accept",
-			button2 = "Reject",
-			timeout = 25,
-			whileDead = 1,
-			hideOnEscape = 1,
-		}
 
 		local popupname = format("DXE_Confirm_%s",name)
-		StaticPopupDialogs[popupname] = STATIC_CONFIRM
+		if not StaticPopupDialogs[popupname] then
+			local STATIC_CONFIRM = {
+				text = format("%s is sharing an update for %s",sender,firstword(name)),
+				OnAccept = function() self:StartReceiving(name,length,sender,dist)
+											 self:Respond(format("RESPONSE:%s:%s",name,"YES"),sender)
+							  end,
+				OnCancel = function() self:Respond(format("RESPONSE:%s:%s",name,"NO"),sender) end,
+				button1 = "Accept",
+				button2 = "Reject",
+				timeout = 25,
+				whileDead = 1,
+				hideOnEscape = 1,
+			}
+
+			StaticPopupDialogs[popupname] = STATIC_CONFIRM
+		end
 
 		StaticPopup_Show(popupname)
 	elseif type == "RESPONSE" and dist == "WHISPER" then

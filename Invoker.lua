@@ -57,8 +57,7 @@ function Invoker:OnInitialize()
 		},
 	})
 
-	debug = DXE:CreateDebugger("Invoker",self.db.global.debug)
-	self.debug = debug
+	debug = DXE:CreateDebugger("Invoker",self.db.global)
 	--@end-debug@
 end
 

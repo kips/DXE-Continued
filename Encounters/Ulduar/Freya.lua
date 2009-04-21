@@ -107,6 +107,8 @@ do
 				color1 = "RED",
 			},
 		},
+		-- TODO
+		-- Ground Tremor for hard mode
 		timers = {
 			sunbeam = {
 				[1] = {

@@ -37,6 +37,8 @@ do
 				color1 = "BLUE",
 			},
 		},
+		-- TODO
+		-- Add Guardian Swarm
 		events = {
 			-- Terrifying Screech
 			[1] = {

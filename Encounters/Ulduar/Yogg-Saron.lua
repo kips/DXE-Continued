@@ -132,6 +132,9 @@ do
 				color2 = "INDIGO",
 			},
 		},
+		-- TODO
+		-- Mind Control warning
+		-- Guardian Spawns
 		events = {
 			-- Lunatic Gaze
 			[1] = {

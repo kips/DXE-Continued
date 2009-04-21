@@ -63,6 +63,8 @@ do
 				sound = "ALERT4",
 			},
 		},
+		-- TODO
+		-- Breath Cooldown
 		events = {
 			-- Devouring Flame
 			[1] = {

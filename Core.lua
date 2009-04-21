@@ -16,12 +16,29 @@ local defaults = {
 		PaneScale = 1,
 		ShowMinimap = true,
 		_Minimap = {},
+		--@debug@
+		debug = {
+			BroadcastVersion = false,
+			RequestVersions = false,
+			DeleteUnusedVersions = false,
+			UpdateVersionString = false,
+			OnCommReceived = false,
+			UpdateRosterTables = false,
+			CheckForEngage = false,
+			CheckForWipe = false,
+			RAID_ROSTER_UPDATE = false,
+		},
+		--@end-debug@
 	},
 	profile = {
 		Positions = {},
 		Encounters = {},
 	},
 }
+
+--@debug@
+local debug
+--@end-debug@
 
 ---------------------------------------------
 -- INITIALIZATION
@@ -347,9 +364,34 @@ end
 -- GENERIC EVENTS
 ---------------------------------------------
 
+local prevNumRaidMembers = 0
+local GetNumRaidMembers = GetNumRaidMembers
 function DXE:RAID_ROSTER_UPDATE()
-	self:UpdatePaneVisibility()
-	self:UpdateRosterTables()
+	local numRaidMembers = GetNumRaidMembers()
+	-- Raid members changed
+	if numRaidMembers ~= prevNumRaidMembers then
+		--@debug@
+		debug("RAID_ROSTER_UPDATE","Raid members changed")
+		--@end-debug@
+		self:UpdatePaneVisibility()
+		self:UpdateRosterTables()
+	end
+	-- Player joined the raid
+	if numRaidMembers > prevNumRaidMembers then
+		--@debug@
+		debug("RAID_ROSTER_UPDATE","Raid member joined")
+		--@end-debug@
+		self:BroadcastVersion()
+	end
+
+	-- Player left the raid
+	if numRaidMembers < prevNumRaidMembers then
+		--@debug@
+		debug("RAID_ROSTER_UPDATE","Raid member left")
+		--@end-debug@
+		self:DeleteUnusedVersions()
+	end
+	prevNumRaidMembers = numRaidMembers
 end
 
 function DXE:PLAYER_ENTERING_WORLD()
@@ -389,7 +431,6 @@ end
 -- Initialization
 function DXE:OnInitialize()
 	self.loaded = true
-	-- Received DB
 	-- Options
 	self.db = LibStub("AceDB-3.0"):New("DXEDB",self.defaults)
 	self.options = self:InitializeOptions()
@@ -421,6 +462,10 @@ function DXE:OnInitialize()
 	-- Minimap
 	self:SetupMinimapIcon()
 	self:Print("Type |cffffff00/dxe|r for slash commands")
+
+	--@debug@
+	debug = DXE:CreateDebugger("Core",self.db.global)
+	--@end-debug@
 end
 
 function DXE:OnEnable()
@@ -440,6 +485,7 @@ function DXE:OnEnable()
 	self:UpdateVersionString()
 	self:RequestVersions()
 	self:UpdateRosterTables()
+	self:BroadcastVersion()
 end
 
 function DXE:OnDisable()
@@ -1117,6 +1163,9 @@ local UnitIsFeignDeath = UnitIsFeignDeath
 local UnitAffectingCombat = UnitAffectingCombat
 
 function DXE:CheckForWipe()
+	--@debug@
+	debug("CheckForWipe","Invoked")
+	--@end-debug@
 	if not UnitIsFeignDeath("player") then
 		local name = DXE:Scan()
 		if not name then
@@ -1130,6 +1179,9 @@ function DXE:CheckForWipe()
 end
 
 function DXE:CheckForEngage()
+	--@debug@
+	debug("CheckForEngage","Invoked")
+	--@end-debug@
 	local name = self:Scan()
 	if name then
 		self:StartEncounter()
@@ -1162,12 +1214,13 @@ DXE.RosterVersions = RosterVersions
 
 local sort = table.sort
 function DXE:UpdateRosterTables()
+	--@debug@
+	debug("UpdateRosterTables","Invoked")
+	--@end-debug@
 	wipe(Roster)
 	wipe(NameRoster)
 	wipe(GUIDRoster) 
 	wipe(SortedRoster)
-	-- TODO: Throttle broadcasts
-	self:BroadcastVersion()
 	for i,id in ipairs(rID) do
 		if UnitExists(id) then 
 			Roster[i] = id
@@ -1209,13 +1262,7 @@ function DXE:PrintRosterVersions(info, encname)
 	for _, unitname in ipairs(SortedRoster) do
 		if RosterVersions[unitname] and RosterVersions[unitname][encname] then
 			local vers = RosterVersions[unitname][encname]
-			local myvers
-			if encname == "DXE" then
-				myvers = DXE.version
-			else
-				myvers = EDB[encname].version
-			end
-
+			local myvers = encname == "DXE" and DXE.version or EDB[encname].version
 			if vers < myvers then
 				color = "ffff3300" -- red
 			elseif vers == myvers then
@@ -1241,11 +1288,28 @@ end
 -- Redo system to use a dispatch system for comms
 
 function DXE:RequestVersions()
+	--@debug@
+	debug("RequestVersions","Invoked")
+	--@end-debug@
 	self:SendCommMessage("DXE_Core", "REQUESTVERSIONS:ARGS", "RAID")
+end
+
+function DXE:DeleteUnusedVersions()
+	--@debug@
+	debug("DeleteUnusedVersions","Invoked")
+	--@end-debug@
+	for name in pairs(RosterVersions) do
+		if not NameRoster[name] then
+			RosterVersions[name] = self.delete(RosterVersions[name])
+		end
+	end
 end
 
 local versionString
 function DXE:UpdateVersionString()
+	--@debug@
+	debug("UpdateVersionString","Invoked")
+	--@end-debug
 	local tbl = self.new()
 	tbl[1] = "VERSIONBROADCAST"
 	tbl[2] = format("%s,%s","DXE",DXE.version)
@@ -1267,16 +1331,11 @@ do
 	local waitTime = 4
 	-- ScheduleTimer handle
 	local handle
-	-- Previous raid member number
-	local prevNumRaidMembers
 
-	-- current 30 prev = 30
-	-- current 29 prev 30
 	function DXE:BroadcastVersion(name)
-		-- We only want to broadcast if a player joins the raid
-		local numRaidMembers = GetNumRaidMembers()
-		if prevNumRaidMembers == numRaidMembers then return end
-		prevNumRaidMembers = numRaidMembers
+		--@debug@
+		debug("BroadcastVersion","name: %s",name)
+		--@end-debug@
 		local msg
 		-- Broadcasts all
 		if not name then
@@ -1302,7 +1361,10 @@ end
 
 function DXE:OnCommReceived(prefix, msg, dist, sender)
 	local type,args = match(msg,"^(%w+):(.+)$")
-	if type == "VERSIONBROADCAST" or type == "VERSION" then
+	--@debug@
+	debug("OnCommReceived","type: %s sender: %s args: %s",type,sender,#args > 10 and args:sub(1,10).."..." or args)
+	--@end-debug@
+	if type == "VERSIONBROADCAST" then
 		if not RosterVersions[sender] then
 			RosterVersions[sender] = self.new()
 		end
