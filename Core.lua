@@ -1309,7 +1309,7 @@ local versionString
 function DXE:UpdateVersionString()
 	--@debug@
 	debug("UpdateVersionString","Invoked")
-	--@end-debug
+	--@end-debug@
 	local tbl = self.new()
 	tbl[1] = "VERSIONBROADCAST"
 	tbl[2] = format("%s,%s","DXE",DXE.version)
