@@ -76,15 +76,22 @@ do
 				color1 = "YELLOW",
 				color2 = "YELLOW",
 			},
-			stormpowerself = {
-				var = "stormpowerself",
-				varname = "Storm Power on self",
-				type = "centerpopup",
-				text = "Storm Power: YOU!",
-				time = 30,
-				flashtime = 30,
+			stormcloudwarnself = {
+				var = "stormcloudwarn",
+				varname = "Storm Cloud warning",
+				type = "simple",
+				text = "Storm Cloud: YOU!",
+				time = 1.5,
 				color2 = "ORANGE",
-				color1 = "INDIGO",
+				sound = "ALERT4",
+			},
+			stormcloudwarnother = {
+				var = "stormcloudwarn",
+				varname = "Storm Cloud warning",
+				type = "simple",
+				text = "Storm Cloud: #5#",
+				time = 1.5,
+				color2 = "ORANGE",
 				sound = "ALERT4",
 			},
 		},
@@ -112,15 +119,19 @@ do
 					},
 				},
 			},
-			-- Storm Power
+			-- Storm Cloud
 			[3] = {
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellid = {63711,65134},
+				spellid = 65133,
 				execute = {
 					[1] = {
 						{expect = {"#4#","==","&playerguid&"}},
-						{alert = "stormpowerself"},
+						{alert = "stormcloudwarnself"},
+					},
+					[2] = {
+						{expect = {"#4#","~=","&playerguid&"}},
+						{alert = "stormcloudwarnother"},
 					},
 				},
 			},
