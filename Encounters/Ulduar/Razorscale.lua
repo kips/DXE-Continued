@@ -63,7 +63,7 @@ do
 				sound = "ALERT4",
 			},
 		},
-		-- TODO
+		-- TODO Chain yells aren't working apparently or it was a debug bug
 		-- Breath Cooldown
 		events = {
 			-- Devouring Flame
@@ -84,12 +84,12 @@ do
 				execute = {
 					-- Chain
 					[1] = {
-						{expect = {"#1#","find","^Move quickly! She won't"}},
+						{expect = {"#1#","find","^Move quickly"}},
 						{alert = "chaindur"},
 						{alert = "chainwarn"},
 					},
 					[2] = {
-						{expect = {"#1#","find","^Give us a moment to prepare"}},
+						{expect = {"#1#","find","^Give us a moment to"}},
 						{quash = "chaindur"},
 					},
 				},

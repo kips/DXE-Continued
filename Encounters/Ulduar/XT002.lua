@@ -17,7 +17,6 @@ do
 		userdata = {},
 		onstart = {},
 		alerts = {
-			-- TODO: Maybe add Void Zone warning
 			gravitywarnself = {
 				var = "gravitywarnself",
 				varname = "Gravity Bomb on self",

@@ -111,6 +111,22 @@ do
 					},
 				},
 			},
+			-- TODO COMPLETE THIS
+			--[[
+			-- Pursue
+			[4] = {
+				type = "event",
+				event = "EMOTE",
+				execute = {
+					[1] = {
+						{expect = {"&playerguid&","==","#4#"}},
+					},
+					[2] = {
+						{expect = {"&playerguid&","==","#4#"}},
+					},
+				},
+			},
+			]]
 		},
 	}
 

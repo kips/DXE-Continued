@@ -27,6 +27,7 @@ local defaults = {
 			CheckForEngage = false,
 			CheckForWipe = false,
 			RAID_ROSTER_UPDATE = false,
+			CHAT_MSG_MONSTER_YELL = false,
 		},
 		--@end-debug@
 	},
@@ -565,7 +566,10 @@ end
 -- TRIGGERING
 ---------------------------------------------
 
-function DXE:CHAT_MSG_MONSTER_YELL(_,msg)
+function DXE:CHAT_MSG_MONSTER_YELL(_,msg,...)
+	--@debug@
+	debug("CHAT_MSG_MONSTER_YELL",msg,...)
+	--@end-debug@
 	for fragment,data in pairs(yellTriggers) do
 		if find(msg,fragment) then
 			self:SetActiveEncounter(data.name)
@@ -1360,11 +1364,9 @@ do
 end
 
 function DXE:OnCommReceived(prefix, msg, dist, sender)
-	local type,args = match(msg,"^(%w+):(.+)$")
-	--@debug@
-	debug("OnCommReceived","type: %s sender: %s args: %s",type,sender,#args > 10 and args:sub(1,10).."..." or args)
-	--@end-debug@
-	if type == "VERSIONBROADCAST" then
+	local commType,args = match(msg,"^(%w+):(.+)$")
+	
+	if commType == "VERSIONBROADCAST" then
 		if not RosterVersions[sender] then
 			RosterVersions[sender] = self.new()
 		end
@@ -1372,9 +1374,13 @@ function DXE:OnCommReceived(prefix, msg, dist, sender)
 		for name, vers in args:gmatch("([^:,]+),([^:,]+)") do
 			RosterVersions[sender][name] = tonumber(vers)
 		end
-	elseif type == "REQUESTVERSIONS" and sender ~= self.pName then
+	elseif commType == "REQUESTVERSIONS" and sender ~= self.pName then
 		self:BroadcastVersion()
 	end
+	--@debug@
+	if type(args) == "string" then args = #args > 10 and args:sub(1,15).."..." or args end
+	debug("OnCommReceived","type: %s sender: %s args: %s",commType,sender,args)
+	--@end-debug@
 end
 
 _G.DXE = DXE

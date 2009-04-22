@@ -18,6 +18,11 @@ do
 		onstart = {},
 		alerts = {},
 	}
-
+	-- Big Bang
+		-- 8 second cast that does 100k damage
+	-- Phase Punch
+	-- Quantum Strike
+	-- Black Hole Explosion
+	-- Cosmic Smash
 	DXE:RegisterEncounter(data)
 end

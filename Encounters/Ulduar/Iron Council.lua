@@ -14,20 +14,20 @@ do
 			leavecombat = true,
 		},
 		userdata = {
-			--overwhelmtime = 25,
+			overwhelmtime = 25,
 			previoustarget = "",
 		},
 		onstart = {
 			[1] = {
 				{alert = "enragecd"},
-				--{expect = {"&difficulty&","==","1"}},
-				--{set = {overwhelmtime = 60}},
+				{expect = {"&difficulty&","==","1"}},
+				{set = {overwhelmtime = 60}},
 			},
 		},
 		--- TODO:
 		-- Runic Barrier Duration 
-		-- Lightning Whirl Cooldown 
-		-- Static Disruption Cooldown 
+		-- Lightning Whirl Cooldown -- Approx 9. Need more logs.
+		-- Static Disruption Cooldown -- Impossible to track 4/21/09
 		-- Rune of Summoning Cooldown
 		-- Lightning Tendrils Cooldown
 		-- Overwhelm Cooldown
@@ -136,7 +136,7 @@ do
 				varname = "Overwhelm duration on self",
 				type = "centerpopup",
 				text = "Overwhelm: YOU!",
-				time = 25,--"<overwhelmtime>",
+				time = "<overwhelmtime>",
 				flashtime = 25,
 				color1 = "DCYAN",
 				color2 = "YELLOW",
@@ -147,7 +147,7 @@ do
 				varname = "Overwhelm duration on others",
 				type = "centerpopup",
 				text = "Overwhelm: #5#",
-				time = 25,--"<overwhelmtime>",
+				time = "<overwhelmtime>",
 				color2 = "DCYAN",
 			},
 		},

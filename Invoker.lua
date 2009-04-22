@@ -53,6 +53,7 @@ function Invoker:OnInitialize()
 				ReplaceNums = false,
 				SetUserData = false,
 				Alerts = false,
+				REG_EVENT = false,
 			},
 		},
 	})
@@ -351,7 +352,7 @@ local function StartAlert(name,...)
 		time = tonumber(ReplaceFuncs(ReplaceVars(time)))
 	end
 	--@debug@
-	debug("Alerts","name: %s text: %s time: %d flashtime: %d sound: %s color1: %s color2: %s",name,text,time,info.flashtime,info.sound,info.color1,info.color2)
+	debug("Alerts","name: %s text: %s time: %s flashtime: %s sound: %s color1: %s color2: %s",name,text,time,info.flashtime,info.sound,info.color1,info.color2)
 	--@end-debug@
 	-- Sanity check
 	if not time or time < 0 then return end
@@ -542,6 +543,9 @@ function Invoker:COMBAT_EVENT(event,timestamp,eventtype,...)
 end
 
 function Invoker:REG_EVENT(event,...)
+	--@debug@
+	debug("REG_EVENT",event,...)
+	--@end-debug@
 	-- Pass in command list and arguments
 	self:InvokeCommands(RegEvents[event],...)
 end
