@@ -14,6 +14,8 @@
 		canceltimer
 		resettimer
 		tracing
+		proximitycheck
+		raidicon
 ]]
 
 local DXE = DXE
@@ -54,6 +56,7 @@ function Invoker:OnInitialize()
 				SetUserData = false,
 				Alerts = false,
 				REG_EVENT = false,
+				FindUnitID = false,
 			},
 		},
 	})
@@ -451,6 +454,64 @@ local function CheckProximity(target,range)
 end
 
 ---------------------------------------------
+-- Raid Icons
+---------------------------------------------
+
+-- Checks both friendly and enemy unit ids
+function Invoker:FindUnitID(target)
+	--@debug@
+	debug("FindUnitID","target: %s",target)
+	--@end-debug@
+	local uid = DXE:GetUnitID(target)	
+	if uid then return uid end
+
+	local unitattributefunc
+	if find(target,"0x%x+") then 
+		unitattributefunc = UnitGUID
+	else
+		unitattributefunc = UnitName
+	end
+	uid = DXE:UnitID(target, unitattributefunc)
+	return uid
+end
+
+function Invoker:SetRaidIcon(name)
+	local args = Timers[name].args
+	local icon,target,duration = args[1],args[2],args[3]
+	local uid = Invoker:FindUnitID(target)
+
+	if not uid then
+		local delta = 0.5
+		if duration<delta then return end
+		canceltimer(name)
+		Timers[name] = DXE.new()
+		Timers[name].handle = Invoker:ScheduleTimer("SetRaidIcon",delta,name)
+		local args = DXE.new()
+		args[1],args[2],args[3] = icon,target,(duration-delta)
+		Timers[name].args = args
+		return
+	end
+
+	SetRaidTarget(uid, icon)
+	-- Schedule icon removal if duration > 0 and icon is actual icon
+	if duration>0 and icon~=0 then
+		local name = format("@removeicon|%s@",target)
+		-- Must cancel old icon removal for target if a new one is placed
+		-- while old is still active
+		canceltimer(name)
+		Timers[name] = DXE.new()
+		Timers[name].handle = Invoker:ScheduleTimer("RemoveRaidIcon", duration, target)
+	end 
+end
+
+function Invoker:RemoveRaidIcon(target)
+	local uid = Invoker:FindUnitID(target)
+	if not uid then return false end
+	-- Only one try to remove raid icon
+	SetRaidTarget(uid, 0)
+end
+
+---------------------------------------------
 -- FUNCTIONS TABLE
 ---------------------------------------------
 
@@ -505,6 +566,24 @@ local CommandFuncs = {
 		target = ReplaceNums(target,...)
 		target = ReplaceFuncs(target)
 		return CheckProximity(target,range)
+	end,
+
+	raidicon = function(info,...)
+		local icon,target,duration = info[1],info[2],info[3]
+		if not IsRaidLeader() then return true end
+		target = ReplaceNums(target,...)
+		target = ReplaceFuncs(target)
+		local name = format("@seticon|%s@",icon)
+
+		-- Cancel timer if same icon is trying to be set elsewhere
+		canceltimer(name)
+		Timers[name] = DXE.new()
+		-- Timers[name].handle = Invoker:ScheduleTimer("SetRaidIcon",0,name)
+		local args = DXE.new()
+		args[1],args[2],args[3] = icon,target,duration
+		Timers[name].args = args
+		Invoker:SetRaidIcon(name)
+		return true
 	end,
 }
 

@@ -608,15 +608,18 @@ end
 ---------------------------------------------
 -- EXPLICIT SCANNING
 ---------------------------------------------
---[[
+
 -- For scanning bosses
 
 -- @return uid The unit id of the name. UnitName(raid<number>target)
-function DXE:UnitID(name)
+-- Can pass in other functions (such as UnitGUID) to compare a
+-- different unit attribute
+function DXE:UnitID(name, unitattributefunc)
+	unitattributefunc = unitattributefunc or UnitName
 	if not name then return end
 	for i,unit in pairs(DXE.Roster) do
 		local uid = rIDtarget[i]
-		local _name = UnitName(uid)
+		local _name = unitattributefunc(uid)
 		if _name == name then
 			return uid
 		end
@@ -635,7 +638,7 @@ function DXE:TargetName(name)
 		return nil
 	end
 end
-]]
+
 
 ---------------------------------------------
 -- TOOLTIP TEXT

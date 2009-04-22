@@ -57,6 +57,7 @@ local baseLineKeys = {
 	resettimer = isboolean,
 	tracing = istable,
 	proximitycheck = istable,
+	raidicon = istable,
 }
 
 local alertBaseKeys = {
