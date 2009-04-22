@@ -76,6 +76,17 @@ do
 				color1 = "YELLOW",
 				color2 = "YELLOW",
 			},
+			stormpowerself = {
+				var = "stormpowerself",
+				varname = "Storm Power on self",
+				type = "centerpopup",
+				text = "Storm Power: YOU!",
+				time = 30,
+				flashtime = 30,
+				color2 = "ORANGE",
+				color1 = "INDIGO",
+				sound = "ALERT4",
+			},
 		},
 		events = {
 			-- Flash Freeze cast
@@ -98,6 +109,18 @@ do
 				execute = {
 					[1] = {
 						{alert = "frozenblowdur"},
+					},
+				},
+			},
+			-- Storm Power
+			[3] = {
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellid = {63711,65134},
+				execute = {
+					[1] = {
+						{expect = {"#4#","==","&playerguid&"}},
+						{alert = "stormpowerself"},
 					},
 				},
 			},
