@@ -15,6 +15,7 @@ do
 		},
 		userdata = {
 			chargecount = 1,
+			chargetime = {34,15,loop = false},
 		},
 		onstart = {
 			[1] = {
@@ -58,13 +59,13 @@ do
 				time = 1.5, 
 				sound = "ALERT1", 
 			},
-			chargewarn = {
-				var = "chargewarn", 
+			chargecd = {
+				var = "chargecd", 
 				varname = "Lightning Charge warning", 
 				type = "dropdown", 
-				text = "Lightning Charge: <chargecount>", 
-				time = 15, 
-				flashtime = 5, 
+				text = "Next Lightning Charge <chargecount>", 
+				time = "<chargetime>", 
+				flashtime = 7, 
 				sound = "ALERT2",
 				color1 = "VIOLET",
 			},
@@ -103,7 +104,7 @@ do
 						{canceltimer = "hardmodefailed"},
 						{tracing = {"Thorim"}},
 						{alert = "phase3start"},
-						{alert = "chargewarn"},
+						{alert = "chargecd"},
 					},
 				},
 			},
@@ -115,7 +116,7 @@ do
 				execute = {
 					[1] = {
 						{set = {chargecount = "INCR|1"}},
-						{alert = "chargewarn"},
+						{alert = "chargecd"},
 					},
 				},
 			},
