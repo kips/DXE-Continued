@@ -15,7 +15,7 @@ do
 		},
 		userdata = {
 			chargecount = 1,
-			chargetime = {34,15,loop = false},
+			chargetime = 34,
 		},
 		onstart = {
 			[1] = {
@@ -30,11 +30,10 @@ do
 				},
 			},
 		},
-		-- TODO: Add Impale, Runic Barrier warning?
 		alerts = {
 			enrage2cd = {
 				var = "enrage2cd", 
-				varname = "Phase 2 Enrage", 
+				varname = "Enrage", 
 				type = "dropdown", 
 				text = "Enrage", 
 				time = 120, 
@@ -126,7 +125,9 @@ do
 						{canceltimer = "hardmodefailed"},
 						{tracing = {"Thorim"}},
 						{alert = "phase3start"},
+						{set = {chargetime = 34}}, -- Rare bug happened
 						{alert = "chargecd"},
+						{set = {chargetime = 15}},
 					},
 				},
 			},

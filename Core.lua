@@ -292,6 +292,8 @@ end
 -- Start the current encounter
 function DXE:StartEncounter()
 	if self:IsRunning() then return end
+	--@debug@
+	--@end-debug@
 	self.callbacks:Fire("StartEncounter")
 	--self:SendMessage("DXE_StartEncounter")
 	self:StartTimer()
@@ -300,6 +302,8 @@ end
 -- Stop the current encounter
 function DXE:StopEncounter()
 	if not self:IsRunning() then return end
+	--@debug@
+	--@end-debug@
 	self.callbacks:Fire("StopEncounter")
 	--self:SendMessage("DXE_StopEncounter")
 	self:StopTimer()
