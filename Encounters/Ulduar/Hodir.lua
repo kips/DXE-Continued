@@ -37,7 +37,7 @@ do
 			flashfreezecd = {
 				var = "flashfreezecd", 
 				varname = "Flash freeze cooldown",
-				type = "centerpopup", 
+				type = "dropdown", 
 				text = "Flash Freeze Cooldown", 
 				time = 52, 
 				flashtime = 5,
@@ -63,6 +63,7 @@ do
 				flashtime = 20, 
 				sound = "ALERT3", 
 				color1 = "MAGENTA",
+				color2 = "MAGENTA",
 			},
 			hardmodeends = {
 				var = "hardmodeends",
