@@ -5,23 +5,21 @@ do
 		zone = "Ulduar", 
 		name = "Thorim", 
 		title = "Thorim", 
-		tracing = {"Thorim","Jormungar Behemoth"},
+		tracing = {"Runic Colossus","Ancient Rune Giant"},
 		triggers = {
-			scan = "Thorim", 
+			scan = "Jormungar Behemoth",
+			yell = "^Interlopers",
 		},
 		onactivate = {
-			autostart = true,
-			autostop = true,
 			leavecombat = true,
 		},
 		userdata = {
 			chargecount = 1,
-			striketimer = 15,
 		},
 		onstart = {
 			[1] = {
-				{expect = {"&difficulty&","==","1"}},
-				{set = {striketimer = 6}},
+				{alert = "hardmodecd"},
+				{scheduletimer = {"hardmodefailed", 180}},
 			},
 		},
 		timers = {
@@ -35,7 +33,7 @@ do
 		alerts = {
 			enrage2cd = {
 				var = "enrage2cd", 
-				varname = "Phase 2 enrage cooldown", 
+				varname = "Phase 2 Enrage", 
 				type = "dropdown", 
 				text = "Enrage", 
 				time = 120, 
@@ -45,7 +43,7 @@ do
 			},
 			hardmodecd = {
 				var = "hardmodecd", 
-				varname = "Hard mode timer", 
+				varname = "Hard Mode timeleft", 
 				type = "dropdown", 
 				text = "Hard Mode Ends", 
 				time = 180, 
@@ -54,7 +52,7 @@ do
 			},
 			phase3start = {
 				var = "phase3start", 
-				varname = "Phase 3 alert", 
+				varname = "Phase 3 warning", 
 				type = "simple", 
 				text = "Thorim Engaged!", 
 				time = 1.5, 
@@ -62,7 +60,7 @@ do
 			},
 			chargewarn = {
 				var = "chargewarn", 
-				varname = "Lightning charge warning", 
+				varname = "Lightning Charge warning", 
 				type = "dropdown", 
 				text = "Lightning Charge: <chargecount>", 
 				time = 15, 
@@ -70,11 +68,12 @@ do
 				sound = "ALERT2",
 				color1 = "VIOLET",
 			},
+			--[[
 			hammerwarnself = {
 				var = "hammerwarnself",
 				varname = "Storm Hammer on self",
 				type = "centerpopup",
-				text = "Storm Hammer: YOU! Move!",
+				text = "Storm Hammer: YOU!",
 				time = 16,
 				flashtime = 16,
 				sound = "ALERT3",
@@ -89,31 +88,15 @@ do
 				time = 16,
 				color1 = "TEAL",
 			},
-			strikedur = {
-				var = "strikedur", 
-				varname = "Unbalancing strike duration", 
-				type = "dropdown", 
-				text = "Unbalancing strike!", 
-				time = "<striketimer>", 
-				flashtime = 5, 
-				sound = "ALERT4",
-				color1 = "ORANGE",
-			},
+			]]
 		},
 		events = {
 			[1] = {
 				type = "event",
 				event = "CHAT_MSG_MONSTER_YELL",
 				execute = {
-					-- Phase 2
-					[1] = {
-						{expect = {"#1#","find","^Interlopers!"}},
-						{alert = "hardmodecd"},
-						{scheduletimer = {"hardmodefailed", 180}},
-						{tracing = {"Thorim","Runic Colossus","Ancient Rune Giant"}},
-					},
 					-- Phase 3
-					[2] = {
+					[1] = {
 						{expect = {"#1#","find","^Impertinent"}},
 						{quash = "hardmodecd"},
 						{quash = "enrage2cd"},
@@ -136,6 +119,7 @@ do
 					},
 				},
 			},
+			--[[
 			-- Stormhammer
 			[3] = {
 				type = "combatevent", 
@@ -152,17 +136,7 @@ do
 					},
 				},
 			},
-			-- Unbalancing Strike
-			[4] = {
-				type = "combatevent", 
-				eventtype = "SPELL_AURA_APPLIED", 
-				spellid = 62130, 
-				execute = {
-					[1] = {
-						{alert = "strikedur"}, 
-					},
-				},
-			},
+			]]
 		},
 	}
 
