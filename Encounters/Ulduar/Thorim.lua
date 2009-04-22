@@ -69,6 +69,28 @@ do
 				sound = "ALERT2",
 				color1 = "VIOLET",
 			},
+			chainlightningcd = {
+				var = "chainlightningcd",
+				varname = "Chain Lightning cooldown",
+				type = "dropdown",
+				text = "Chain Lightning Cooldown",
+				time = 10,
+				flashtime = 5,
+				sound = "ALERT3",
+				color1 = "ORANGE",
+				color2 = "ORANGE",
+			},
+			frostnovacast = {
+				var = "frostnovacast",
+				varname = "Frost Nova cast",
+				type = "centerpopup",
+				text = "Frost Nova Cast",
+				time = 2.5,
+				flashtime = 2.5,
+				sound = "ALERT4",
+				color1 = "BLUE",
+				color2 = "BLUE",
+			},
 			--[[
 			hammerwarnself = {
 				var = "hammerwarnself",
@@ -117,6 +139,28 @@ do
 					[1] = {
 						{set = {chargecount = "INCR|1"}},
 						{alert = "chargecd"},
+					},
+				},
+			},
+			-- Chain Lightning
+			[3] = {
+				type = "combatevent",
+				eventtype = "SPELL_CAST_START",
+				spellid = 64390,
+				execute = {
+					[1] = {
+						{alert = "chainlightningcd"},
+					},
+				},
+			},
+			-- Sif's Frost Nova
+			[4] = {
+				type = "combatevent",
+				eventtype = "SPELL_CAST_START",
+				spellid = 62605,
+				execute = {
+					[1] = {
+						{alert = "frostnovacast"},
 					},
 				},
 			},
