@@ -50,11 +50,11 @@ do
 				flashtime = 5, 
 				sound = "ALERT1", 
 			},
-			phase3start = {
-				var = "phase3start", 
-				varname = "Phase 3 warning", 
+			hardmodeactivation = {
+				var = "hardmodeactivation", 
+				varname = "Hard mode activation", 
 				type = "simple", 
-				text = "Thorim Engaged!", 
+				text = "Hard Mode Activated", 
 				time = 1.5, 
 				sound = "ALERT1", 
 			},
@@ -124,10 +124,14 @@ do
 						{quash = "enrage2cd"},
 						{canceltimer = "hardmodefailed"},
 						{tracing = {"Thorim"}},
-						{alert = "phase3start"},
 						{set = {chargetime = 34}}, -- Rare bug happened
 						{alert = "chargecd"},
 						{set = {chargetime = 15}},
+					},
+					-- Hard mode activation
+					[2] = {
+						{expect = {"#1#","find","Impossible!"}},
+						{alert = "hardmodeactivation"},
 					},
 				},
 			},
