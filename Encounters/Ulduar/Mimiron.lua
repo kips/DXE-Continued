@@ -38,7 +38,7 @@ do
 				var = "flamesuppressantcd",
 				varname = "Flame Suppressant cooldown",
 				text = "Flame Suppressant Cooldown",
-				time = 61,
+				time = 60,
 				flashtime = 5,
 				color1 = "INDIGO",
 			},
