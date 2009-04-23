@@ -14,7 +14,7 @@ do
 			leavecombat = true,
 		},
 		userdata = {
-			plasmablasttime = {15,30,loop = false},
+			plasmablasttime = {14,30,loop = false},
 		},
 		onstart = {
 			-- Phase 1
