@@ -48,8 +48,8 @@ local function tupleToString(...)
 	end
 end
 
-local function CreateDebugFunction(name,global,windowName)
-	windowName = windowName or "DXE Debug"
+local function CreateDebugFunction(name,global,outputWindow)
+	outputWindow = outputWindow or "DXE Debug"
 	name = "|cff99ff33"..name.."|r"
 	local prepend = setmetatable({},{
 		__index = function(t,k)
@@ -63,7 +63,7 @@ local function CreateDebugFunction(name,global,windowName)
 		local debugframe
 		for i=1,NUM_CHAT_WINDOWS do
 			local windowName = GetChatWindowInfo(i)
-			if windowName == "DXE Debug" then
+			if windowName == outputWindow then
 				debugframe = _G["ChatFrame"..i]
 				break
 			end

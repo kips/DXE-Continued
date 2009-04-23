@@ -57,6 +57,7 @@ do
 		},
 		-- TODO
 		-- Add Enrage
+		-- Make it remove overchargedblastdur if the aura is removed
 		events = {
 			-- Lightning Nova
 			[1] = {

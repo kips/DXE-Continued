@@ -7,7 +7,8 @@ do
 		title = "Mimiron", 
 		tracing = {"Leviathan Mk II"},
 		triggers = {
-			yell = "^We haven't much time, friends",
+			yell = {"^We haven't much time, friends","^Self-destruct sequence initiated"},
+			scan = {"Leviathan Mk II","Mimiron"},
 		},
 		onactivate = {
 			leavecombat = true,
@@ -163,7 +164,7 @@ do
 				varname = "Hard mode timer",
 				type = "dropdown",
 				text = "Raid Wipe",
-				time = 480,
+				time = 600,
 				flashtime = 10,
 				color1 = "BROWN",
 			},

@@ -130,7 +130,7 @@ do
 					},
 					-- Hard mode activation
 					[2] = {
-						{expect = {"#1#","find","Impossible!"}},
+						{expect = {"#1#","find","^Impossible!"}},
 						{alert = "hardmodeactivation"},
 					},
 				},

@@ -14,8 +14,14 @@ do
 			autostop = true,
 			leavecombat = true,
 		},
-		onstart = {},
+		onstart = {
+			[1] = {
+				{expect = {"&difficulty&","==","1"}},
+				{set = {armrespawntime = 40}},
+			},
+		},
 		alerts = {
+			--[[
 			eyebeamdurself = {
 				var = "eyebeamdurself",
 				varname = "Eyebeam duration on self",
@@ -35,6 +41,7 @@ do
 				time = 10,
 				color1 = "BLUE",
 			},
+			]]
 			stonegripwarnothers = {
 				var = "stonegripothers",
 				varname = "Stone Grip warning on others",
@@ -54,12 +61,13 @@ do
 				color1 = "ORANGE",
 				sound = "ALERT3",
 			},
+			-- TODO: Keep checking this cooldown
 			shockwavecd = {
 				var = "shockwavecd",
 				varname = "Next Shockwave",
 				type = "dropdown",
-				text = "Next Shockwave",
-				time = 21,
+				text = "Shockwave Cooldown",
+				time = 16,
 				flashtime = 5,
 				color1 = "YELLOW",
 				color2 = "GOLD",
@@ -70,7 +78,7 @@ do
 				varname = "Left Arm respawn",
 				type = "dropdown",
 				text = "Left Arm Respawns",
-				time = 60,
+				time = "<armrespawntime>",
 				color1 = "CYAN",
 			},
 			rightarmcd = {
@@ -78,13 +86,14 @@ do
 				varname = "Right Arm respawn",
 				type = "dropdown",
 				text = "Right Arm Respawns",
-				time = 60,
+				time = "<armrespawntime>",
 				color1 = "DCYAN",
 			},
 		},
 		userdata = {
 			rightarmalive = 1,
 			leftarmalive = 1,
+			armrespawntime = 50,
 		},
 		timers = {
 			updatetracing = {
@@ -128,7 +137,7 @@ do
 						{alert = "stonegripwarnothers"},
 					},
 				},
-			},
+			},--[[
 			-- Focused Eyebeam
 			[2] = {
 				type = "combatevent",
@@ -145,13 +154,14 @@ do
 					},
 				},
 			},
-			[3] = {
+			]]
+			[2] = {
 				type = "event",
 				event = "YELL",
 				execute = {
 					-- Left Arm dies
 					[1] = {
-						{expect = {"#1#","find","^Just a scratch"}},
+						{expect = {"#1#","find","^Only a flesh wound"}},
 						{alert = "leftarmcd"},
 						{set = {leftarmalive = 0}},
 						{scheduletimer = {"makeleftalive",60}},
@@ -160,28 +170,22 @@ do
 					},
 					-- Right Arm dies
 					[2] = {
-						{expect = {"#1#","find","^Only a flesh wound"}},
+						{expect = {"#1#","find","^Just a scratch"}},
 						{alert = "rightarmcd"},
 						{set = {rightarmalive = 0}},
 						{scheduletimer = {"makerightalive",60}},
 						{scheduletimer = {"updatetracing",60.5}},
 						{scheduletimer = {"updatetracing",0}},
 					},
-					--- Remove one of the bottom two
 					-- Shockwave
 					[3] = {
-						{expect = {"#1#","find","^Oblivion"}},
-						{alert = "shockwavecd"},
-					},
-					-- Shockwave 2
-					[4] = {
 						{expect = {"#1#","find","^OBLIVION"}},
 						{alert = "shockwavecd"},
 					},
 				},
 			},
 			-- Arm Sweep
-			[4] = {
+			[3] = {
 				type = "combatevent",
 				eventtype = "SPELL_CAST_SUCCESS",
 				spellid = {63766,63983},
