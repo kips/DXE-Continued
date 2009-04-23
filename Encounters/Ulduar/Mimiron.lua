@@ -23,7 +23,6 @@ do
 			},
 		},
 		alerts = {
-			--- Unknown
 			flamesuppressantwarn = {
 				type = "centerpopup",
 				var = "flamesuppressantwarn",
@@ -32,6 +31,15 @@ do
 				time = 2,
 				sound = "ALERT5",
 				color1 = "TEAL",
+			},
+			flamesuppressantcd = {
+				type = "dropdown",
+				var = "flamesuppressantcd",
+				varname = "Flame Suppressant cooldown",
+				text = "Flame Suppressant Cooldown",
+				time = 61,
+				flashtime = 5,
+				color1 = "INDIGO",
 			},
 			frostbombwarn = {
 				type = "centerpopup",
@@ -230,7 +238,7 @@ do
 					},
 					-- Hard mode activated
 					[4] = {
-						{expect = {"#1#","find","^Self-destruct sequence initiated"}},
+						{expect = {"#1#","find","^Self%-destruct sequence initiated"}},
 						{alert = "hardmodetimer"},
 					},
 				},
