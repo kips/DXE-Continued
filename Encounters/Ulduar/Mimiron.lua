@@ -20,7 +20,6 @@ do
 			-- Phase 1
 			[1] = {
 				{alert = "plasmablastcd"},
-				{alert = "flamesuppressantcd"},
 			},
 		},
 		alerts = {
@@ -242,6 +241,7 @@ do
 					[4] = {
 						{expect = {"#1#","find","^Self%-destruct sequence initiated"}},
 						{alert = "hardmodetimer"},
+						{alert = "flamesuppressantcd"},
 					},
 				},
 			},
