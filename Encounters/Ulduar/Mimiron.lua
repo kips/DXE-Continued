@@ -20,6 +20,7 @@ do
 			-- Phase 1
 			[1] = {
 				{alert = "plasmablastcd"},
+				{alert = "flamesuppressantcd"},
 			},
 		},
 		alerts = {
@@ -214,6 +215,7 @@ do
 					[1] = {
 						{expect = {"#1#","find","^WONDERFUL! Positively"}},
 						{quash = "plasmablastcd"},
+						{quash = "flamesuppressantcd"},
 						{tracing = {"VX-001"}},
 						{alert = "onetotwo"},
 					},
@@ -307,6 +309,7 @@ do
 				execute = {
 					[1] = {
 						{alert = "flamesuppressantwarn"},
+						{alert = "flamesuppressantcd"},
 					},
 				},
 			},
