@@ -7,7 +7,7 @@ do
 		title = "Mimiron", 
 		tracing = {"Leviathan Mk II"},
 		triggers = {
-			yell = {"^We haven't much time, friends","^Self-destruct sequence initiated"},
+			yell = {"^We haven't much time, friends","^Self%-destruct sequence"},
 			scan = {"Leviathan Mk II","Mimiron"},
 		},
 		onactivate = {
@@ -42,6 +42,7 @@ do
 				sound = "ALERT5",
 				color1 = "BLUE",
 			},
+			--[[
 			frostbombcd = {
 				type = "dropdown",
 				var = "frostbombcd",
@@ -52,6 +53,7 @@ do
 				color1 = "BLUE",
 				color2 = "WHITE",
 			},
+			]]
 			-- Leviathan MKII
 			plasmablastwarn = { 
 				type = "centerpopup",
@@ -88,7 +90,7 @@ do
 				var = "laserbarragedur",
 				varname = "Laser Barrage duration",
 				text = "Laser Barrage Duration",
-				time = 15,
+				time = 10,
 				color1 = "PURPLE",
 				sound = "ALERT6",
 			},
@@ -308,7 +310,7 @@ do
 				execute = {
 					[1] = {
 						{alert = "frostbombwarn"},
-						{alert = "frostbombcd"},
+						--{alert = "frostbombcd"},
 					},
 				},
 			},
