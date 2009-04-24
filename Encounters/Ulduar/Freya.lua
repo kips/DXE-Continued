@@ -106,6 +106,30 @@ do
 				flashtime = 5,
 				color1 = "RED",
 			},
+			groundtremorwarn = {
+				var = "groundtremorwarn",
+				varname = "Ground Tremor warning",
+				type = "simple",
+				text = "Ground Tremor casting",
+				time = 2,
+				color1 = "BROWN",
+			},
+			groundtremorcd = {
+				var = "groundtremorcd",
+				varname = "Ground Tremor cooldown",
+				type = "dropdown",
+				text = "Ground Tremor cooldown",
+				time = 28,
+				color1 = "TAN",
+			},
+			sunbeamcd = {
+				var = "sunbeamcd",
+				varname = "Sun Beam cooldown",
+				type = "dropdown",
+				text = "Sun Beam cooldown",
+				time = 28,
+				color1 = "YELLOW",
+			},
 		},
 		-- TODO
 		-- Ground Tremor for hard mode
@@ -166,6 +190,7 @@ do
 				execute = {
 					[1] = {
 						{scheduletimer = {"sunbeam",0.1}},
+						{alert = "sunbeamcd"},
 					},
 				},
 			},
@@ -205,6 +230,18 @@ do
 					[1] = {
 						{expect = {"#4#","==","&playerguid&"}},
 						{alert = "gripwarn"},
+					},
+				},
+			},
+			-- Ground Tremor (Hard Mode)
+			[7] = {
+				type = "combatevent",
+				eventtype = "SPELL_CAST_START",
+				spellid = {62437,62859},
+				execute = {
+					[1] = {
+						{alert = "groundtremorwarn"},
+						{alert = "groundtremorcd"},
 					},
 				},
 			},
