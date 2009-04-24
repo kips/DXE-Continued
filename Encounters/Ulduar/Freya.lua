@@ -113,6 +113,7 @@ do
 				text = "Ground Tremor casting",
 				time = 2,
 				color1 = "BROWN",
+				sound = "ALERT5",
 			},
 			groundtremorcd = {
 				var = "groundtremorcd",
