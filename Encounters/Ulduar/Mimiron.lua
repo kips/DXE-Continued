@@ -50,6 +50,17 @@ do
 				sound = "ALERT5",
 				color1 = "BLUE",
 			},
+			frostbombexplodes = {
+				type = "centerpopup",
+				var = "frostbombexplodes",
+				varname = "Frost Bomb explodes",
+				text = "Frost Bomb Explodes!",
+				time = 11,
+				flashtime = 5,
+				sound = "ALERT9",
+				color1 = "BLUE",
+				color2 = "WHITE",
+			},
 			--[[
 			frostbombcd = {
 				type = "dropdown",
@@ -71,6 +82,14 @@ do
 				time = 3,
 				color1 = "ORANGE",
 				sound = "ALERT5",
+			},
+			plasmablastdur = { 
+				type = "centerpopup",
+				var = "plasmablastdur",
+				varname = "Plasma Blast duration",
+				text = "Plasma Blast duration",
+				time = 6,
+				color1 = "ORANGE",
 			},
 			plasmablastcd = {
 				type = "dropdown",
@@ -119,7 +138,7 @@ do
 				varname = "Shock Blast cooldown",
 				type = "dropdown",
 				text = "Next Shock Blast",
-				time = 25,
+				time = 30,
 				flashtime = 5,
 				color1 = "MAGENTA",
 				color2 = "ORANGE",
@@ -206,6 +225,16 @@ do
 					{alert = "shockblastcd"},
 				},
 			},
+			startfrostbombexplodes = {
+				[1] = {
+					{alert = "frostbombexplodes"},
+				},
+			},
+			startplasmablastdur = {
+				[1] = {
+					{alert = "plasmablastdur"},
+				},
+			},
 		},
 		events = {
 			[1] = {
@@ -217,6 +246,9 @@ do
 						{expect = {"#1#","find","^WONDERFUL! Positively"}},
 						{quash = "plasmablastcd"},
 						{quash = "flamesuppressantcd"},
+						{quash = "shockblastcd"},
+						{canceltimer = "startblastcd"},
+						{canceltimer = "startplasmablastdur"},
 						{tracing = {"VX-001"}},
 						{alert = "onetotwo"},
 					},
@@ -229,6 +261,7 @@ do
 						{quash = "spinupwarn"},
 						{canceltimer = "startbarragedur"},
 						{canceltimer = "startbarragecd"},
+						{canceltimer = "startfrostbombexplodes"},
 						{alert = "twotothree"},
 					},
 					-- Transition from Phase 3 to Phase 4
@@ -257,6 +290,7 @@ do
 					[1] = {
 						{alert = "plasmablastwarn"},
 						{alert = "plasmablastcd"},
+						{scheduletimer = {"startplasmablastdur",3}},
 					},	
 				},
 			},
@@ -267,8 +301,9 @@ do
 				spellid = 63631, -- TODO: Add heroic spellid
 				execute = {
 					[1] = {
+						{quash = "shockblastcd"},
 						{alert = "shockblastwarn"},
-						{scheduletimer = {"startblastcd",10}},
+						{scheduletimer = {"startblastcd",4}},
 					},	
 				},
 			},
@@ -286,25 +321,8 @@ do
 					},
 				},
 			},
-			-- Rocket Strike
-			[5] = {
-				type = "combatevent",
-				eventtype = "SPELL_CAST_SUCCESS",
-				spellid = {65034,64402,63681,63036,63041}, -- TODO: Remove unnecessary spellids
-				execute = {
-					[1] = {
-						{alert = "rocketstrikewarn"},
-					},
-				},
-			},
-			--- Phase 3 - Aerial Command Unit
-			-- Possible additions:
-				-- Spawn messages
-				-- Plasma Ball
-			--- Unknown - Are these even in the fight?
-			-- Possibly hard mode additional abilities
 			-- Flame Suppressant
-			[6] = {
+			[5] = {
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
 				spellid = 64570,
@@ -316,19 +334,19 @@ do
 				},
 			},
 			-- Frost Bomb
-			[7] = {
+			[6] = {
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
 				spellid = 64623,
 				execute = {
 					[1] = {
 						{alert = "frostbombwarn"},
-						--{alert = "frostbombcd"},
+						{scheduletimer = {"startfrostbombexplodes",2}},
 					},
 				},
 			},
 			-- Bomb Bot
-			[8] = {
+			[7] = {
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
 				spellid = 63811,
@@ -338,6 +356,20 @@ do
 					},	
 				},
 			},
+			-- Doesn't work need to use UNIT_SPELLCAST_SUCCEEDED
+			--[[
+			-- Rocket Strike
+			[5] = {
+				type = "combatevent",
+				eventtype = "SPELL_CAST_SUCCESS",
+				spellid = {65034,64402,63681,63036,63041}, -- TODO: Remove unnecessary spellids
+				execute = {
+					[1] = {
+						{alert = "rocketstrikewarn"},
+					},
+				},
+			},
+			]]
 		},
 	}
 
