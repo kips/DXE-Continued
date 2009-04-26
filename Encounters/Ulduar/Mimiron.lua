@@ -15,6 +15,7 @@ do
 		},
 		userdata = {
 			plasmablasttime = {14,30,loop = false},
+			laserbarragetime = {33,46,loop = false},
 		},
 		onstart = {
 			-- Phase 1
@@ -127,7 +128,7 @@ do
 				varname = "Laser Barrage cooldown",
 				type = "dropdown",
 				text = "Next Laser Barrage",
-				time = 46,
+				time = "<laserbarragetime>",
 				flashtime = 5,
 				color1 = "PURPLE",
 				color2 = "YELLOW",
@@ -249,8 +250,9 @@ do
 						{quash = "shockblastcd"},
 						{canceltimer = "startblastcd"},
 						{canceltimer = "startplasmablastdur"},
+						{scheduletimer = {"startbarragecd",40}},
 						{tracing = {"VX-001"}},
-						{alert = "onetotwo"},
+						{alert = "onetotwo"}, -- 33 spin up
 					},
 					-- Transition from Phase 2 to Phase 3
 					[2] = {
