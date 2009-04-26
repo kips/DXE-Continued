@@ -8,7 +8,7 @@ do
 		tracing = {"Leviathan Mk II"},
 		triggers = {
 			yell = {"^We haven't much time, friends","^Self%-destruct sequence"},
-			scan = {"Leviathan Mk II","Mimiron"},
+			scan = {"Leviathan Mk II","Mimiron","VX-001","Aerial Command Unit"},
 		},
 		onactivate = {
 			leavecombat = true,
@@ -102,12 +102,13 @@ do
 				color1 = "PURPLE",
 				sound = "ALERT6",
 			},
+			-- TODO: Fix this
 			laserbarragecd = {
 				var = "laserbarragecd",
 				varname = "Laser Barrage cooldown",
 				type = "dropdown",
 				text = "Next Laser Barrage",
-				time = 41,
+				time = 46,
 				flashtime = 5,
 				color1 = "PURPLE",
 				color2 = "YELLOW",
@@ -134,7 +135,7 @@ do
 				color2 = "RED",
 				sound = "ALERT4",
 			},
-			--- Leviathan MK II and VX-001
+			--- TODO: Fix this
 			rocketstrikewarn = {
 				var = "rocketstrikewarn",
 				varname = "Rocket Strike warning",
@@ -183,8 +184,9 @@ do
 				var = "bombbotwarn",
 				varname = "Bomb bot warning",
 				type = "simple",
-				text = "Bomb bot spawned",
+				text = "Bomb bot Spawned",
 				time = 5,
+				sound = "ALERT8",
 			},
 		},
 		timers = {
@@ -233,7 +235,7 @@ do
 					[3] = {
 						{expect = {"#1#","find","^Preliminary testing phase complete"}},
 						{tracing = {"Leviathan Mk II","VX-001","Aerial Command Unit"}},
-						{scheduletimer = {"startbarragecd",9}},
+						{scheduletimer = {"startbarragecd",14}},
 						{scheduletimer = {"startblastcd",25}},
 						{alert = "threetofour"},
 					},
@@ -280,7 +282,7 @@ do
 					[1] = {
 						{alert = "spinupwarn"},
 						{scheduletimer = {"startbarragedur",4}},
-						{scheduletimer = {"startbarragecd",19}},
+						{scheduletimer = {"startbarragecd",14}},
 					},
 				},
 			},

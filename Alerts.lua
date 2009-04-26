@@ -15,6 +15,10 @@ local scale
 
 local Alerts = DXE:NewModule("Alerts","AceTimer-3.0")
 
+--@debug@
+local debug
+--@end-debug@
+
 ---------------------------------------
 -- ALERT ANCHORS
 ---------------------------------------
@@ -163,7 +167,7 @@ function Alerts:GetAlertTimeleft(name)
 	for i=1,#Active do
 		local alert = Active[i]
 		if alert.userdata.name == name then
-			return alert.userdata.timeleft
+			return alert.userdata.timeleft or -1
 		end
 	end
 	return -1

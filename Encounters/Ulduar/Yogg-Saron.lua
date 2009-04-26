@@ -128,6 +128,7 @@ do
 				text = "Crusher Tentacle Spawns",
 				time = "<crushertime>",
 				flashtime = 7,
+				throttle = 5,
 				color1 = "DCYAN",
 				color2 = "INDIGO",
 			},
@@ -263,6 +264,8 @@ do
 				spellid = 64144,
 				execute = {
 					[1] = {
+						-- Crusher tentacle could erupt while it's active
+						{expect = {"&timeleft|crushertentaclespawn&","<","3"}},
 						{set = {crushertime = 50}},
 						{alert = "crushertentaclespawn"},
 					},
