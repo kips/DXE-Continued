@@ -22,6 +22,7 @@ do
 			[1] = {
 				{alert = "spawncd"},
 				{alert = "enragecd"},
+				--{alert = "groundtremorcd"},
 			},
 		},
 		alerts = {
@@ -49,8 +50,9 @@ do
 				varname = "Attuned to Nature removal warning",
 				text = "Attuned to Nature Removed!",
 				time = 1.5,
-				sound = "ALERT3",
+				sound = "ALERT9",
 			},
+			--[[
 			sunbeamwarnself = {
 				var = "sunbeamwarn",
 				varname = "Sunbeam warning",
@@ -69,6 +71,7 @@ do
 				color1 = "GOLD",
 				sound = "ALERT4",
 			},
+			]]
 			naturesfuryself = {
 				var = "naturesfuryself",
 				varname = "Nature's Fury on self",
@@ -129,21 +132,17 @@ do
 				color2 = "TAN",
 				sound = "ALERT7",
 			},
-			-- It's off and pretty useless imo
-			--[[
-			sunbeamcd = {
-				var = "sunbeamcd",
-				varname = "Sun Beam cooldown",
-				type = "dropdown",
-				text = "Sun Beam Cooldown",
-				time = 28,
-				flashtime = 5,
-				color1 = "YELLOW",
-				color2 = "YELLOW",
-				sound = "ALERT8",
+			unstablewarnself = {
+				var = "unstablewarnself",
+				varname = "Unstable Energy warning on self",
+				type = "simple",
+				text = "Unstable Energy: YOU! MOVE!",
+				time = 1.5,
+				color1 = "BLACK",
+				sound = "ALERT3",
 			},
-			]]
 		},
+		--[[
 		timers = {
 			sunbeam = {
 				[1] = {
@@ -156,6 +155,7 @@ do
 				},
 			},
 		},
+		]]
 		events = {
 			-- Spawn waves
 			[1] = {
@@ -193,6 +193,7 @@ do
 					},
 				},
 			},
+			--[[
 			-- Sunbeam
 			[3] = {
 				type = "combatevent",
@@ -205,8 +206,9 @@ do
 					},
 				},
 			},
+			]]
 			-- Nature's Fury from Ancient Conservator. Add Fury quashing on SPELL_AURA_REMOVED?
-			[4] = {
+			[3] = {
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
 				spellid = {62589,63571},
@@ -222,7 +224,7 @@ do
 				},
 			},
 			-- Attuned to Nature
-			[5] = {
+			[4] = {
 				type = "combatevent",
 				eventtype = "SPELL_AURA_REMOVED",
 				spellid = 62519,
@@ -233,7 +235,7 @@ do
 				},
 			},
 			-- Ancient Conservator - Conservator's Grip 
-			[6] = {
+			[5] = {
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
 				spellid = 62532,
@@ -245,7 +247,7 @@ do
 				},
 			},
 			-- Ground Tremor (Hard Mode)
-			[7] = {
+			[6] = {
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
 				spellid = {62437,62859},
@@ -253,6 +255,18 @@ do
 					[1] = {
 						{alert = "groundtremorwarn"},
 						{alert = "groundtremorcd"},
+					},
+				},
+			},
+			-- Unstable Energy
+			[7] = {
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellid = 62865,
+				execute = {
+					[1] = {
+						{expect = {"#4#","==","&playerguid&"}},
+						{alert = "unstablewarnself"},
 					},
 				},
 			},
