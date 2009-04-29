@@ -94,7 +94,7 @@ do
 					},
 				},
 			},
-			[2] = {
+			[3] = {
 				type = "event",
 				event = "EMOTE",
 				execute = {

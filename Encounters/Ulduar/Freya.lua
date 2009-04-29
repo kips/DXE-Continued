@@ -16,7 +16,7 @@ do
 		},
 		userdata = {
 			spawnmessage = "Minions",
-			spawntime = {8,60,loop=false}
+			spawntime = {10,60,loop=false}
 		},
 		onstart = {
 			[1] = {
@@ -32,7 +32,7 @@ do
 				type = "dropdown",
 				time = "<spawntime>",
 				flashtime = 5,
-				color1 = "INDIGO",
+				color1 = "MAGENTA",
 			},
 			giftwarn = {
 				var = "giftwarn",
@@ -96,6 +96,7 @@ do
 				time = 1.5,
 				color1 = "GREEN",
 				throttle = 5,
+				sound = "ALERT6",
 			},
 			enragecd = {
 				var = "enragecd",
@@ -109,39 +110,48 @@ do
 			groundtremorwarn = {
 				var = "groundtremorwarn",
 				varname = "Ground Tremor warning",
-				type = "simple",
-				text = "Ground Tremor casting",
+				type = "centerpopup",
+				text = "Ground Tremor Cast",
 				time = 2,
+				flashtime = 2,
 				color1 = "BROWN",
+				color2 = "ORANGE",
 				sound = "ALERT5",
 			},
 			groundtremorcd = {
 				var = "groundtremorcd",
 				varname = "Ground Tremor cooldown",
 				type = "dropdown",
-				text = "Ground Tremor cooldown",
+				text = "Ground Tremor Cooldown",
 				time = 28,
+				flashtime = 5,
 				color1 = "TAN",
+				color2 = "TAN",
+				sound = "ALERT7",
 			},
+			-- It's off and pretty useless imo
+			--[[
 			sunbeamcd = {
 				var = "sunbeamcd",
 				varname = "Sun Beam cooldown",
 				type = "dropdown",
-				text = "Sun Beam cooldown",
+				text = "Sun Beam Cooldown",
 				time = 28,
+				flashtime = 5,
 				color1 = "YELLOW",
+				color2 = "YELLOW",
+				sound = "ALERT8",
 			},
+			]]
 		},
-		-- TODO
-		-- Ground Tremor for hard mode
 		timers = {
 			sunbeam = {
 				[1] = {
-					{expect = {"&tft_unitexists& &tft_isplayer&","==","true true"}},
+					{expect = {"&tft_unitexists& &tft_isplayer&","==","1 1"}},
 					{alert = "sunbeamwarnself"},
 				},
 				[2] = {
-					{expect = {"&tft_unitexists& &tft_isplayer&","==","true false"}},
+					{expect = {"&tft_unitexists& &tft_isplayer&","==","1 nil"}},
 					{alert = "sunbeamwarnother"},
 				},
 			},
@@ -187,11 +197,11 @@ do
 			[3] = {
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
-				spellid = {62623,62873},
+				spellid = {62872},
 				execute = {
 					[1] = {
 						{scheduletimer = {"sunbeam",0.1}},
-						{alert = "sunbeamcd"},
+						--{alert = "sunbeamcd"},
 					},
 				},
 			},

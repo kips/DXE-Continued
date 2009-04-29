@@ -127,7 +127,7 @@ do
 				var = "laserbarragecd",
 				varname = "Laser Barrage cooldown",
 				type = "dropdown",
-				text = "Next Laser Barrage",
+				text = "Laser Barrage Cooldown",
 				time = "<laserbarragetime>",
 				flashtime = 5,
 				color1 = "PURPLE",
@@ -156,6 +156,7 @@ do
 				sound = "ALERT4",
 			},
 			--- TODO: Fix this
+			--[[
 			rocketstrikewarn = {
 				var = "rocketstrikewarn",
 				varname = "Rocket Strike warning",
@@ -164,6 +165,7 @@ do
 				time = 1.5,
 				sound = "ALERT7",
 			},
+			]]
 			--- Phase Changes
 			onetotwo = {
 				var = "onetotwo",
@@ -204,7 +206,7 @@ do
 				var = "bombbotwarn",
 				varname = "Bomb bot warning",
 				type = "simple",
-				text = "Bomb bot Spawned",
+				text = "Bomb Bot Spawned!",
 				time = 5,
 				sound = "ALERT8",
 			},
