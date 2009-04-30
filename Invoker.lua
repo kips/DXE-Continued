@@ -57,6 +57,7 @@ function Invoker:OnInitialize()
 				Alerts = false,
 				REG_EVENT = false,
 				FindUnitID = false,
+				HW_TRACER_ACQUIRED = false,
 			},
 		},
 	})
@@ -679,6 +680,9 @@ local UnitIsDead = UnitIsDead
 
 function Invoker:HW_TRACER_ACQUIRED(event,uid)
 	local name = UnitName(uid)
+	--@debug@
+	debug("HW_TRACER_ACQUIRED","name: %s",name)
+	--@end-debug@
 	if AcquiredBundles[name] and not UnitIsDead(uid) then
 		self:InvokeCommands(AcquiredBundles[name])
 	end

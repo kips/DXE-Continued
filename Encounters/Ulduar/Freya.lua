@@ -42,7 +42,7 @@ do
 				text = "Eonar's Gift Spawned!",
 				time = 1.5,
 				sound = "ALERT2",
-				color1 = "PEACH",
+				color1 = "VIOLET",
 			},
 			attunedwarn = {
 				var = "attunedwarn",
@@ -143,20 +143,6 @@ do
 				sound = "ALERT3",
 			},
 		},
-		--[[
-		timers = {
-			sunbeam = {
-				[1] = {
-					{expect = {"&tft_unitexists& &tft_isplayer&","==","1 1"}},
-					{alert = "sunbeamwarnself"},
-				},
-				[2] = {
-					{expect = {"&tft_unitexists& &tft_isplayer&","==","1 nil"}},
-					{alert = "sunbeamwarnother"},
-				},
-			},
-		},
-		]]
 		events = {
 			-- Spawn waves
 			[1] = {
@@ -189,7 +175,7 @@ do
 				event = "EMOTE",
 				execute = {
 					[1] = {
-						{expect = {"#1#","find","^A Lifebinder's Gift"}},
+						{expect = {"#1#","find","begins to grow!$"}},
 						{alert = "giftwarn"},
 					},
 				},
