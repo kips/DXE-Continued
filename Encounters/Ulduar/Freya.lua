@@ -5,7 +5,7 @@ do
 		zone = "Ulduar", 
 		name = "Freya", 
 		title = "Freya", 
-		tracing = {"Freya"},
+		tracing = {"Freya","Ancient Conservator"},
 		triggers = {
 			scan = "Freya", 
 		},
