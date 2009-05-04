@@ -15,7 +15,6 @@ do
 			leavecombat = true,
 		},
 		userdata = {
-			spawnmessage = "Minions",
 			spawntime = {10,60,loop=false}
 		},
 		onstart = {
@@ -29,7 +28,7 @@ do
 			spawncd = {
 				var = "spawncd",
 				varname = "Minion spawn cooldown",
-				text = "Spawn: <spawnmessage>",
+				text = "Next Minion Spawn",
 				type = "dropdown",
 				time = "<spawntime>",
 				flashtime = 5,
@@ -75,7 +74,7 @@ do
 			naturesfuryself = {
 				var = "naturesfuryself",
 				varname = "Nature's Fury on self",
-				text = "Ntr's Fury: YOU!",
+				text = "Fury: YOU! MOVE NOW!",
 				type = "centerpopup",
 				time = 10,
 				flashtime = 10,
@@ -86,7 +85,7 @@ do
 			naturesfuryproximitywarn = {
 				var = "naturesfuryproximitywarn",
 				varname = "Nature's Fury proximity warn",
-				text = "Ntr's Fury: #5#! MOVE!",
+				text = "Fury: #5#! MOVE AWAY!",
 				type = "simple",
 				time = 2,
 				color1 = "YELLOW",
@@ -152,19 +151,19 @@ do
 					-- Ancient Conservator
 					[1] = {
 						{expect = {"#1#","find","^Eonar, your servant"}},
-						{set = {spawnmessage = "Ancient Conservator"}},
+						--{set = {spawnmessage = "Ancient Conservator"}},
 						{alert = "spawncd"},
 					},
 					-- Detonating Lashers
 					[2] = {
 						{expect = {"#1#","find","^The swarm of the elements"}},
-						{set = {spawnmessage = "Detonating Lashers"}},
+						--{set = {spawnmessage = "Detonating Lashers"}},
 						{alert = "spawncd"},
 					},
 					-- Elementals
 					[3] = {
 						{expect = {"#1#","find","^Children, assist"}},
-						{set = {spawnmessage = "Elementals"}},
+						--{set = {spawnmessage = "Elementals"}},
 						{alert = "spawncd"},
 					},	
 				},
