@@ -193,7 +193,7 @@ do
 				},
 			},
 			]]
-			-- Nature's Fury from Ancient Conservator. Add Fury quashing on SPELL_AURA_REMOVED?
+			-- Nature's Fury from Ancient Conservator
 			[3] = {
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
@@ -254,6 +254,18 @@ do
 					[1] = {
 						{expect = {"#4#","==","&playerguid&"}},
 						{alert = "unstablewarnself"},
+					},
+				},
+			},
+			-- Nature's Fury removed from player
+			[8] = {
+				type = "combatevent",
+				eventtype = "SPELL_AURA_REMOVED",
+				spellid = {62589,63571},
+				execute = {
+					[1] = {
+						{expect = {"#4#","==","&playerguid&"}},
+						{quash = "naturesfuryself"},
 					},
 				},
 			},
