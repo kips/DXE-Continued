@@ -5,7 +5,7 @@ do
 		zone = "Ulduar", 
 		name = "Freya", 
 		title = "Freya", 
-		tracing = {"Freya","Ancient Conservator"},
+		tracing = {"Freya"},
 		triggers = {
 			scan = "Freya", 
 		},
@@ -151,19 +151,19 @@ do
 					-- Ancient Conservator
 					[1] = {
 						{expect = {"#1#","find","^Eonar, your servant"}},
-						--{set = {spawnmessage = "Ancient Conservator"}},
+						{tracing = {"Freya","Ancient Conservator"}},
 						{alert = "spawncd"},
 					},
 					-- Detonating Lashers
 					[2] = {
 						{expect = {"#1#","find","^The swarm of the elements"}},
-						--{set = {spawnmessage = "Detonating Lashers"}},
+						{tracing = {"Freya"}},
 						{alert = "spawncd"},
 					},
 					-- Elementals
 					[3] = {
 						{expect = {"#1#","find","^Children, assist"}},
-						--{set = {spawnmessage = "Elementals"}},
+						{tracing = {"Freya","Ancient Water Spirit", "Storm Lasher", "Snaplasher"}},
 						{alert = "spawncd"},
 					},	
 				},

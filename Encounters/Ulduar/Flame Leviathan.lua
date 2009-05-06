@@ -96,6 +96,7 @@ do
 				},
 			},
 			-- Pursue
+			-- Test this
 			[4] = {
 				type = "event",
 				event = "EMOTE",
