@@ -95,36 +95,18 @@ do
 					},
 				},
 			},
-			--[[
-			-- Pursue
-			[4] = {
-				type = "combatevent", 
-				eventtype = "SPELL_AURA_APPLIED", 
-				spellid = 62374, 
-				execute = {
-					[1] = {
-						{expect = {"&playerguid&","==","#4#"}},
-						{alert = "pursuedurself"},
-					},
-					[2] = {
-						{expect = {"&playerguid&","~=","#4#"}},
-						{alert = "pursuedurother"},
-					},
-				},
-			},
-			]]
 			-- Pursue
 			[4] = {
 				type = "event",
 				event = "EMOTE",
 				execute = {
 					[1] = {
-						{expect = {"#1#","find","^%%s pursues"}},
+						{expect = {"#1#","find","pursues"}},
 						{expect = {"#3#","==","&playername&"}},
 						{alert = "pursuedurself"},
 					},
 					[2] = {
-						{expect = {"#1#","find","^%%s pursues"}},
+						{expect = {"#1#","find","pursues"}},
 						{expect = {"#3#","~=","&playername&"}},
 						{alert = "pursuedurother"},
 					},

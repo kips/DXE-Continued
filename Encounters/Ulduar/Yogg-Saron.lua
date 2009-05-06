@@ -15,6 +15,7 @@ do
 		userdata = {
 			portaltime = {78,90,loop = false},
 			crushertime = 14,
+			allowcrusher = 1,
 		},
 		onstart = {
 			[1] = {
