@@ -157,7 +157,7 @@ do
 					-- Detonating Lashers
 					[2] = {
 						{expect = {"#1#","find","^The swarm of the elements"}},
-						{tracing = {"Freya"}},
+						--{tracing = {"Freya"}},
 						{alert = "spawncd"},
 					},
 					-- Elementals
