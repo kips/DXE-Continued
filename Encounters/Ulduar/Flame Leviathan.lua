@@ -44,7 +44,7 @@ do
 				var = "pursuedur", 
 				varname = "Pursue duration", 
 				type = "dropdown", 
-				text = "Pursue: #5#", 
+				text = "Pursue: #3#", 
 				time = 30, 
 				flashtime = 5, 
 				color1 = "CYAN",
@@ -95,6 +95,7 @@ do
 					},
 				},
 			},
+			--[[
 			-- Pursue
 			[4] = {
 				type = "combatevent", 
@@ -111,22 +112,24 @@ do
 					},
 				},
 			},
-			-- TODO COMPLETE THIS
-			--[[
+			]]
 			-- Pursue
 			[4] = {
 				type = "event",
 				event = "EMOTE",
 				execute = {
 					[1] = {
-						{expect = {"&playerguid&","==","#4#"}},
+						{expect = {"#1#","find","^%%s pursues"}},
+						{expect = {"#3#","==","&playername&"}},
+						{alert = "pursuedurself"},
 					},
 					[2] = {
-						{expect = {"&playerguid&","==","#4#"}},
+						{expect = {"#1#","find","^%%s pursues"}},
+						{expect = {"#3#","~=","&playername&"}},
+						{alert = "pursuedurother"},
 					},
 				},
 			},
-			]]
 		},
 	}
 
