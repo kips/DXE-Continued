@@ -90,27 +90,17 @@ do
 				color1 = "BLUE",
 				color2 = "BLUE",
 			},
-			--[[
-			hammerwarnself = {
-				var = "hammerwarnself",
-				varname = "Storm Hammer on self",
-				type = "centerpopup",
-				text = "Storm Hammer: YOU!",
-				time = 16,
-				flashtime = 16,
-				sound = "ALERT3",
-				color1 = "TEAL",
-				color2 = "BLUE",
+			strikecd = {
+				var = "strikecd",
+				varname = "Unbalancing Strike cooldown",
+				type = "dropdown",
+				text = "Unbalancing Strike Cooldown",
+				time = 20,
+				flashtime = 5,
+				sound = "ALERT5",
+				color1 = "BROWN",
+				color2 = "BROWN",
 			},
-			hammerwarnother = {
-				var = "hammerwarnother",
-				varname = "Storm Hammer on others",
-				type = "centerpopup",
-				text = "Storm Hammer: #5#",
-				time = 16,
-				color1 = "TEAL",
-			},
-			]]
 		},
 		events = {
 			[1] = {
@@ -169,24 +159,17 @@ do
 					},
 				},
 			},
-			--[[
-			-- Stormhammer
-			[3] = {
-				type = "combatevent", 
-				eventtype = "SPELL_AURA_APPLIED", 
-				spellid = 62042, 
+			-- Unbalancing Strike
+			[5] = {
+				type = "combatevent",
+				eventtype = "SPELL_CAST_SUCCESS",
+				spellid = 62130,
 				execute = {
 					[1] = {
-						{expect = {"#4#", "==", "&playerguid&"}},
-						{alert = "hammerwarnself"},
-					},
-					[2] = {
-						{expect = {"#4#", "~=", "&playerguid&"}},
-						{alert = "hammerwarnother"},
+						{alert = "strikecd"},
 					},
 				},
 			},
-			]]
 		},
 	}
 
