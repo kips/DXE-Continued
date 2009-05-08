@@ -43,7 +43,7 @@ do
 			},
 			hardmodecd = {
 				var = "hardmodecd", 
-				varname = "Hard Mode timeleft", 
+				varname = "Hard mode timeleft", 
 				type = "dropdown", 
 				text = "Hard Mode Ends", 
 				time = 180, 
@@ -114,7 +114,7 @@ do
 						{quash = "enrage2cd"},
 						{canceltimer = "hardmodefailed"},
 						{tracing = {"Thorim"}},
-						{set = {chargetime = 34}}, -- Rare bug happened
+						--{set = {chargetime = 34}}, -- Rare bug happened
 						{alert = "chargecd"},
 						{set = {chargetime = 15}},
 					},

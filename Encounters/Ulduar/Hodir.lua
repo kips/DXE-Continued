@@ -70,7 +70,7 @@ do
 				varname = "Hard mode ends",
 				type = "dropdown",
 				text = "Hard Mode Ends",
-				time = 120,
+				time = 180,
 				flashtime = 10,
 				sound = "ALERT4",
 				color1 = "YELLOW",

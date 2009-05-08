@@ -266,8 +266,9 @@ do
 				execute = {
 					[1] = {
 						-- Crusher tentacle could erupt while it's active
-						{expect = {"&timeleft|crushertentaclespawn&","<","3"}},
+						{expect = {"&timeleft|crushertentaclespawn&","<","0.5"}},
 						{set = {crushertime = 50}},
+						{quash = "crushertentaclespawn"},
 						{alert = "crushertentaclespawn"},
 					},
 				},
