@@ -7,7 +7,7 @@ do
 		title = "Thorim", 
 		tracing = {"Runic Colossus","Ancient Rune Giant"},
 		triggers = {
-			scan = "Jormungar Behemoth",
+			scan = {"Jormungar Behemoth","Thorim","Runic Colossus","Ancient Rune Giant","Iron Ring Guard","Dark Rune Thunderer","Dark Rune Commoner"},
 			yell = "^Interlopers",
 		},
 		onactivate = {
