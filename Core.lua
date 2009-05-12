@@ -161,7 +161,7 @@ end
 local rID,rIDtarget = {},{}
 for i=1,40 do
 	rID[i] = "raid"..i
-	rIDtarget[i] = "raid"..i.."target"
+	rIDtarget[i] = "raid"..i.."target" 
 end
 
 ---------------------------------------------
