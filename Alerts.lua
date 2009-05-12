@@ -200,6 +200,11 @@ end
 function Alerts:Move(alert,dt,tox,toy,froma,toa)
 	local t0 = GetTime()
 	local fx,fy = alert.frame:GetCenter()
+
+	-- How does this happen?
+	-- TODO: Add debugging for this
+	if not fx or not fx then return end
+
 	fy = fy + alert.frame:GetHeight()/2
 	local userdata = alert.userdata
 	local worldscale = UIParent:GetEffectiveScale()
@@ -313,6 +318,7 @@ function Alerts:Dropdown(name, text, totalTime, flashTime, sound, c1, c2)
 	alert.userdata.sound = sound
 	alert.userdata.animTime = 0.3
 	alert.userdata.forceTop = true
+	alert.userdata.timeleft = totalTime
 	self:Countdown(alert,totalTime,flashTime)
 	self:ToTop(alert)
 	if flashTime then Timers[self:ScheduleTimer("ToCenter",totalTime - flashTime, alert)] = alert end
@@ -332,6 +338,7 @@ function Alerts:CenterPopup(name, text, time, flashTime, sound, c1, c2)
 	local alert = self:GetAlert()
 	alert.userdata.name = name 
 	alert.userdata.forceCenter = true
+	alert.userdata.timeleft = time
 	alert:SetColor(c1,c2)
 	alert:SetText(text)
 	alert:SetAlpha(0.6)

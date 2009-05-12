@@ -129,7 +129,6 @@ do
 				text = "Crusher Tentacle Spawns",
 				time = "<crushertime>",
 				flashtime = 7,
-				throttle = 5,
 				color1 = "DCYAN",
 				color2 = "INDIGO",
 			},
@@ -234,7 +233,7 @@ do
 						{alert = "maladywarn"},
 					},
 				},
-			},
+			}, --/script DXE.Invoker:COMBAT_EVENT(nil,nil,"SPELL_CAST_START",nil, nil, nil, nil, nil, nil, 64059, nil) DXE.Invoker:REG_EVENT("CHAT_MSG_RAID_BOSS_EMOTE","The illusion shatters and a path")
 			-- Induce Madness
 			[7] = {
 				type = "combatevent",
