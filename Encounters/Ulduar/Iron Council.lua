@@ -14,7 +14,7 @@ do
 			leavecombat = true,
 		},
 		userdata = {
-			overwhelmtime = 25,
+			overwhelmtime = 30,
 			previoustarget = "",
 		},
 		onstart = {
