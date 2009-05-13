@@ -196,6 +196,7 @@ do
 				spellid = 64455,
 				execute = {
 					[1] = {
+						{set = {livecount = "DECR|1"}},
 						{alert = "feraldefenderlivesremoval"},
 					},
 				},
