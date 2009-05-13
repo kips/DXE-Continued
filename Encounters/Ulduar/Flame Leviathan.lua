@@ -26,7 +26,6 @@ do
 				flashtime = 20,
 				sound = "ALERT1", 
 				color1 = "BLUE", 
-				-- So we get a sound to play
 				color2 = "BLUE",
 			},
 			flameventdur = {
