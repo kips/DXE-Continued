@@ -27,6 +27,7 @@ do
 				sound = "ALERT1", 
 				color1 = "BLUE", 
 				color2 = "BLUE",
+				throttle = 5,
 			},
 			flameventdur = {
 				var = "flameventdur", 
@@ -42,11 +43,12 @@ do
 			pursuedurother = {
 				var = "pursuedur", 
 				varname = "Pursue duration", 
-				type = "dropdown", 
-				text = "Pursue: #3#", 
+				type = "centerpopup", 
+				text = "Pursue: #5#", 
 				time = 30, 
-				flashtime = 5, 
+				flashtime = 30, 
 				color1 = "CYAN",
+				color2 = "CYAN",
 			},
 			pursuedurself = {
 				var = "pursuedur", 
@@ -54,7 +56,7 @@ do
 				type = "centerpopup", 
 				text = "Pursue: YOU!", 
 				time = 30, 
-				flashtime = 5, 
+				flashtime = 30, 
 				sound = "ALERT4", 
 				color1 = "CYAN",
 				color1 = "MAGENTA",
@@ -95,19 +97,19 @@ do
 				},
 			},
 			-- Pursue
-			-- Test this
+			-- TODO: Fix, name doesn't show up
 			[4] = {
 				type = "event",
 				event = "EMOTE",
 				execute = {
 					[1] = {
 						{expect = {"#1#","find","pursues"}},
-						{expect = {"#3#","==","&playername&"}},
+						{expect = {"#5#","==","&playername&"}},
 						{alert = "pursuedurself"},
 					},
 					[2] = {
 						{expect = {"#1#","find","pursues"}},
-						{expect = {"#3#","~=","&playername&"}},
+						{expect = {"#5#","~=","&playername&"}},
 						{alert = "pursuedurother"},
 					},
 				},

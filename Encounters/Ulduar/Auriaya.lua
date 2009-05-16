@@ -5,7 +5,7 @@ do
 		zone = "Ulduar", 
 		name = "Auriaya", 
 		title = "Auriaya", 
-		tracing = {"Auriaya",},
+		tracing = {"Auriaya","Feral Defender"},
 		triggers = {
 			scan = "Auriaya", 
 		},
@@ -15,7 +15,7 @@ do
 			leavecombat = true,
 		},
 		userdata = {
-			livecount = 9,
+			livecount = 8,
 			screechtime = 32,
 		},
 		onstart = {
@@ -68,17 +68,19 @@ do
 				color2 = "INDIGO",
 				sound = "ALERT4",
 			},
-			guardianswarmdurself = {
-				var = "guardianswarmduration",
-				varname = "Guardian Swarm duration",
-				type = "centerpopup",
-				text = "Swarm: YOU!",
+			
+			guardianswarmcd = {
+				var = "guardianswarmcd",
+				varname = "Guardian Swarm Cooldown",
+				type = "dropdown",
+				text = "Guardian Swarm Cooldown",
 				time = 37,
-				flashtime = 37,
+				flashtime = 5,
 				color1 = "GREEN",
-				color2 = "ORANGE",
+				color2 = "GREEN",
 				sound = "ALERT5",
 			},
+			--[[
 			guardianswarmdurother = {
 				var = "guardianswarmdur",
 				varname = "Guardian Swarm duration",
@@ -87,6 +89,7 @@ do
 				time = 37,
 				color1 = "GREEN",
 			},
+			]]
 			feraldefenderspawn = {
 				var = "feraldefenderspawn",
 				varname = "Feral Defender spawns",
@@ -169,13 +172,16 @@ do
 				spellid = 64396,
 				execute = {
 					[1] = {
-						{expect = {"&playerguid&","==","#4#"}},
-						{alert = "guardianswarmdurself"},
+						{alert = "guardianswarmcd"}
+						--{expect = {"&playerguid&","==","#4#"}},
+						--{alert = "guardianswarmdurself"},
 					},
+					--[[
 					[2] = {
 						{expect = {"&playerguid&","~=","#4#"}},
 						{alert = "guardianswarmdurother"},
 					},
+					]]
 				},
 			},
 			-- Feral Defender - Feral Essence

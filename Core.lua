@@ -1131,6 +1131,7 @@ do
 	-- Lookup table so we don't have to concatenate every update
 	local targetof = {}
 	for i=1,40 do targetof["raid"..i.."target"] = "raid"..i.."targettarget" end
+	targetof["focus"] = "focustarget"
 	-- The time to wait (seconds) before it auto stops the encounter after auto starting
 	local throttle = 5
 	-- The last time the encounter was auto started + throttle time

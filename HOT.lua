@@ -39,6 +39,16 @@ local function testname(self,proto_uid)
 	end
 end
 
+-- Focus test
+local function testfocus(self)
+	if not UnitExists("focus") then return nil end
+	if UnitName("focus") == self.name then 
+		return "focus","focus"
+	else
+		return nil
+	end
+end
+
 local mt = {__index = Prototype}
 
 function HOT:New()
@@ -82,12 +92,22 @@ function Prototype:Execute()
 
 	-- Local data
 	local proto_uid, uid, ix, flag = nil, nil, 0, nil;
+	
+	-- Hack to get focus in
+	local testedfocus = false
 
 	-- Scan
+	-- Roster only contains units that exist
 	for _,unit in pairs(DXE.Roster) do
 		-- Get unit and test it
 		proto_uid = unit
 		proto_uid, uid = test(self,proto_uid)
+
+		-- Hack to get focus in
+		if not proto_uid and not testedfocus then
+			proto_uid, uid = testfocus(self)
+			testedfocus = true
+		end
 		
 		-- If it passed...
 		if proto_uid then

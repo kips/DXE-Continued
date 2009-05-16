@@ -7,7 +7,7 @@ do
 		title = "General Vezax", 
 		tracing = {"General Vezax",},
 		triggers = {
-			scan = "General Vezax", 
+			scan = {"General Vezax","Saronite Animus"}, 
 		},
 		onactivate = {
 			autostart = true,
