@@ -167,8 +167,10 @@ local RepFuncs = {
 	tft_unitexists = function() return tostring(UnitExists(tft())) end,
 	tft_isplayer = function() return tostring(UnitIsUnit(tft(),"player")) end,
 	tft_unitname = function() return tostring(UnitName(tft())) end,
+	--- Functions with passable arguments
 	-- Get's an alert's timeleft
 	timeleft = function(name,delta) return tostring(Alerts:GetAlertTimeleft(name) + (tonumber(delta) or 0)) end,
+	unitname = function(name) return tostring(UnitName(name)) end,
 }
 
 -- Add funcs for the other health watchers
@@ -189,7 +191,9 @@ function Invoker:GetRepFuncs()
 	return RepFuncs
 end
 
-local function ReplaceVars(str)
+local ReplaceVars,ReplaceNums,ReplaceFuncs,ReplaceTokens
+
+ReplaceVars = function(str)
 	-- Enclosed in <>
 	for var in gmatch(str,"%b<>") do 
 		local key = match(var,"<(.+)>")
@@ -220,7 +224,16 @@ local function ReplaceVars(str)
 end
 
 local split = string.split
-local function ReplaceFuncs(str)
+--- Helper function for ReplaceFuncs. For now we only need to use ReplaceNum
+local function replace_args(args,...)
+	for val in gmatch(args,"[^|]+") do
+		local newVal = ReplaceNums(val,...)
+		args = gsub(args,val,newVal)
+	end
+	return args
+end
+
+ReplaceFuncs = function(str,...)
 	-- Enclosed in &&
 	for rep in gmatch(str,"%b&&") do
 		local info = match(rep,"&(.+)&")
@@ -230,8 +243,12 @@ local function ReplaceFuncs(str)
 		local func = RepFuncs[funcid]
 		if func then
 			local val
-			if args then val = func(split("|",args))
-			else val = func() end
+			if args then 
+				args = replace_args(args,...)
+				val = func(split("|",args))
+			else 
+				val = func() 
+			end
 			--@debug@
 			debug("ReplaceFuncs","funcid: %s str: %s rep: %s val: %s",funcid,str,rep,val)
 			--@end-debug@
@@ -241,7 +258,7 @@ local function ReplaceFuncs(str)
 	return str
 end
 
-local function ReplaceNums(str,...)
+ReplaceNums = function(str,...)
 	if ... then
 		-- Enclosed in ##
 		for index in gmatch(str,"%b##") do
@@ -259,11 +276,11 @@ local function ReplaceNums(str,...)
 end
 
 -- Replaces special tokens with values
-local function ReplaceTokens(str,...)
+ReplaceTokens = function(str,...)
 	if type(str) ~= "string" then return str end
 	-- Replace userdata values
 	str = ReplaceVars(str)
-	str = ReplaceFuncs(str)
+	str = ReplaceFuncs(str,...)
 	str = ReplaceNums(str,...)
 	return str
 end

@@ -592,7 +592,8 @@ function DXE:Scan()
 		if UnitExists(target) and 
 			nameTriggers[name] and 
 			not UnitIsDead(target) 
-			and UnitIsEnemy("player",target) then
+			-- Hack to get Algalon to activate
+			and (UnitIsEnemy("player",target) or name == "Algalon the Observer") then
 			-- Return name
 			return nameTriggers[name].name
 		end
