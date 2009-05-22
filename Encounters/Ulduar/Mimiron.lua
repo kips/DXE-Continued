@@ -1,3 +1,4 @@
+-- TODO: Add Mimiron Proximity Mine cooldown. 30.5 seconds
 do
 	local data = {
 		version = "$Rev$",
@@ -7,7 +8,7 @@ do
 		title = "Mimiron", 
 		tracing = {"Leviathan Mk II"},
 		triggers = {
-			yell = {"^We haven't much time, friends","^Self%-destruct sequence"},
+			yell = {"^We haven't much time, friends","^Self%-destruct sequence initiated"},
 			scan = {"Leviathan Mk II","Mimiron","VX-001","Aerial Command Unit"},
 		},
 		onactivate = {
@@ -56,7 +57,7 @@ do
 				var = "frostbombexplodes",
 				varname = "Frost Bomb explodes",
 				text = "Frost Bomb Explodes!",
-				time = 11.5,
+				time = 12,
 				flashtime = 5,
 				sound = "ALERT9",
 				color1 = "BLUE",
