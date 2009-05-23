@@ -97,7 +97,6 @@ do
 				},
 			},
 			-- Pursue
-			-- TODO: Fix, name doesn't show up
 			[4] = {
 				type = "event",
 				event = "EMOTE",

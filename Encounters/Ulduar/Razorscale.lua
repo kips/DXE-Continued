@@ -63,8 +63,6 @@ do
 				sound = "ALERT4",
 			},
 		},
-		-- TODO Chain yells aren't working apparently or it was a debug bug
-		-- Breath Cooldown
 		events = {
 			-- Devouring Flame
 			[1] = {

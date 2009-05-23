@@ -249,7 +249,7 @@ do
 			[7] = {
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellid = 62865,
+				spellid = {62865,62451},
 				execute = {
 					[1] = {
 						{expect = {"#4#","==","&playerguid&"}},

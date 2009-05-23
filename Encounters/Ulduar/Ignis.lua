@@ -1,5 +1,4 @@
 do
-	-- TODO: CHANGE COLORS SO THEYRE MORE DISTINCT- USE NON RED COLORS
 	local data = {
 		version = "$Rev$",
 		key = "ignis", 
@@ -82,8 +81,6 @@ do
 				},
 			},
 		},
-		-- TODO
-		-- Construct Spawns, Brittle Warning
 		events = {
 			-- Scorch cooldown",
 			[1] = {
@@ -126,17 +123,7 @@ do
 						{alert = "slagpotdur"},
 					},
 				},
-			},--[[
-			-- Flame Jets cooldown
-			[4] = {
-				type = "event",
-				event = "EMOTE",
-				execute = {
-					[1] = {
-						{alert = "flamejetscd"},
-					},
-				},
-			},]]
+			},
 			-- Flame Jets cast
 			[4] = {
 				type = "combatevent",

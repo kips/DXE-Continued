@@ -311,7 +311,7 @@ do
 			[3] = {
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
-				spellid = 63631, -- TODO: Add heroic spellid
+				spellid = 63631,
 				execute = {
 					[1] = {
 						{quash = "shockblastcd"},

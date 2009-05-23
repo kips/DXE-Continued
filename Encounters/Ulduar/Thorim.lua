@@ -152,7 +152,7 @@ do
 			[4] = {
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
-				spellid = 62605,
+				spellid = {62605,62597},
 				execute = {
 					[1] = {
 						{alert = "frostnovacast"},

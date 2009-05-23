@@ -161,13 +161,13 @@ do
 			-- tft3 = Stormcaller Brundir's Target
 			tendriltargets = {
 				[1] = {
-					{expect = {"&tft3_unitexists& &tft3_isplayer&","==","true true"}},
+					{expect = {"&tft3_unitexists& &tft3_isplayer&","==","1 1"}},
 					{expect = {"&tft3_unitname&","~=","<previoustarget>"}},
 					{set = {previoustarget = "&tft3_unitname&"}},
 					{alert = "tendrilswarnself"},
 				},
 				[2] = {
-					{expect = {"&tft3_unitexists& &tft3_isplayer&","==","true false"}},
+					{expect = {"&tft3_unitexists& &tft3_isplayer&","==","1 nil"}},
 					{expect = {"&tft3_unitname&","~=","<previoustarget>"}},
 					{set = {previoustarget = "&tft3_unitname&"}},
 					{alert = "tendrilswarnother"},
@@ -257,7 +257,7 @@ do
 			[7] = {
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
-				spellid = 63493,
+				spellid = {63493,61903},
 				execute = {
 					[1] = {
 						{alert = "fusionpunchcd"},

@@ -16,6 +16,7 @@ do
 			portaltime = {78,90,loop = false},
 			crushertime = 14,
 			allowcrusher = 1,
+			phase = "1",
 		},
 		onstart = {
 			[1] = {
@@ -116,7 +117,7 @@ do
 				varname = "Empowering Shadows cooldown",
 				type = "dropdown",
 				text = "Empowering Shadows Cooldown",
-				time = 45, -- 46 or 45
+				time = 45, 
 				flashtime = 5,
 				sound = "ALERT8",
 				color1 = "INDIGO",
@@ -171,6 +172,7 @@ do
 						{tracing = {"Yogg-Saron","Brain of Yogg-Saron"}},
 						{alert = "portalcd"},
 						{alert = "crushertentaclespawn"},
+						{set = {phase = "2"}},
 					},
 					-- Phase 3
 					[2] = {
@@ -179,6 +181,7 @@ do
 						{quash = "crushertentaclespawn"},
 						{quash = "inducewarn"},
 						{quash = "portalcd"},
+						{set = {phase = "3"}},
 					},
 				},
 			},
@@ -266,6 +269,7 @@ do
 					[1] = {
 						-- Crusher tentacle could erupt while it's active
 						{expect = {"&timeleft|crushertentaclespawn&","<","0.5"}},
+						{expect = {"<phase>","==","2"}},
 						{set = {crushertime = 50}},
 						{quash = "crushertentaclespawn"},
 						{alert = "crushertentaclespawn"},

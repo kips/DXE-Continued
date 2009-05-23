@@ -21,27 +21,6 @@ do
 			},
 		},
 		alerts = {
-			--[[
-			eyebeamdurself = {
-				var = "eyebeamdurself",
-				varname = "Eyebeam duration on self",
-				type = "centerpopup",
-				text = "Eyebeam: YOU!",
-				time = 10,
-				flashtime = 10,
-				color1 = "BLUE",
-				color2 = "WHITE",
-				sound = "ALERT1",
-			},
-			eyebeamdurothers = {
-				var = "eyebeamdurothers",
-				varname = "Eyebeam duration on others",
-				type = "centerpopup",
-				text = "Eyebeam: #2#",
-				time = 10,
-				color1 = "BLUE",
-			},
-			]]
 			stonegripwarnothers = {
 				var = "stonegripothers",
 				varname = "Stone Grip warning on others",
@@ -61,7 +40,6 @@ do
 				color1 = "ORANGE",
 				sound = "ALERT3",
 			},
-			-- TODO: Keep checking this cooldown
 			shockwavecd = {
 				var = "shockwavecd",
 				varname = "Next Shockwave",
@@ -91,39 +69,7 @@ do
 			},
 		},
 		userdata = {
-			rightarmalive = 1,
-			leftarmalive = 1,
 			armrespawntime = 50,
-		},
-		timers = {
-			updatetracing = {
-				[1] = {
-					{expect = {"<rightarmalive> <leftarmalive>","==","0 0"}},
-					{tracing = {"Kologarn"}},
-				},
-				[2] = {
-					{expect = {"<rightarmalive> <leftarmalive>","==","0 1"}},
-					{tracing = {"Kologarn","Left Arm"}},
-				},
-				[3] = {
-					{expect = {"<rightarmalive> <leftarmalive>","==","1 0"}},
-					{tracing = {"Kologarn","Right Arm"}},
-				},
-				[4] = {
-					{expect = {"<rightarmalive> <leftarmalive>","==","1 1"}},
-					{tracing = {"Kologarn","Right Arm","Left Arm"}},
-				},
-			},
-			makerightalive = {
-				[1] = {
-					{set = {rightarmalive = 1}},
-				},
-			},
-			makeleftalive = {
-				[1] = {
-					{set = {leftarmalive = 1}},
-				},
-			},
 		},
 		events = {
 			-- Stone Grip
@@ -137,48 +83,13 @@ do
 						{alert = "stonegripwarnothers"},
 					},
 				},
-			},--[[
-			-- Focused Eyebeam
-			[2] = {
-				type = "combatevent",
-				eventtype = "SPELL_SUMMON",
-				spellid = {63343, 63701},
-				execute = {
-					[1] = {
-						{expect = {"#2#","==","&playername&"}},
-						{alert = "eyebeamdurself"},
-					},
-					[2] = {
-						{expect = {"#2#","~=","&playername&"}},
-						{alert = "eyebeamdurothers"},
-					},
-				},
 			},
-			]]
 			[2] = {
 				type = "event",
 				event = "YELL",
 				execute = {
-					-- Left Arm dies
-					[1] = {
-						{expect = {"#1#","find","^Only a flesh wound"}},
-						{alert = "leftarmcd"},
-						{set = {leftarmalive = 0}},
-						{scheduletimer = {"makeleftalive",60}},
-						{scheduletimer = {"updatetracing",60.5}},
-						{scheduletimer = {"updatetracing",0}},
-					},
-					-- Right Arm dies
-					[2] = {
-						{expect = {"#1#","find","^Just a scratch"}},
-						{alert = "rightarmcd"},
-						{set = {rightarmalive = 0}},
-						{scheduletimer = {"makerightalive",60}},
-						{scheduletimer = {"updatetracing",60.5}},
-						{scheduletimer = {"updatetracing",0}},
-					},
 					-- Shockwave
-					[3] = {
+					[1] = {
 						{expect = {"#1#","find","^OBLIVION"}},
 						{alert = "shockwavecd"},
 					},
@@ -192,6 +103,21 @@ do
 				execute = {
 					[1] = {
 						{alert = "armsweepcd"},
+					},
+				},
+			},
+			-- Arm Deaths
+			[4] = {
+				type = "combatevent",
+				eventtype = "UNIT_DIED",
+				execute = {
+					[1] = {
+						{expect = {"#5#","==","Right Arm"}},
+						{alert = "rightarmcd"},
+					},
+					[2] = {
+						{expect = {"#5#","==","Left Arm"}},
+						{alert = "leftarmcd"},
 					},
 				},
 			},

@@ -202,11 +202,11 @@ do
 			},
 			-- Saronite Animus spawns
 			[7] = {
-				type = "combatevent",
-				eventtype = "SPELL_CAST_START",
-				spellid = 63145,
+				type = "event",
+				event = "EMOTE",
 				execute = {
 					[1] = {
+						{expect = {"#1#","==","^A saronite barrier appears around"}},
 						{alert = "animuswarn"},
 						{tracing = {"General Vezax","Saronite Animus"}},
 					},

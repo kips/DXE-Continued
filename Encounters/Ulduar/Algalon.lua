@@ -42,6 +42,7 @@ do
 						{expect = {"#1#","find","begins to Summon Collapsing Stars!"}},
 					},
 					-- Cosmic Smash
+						-- Takes 4 seconds to hit
 					[2] = {
 						{expect = {"#1#","find","begins to cast Cosmic Smash!"}},
 					},
@@ -58,8 +59,8 @@ do
 		-- 8 second cast that wdoes 100k damage
 		-- Have to be in black hole to avoid it
 	-- Phase Punch
-	-- Quantum Strike
 	-- Black Hole Explosion
+		-- Happens when collapsing stars are killed
 	-- Cosmic Smash
 		-- Red void zones on the ground
 	DXE:RegisterEncounter(data)

@@ -32,6 +32,17 @@ do
 				color2 = "BLUE",
 				sound = "ALERT1",
 			},
+			novawarn = {
+				var = "novawarn",
+				varname = "Lightning Nova cast",
+				type = "centerpopup",
+				time = 5,
+				flashtime = 5,
+				text = "Lightning Nova cast",
+				color1 = "BROWN",
+				color2 = "ORANGE",
+				sound = "ALERT5",
+			},
 			overchargecd = {
 				var = "overchargecd",
 				varname = "Overcharge cooldown",
@@ -55,18 +66,16 @@ do
 				sound = "ALERT3",
 			},
 		},
-		-- TODO
-		-- Add Enrage
-		-- Make it remove overchargedblastdur if the aura is removed
 		events = {
 			-- Lightning Nova
 			[1] = {
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
-				spellid = {65279,64216},
+				spellid = {64216,65279},
 				execute = {
 					[1] = {
 						{alert = "novacd"},
+						{alert = "novawarn"},
 					},
 				},
 			},
@@ -79,6 +88,17 @@ do
 					[1] = {
 						{alert = "overchargecd"},
 						{alert = "overchargedblastdur"},
+					},
+				},
+			},
+			-- Overcharge Removal
+			[3] = {
+				type = "combatevent",
+				eventtype = "SPELL_AURA_REMOVED",
+				spellid = 64217,
+				execute = {
+					[1] = {
+						{quash = "overchargedblastdur"},
 					},
 				},
 			},
