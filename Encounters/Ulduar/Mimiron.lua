@@ -17,11 +17,53 @@ do
 		userdata = {
 			plasmablasttime = {14,30,loop = false},
 			laserbarragetime = {33,46,loop = false},
+			flametime = 6.5,
+			phase = "1",
 		},
 		onstart = {
 			-- Phase 1
 			[1] = {
 				{alert = "plasmablastcd"},
+			},
+		},
+		timers = {
+			flames = {
+				[1] = {
+					{expect = {"<phase>","~=","4"}},
+					{alert = "flamecd"},
+					{scheduletimer = {"flames",27}},
+				},
+				[2] = {
+					{expect = {"<phase>","==","4"}},
+					{alert = "flamecd"},
+					{scheduletimer = {"flames",18}},
+				},
+			},
+			startbarragedur = {
+				[1] = {
+					{alert = "laserbarragedur"},
+					{quash = "spinupwarn"},
+				},
+			},
+			startbarragecd = {
+				[1] = {
+					{alert = "laserbarragecd"},
+				},
+			},
+			startblastcd = {
+				[1] = {
+					{alert = "shockblastcd"},
+				},
+			},
+			startfrostbombexplodes = {
+				[1] = {
+					{alert = "frostbombexplodes"},
+				},
+			},
+			startplasmablastdur = {
+				[1] = {
+					{alert = "plasmablastdur"},
+				},
 			},
 		},
 		alerts = {
@@ -63,18 +105,17 @@ do
 				color1 = "BLUE",
 				color2 = "WHITE",
 			},
-			--[[
-			frostbombcd = {
+			flamecd = {
 				type = "dropdown",
-				var = "frostbombcd",
-				varname = "Frost Bomb cooldown",
-				text = "Frost Bomb cooldown",
-				time = 2,
+				var = "flamecd",
+				varname = "Flame cooldown",
+				text = "Next Flames Spawn",
+				time = "<flametime>",
+				flashtime = 5,
 				sound = "ALERT1",
-				color1 = "BLUE",
-				color2 = "WHITE",
+				color1 = "GREEN",
+				color2 = "GREEN",
 			},
-			]]
 			-- Leviathan MKII
 			plasmablastwarn = { 
 				type = "centerpopup",
@@ -123,7 +164,6 @@ do
 				color1 = "PURPLE",
 				sound = "ALERT6",
 			},
-			-- TODO: Fix this
 			laserbarragecd = {
 				var = "laserbarragecd",
 				varname = "Laser Barrage cooldown",
@@ -156,17 +196,6 @@ do
 				color2 = "RED",
 				sound = "ALERT4",
 			},
-			--- TODO: Fix this
-			--[[
-			rocketstrikewarn = {
-				var = "rocketstrikewarn",
-				varname = "Rocket Strike warning",
-				type = "simple",
-				text = "Target Circle spawned. Avoid it!",
-				time = 1.5,
-				sound = "ALERT7",
-			},
-			]]
 			--- Phase Changes
 			onetotwo = {
 				var = "onetotwo",
@@ -198,7 +227,7 @@ do
 				varname = "Hard mode timer",
 				type = "dropdown",
 				text = "Raid Wipe",
-				time = 600,
+				time = 620,
 				flashtime = 10,
 				color1 = "BROWN",
 			},
@@ -212,34 +241,6 @@ do
 				sound = "ALERT8",
 			},
 		},
-		timers = {
-			startbarragedur = {
-				[1] = {
-					{alert = "laserbarragedur"},
-					{quash = "spinupwarn"},
-				},
-			},
-			startbarragecd = {
-				[1] = {
-					{alert = "laserbarragecd"},
-				},
-			},
-			startblastcd = {
-				[1] = {
-					{alert = "shockblastcd"},
-				},
-			},
-			startfrostbombexplodes = {
-				[1] = {
-					{alert = "frostbombexplodes"},
-				},
-			},
-			startplasmablastdur = {
-				[1] = {
-					{alert = "plasmablastdur"},
-				},
-			},
-		},
 		events = {
 			[1] = {
 				type = "event",
@@ -248,6 +249,7 @@ do
 					-- Transition from Phase 1 to Phase 2
 					[1] = {
 						{expect = {"#1#","find","^WONDERFUL! Positively"}},
+						{set = {phase = "2"}},
 						{quash = "plasmablastcd"},
 						{quash = "flamesuppressantcd"},
 						{quash = "shockblastcd"},
@@ -260,6 +262,7 @@ do
 					-- Transition from Phase 2 to Phase 3
 					[2] = {
 						{expect = {"#1#","find","^Thank you, friends!"}},
+						{set = {phase = "3"}},
 						{tracing = {"Aerial Command Unit"}},
 						{quash = "laserbarragecd"},
 						{quash = "laserbarragedur"},
@@ -272,6 +275,8 @@ do
 					-- Transition from Phase 3 to Phase 4
 					[3] = {
 						{expect = {"#1#","find","^Preliminary testing phase complete"}},
+						{set = {phase = "4"}},
+						{set = {flametime = 18}},
 						{tracing = {"Leviathan Mk II","VX-001","Aerial Command Unit"}},
 						{scheduletimer = {"startbarragecd",14}},
 						{scheduletimer = {"startblastcd",25}},
@@ -282,6 +287,9 @@ do
 						{expect = {"#1#","find","^Self%-destruct sequence initiated"}},
 						{alert = "hardmodetimer"},
 						{alert = "flamesuppressantcd"},
+						{alert = "flamecd"},
+						{set = {flametime = 27}},
+						{scheduletimer = {"flames",6.5}},
 					},
 				},
 			},
@@ -361,20 +369,6 @@ do
 					},	
 				},
 			},
-			-- Doesn't work need to use UNIT_SPELLCAST_SUCCEEDED
-			--[[
-			-- Rocket Strike
-			[5] = {
-				type = "combatevent",
-				eventtype = "SPELL_CAST_SUCCESS",
-				spellid = {65034,64402,63681,63036,63041}, -- TODO: Remove unnecessary spellids
-				execute = {
-					[1] = {
-						{alert = "rocketstrikewarn"},
-					},
-				},
-			},
-			]]
 		},
 	}
 
