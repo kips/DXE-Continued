@@ -31,7 +31,7 @@ do
 				[1] = {
 					{expect = {"<phase>","~=","4"}},
 					{alert = "flamecd"},
-					{scheduletimer = {"flames",27}},
+					{scheduletimer = {"flames",27.5}},
 				},
 				[2] = {
 					{expect = {"<phase>","==","4"}},
@@ -288,7 +288,7 @@ do
 						{alert = "hardmodetimer"},
 						{alert = "flamesuppressantcd"},
 						{alert = "flamecd"},
-						{set = {flametime = 27}},
+						{set = {flametime = 27.5}},
 						{scheduletimer = {"flames",6.5}},
 					},
 				},
