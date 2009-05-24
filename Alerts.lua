@@ -203,7 +203,7 @@ function Alerts:Move(alert,dt,tox,toy,froma,toa)
 
 	-- How does this happen?
 	-- TODO: Add debugging for this
-	if not fx or not fx then return end
+	-- if not fx or not fx then return end
 
 	fy = fy + alert.frame:GetHeight()/2
 	local userdata = alert.userdata
@@ -299,7 +299,7 @@ function Alerts:Countdown(alert, dt, flash)
 	else
 		alert.userdata.dataFunc = CountdownFunc
 	end
-	Timers[self:ScheduleTimer("RemoveCountdownFuncs",endt,alert)] = alert
+	Timers[self:ScheduleTimer("RemoveCountdownFuncs",dt,alert)] = alert
 end
 
 -- Dropdown countdown alert.

@@ -10,7 +10,7 @@ local defaults = {
 			AutoAccept = true,
 		},
 		AlertsScale = 1,
-		PaneScale = 1,
+		PaneScale = 1, 
 		ShowPane = true,
 		PaneOnlyInRaid = false,
 		PaneScale = 1,

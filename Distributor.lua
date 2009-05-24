@@ -2,8 +2,6 @@
 	Credits to Bazaar
 ]]
 
--- TODO: ONLY SEND TO PEOPLE WITH THE MOD
-
 local AceGUI = DXE.AceGUI
 local DXE,Colors = DXE,DXE.Constants.Colors
 local PlayerName
