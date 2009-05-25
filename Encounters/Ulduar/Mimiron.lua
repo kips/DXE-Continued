@@ -130,7 +130,7 @@ do
 				type = "centerpopup",
 				var = "plasmablastdur",
 				varname = "Plasma Blast duration",
-				text = "Plasma Blast duration",
+				text = "Plasma Blast Duration",
 				time = 6,
 				color1 = "ORANGE",
 			},
@@ -195,6 +195,17 @@ do
 				color1 = "WHITE",
 				color2 = "RED",
 				sound = "ALERT4",
+			},
+			weakeneddur = {
+				var = "weakeneddur",
+				varname = "Weakened duration",
+				type = "centerpopup",
+				text = "Weakened",
+				time = 20,
+				flashtime = 20,
+				color1 = "GREY",
+				color2 = "GREY",
+				sound = "ALERT7",
 			},
 			--- Phase Changes
 			onetotwo = {
@@ -275,6 +286,7 @@ do
 					-- Transition from Phase 3 to Phase 4
 					[3] = {
 						{expect = {"#1#","find","^Preliminary testing phase complete"}},
+						{quash = "weakeneddur"},
 						{set = {phase = "4"}},
 						{set = {flametime = 18}},
 						{tracing = {"Leviathan Mk II","VX-001","Aerial Command Unit"}},
@@ -367,6 +379,17 @@ do
 					[1] = {
 						{alert = "bombbotwarn"},
 					},	
+				},
+			},
+			-- Weakened
+			[8] = {
+				type = "combatevent",
+				eventtype = "SPELL_SUMMON",
+				spellid = 64444,
+				execute = {
+					[1] = {
+						{alert = "weakeneddur"},
+					},
 				},
 			},
 		},
