@@ -27,10 +27,17 @@ do
 				color1 = "ORANGE",
 				color2 = "BROWN",
 			},
-			--[[
 			cosmicsmashwarn = {
+				var = "cosmicsmashwarn",
+				varname = "Cosmic Smash eta",
+				type = "centerpopup",
+				text = "Cosmic Smash Hits",
+				time = 4,
+				flashtime = 4,
+				sound = "ALERT1",
+				color1 = "MAGENTA",
+				color2 = "MAGENTA",
 			},
-			]]
 		},
 		events = {
 			[1] = {
@@ -45,6 +52,7 @@ do
 						-- Takes 4 seconds to hit
 					[2] = {
 						{expect = {"#1#","find","begins to cast Cosmic Smash!"}},
+						{alert = "cosmicsmashwarn"},
 					},
 					-- Big Bang
 					[3] = {
