@@ -200,7 +200,7 @@ do
 					},
 					-- Saronite Animus
 					[2] = {
-						{expect = {"#1#","==","^A saronite barrier appears around"}},
+						{expect = {"#1#","find","A saronite barrier appears around"}},
 						{alert = "animuswarn"},
 						{tracing = {"General Vezax","Saronite Animus"}},
 					},
