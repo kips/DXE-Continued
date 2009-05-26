@@ -188,24 +188,18 @@ do
 					},
 				},
 			},
-			-- Saronite Vapors
 			[6] = {
 				type = "event",
 				event = "EMOTE",
 				execute = {
+					-- Saronite Vapors
 					[1] = {
 						{expect = {"#1#","find","^A cloud of saronite vapors"}},
 						{alert = "vaporcd"},
 						{set = {saronitecount = "INCR|1"}},
 					},
-				},
-			},
-			-- Saronite Animus spawns
-			[7] = {
-				type = "event",
-				event = "EMOTE",
-				execute = {
-					[1] = {
+					-- Saronite Animus
+					[2] = {
 						{expect = {"#1#","==","^A saronite barrier appears around"}},
 						{alert = "animuswarn"},
 						{tracing = {"General Vezax","Saronite Animus"}},
@@ -213,7 +207,7 @@ do
 				},
 			},
 			-- Saronite Animus dies
-			[8] = {
+			[7] = {
 				type = "combatevent",
 				eventtype = "UNIT_DIED",
 				execute = {
