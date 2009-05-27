@@ -204,6 +204,7 @@ function Alerts:Move(alert,dt,tox,toy,froma,toa)
 	-- How does this happen?
 	-- TODO: Add debugging for this
 	-- if not fx or not fx then return end
+	if not fx or not fy then return end
 
 	fy = fy + alert.frame:GetHeight()/2
 	local userdata = alert.userdata
