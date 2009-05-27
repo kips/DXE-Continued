@@ -8,10 +8,9 @@ do
 		tracing = {"Flame Leviathan",},
 		triggers = {
 			scan = "Flame Leviathan", 
+			yell = "^Hostile entities detected. Threat assessment protocol active",
 		},
 		onactivate = {
-			autostart = true,
-			autostop = true,
 			leavecombat = true,
 		},
 		userdata = {},
