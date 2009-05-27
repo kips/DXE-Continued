@@ -15,8 +15,23 @@ do
 			leavecombat = true,
 		},
 		userdata = {},
-		onstart = {},
+		onstart = {
+			[1] = {
+				{alert = "enragecd"},
+			},
+		},
 		alerts = {
+			enragecd = {
+				var = "enragecd",
+				varname = "Enrage",
+				type = "dropdown",
+				text = "Enrage",
+				time = 600,
+				flashtime = 5,
+				sound = "ALERT5",
+				color1 = "RED",
+				color2 = "RED",
+			},
 			gravitywarnself = {
 				var = "gravitywarnself",
 				varname = "Gravity Bomb on self",
