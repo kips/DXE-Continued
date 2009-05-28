@@ -95,7 +95,7 @@ do
 				varname = "Unbalancing Strike cooldown",
 				type = "dropdown",
 				text = "Unbalancing Strike Cooldown",
-				time = 20,
+				time = 25,
 				flashtime = 5,
 				sound = "ALERT5",
 				color1 = "BROWN",
