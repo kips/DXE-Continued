@@ -39,7 +39,7 @@ do
 				varname = "Flash freeze cooldown",
 				type = "dropdown", 
 				text = "Flash Freeze Cooldown", 
-				time = 52, 
+				time = 50, 
 				flashtime = 5,
 				sound = "ALERT2", 
 				color1 = "TURQUOISE",
