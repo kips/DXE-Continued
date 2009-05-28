@@ -14,7 +14,9 @@ do
 			autostop = true,
 			leavecombat = true,
 		},
-		userdata = {},
+		userdata = {
+			heartbroken = "0",
+		},
 		onstart = {
 			[1] = {
 				{alert = "enragecd"},
@@ -74,11 +76,23 @@ do
 				var = "tympanicwarn",
 				varname = "Tympanic Tantrum cast",
 				type = "centerpopup",
-				text = "Tympanic Tantrum",
+				text = "Tantrum Cast",
 				time = 12,
-				flashtime = 3,
+				flashtime = 12,
 				color1 = "YELLOW",
+				color2 = "YELLOW",
 				sound = "ALERT2",
+			},
+			tympaniccd = {
+				var = "tympaniccd",
+				varname = "Tympanic Tantrum cooldown",
+				type = "dropdown",
+				text = "Tantrum Cooldown",
+				time = "65",
+				flashtime = 5,
+				color1 = "ORANGE",
+				color2 = "ORANGE",
+				sound = "ALERT6",
 			},
 			exposedwarn = {
 				var = "exposedwarn",
@@ -148,6 +162,8 @@ do
 				execute = {
 					[1] = {
 						{alert = "tympanicwarn"},
+						{expect = {"<heartbroken>","==","1"}},
+						{alert = "tympaniccd"},
 					},
 				},
 			},
@@ -175,6 +191,7 @@ do
 						{canceltimer = "heartunexposed"},
 						{tracing = {"XT-002 Deconstructor"}},
 						{alert = "hardmodealert"},
+						{set = {heartbroken = "1"}},
 					},
 				},
 			},
