@@ -125,7 +125,7 @@ do
 			},
 		},
 		events = {
-			-- Searing Flames
+			-- Searing Flame cast
 			[1] = {
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
@@ -136,8 +136,19 @@ do
 					},
 				},
 			},
-			-- Surge of Darkness cast
+			-- Searing Flame interrupt
 			[2] = {
+				type = "combatevent",
+				eventtype = "SPELL_INTERRUPT",
+				execute = {
+					[1] = {
+						{expect = {"#5#","==","General Vezax"}},
+						{quash = "searingflamewarn"},
+					},
+				},
+			},
+			-- Surge of Darkness cast
+			[3] = {
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
 				spellid = 62662,
@@ -148,7 +159,7 @@ do
 				},
 			},
 			-- Surge of Darkness gain
-			[3] = {
+			[4] = {
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
 				spellid = 62662,
@@ -160,7 +171,7 @@ do
 				},
 			},
 			-- Shadow Crash
-			[4] = {
+			[5] = {
 				type = "combatevent",
 				eventtype = "SPELL_CAST_SUCCESS",
 				spellid = {60835,62660},
@@ -171,7 +182,7 @@ do
 				},
 			},
 			-- Mark of the Faceless
-			[5] = {
+			[6] = {
 				type = "combatevent",
 				eventtype = "SPELL_CAST_SUCCESS",
 				spellid = 63276,
@@ -188,7 +199,7 @@ do
 					},
 				},
 			},
-			[6] = {
+			[7] = {
 				type = "event",
 				event = "EMOTE",
 				execute = {
@@ -207,7 +218,7 @@ do
 				},
 			},
 			-- Saronite Animus dies
-			[7] = {
+			[8] = {
 				type = "combatevent",
 				eventtype = "UNIT_DIED",
 				execute = {

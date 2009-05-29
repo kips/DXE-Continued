@@ -7,14 +7,30 @@ do
 		title = "Razorscale", 
 		tracing = {"Razorscale",},
 		triggers = {
-			scan = "Razorscale", 
+			scan = {"Razorscale","Dark Rune Guardian","Dark Rune Sentinel"}, 
 			yell = "^Be on the lookout! Mole machines",
 		},
 		onactivate = {
 			leavecombat = true,
 		},
+		onstart = {
+			[1] = {
+				{alert = "enragecd"},
+			},
+		},
 		userdata = {},
 		alerts = {
+			enragecd = {
+				var = "enragecd",
+				varname = "Enrage",
+				type = "dropdown",
+				text = "Enrage",
+				time = 900,
+				flashtime = 5,
+				color1 = "RED",
+				color2 = "RED",
+				sound = "ALERT6",
+			},
 			devourwarnself = {
 				var = "devourwarnself",
 				varname = "Devouring Flame warning on self",
@@ -38,10 +54,9 @@ do
 			chaindur = {
 				var = "chaindur",
 				varname = "Chain duration",
-				type = "dropdown",
+				type = "centerpopup",
 				text = "Chain Duration",
 				time = 38,
-				flashtime = 10,
 				color1 = "BROWN",
 				sound = "ALERT3",
 			},
