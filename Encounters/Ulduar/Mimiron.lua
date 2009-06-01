@@ -16,7 +16,7 @@ do
 		},
 		userdata = {
 			plasmablasttime = {14,30,loop = false},
-			laserbarragetime = {33,46,loop = false},
+			laserbarragetime = {30,44,loop = false},
 			flametime = 6.5,
 			phase = "1",
 		},

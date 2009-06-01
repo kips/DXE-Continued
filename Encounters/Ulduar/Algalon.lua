@@ -1,3 +1,5 @@
+-- Collapsing Star cd?
+-- Living Constellation cd?
 do
 	local data = {
 		version = "$Rev$",
@@ -13,9 +15,29 @@ do
 		onactivate = {
 			leavecombat = true,
 		},
-		userdata = {},
-		onstart = {},
+		userdata = {
+			startime = 24,
+			cosmicsmashtime = {33,25,loop = false},
+			bigbangtime = {98,90,loop = false},
+			constellationtime = 65,
+		},
+		onstart = {
+			{
+				{alert = "starcd"},
+				{alert = "cosmicsmashcd"},
+				{alert = "bigbangcd"},
+				{alert = "constellationcd"},
+				{alert = "algalonengage"},
+			},
+		},
 		alerts = {
+			algalonengage = {
+				var = "algalonengage",
+				varname = "Algalon engage",
+				type = "centerpopup",
+				text = "Algalon Engages",
+				time = 8,
+			},
 			bigbangwarn = {
 				var = "bigbangwarn",
 				varname = "Big Bang cast",
@@ -27,6 +49,17 @@ do
 				color1 = "ORANGE",
 				color2 = "BROWN",
 			},
+			bigbangcd = {
+				var = "bigbangcd",
+				varname = "Big Bang cooldown",
+				type = "dropdown",
+				text = "Big Bang Cooldown",
+				time = "<bigbangtime>",
+				flashtime = 5,
+				sound = "ALERT2",
+				color1 = "BLUE",
+				color2 = "BLUE",
+			},
 			cosmicsmashwarn = {
 				var = "cosmicsmashwarn",
 				varname = "Cosmic Smash eta",
@@ -35,41 +68,101 @@ do
 				time = 4.2,
 				flashtime = 4.2,
 				sound = "ALERT1",
-				color1 = "MAGENTA",
-				color2 = "MAGENTA",
+				color1 = "YELLOW",
+				color2 = "DCYAN",
+			},
+			cosmicsmashcd = {
+				var = "cosmicsmashcd",
+				varname = "Cosmic Smash cooldown",
+				type = "dropdown",
+				text = "Cosmic Smash Cooldown",
+				time = "<cosmicsmashtime>",
+				flashtime = 5,
+				sound = "ALERT3",
+				color1 = "GREEN",
+				color2 = "GREEN",
+			},
+			starcd = {
+				var = "starcd",
+				varname = "Collapsing Star spawns",
+				type = "dropdown",
+				text = "Stars Spawn",
+				time = "<startime>",
+				flashtime = 5,
+				sound = "ALERT6",
+				color1 = "TAN",
+				color2 = "TAN",
+			},
+			constellationcd = {
+				var = "constellationcd",
+				varname = "Living Constellation spawns",
+				type = "dropdown",
+				text = "Constellations Spawn",
+				time = "<constellationtime>",
+				flashtime = 5,
+				sound = "ALERT7",
+				color1 = "TEAL",
+				color2 = "TEAL",
+			},
+			punchcd = {
+				var = "punchcd",
+				varname = "Phase Punch cooldown",
+				type = "dropdown",
+				text = "Phase Punch Cooldown",
+				time = 15,
+				flashtime = 5,
+				color1 = "INDIGO",
+				color2 = "INDIGO",
 			},
 		},
 		events = {
-			[1] = {
+			{
 				type = "event",
 				event = "EMOTE",
 				execute = {
 					-- Collapsing Stars
-					[1] = {
+					{
 						{expect = {"#1#","find","begins to Summon Collapsing Stars!"}},
+						{alert = "starcd"},
 					},
-					-- Cosmic Smash
-						-- Takes 4 seconds to hit
-					[2] = {
-						{expect = {"#1#","find","begins to cast Cosmic Smash!"}},
-						{alert = "cosmicsmashwarn"},
-					},
-					-- Big Bang
-					[3] = {
-						{expect = {"#1#","find","begins to cast Big Bang!"}},
+				},
+			},
+			-- Big Bang
+			{
+				type = "combatevent",
+				eventtype = "SPELL_CAST_START",
+				spellid = {64443,64584},
+				execute = {
+					{
 						{alert = "bigbangwarn"},
+						{alert = "bigbangcd"},
 					},
+				},
+			},
+			-- Cosmic Smash
+			{
+				type = "combatevent",
+				eventtype = "SPELL_CAST_SUCCESS",
+				spellid = {62301,64598},
+				execute = {
+					{
+						{alert = "cosmicsmashwarn"},
+						{alert = "cosmicsmashcd"},
+					}
+				},
+			},
+			-- Phase Punch
+			{
+				type = "combatevent",
+				eventtype = "SPELL_CAST_SUCCESS",
+				spellid = 64412,
+				execute = {
+					{
+						{alert = "punchcd"},
+					}	
 				},
 			},
 		}
 	}
-	-- Big Bang
-		-- 8 second cast that wdoes 100k damage
-		-- Have to be in black hole to avoid it
-	-- Phase Punch
-	-- Black Hole Explosion
-		-- Happens when collapsing stars are killed
-	-- Cosmic Smash
-		-- Red void zones on the ground
 	DXE:RegisterEncounter(data)
 end

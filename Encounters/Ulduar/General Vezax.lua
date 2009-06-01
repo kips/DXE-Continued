@@ -25,6 +25,17 @@ do
 			},
 		},
 		alerts = {
+			enragecd = {
+				var = "enragecd",
+				varname = "Enrage",
+				type = "dropdown",
+				text = "Enrage",
+				time = 600,
+				flashtime = 5,
+				sound = "ALERT7",
+				color1 = "BROWN",
+				color2 = "BROWN",
+			},
 			searingflamewarn = {
 				var = "searingflamewarn",
 				varname = "Searing Flame cast",
@@ -105,21 +116,21 @@ do
 				text = "#5# is Marked! YOU ARE CLOSE!",
 				time = 1.5,
 				color1 = "MAGENTA",
-				sound = "ALERT5",
+				sound = "ALERT6",
 			},
 		},
 		timers = {
 			shadowcrash = {
 				[1] = {
 					{expect = {"&tft_unitexists& &tft_isplayer&","==","1 1"}},
-					{set = {shadowcrashmessage = "Shadow Crash: YOU! Move!"}},
+					{set = {shadowcrashmessage = "Crash: YOU! Move!"}},
 					{alert = "shadowcrashwarn"},
 				},
 				
 				[2] = {
 					{expect = {"&tft_unitexists& &tft_isplayer&","==","1 nil"}},
 					{proximitycheck = {"&tft_unitname&",28}},
-					{set = {shadowcrashmessage = "Shadow Crash: &tft_unitname&! CAREFUL!"}},
+					{set = {shadowcrashmessage = "Crash: &tft_unitname&! CAREFUL!"}},
 					{alert = "shadowcrashwarn"},
 				},
 			},

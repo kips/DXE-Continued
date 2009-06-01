@@ -21,6 +21,7 @@ do
 		onstart = {
 			[1] = {
 				{alert = "flamejetscd"},
+				{alert = "hardmodeends"},
 			},
 		},
 		alerts = {
@@ -72,6 +73,17 @@ do
 				time = 10,
 				color1 = "GREEN",
 				sound = "ALERT4",
+			},
+			hardmodeends = {
+				var = "hardmodeends",
+				varname = "Hard mode timer",
+				type = "dropdown",
+				text = "Hard Mode Ends",
+				time = 240,
+				flashtime = 5,
+				color1 = "BROWN",
+				color2 = "BROWN",
+				sound = "ALERT6",
 			},
 		},
 		timers = {

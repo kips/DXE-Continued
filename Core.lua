@@ -63,7 +63,8 @@ end
 local ACD = LibStub("AceConfigDialog-3.0")
 local AC = LibStub("AceConfig-3.0")
 local AceGUI = LibStub("AceGUI-3.0")
-DXE.ACD,DXE.AC,DXE.AceGUI = ACD,AC,AceGUI
+local AceTimer = LibStub("AceTimer-3.0")
+DXE.ACD,DXE.AC,DXE.AceGUI,DXE.AceTimer = ACD,AC,AceGUI,AceTimer
 local wipe,concat = table.wipe,table.concat
 local match = string.match
 local find = string.find
@@ -747,6 +748,7 @@ end
 function DXE:CreatePane()
 	if self.Pane then self.Pane:Show() return end
 	local Pane = CreateFrame("Frame","DXE_Pane",UIParent)
+	Pane:Hide()
 	Pane:SetClampedToScreen(true)
 	Pane:SetBackdrop(backdrop)
 	--Pane:SetBackdropBorderColor(0.66,0.66,0.66)
@@ -1047,7 +1049,7 @@ end
 function DXE:AlertTest()
 	DXE.Alerts:CenterPopup("AlertTest1", "Decimating. Life Tap Now!", 10, 5, "ALERT1", "YELLOW", "CYAN")
 	DXE.Alerts:Dropdown("AlertTest2", "Big City Opening", 20, 5, "ALERT2", "WHITE")
-	DXE.Alerts:Simple("Gay","ALERT3",3,"RED")
+	DXE.Alerts:Simple("Gay",3,"ALERT3","RED")
 end
 
 ---------------------------------------------
@@ -1179,12 +1181,10 @@ function DXE:CheckForWipe()
 	--@debug@
 	debug("CheckForWipe","Invoked")
 	--@end-debug@
-	if not UnitIsFeignDeath("player") then
-		local name = DXE:Scan()
-		if not name then
-			self:StopEncounter()	
-			return
-		end
+	local name = DXE:Scan()
+	if not name then
+		self:StopEncounter()	
+		return
 	end
 	if not UnitAffectingCombat("player") then
 		self:ScheduleTimer("CheckForWipe",2)

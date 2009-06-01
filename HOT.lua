@@ -103,7 +103,6 @@ function Prototype:Execute()
 		proto_uid = unit
 		proto_uid, uid = test(self,proto_uid)
 
-		-- Hack to get focus in
 		if not proto_uid and not testedfocus then
 			proto_uid, uid = testfocus(self)
 			testedfocus = true

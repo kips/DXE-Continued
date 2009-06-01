@@ -88,7 +88,7 @@ function Invoker:OnStop()
 	-- Reset userdata
 	self:ResetUserData()
 	-- Quashes all alerts
-	Alerts:StopAll()
+	Alerts:QuashAllAlerts()
 	-- Remove Timers
 	self:RemoveAllTimers()
 	-- Remove Throttles
@@ -383,7 +383,7 @@ local function StartAlert(name,...)
 	elseif info.type == "centerpopup" then
 		Alerts:CenterPopup(name,text,time,info.flashtime,info.sound,info.color1,info.color2)
 	elseif info.type == "simple" then
-		Alerts:Simple(text,info.sound,time,info.color1)
+		Alerts:Simple(text,time,info.sound,info.color1)
 	end
 end
 
@@ -474,6 +474,18 @@ end
 ---------------------------------------------
 -- Raid Icons
 ---------------------------------------------
+
+--[[
+    0 = no icon 
+    1 = Yellow 4-point Star 
+    2 = Orange Circle 
+    3 = Purple Diamond 
+    4 = Green Triangle 
+    5 = White Crescent Moon 
+    6 = Blue Square 
+    7 = Red "X" Cross 
+    8 = White Skull 
+]]
 
 -- Checks both friendly and enemy unit ids
 function Invoker:FindUnitID(target)
