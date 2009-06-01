@@ -134,9 +134,6 @@ do
 				color2 = "INDIGO",
 			},
 		},
-		-- TODO
-		-- Mind Control warning
-		-- Guardian Spawns
 		events = {
 			-- Lunatic Gaze
 			[1] = {
@@ -164,10 +161,10 @@ do
 			},
 			[3] = {
 				type = "event",
-				event = "CHAT_MSG_MONSTER_YELL",
+				event = "YELL",
 				execute = {
 					-- Phase 2
-					[1] = {
+					{
 						{expect = {"#1#","find","^I am the lucid dream"}},
 						{tracing = {"Yogg-Saron","Brain of Yogg-Saron"}},
 						{alert = "portalcd"},
@@ -175,9 +172,9 @@ do
 						{set = {phase = "2"}},
 					},
 					-- Phase 3
-					[2] = {
-						{tracing = {"Yogg-Saron"}},
+					{
 						{expect = {"#1#","find","^Look upon the true face"}},
+						{tracing = {"Yogg-Saron"}},
 						{quash = "crushertentaclespawn"},
 						{quash = "inducewarn"},
 						{quash = "portalcd"},
