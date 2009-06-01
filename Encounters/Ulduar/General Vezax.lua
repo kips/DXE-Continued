@@ -118,8 +118,8 @@ do
 				
 				[2] = {
 					{expect = {"&tft_unitexists& &tft_isplayer&","==","1 nil"}},
-					{proximitycheck = {"&tft_unitname&",18}},
-					{set = {shadowcrashmessage = "Shadow Crash: &tft_unitname&! MOVE!"}},
+					{proximitycheck = {"&tft_unitname&",28}},
+					{set = {shadowcrashmessage = "Shadow Crash: &tft_unitname&! CAREFUL!"}},
 					{alert = "shadowcrashwarn"},
 				},
 			},
