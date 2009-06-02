@@ -1,5 +1,3 @@
--- Collapsing Star cd?
--- Living Constellation cd?
 do
 	local data = {
 		version = "$Rev$",
@@ -10,34 +8,23 @@ do
 		tracing = {"Algalon the Observer",},
 		triggers = {
 			scan = "Algalon the Observer",
-			yell = "^Your actions are illogical. All possible results",
 		},
 		onactivate = {
+         autostart = true,
+         autostop = true,
 			leavecombat = true,
 		},
 		userdata = {
-			startime = 24,
-			cosmicsmashtime = {33,25,loop = false},
-			bigbangtime = {98,90,loop = false},
-			constellationtime = 65,
+			cosmicsmashtime = 25,
+			bigbangtime = 90,
 		},
 		onstart = {
 			{
-				{alert = "starcd"},
 				{alert = "cosmicsmashcd"},
 				{alert = "bigbangcd"},
-				{alert = "constellationcd"},
-				{alert = "algalonengage"},
 			},
 		},
 		alerts = {
-			algalonengage = {
-				var = "algalonengage",
-				varname = "Algalon engage",
-				type = "centerpopup",
-				text = "Algalon Engages",
-				time = 8,
-			},
 			bigbangwarn = {
 				var = "bigbangwarn",
 				varname = "Big Bang cast",
@@ -82,28 +69,6 @@ do
 				color1 = "GREEN",
 				color2 = "GREEN",
 			},
-			starcd = {
-				var = "starcd",
-				varname = "Collapsing Star spawns",
-				type = "dropdown",
-				text = "Stars Spawn",
-				time = "<startime>",
-				flashtime = 5,
-				sound = "ALERT6",
-				color1 = "TAN",
-				color2 = "TAN",
-			},
-			constellationcd = {
-				var = "constellationcd",
-				varname = "Living Constellation spawns",
-				type = "dropdown",
-				text = "Constellations Spawn",
-				time = "<constellationtime>",
-				flashtime = 5,
-				sound = "ALERT7",
-				color1 = "PURPLE",
-				color2 = "PURPLE",
-			},
 			punchcd = {
 				var = "punchcd",
 				varname = "Phase Punch cooldown",
@@ -116,17 +81,6 @@ do
 			},
 		},
 		events = {
-			{
-				type = "event",
-				event = "EMOTE",
-				execute = {
-					-- Collapsing Stars
-					{
-						{expect = {"#1#","find","begins to Summon Collapsing Stars!"}},
-						{alert = "starcd"},
-					},
-				},
-			},
 			-- Big Bang
 			{
 				type = "combatevent",
