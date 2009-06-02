@@ -101,8 +101,8 @@ do
 				time = "<constellationtime>",
 				flashtime = 5,
 				sound = "ALERT7",
-				color1 = "TEAL",
-				color2 = "TEAL",
+				color1 = "PURPLE",
+				color2 = "PURPLE",
 			},
 			punchcd = {
 				var = "punchcd",
