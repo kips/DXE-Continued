@@ -229,7 +229,7 @@ do
 				execute = {
 					[1] = {
 						{expect = {"#4#","~=","&playerguid&"}},
-						{proximitycheck = {"#5#",18}},
+						{proximitycheck = {"#5#",28}},
 						{alert = "maladywarn"},
 					},
 				},

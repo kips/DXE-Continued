@@ -4,8 +4,8 @@ local AceGUI = DXE.AceGUI
 local AceTimer = DXE.AceTimer
 local Colors,Sounds = DXE.Constants.Colors,DXE.Constants.Sounds
 
-local GetTime,PlaySoundFile,ipairs,pairs,remove = 
-		GetTime,PlaySoundFile,ipairs,pairs,table.remove
+local GetTime,PlaySoundFile,ipairs,pairs,next,remove = 
+		GetTime,PlaySoundFile,ipairs,pairs,next,tremove
 
 local scale
 
@@ -37,7 +37,7 @@ end
 
 function Alerts:AlertsScaleChanged()
 	scale = DXE.db.global.AlertsScale
-	for _,alert in ipairs(Active) do
+	for alert in pairs(Active) do
 		alert:SetScale(scale)
 	end
 end
@@ -52,13 +52,13 @@ end
 ---------------------------------------
 
 local function OnUpdate(self,elapsed)
-	local n = #Active
-	if n == 0 then self:Hide() return end
+	local alert = next(Active)
+	if not alert then self:Hide() return end
 	local time = GetTime()
-	for i=1,n do
-		local alert = Active[i]
+	while alert do
 		if alert.countFunc then alert:countFunc(time) end
 		if alert.animFunc then alert:animFunc(time) end
+		alert = next(Active,alert)
 	end
 end
 
@@ -83,25 +83,16 @@ end
 function Prototype:Destroy()
 	self:Hide()
 	self:ClearAllPoints()
-	self:RemoveFromActive()
 	self:RemoveFromStacks()
 	self:CancelAllTimers()
 	self.countFunc = nil
 	self.animFunc = nil
 	self.bar:SetValue(0)
+	Active[self] = nil
 	UIFrameFadeRemoveFrame(self)
 	AlertPool[self] = true
 	wipe(self.data)
 	self.timer.frame:Show()
-end
-
-function Prototype:RemoveFromActive()
-	for i,alert in ipairs(Active) do
-		if self == alert then
-			remove(Active,i)
-			return
-		end
-	end
 end
 
 do
@@ -305,7 +296,7 @@ local function GetAlert()
 	local alert = next(AlertPool)
 	if alert then AlertPool[alert] = nil
 	else alert = CreateAlert() end
-	Active[#Active+1] = alert
+	Active[alert] = true
 	UpdateFrame:Show()
 	alert:Show()
 	alert:SetAlpha(0.6)
@@ -327,12 +318,12 @@ end
 ---------------------------------------
 
 function Alerts:QuashAllAlerts()
-	for _,alert in ipairs(Active) do alert:Destroy() end
+	for alert in pairs(Active) do alert:Destroy() end
 end
 
 local find = string.find
 function Alerts:QuashAlertsByPattern(pattern)
-	for _,alert in ipairs(Active) do
+	for alert in pairs(Active) do
 		if alert.data.id and find(alert.data.id,pattern) then
 			alert:Destroy()
 		end
@@ -340,7 +331,7 @@ function Alerts:QuashAlertsByPattern(pattern)
 end
 
 function Alerts:GetAlertTimeleft(id)
-	for _,alert in ipairs(Active) do
+	for alert in pairs(Active) do
 		if alert.data.id == id then
 			return alert.data.timeleft
 		end
