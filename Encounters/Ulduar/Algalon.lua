@@ -69,7 +69,7 @@ do
 				flashtime = 4.2,
 				sound = "ALERT1",
 				color1 = "YELLOW",
-				color2 = "DCYAN",
+				color2 = "RED",
 			},
 			cosmicsmashcd = {
 				var = "cosmicsmashcd",
