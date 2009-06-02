@@ -678,7 +678,7 @@ do
 		obj._ttTitle = title
 		obj._ttText = text
 		obj:SetScript("OnEnter",onenter)
-		obj:SetScript("OnLeave",onleave)
+		obj:SetScript("OnLeave",onleave) 
 	end
 end
 
