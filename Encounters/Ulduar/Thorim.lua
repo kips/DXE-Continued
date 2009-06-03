@@ -8,7 +8,7 @@ do
 		tracing = {"Runic Colossus","Ancient Rune Giant"},
 		triggers = {
 			scan = {"Jormungar Behemoth","Thorim","Runic Colossus","Ancient Rune Giant","Iron Ring Guard","Dark Rune Thunderer","Dark Rune Commoner"},
-			yell = "^Interlopers",
+			yell = "^Interlopers! You mortals who",
 		},
 		onactivate = {
 			leavecombat = true,
@@ -114,7 +114,6 @@ do
 						{quash = "enrage2cd"},
 						{canceltimer = "hardmodefailed"},
 						{tracing = {"Thorim"}},
-						--{set = {chargetime = 34}}, -- Rare bug happened
 						{alert = "chargecd"},
 						{set = {chargetime = 15}},
 					},

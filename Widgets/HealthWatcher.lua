@@ -85,13 +85,13 @@ do
 
 	local backdrop = {
 		bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",          
-		insets = {left = 2, right = 2, top = 3, bottom = 2}
+		insets = {left = 2, right = 2, top = 2, bottom = 2}
 	}
 
 	local backdropborder = {
 		edgeFile="Interface\\Tooltips\\UI-Tooltip-Border", 
 		edgeSize = 9,             
-		insets = {left = 2, right = 2, top = 3, bottom = 2}
+		insets = {left = 2, right = 2, top = 2, bottom = 2}
 	}
 
 	local function Constructor()
