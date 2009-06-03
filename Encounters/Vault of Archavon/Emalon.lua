@@ -38,7 +38,7 @@ do
 				type = "centerpopup",
 				time = 5,
 				flashtime = 5,
-				text = "Lightning Nova cast",
+				text = "Lightning Nova Cast",
 				color1 = "BROWN",
 				color2 = "ORANGE",
 				sound = "ALERT5",
