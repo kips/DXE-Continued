@@ -22,7 +22,8 @@ do
 			leavecombat = true,
 		},
 		userdata = {
-			portaltime = {78,90,loop = false},
+			portaltime = {73,90,loop = false},
+			portaltext = {"Portals Soon","Next Portals", loop = false},
 			crushertime = 14,
 			allowcrusher = 1,
 			phase = "1",
@@ -76,7 +77,7 @@ do
 				var = "portalcd",
 				varname = "Portal cooldown",
 				type = "dropdown",
-				text = "Next Portal",
+				text = "<portaltext>",
 				time = "<portaltime>",
 				flashtime = 10,
 				sound = "ALERT2",
