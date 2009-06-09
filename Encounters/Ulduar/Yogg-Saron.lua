@@ -8,6 +8,15 @@ do
 		tracing = {"Sara"},
 		triggers = {
 			yell = "^The time to strike at the head of the beast",
+			scan = {
+				"Yogg-Saron",
+				"Sara",
+				"Crusher Tentacle",
+				"Corruptor Tentacle",
+				"Constrictor Tentacle",
+				"Guardian of Yogg-Saron",
+				"Brain of Yogg-Saron",
+			},
 		},
 		onactivate = {
 			leavecombat = true,
@@ -108,7 +117,7 @@ do
 				varname = "Malady of the Mind warn",
 				type = "simple",
 				text = "Malady: #5#! MOVE AWAY!",
-				time = 1.5,
+				time = 3,
 				sound = "ALERT5",
 				color1 = "GREEN",
 			},
