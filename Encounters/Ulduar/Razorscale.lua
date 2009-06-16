@@ -2,7 +2,7 @@ do
 	local L,SN = DXE.L,DXE.SN
 	local data = {
 		version = "$Rev$",
-		key = "Razorscale", 
+		key = "razorscale", 
 		zone = "Ulduar", 
 		name = "Razorscale", 
 		triggers = {

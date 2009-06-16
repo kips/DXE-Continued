@@ -4,6 +4,7 @@
 ## LoadOnDemand: 1
 ## Dependencies: DXE
 ## X-DXE-Zone: The Eye of Eternity, Vault of Archavon, The Obsidian Sanctum
+## X-DXE-Category: Northrend
 
 Locales.lua
 

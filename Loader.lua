@@ -6,6 +6,7 @@ local L = DXE.L
 --[[
 	Metadata:
 		X-DXE-Zone: [STRING] - A zone or a comma separated list of zones
+		X-DXE-Category: [STRING] - The category of the module
 ]]
 
 local Loader = DXE:NewModule("Loader","AceEvent-3.0")
@@ -23,17 +24,19 @@ function Loader:OnInitialize()
 	for i=1, GetNumAddOns() do
 		local name,_,_,enabled,loadable = GetAddOnInfo(i)
 		if enabled and loadable and not IsAddOnLoaded(i) then
-			local zones = GetAddOnMetadata(i,"X-DXE-Zone")
-			if zones then
-				AddZoneModule(name,strsplit(",",zones))
+			local metadata = GetAddOnMetadata(i,"X-DXE-Zone")
+			if metadata then
+				AddZoneModule(name,strsplit(",",metadata))
 			end
 		end
 	end
 end
 
 function Loader:OnEnable()
-	self:RegisterEvent("ZONE_CHANGED_NEW_AREA","LoadModules")
-	self:LoadModules()
+	if next(ZoneModules) then
+		self:RegisterEvent("ZONE_CHANGED_NEW_AREA","LoadModules")
+		self:LoadModules()
+	end
 end
 
 function Loader:LoadModules()

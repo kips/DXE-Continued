@@ -116,7 +116,7 @@ function Distributor:GetOptions()
 						wipe(EncNames)
 						for k in pairs(DXE.EDB) do
 							if k ~= "default" then
-								EncNames[k] = k
+								EncNames[k] = DXE.EDB[k].name
 							end
 						end
 						return EncNames
