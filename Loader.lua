@@ -20,7 +20,6 @@ local function AddZoneModule(name,zone,...)
 end
 
 function Loader:OnInitialize()
-	self:RegisterEvent("ZONE_CHANGED_NEW_AREA","LoadModules")
 	for i=1, GetNumAddOns() do
 		local name,_,_,enabled,loadable = GetAddOnInfo(i)
 		if enabled and loadable and not IsAddOnLoaded(i) then
@@ -30,6 +29,10 @@ function Loader:OnInitialize()
 			end
 		end
 	end
+end
+
+function Loader:OnEnable()
+	self:RegisterEvent("ZONE_CHANGED_NEW_AREA","LoadModules")
 	self:LoadModules()
 end
 
