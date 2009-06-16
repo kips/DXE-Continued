@@ -1252,7 +1252,7 @@ function DXE:PrintRosterVersions(info, encname)
 	if encname == "" then
 		encname = "DXE"
 	end
-	local L_name = EDB[encname]
+	local L_name = EDB[encname] and EDB[encname].name
 
 	print(format("|cff99ff33DXE|r: Raid Version Check (%s)", encname))
 
