@@ -1,7 +1,7 @@
 do
 	local L,SN = DXE.L,DXE.SN
 	local data = {
-		version = "$Rev: 185 $",
+		version = "$Rev$",
 		key = "emalon", 
 		zone = L["Vault of Archavon"], 
 		category = L["Northrend"],
