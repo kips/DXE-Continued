@@ -1340,7 +1340,7 @@ do
 
 	function DXE:BroadcastVersion(key)
 		--@debug@
-		debug("BroadcastVersion","name: %s",name)
+		debug("BroadcastVersion","name: %s",name) 
 		--@end-debug@
 		local msg
 		-- Broadcasts all
