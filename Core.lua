@@ -773,7 +773,7 @@ function DXE:CreatePane()
 	Pane:SetMovable(true)
 	Pane:SetPoint("CENTER")
 	self:RegisterMoveSaving(Pane,"CENTER","UIParent","CENTER",nil,nil,true)
-	self:AddTooltipText(Pane,"Pane","|cffffff00Shift + Click|r to move")
+	self:AddTooltipText(Pane,"Pane",L["|cffffff00Shift + Click|r to move"])
 	local function onupdate() DXE:LayoutHealthWatchers() end
 	Pane:HookScript("OnMouseDown",function(self) self:SetScript("OnUpdate",onupdate) end)
 	Pane:HookScript("OnMouseUp",function(self) self:SetScript("OnUpdate",nil) end)
@@ -792,8 +792,8 @@ function DXE:CreatePane()
 		PaneTextures.."Play",
 		PaneTextures.."Play",
 		function() self:ToggleTimer() end,
-		"Start/Stop",
-		"Starts the timer or simultaneously stops the timer and encounter"
+		L["Start/Stop"],
+		L["Starts the timer or simultaneously stops the timer and encounter"]
 	)
 	
 	-- Add Config control
@@ -801,7 +801,7 @@ function DXE:CreatePane()
 		PaneTextures.."Menu",
 		PaneTextures.."Menu",
 		function() self:ToggleConfig() end,
-		"Configuration",
+		L["Configuration"],
 		L["Toggles the settings window"]
 	)
 
@@ -815,16 +815,16 @@ function DXE:CreatePane()
 		PaneTextures.."Folder",
 		PaneTextures.."Folder",
 		function() ToggleDropDownMenu(1,nil,selector,Pane.folder,0,0) end,
-		"Selector",
-		"Activates an encounter"
+		L["Selector"],
+		L["Activates an encounter"]
 	)
 
 	Pane.lock = self:AddPaneButton(
 		PaneTextures.."Locked",
 		PaneTextures.."Locked",
 		function() self:ToggleLock() end,
-		"Locking",
-		"Toggle frame anchors"
+		L["Locking"],
+		L["Toggle frame anchors"]
 	)
 
 	self:CreateHealthWatchers()

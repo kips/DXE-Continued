@@ -8,7 +8,7 @@ local work = {}
 
 local ptnstr = "L%[\"(.-)\"%]"
 local fmtstr = "L[\"%s\"]"
-local seperator = "----------------------------"
+local separator = "----------------------------"
 
 -- Run through main files
 
@@ -23,7 +23,7 @@ end
 os.execute(fmt("rm %s",tempFile))
 
 local function addsep()
-	file:write(seperator,"\n")
+	file:write(separator,"\n")
 end
 
 local function writeheader(str)

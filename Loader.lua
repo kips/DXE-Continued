@@ -11,12 +11,12 @@ local L = DXE.L
 local Loader = DXE:NewModule("Loader","AceEvent-3.0")
 local ZoneModules = {}
 
-local function AddZoneModule(name,...)
-	for i=1,select("#",...) do
-		local zone = L[select(i,...):trim()]
-		ZoneModules[zone] = ZoneModules[zone] or DXE.new()
-		ZoneModules[zone][name] = true
-	end
+local function AddZoneModule(name,zone,...)
+	if not zone then return end
+	zone = L[zone:trim()]
+	ZoneModules[zone] = ZoneModules[zone] or DXE.new()
+	ZoneModules[zone][name] = true
+	AddZoneModule(name,...)
 end
 
 function Loader:OnInitialize()
@@ -45,6 +45,7 @@ function Loader:LoadModules()
 		end
 		if not next(ZoneModules) then
 			self:UnregisterEvent("ZONE_CHANGED_NEW_AREA")
+			ZoneModules = DXE.delete(ZoneModules)
 		end
 	end
 end
