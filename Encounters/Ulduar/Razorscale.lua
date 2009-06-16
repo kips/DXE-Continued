@@ -1,16 +1,21 @@
 do
+	local L,SN = DXE.L,DXE.SN
 	local data = {
 		version = "$Rev$",
 		key = "Razorscale", 
 		zone = "Ulduar", 
 		name = "Razorscale", 
-		title = "Razorscale", 
-		tracing = {"Razorscale",},
 		triggers = {
-			scan = {"Razorscale","Dark Rune Guardian","Dark Rune Sentinel"}, 
-			yell = "^Be on the lookout! Mole machines",
+			scan = {
+				L["Razorscale"],
+				L["Dark Rune Guardian"],
+				L["Dark Rune Sentinel"],
+				L["Dark Rune Watcher"],
+			}, 
+			yell = L["^Be on the lookout! Mole machines"],
 		},
 		onactivate = {
+			tracing = {L["Razorscale"],},
 			leavecombat = true,
 		},
 		onstart = {
@@ -22,9 +27,9 @@ do
 		alerts = {
 			enragecd = {
 				var = "enragecd",
-				varname = "Enrage",
+				varname = L["Enrage"],
 				type = "dropdown",
-				text = "Enrage",
+				text = L["Enrage"],
 				time = 900,
 				flashtime = 5,
 				color1 = "RED",
@@ -33,18 +38,18 @@ do
 			},
 			devourwarnself = {
 				var = "devourwarnself",
-				varname = "Devouring Flame warning on self",
+				varname = format(L["%s on self"],SN[63014]),
 				type = "simple",
-				text = "Move out of Devouring Flame!",
+				text = format(L["Move Out of %s"],SN[63014]).."!",
 				time = 1.5,
 				color1 = "RED",
 				sound = "ALERT1",
 			},
 			breathwarn = {
 				var = "breathwarn",
-				varname = "Flame Breath cast",
+				varname = format(L["%s Cast"],SN[63317]),
 				type = "centerpopup",
-				text = "Flame Breath Cast",
+				text = format(L["%s Cast"],SN[63317]),
 				time = 2.5,
 				flashtime = 2.5,
 				color1 = "BLUE",
@@ -53,27 +58,27 @@ do
 			},
 			chaindur = {
 				var = "chaindur",
-				varname = "Chain duration",
+				varname = format(L["%s Duration"],L["Chain"]),
 				type = "centerpopup",
-				text = "Chain Duration",
+				text = format(L["%s Duration"],L["Chain"]),
 				time = 38,
 				color1 = "BROWN",
 				sound = "ALERT3",
 			},
 			chainwarn = {
 				var = "chainwarn",
-				varname = "Chain warning",
+				varname = format(L["%s Warning"],L["Chain"]),
 				type = "simple",
-				text = "Razorscale is now chained!",
+				text = format("%s: %s!",L["Chain"],L["Razorscale"]),
 				time = 1.5,
 				sound = "ALERT5",
 				color1 = "GOLD",
 			},
 			permlandwarn = {
 				var = "permlandwarn",
-				varname = "Permanent landing warning",
+				varname = format(L["%s Warning"],L["Permanent Landing"]),
 				type = "simple",
-				text = "Razorscale permanently landed!",
+				text = format(L["%s Permanently Landed"],SN["Razorscale"]).."!",
 				time = 1.5,
 				sound = "ALERT4",
 			},
@@ -95,14 +100,15 @@ do
 				type = "event",
 				event = "YELL",
 				execute = {
-					-- Chain
+					-- Razorscale gets chained
 					[1] = {
-						{expect = {"#1#","find","^Move quickly"}},
+						{expect = {"#1#","find",L["^Move quickly"]}},
 						{alert = "chaindur"},
 						{alert = "chainwarn"},
 					},
+					-- Razorscale lifts off
 					[2] = {
-						{expect = {"#1#","find","^Give us a moment to"}},
+						{expect = {"#1#","find",L["^Give us a moment to"]}},
 						{quash = "chaindur"},
 					},
 				},
@@ -112,11 +118,11 @@ do
 				event = "EMOTE",
 				execute = {
 					[1] = {
-						{expect = {"#1#","find","deep breath...$"}},
+						{expect = {"#1#","find",L["deep breath...$"]}},
 						{alert = "breathwarn"},
 					},
 					[2] = {
-						{expect = {"#1#","find","lands permanently!$"}},
+						{expect = {"#1#","find",L["lands permanently!$"]}},
 						{alert = "permlandwarn"},
 					},
 				},

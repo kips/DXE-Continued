@@ -1,0 +1,13 @@
+## Interface: 30100
+## Title: DXE Northrend
+## Author: Kollektiv
+## LoadOnDemand: 1
+## Dependencies: DXE
+## X-DXE-Zone: The Eye of Eternity, Vault of Archavon, The Obsidian Sanctum
+
+Locales.lua
+
+Archavon.lua
+Emalon.lua
+Malygos.lua
+Sartharion.lua

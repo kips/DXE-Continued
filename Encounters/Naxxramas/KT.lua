@@ -1,17 +1,26 @@
 do
+	local L,SN = DXE.L,DXE.SN
+
+	local L_KelThuzad = L["Kel'Thuzad"]
+
 	local data = {
 		version = "$Rev$",
 		key = "kelthuzad", 
-		zone = "Naxxramas", 
-		name = "Kel'Thuzad", 
-		title = "Kel'Thuzad", 
-		tracing = {"Kel'Thuzad",},
+		zone = L["Naxxramas"], 
+		name = L_KelThuzad, 
 		triggers = {
-			yell = "Minions, servants, soldiers of the cold dark", 
+			yell = "^Minions, servants, soldiers of the cold dark",
+			scan = {
+				L["Kel'Thuzad"],
+				L["Guardian of Icecrown"],
+				L["Soldier of the Frozen Wastes"], 
+				L["Unstoppable Abomination"], 
+				L["Soul Weaver"],
+			},
 		},
 		onactivate = {
-			autostop = true,
-			-- No leavecombat because a hunter could feign during phase 1
+			tracing = {L["Kel'Thuzad"]},
+			leavecombat = true,
 		},
 		userdata = {},
 		onstart = {
@@ -22,18 +31,18 @@ do
 		alerts = {
 			fissurewarn = {
 				var = "fissurewarn", 
-				varname = "Fissure warning", 
+				varname = format(L["%s Warning"],SN[27810]),
 				type = "simple", 
-				text = "Fissure Spawned", 
+				text = format(L["%s Spawned"],SN[27810]),
 				time = 1.5, 
 				sound = "ALERT1",
 				color1 = "BLACK",
 			},
 			frostblastwarn = {
 				var = "frostblastwarn", 
-				varname = "Frostblast warning", 
+				varname = format(L["%s Warning"],SN[27808]),
 				type = "simple", 
-				text = "Frost Blast Casted", 
+				text = format(L["%s Casted"],SN[27808]),
 				time = 1.5, 
 				sound = "ALERT2", 
 				throttle = 5,
@@ -41,26 +50,26 @@ do
 			},
 			detonatewarn = {
 				var = "detonatewarn", 
-				varname = "Detonate warning", 
+				varname = format(L["%s Warning"],SN[29870]),
 				type = "centerpopup", 
-				text = "Detonate: YOU!", 
+				text = format("%s: %s!",SN[29870],L["YOU!"]),
 				time = 5, 
 				sound = "ALERT3", 
 				color1 = "WHITE", 
 			},
 			ktarrives = {
 				var = "ktarrives", 
-				varname = "Kel'Thuzad arrival", 
+				varname = format(L["%s Arrival"],L_KelThuzad),
 				type = "dropdown", 
-				text = "Kel'Thuzad Arrives", 
+				text = format(L["%s Arrives"],L_KelThuzad),
 				time = 225, 
 				flashtime = 5, 
 			},
 			guardianswarn = {
 				var = "guardianswarn", 
-				varname = "Guardians spawn", 
+				varname = format(L["%s Spawns"],SN[4070]),
 				type = "centerpopup", 
-				text = "Guardians Spawn", 
+				text = format(L["%s Spawns"],SN[4070]),
 				time = 10, 
 				flashtime = 3, 
 				sound = "ALERT1", 
@@ -108,7 +117,7 @@ do
 				event = "CHAT_MSG_MONSTER_YELL", 
 				execute = {
 					[1] = {
-						{expect = {"#1#","find","Very well. Warriors of the frozen wastes, rise up!"}},
+						{expect = {"#1#","find",L["^Very well. Warriors of the frozen wastes, rise up!"]}},
 						{alert = "guardianswarn"}, 
 					},
 				},

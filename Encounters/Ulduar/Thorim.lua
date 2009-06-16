@@ -1,16 +1,24 @@
 do
+	local L,SN = DXE.L,DXE.SN
 	local data = {
 		version = "$Rev$",
 		key = "thorim", 
-		zone = "Ulduar", 
-		name = "Thorim", 
-		title = "Thorim", 
-		tracing = {"Runic Colossus","Ancient Rune Giant"},
+		zone = L["Ulduar"], 
+		name = L["Thorim"], 
 		triggers = {
-			scan = {"Jormungar Behemoth","Thorim","Runic Colossus","Ancient Rune Giant","Iron Ring Guard","Dark Rune Thunderer","Dark Rune Commoner"},
-			yell = "^Interlopers! You mortals who",
+			scan = {
+				L["Thorim"],
+				L["Jormungar Behemoth"],
+				L["Runic Colossus"],
+				L["Ancient Rune Giant"],
+				L["Iron Ring Guard"],
+				L["Dark Rune Thunderer"],
+				L["Dark Rune Commoner"],
+			},
+			yell = L["^Interlopers! You mortals who"],
 		},
 		onactivate = {
+			tracing = {L["Runic Colossus"],L["Ancient Rune Giant"]},
 			leavecombat = true,
 		},
 		userdata = {
@@ -33,9 +41,9 @@ do
 		alerts = {
 			enrage2cd = {
 				var = "enrage2cd", 
-				varname = "Enrage", 
+				varname = L["Enrage"], 
 				type = "dropdown", 
-				text = "Enrage", 
+				text = L["Enrage"], 
 				time = 120, 
 				flashtime = 5, 
 				sound = "ALERT1", 
@@ -43,26 +51,26 @@ do
 			},
 			hardmodecd = {
 				var = "hardmodecd", 
-				varname = "Hard mode timeleft", 
+				varname = format(L["%s Timeleft"],L["Hard Mode"]),
 				type = "dropdown", 
-				text = "Hard Mode Ends", 
+				text = format(L["%s Ends"],L["Hard Mode"]),
 				time = 180, 
 				flashtime = 5, 
 				sound = "ALERT1", 
 			},
 			hardmodeactivation = {
 				var = "hardmodeactivation", 
-				varname = "Hard mode activation", 
+				varname = format(L["%s Warning"],L["Hard Mode"]),
 				type = "simple", 
-				text = "Hard Mode Activated", 
+				text = format(L["%s Activated"],L["Hard Mode"]),
 				time = 1.5, 
 				sound = "ALERT1", 
 			},
 			chargecd = {
 				var = "chargecd", 
-				varname = "Lightning Charge warning", 
+				varname = format(L["%s Cooldown"],SN[62279]),
 				type = "dropdown", 
-				text = "Next Lightning Charge <chargecount>", 
+				text = format(L["Next %s"],SN[62279]).." <chargecount>",
 				time = "<chargetime>", 
 				flashtime = 7, 
 				sound = "ALERT2",
@@ -70,9 +78,9 @@ do
 			},
 			chainlightningcd = {
 				var = "chainlightningcd",
-				varname = "Chain Lightning cooldown",
+				varname = format(L["%s Cooldown"],SN[62131]),
 				type = "dropdown",
-				text = "Chain Lightning Cooldown",
+				text = format(L["%s Cooldown"],SN[62131]),
 				time = 10,
 				flashtime = 5,
 				sound = "ALERT3",
@@ -81,9 +89,9 @@ do
 			},
 			frostnovacast = {
 				var = "frostnovacast",
-				varname = "Frost Nova cast",
+				varname = format(L["%s Cast"],SN[122]),
 				type = "centerpopup",
-				text = "Frost Nova Cast",
+				text = format(L["%s Cast"],SN[122]),
 				time = 2.5,
 				flashtime = 2.5,
 				sound = "ALERT4",
@@ -92,9 +100,9 @@ do
 			},
 			strikecd = {
 				var = "strikecd",
-				varname = "Unbalancing Strike cooldown",
+				varname = format(L["%s Cooldown"],SN[62130]),
 				type = "dropdown",
-				text = "Unbalancing Strike Cooldown",
+				text = format(L["%s Cooldown"],SN[62130]),
 				time = 25,
 				flashtime = 5,
 				sound = "ALERT5",
@@ -109,7 +117,7 @@ do
 				execute = {
 					-- Phase 3
 					[1] = {
-						{expect = {"#1#","find","^Impertinent"}},
+						{expect = {"#1#","find",L["^Impertinent"]}},
 						{quash = "hardmodecd"},
 						{quash = "enrage2cd"},
 						{canceltimer = "hardmodefailed"},
@@ -119,7 +127,7 @@ do
 					},
 					-- Hard mode activation
 					[2] = {
-						{expect = {"#1#","find","^Impossible!"}},
+						{expect = {"#1#","find",L["^Impossible!"]}},
 						{alert = "hardmodeactivation"},
 					},
 				},

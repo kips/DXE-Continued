@@ -1,4 +1,7 @@
 local DXE = DXE
+local version = tonumber(("$Rev$"):sub(7, -3))
+DXE.version = version > DXE.version and version or DXE.version
+local L = DXE.L
 
 -----------------------------------------
 -- MAIN
@@ -21,14 +24,14 @@ function DXE:InitializeOptions()
 		args = {
 			dxe_header = {
 				type = "header",
-				name = format("Deus Vox Encounters - Version: |cff99ff33%d|r",self.version),
+				name = format("%s - %s",L["Deus Vox Encounters"],L["Version"])..format(" |cff99ff33%d|r",self.version),
 				order = 1,
 				width = "full",
 			},
 			Enabled = {
 				type = "toggle",
 				order = 100,
-				name = "Enabled",
+				name = L["Enabled"],
 				get = "IsEnabled",
 				width = "half",
 				set = function(info,val) self.db.global.Enabled = val
@@ -39,7 +42,7 @@ function DXE:InitializeOptions()
 			},
 			AlertsTest = {
 				type = "execute",
-				name = "Alerts Test",
+				name = L["Alerts Test"],
 				order = 200,
 				func = "AlertTest",
 			},
@@ -48,7 +51,7 @@ function DXE:InitializeOptions()
 			encounters = {
 				encs_group = {
 					type = "group",
-					name = "Encounters",
+					name = L["Encounters"],
 					order = 200,
 					childGroups = "tab",
 					get = function(info) return self.db.profile.Encounters[info[#info-1]][info[#info]]  end,
@@ -65,8 +68,8 @@ function DXE:InitializeOptions()
 		options_args.ShowMinimap = {
 			type = "toggle",
 			order = 150,
-			name = "Minimap",
-			desc = "Show minimap icon",
+			name = L["Minimap"],
+			desc = L["Show minimap icon"],
 			get = function() return not self.db.global._Minimap.hide end,
 			set = function(info,v) self.db.global._Minimap.hide = not v; LDBIcon[self.db.global._Minimap.hide and "Hide" or "Show"](LDBIcon,"DXE") end,
 			width = "half",
@@ -76,21 +79,21 @@ function DXE:InitializeOptions()
 	-------ADDITIONAL GROUPS
 	local general = {
 		type = "group",
-		name = "General",
+		name = L["General"],
 		order = 100,
 		get = function(info) return self.db.global[info[#info]] end,
 		set = function(info,v) self.db.global[info[#info]] = v end,
 		args = {
 			pane_group = {
 				type = "group",
-				name = "Pane",
+				name = L["Pane"],
 				inline = true,
 				order = 100,
 				args = {
 					ShowPane = {
 						order = 100,
 						type = "toggle",
-						name = "Show Pane",
+						name = L["Show Pane"],
 						set = function(info,v)
 							self.db.global.ShowPane = v
 							self:UpdatePaneVisibility()
@@ -99,9 +102,19 @@ function DXE:InitializeOptions()
 					PaneOnlyInRaid = {
 						order = 200,
 						type = "toggle",
-						name = "Show Pane only in raid",
+						name = L["Only in raid"],
 						set = function(info,v)
 							self.db.global.PaneOnlyInRaid = v
+							self:UpdatePaneVisibility()
+						end,
+						disabled = function() return not self.db.global.ShowPane end,
+					},
+					PaneOnlyInInstance = {
+						order = 250,
+						type = "toggle",
+						name = L["Only in instance"],
+						set = function(info,v)
+							self.db.global.PaneOnlyInInstance = v
 							self:UpdatePaneVisibility()
 						end,
 						disabled = function() return not self.db.global.ShowPane end,
@@ -109,7 +122,7 @@ function DXE:InitializeOptions()
 					PaneScale = {
 						order = 300,
 						type = "range",
-						name = "Pane scale",
+						name = L["Pane scale"],
 						set = function(info,v)
 							self.db.global.PaneScale = v
 							self:UpdatePaneScale()
@@ -122,14 +135,14 @@ function DXE:InitializeOptions()
 			},
 			alerts_group = {
 				type = "group",
-				name = "Alerts",
+				name = L["Alerts"],
 				order = 200,
 				inline = true,
 				args = {
 					AlertsScale = {
 						order = 200,
 						type = "range",
-						name = "Alerts scale",
+						name = L["Alerts scale"],
 						min = 0.5,
 						max = 1.5,
 						step = 0.1,
@@ -143,24 +156,24 @@ function DXE:InitializeOptions()
 
 	local about = {
 		type = "group",
-		name = "About",
+		name = L["About"],
 		order = -2,
 		args = {
 			authors_desc = {
 				type = "description",
-				name = "Authors: |cffffd200Kollektiv|r and |cffffd200Fariel|r",
+				name = format("%s : %s",L["Authors"],"|cffffd200Kollektiv|r, |cffffd200Fariel|r"),
 				order = 100,
 			},
 			blank1 = self.genblank(150),
 			created_desc = {
 				type = "description",
-				name = "Created for use by |cffffd200Deus Vox|r on |cffffff78Laughing Skull|r",
+				name = format(L["Created for use by %s on %s"],"|cffffd200Deus Vox|r","|cffffff78US-Laughing Skull|r"),
 				order = 200,
 			},
 			blank2 = self.genblank(250),
 			visit_desc = {
 				type = "description",
-				name = "Website: |cffffd244http://www.deusvox.net|r",
+				name = format("%s: %s",L["Website"],"|cffffd244http://www.deusvox.net|r"),
 				order = 300,
 			},
 		},
@@ -185,30 +198,30 @@ end
 function DXE:GetSlashOptions()
 	return {
 		type = "group",
-		name = "Deus Vox Encounters",
+		name = L["Deus Vox Encounters"],
 		handler = self,
 		args = {
 			enable = {
 				type = "execute",
-				name = "Enable",
+				name = L["Enable"],
 				order = 100,
 				func = function() self.db.global.Enabled = true; self:Enable() end,
 			},
 			disable = {
 				type = "execute",
-				name = "Disable",
+				name = L["Disable"],
 				order = 200,
 				func = function() self.db.global.Enabled = false; self:Disable() end,
 			},
 			config = {
 				type = "execute",
-				name = "Toggles the configuration",
+				name = L["Toggles the configuration"],
 				func = "ToggleConfig",
 				order = 300,
 			},
 			versioncheck = {
 				type = "input",
-				name = "Print versions of encounters",
+				name = L["Print versions of encounters"],
 				set = "PrintRosterVersions",
 				order = 400,
 			},
@@ -227,14 +240,14 @@ end
 local function findversion(key)
 	for name,data in pairs(DXE.EDB) do
 		if data.key == key then
-			return data.version or "|cff808080Unknown|r"
+			return data.version or format("|cff808080%s|r",L["Unknown"])
 		end
 	end
 end
 
 local version = {
 	type = "header",
-	name = function(info) return "Version: |cff99ff33"..tostring(findversion(info[#info-1])).."|r" end,
+	name = function(info) return L["Version"]..": |cff99ff33"..tostring(findversion(info[#info-1])).."|r" end,
 	order = 1,
 	width = "full",
 }
@@ -254,10 +267,10 @@ function DXE:AddEncounterOptions(data)
 	-- Pointer to args
 	local args = self.options.plugins.encounters.encs_group.args
 	-- Add a zone group if it doesn't exist
-	local zonekey = data.zone:gsub(" ",""):lower()
+	local zonekey = data.category and data.category:gsub(" ",""):lower() or data.zone:gsub(" ",""):lower()
 	args[zonekey] = args[zonekey] or {	
 		type = "group",
-		name = data.zone,
+		name = data.category or data.zone,
 		args = {}
 	}
 	-- Update args pointer

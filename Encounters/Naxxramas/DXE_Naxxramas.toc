@@ -1,0 +1,24 @@
+## Interface: 30100
+## Title: DXE Naxxramas
+## Author: Kollektiv
+## LoadOnDemand: 1
+## Dependencies: DXE
+## X-DXE-Zone: Naxxramas
+
+Locales.lua
+
+Anub.lua
+Faerlina.lua
+Four_Horsemen.lua
+Gluth.lua
+Gothik.lua
+Grobbulus.lua
+Heigan.lua
+KT.lua
+Loatheb.lua
+Maexxna.lua
+Noth.lua
+Patchwerk.lua
+Razuvious.lua
+Sapphiron.lua
+Thaddius.lua

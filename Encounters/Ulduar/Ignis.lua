@@ -1,15 +1,16 @@
 do
+	local L,SN = DXE.L,DXE.SN
+
 	local data = {
 		version = "$Rev$",
 		key = "ignis", 
-		zone = "Ulduar", 
-		name = "Ignis the Furnace Master", 
-		title = "Ignis the Furnace Master", 
-		tracing = {"Ignis the Furnace Master",},
+		zone = L["Ulduar"], 
+		name = L["Ignis the Furnace Master"], 
 		triggers = {
-			scan = "Ignis the Furnace Master", 
+			scan = L["Ignis the Furnace Master"], 
 		},
 		onactivate = {
+			tracing = {L["Ignis the Furnace Master"],},
 			autostart = true,
 			autostop = true,
 			leavecombat = true,
@@ -27,19 +28,19 @@ do
 		alerts = {
 			flamejetswarn = {
 				var = "flamejetswarn",
-				varname = "Flame Jets cast",
+				varname = format(L["%s Cast"],SN[62680]),
 				type = "centerpopup",
-				text = "Flame Jets Cast",
+				text = format(L["%s Cast"],SN[62680]),
 				time = 2.7,
 				color1 = "RED",
 				sound = "ALERT3",
 			},
 			flamejetscd = {
 				var = "flamejetscd",
-				varname = "Flame Jets cooldown",
+				varname = format(L["%s Cooldown"],SN[62680]),
 				type = "dropdown",
 				time = "<flamejetstime>",
-				text = "Flame Jets Cooldown",
+				text = format(L["%s Cooldown"],SN[62680]),
 				flashtime = 5,
 				color1 = "RED",
 				color2 = "MAGENTA",
@@ -47,17 +48,17 @@ do
 			},
 			scorchwarnself = {
 				var = "scorchwarnself",
-				varname = "Scorch warning on self",
+				varname = format(L["%s on self"],SN[62546]),
 				type = "simple",
-				text = "Scorched: YOU!",
+				text = format("%s: %s!",SN[62546],L["YOU"]),
 				time = 1.5,
 				color1 = "MAGENTA",
 				sound = "ALERT5",
 			},
 			scorchcd = {
 				var = "scorchcd",
-				varname = "Scorch cooldown",
-				text = "Next Scorch",
+				varname = format(L["%s Cooldown"],SN[62546]),
+				text = format(L["Next %s"],SN[62546]),
 				type = "dropdown",
 				time = 25,
 				flashtime = 5,
@@ -67,7 +68,7 @@ do
 			},
 			slagpotdur = {
 				var = "slagpotdur",
-				varname = "Slag Pot duration",
+				varname = format(L["%s Duration"],SN[62717]),
 				type = "centerpopup",
 				text = "<slagpotmessage>",
 				time = 10,
@@ -76,9 +77,9 @@ do
 			},
 			hardmodeends = {
 				var = "hardmodeends",
-				varname = "Hard mode timer",
+				varname = format("%s Timer",L["Hard Mode"]),
 				type = "dropdown",
-				text = "Hard Mode Ends",
+				text = format("%s Ends",L["Hard Mode"]),
 				time = 240,
 				flashtime = 5,
 				color1 = "BROWN",
@@ -125,11 +126,11 @@ do
 				execute = {
 					[1] = {
 						{expect = {"#4#","==","&playerguid&"}},
-						{set = {slagpotmessage = "Slag Pot: YOU!"}},
+						{set = {slagpotmessage = format("%s: %s!",SN[62717],L["YOU"])}},
 					},
 					[2] = {
 						{expect = {"#4#","~=","&playerguid&"}},
-						{set = {slagpotmessage = "Slag Pot: #5#"}},
+						{set = {slagpotmessage = format("%s: #5#",SN[62717])}},
 					},
 					[3] = {
 						{alert = "slagpotdur"},

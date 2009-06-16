@@ -1,4 +1,6 @@
 --[[
+	The invoker executes commands in encounter data
+
 	Terminology:
 	
 	A command line is a hash table with one key (the command) and a value
@@ -16,9 +18,16 @@
 		tracing
 		proximitycheck
 		raidicon
+
+TODO:
+	Sync start/stopping
+	Register COMBAT_LOG_EVENT_UNFILTERED onstart, unregister onstop
 ]]
 
 local DXE = DXE
+local version = tonumber(("$Rev$"):sub(7, -3))
+DXE.version = version > DXE.version and version or DXE.version
+local L = DXE.L
 
 local type,next,select = type,next,select
 local ipairs,pairs,unpack = ipairs,pairs,unpack
@@ -74,7 +83,7 @@ function Invoker:OnStart()
 	if CE.onstart then
 		self:InvokeCommands(CE.onstart)
 	end
-	DXE:SetTracing(CE.tracing)
+	DXE:SetTracing(CE.onactivate.tracing)
 	-- Reset colors
 	for i,hw in ipairs(HW) do
 		if hw:IsOpen() and not hw.tracer:First() then
@@ -391,7 +400,6 @@ end
 -- TIMERS
 ---------------------------------------------
 local Timers = {}
-Invoker.Timers = Timers
 
 local function canceltimer(name)
 	if Timers[name] then
@@ -672,7 +680,7 @@ function Invoker:RegisterEvents()
 		if info.type == "combatevent" then
 			-- Register combat log event
 			self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED","COMBAT_EVENT")
-			CombatEvents[info.eventtype] = CombatEvents[info.eventtype] or {}
+			CombatEvents[info.eventtype] = CombatEvents[info.eventtype] or DXE.new()
 			if not info.spellid then
 				CombatEvents[info.eventtype]["*"] = info.execute
 			else
@@ -696,7 +704,10 @@ end
 
 function Invoker:WipeEvents()
 	wipe(RegEvents)
-	wipe(CombatEvents)
+	for k,v in pairs(CombatEvents) do
+		if type(v) == "table" then DXE.delete(v) end
+		CombatEvents[k] = nil
+	end
 	self:UnregisterAllEvents()
 end
 

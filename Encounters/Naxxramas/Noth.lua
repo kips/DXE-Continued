@@ -1,18 +1,21 @@
 do
+	local L,SN = DXE.L,DXE.SN
+
+	local L_NothThePlaguebringer = L["Noth the Plaguebringer"]
+
 	local data = {
 		version = "$Rev$",
 		key = "noththeplaguebringer", 
-		zone = "Naxxramas", 
-		name = "Noth the Plaguebringer", 
-		title = "Noth the Plaguebringer", 
-		tracing = {"Noth the Plaguebringer",},
+		zone = L["Naxxramas"], 
+		name = L_NothThePlaguebringer, 
 		triggers = {
-			scan = "Noth the Plaguebringer", 
+			scan = {L_NothThePlaguebringer,L["Plagued Champion"],L["Plagued Guardian"]}, 
 		},
 		onactivate = {
+			tracing = {L_NothThePlaguebringer,},
 			autostart = true,
 			autostop = true,
-			-- No leavecombat because a hunter could feign when he's on the balcony
+			leavecombat = true,
 		},
 		userdata = { 
 			roomtime = {90,110,180,loop=false},
@@ -20,16 +23,17 @@ do
 		},
 		onstart = {
 			[1] = {
-				{alert = "blinkcd"},
 				{alert = "teleportbalc"},
+				{expect = {"&difficulty&","==","2"}},
+				{alert = "blinkcd"},
 			}
 		},
 		alerts = {
 			blinkcd = {
 				var = "blinkcd", 
-				varname = "Blink cooldown", 
+				varname = format(L["%s Cooldown"],SN[29208]),
 				type = "dropdown", 
-				text = "Blink Cooldown", 
+				text = format(L["%s Cooldown"],SN[29208]),
 				time = 30, 
 				flashtime = 5, 
 				sound = "ALERT1", 
@@ -37,27 +41,27 @@ do
 			},
 			teleportbalc = {
 				var = "teleportbalc", 
-				varname = "Teleport to balcony", 
+				varname = L["Teleport To Balcony"], 
 				type = "dropdown", 
-				text = "Noth Teleports", 
+				text = L["Teleport To Balcony"], 
 				time = "<roomtime>", 
 				flashtime = 5, 
 				sound = "ALERT2", 
 			},
 			teleportroom = {
 				var = "teleportroom", 
-				varname = "Teleport to room", 
+				varname = L["Teleport To Room"], 
 				type = "dropdown", 
-				text = "Noth Returns", 
+				text = L["Teleport To Room"], 
 				time = "<balconytime>", 
 				flashtime = 5, 
 				sound = "ALERT2", 
 			},
 			cursewarn = {
 				var = "cursewarn", 
-				varname = "Curse warning", 
+				varname = format(L["%s Warning"],L["Curse"]),
 				type = "simple", 
-				text = "Curse Casted. Decurse!", 
+				text = format(L["%s Casted"],L["Curse"]).."!",
 				time = 1.5, 
 				sound = "ALERT3", 
 			},
@@ -70,7 +74,6 @@ do
 				spellid = {29213,54835}, 
 				execute = {
 					[1] = {
-						
 						{alert = "cursewarn"}, 
 					},
 				},
@@ -81,16 +84,16 @@ do
 				event = "CHAT_MSG_RAID_BOSS_EMOTE", 
 				execute = {
 					[1] = {
-						{expect = {"#1#","find","blinks away"}},
+						{expect = {"#1#","find",L["blinks away"]}},
 						{alert = "blinkcd"}, 
 					},
 					[2] = {
-						{expect = {"#1#","find","teleports to the balcony"}},
+						{expect = {"#1#","find",L["teleports to the balcony"]}},
 						{quash = "blinkcd"},
 						{alert = "teleportroom"}, 
 					},
 					[3] = {
-						{expect = {"#1#","find","teleports back into battle"}},
+						{expect = {"#1#","find",L["teleports back into battle"]}},
 						{alert = "teleportbalc"}, 
 					},
 				},

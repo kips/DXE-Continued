@@ -1,15 +1,18 @@
 do
+	local L,SN = DXE.L,DXE.SN
+
+	local L_Maexxna = L["Maexxna"]
+
 	local data = {
 		version = "$Rev$",
 		key = "maexxna", 
-		zone = "Naxxramas", 
-		name = "Maexxna", 
-		title = "Maexxna", 
-		tracing = {"Maexxna",},
+		zone = L["Naxxramas"], 
+		name = L_Maexxna, 
 		triggers = {
-			scan = "Maexxna", 
+			scan = L_Maexxna, 
 		},
 		onactivate = {
+			tracing = {L_Maexxna,},
 			autostart = true,
 			autostop = true,
 			leavecombat = true,
@@ -24,9 +27,9 @@ do
 		alerts = {
 			spraycd = {
 				var = "spraycd", 
-				varname = "Web spray cooldown", 
+				varname = format(L["%s Cooldown"],SN[29484]),
 				type = "dropdown", 
-				text = "Next Web Spray", 
+				text = format(L["Next %s"],SN[29484]),
 				time = 40, 
 				flashtime = 5, 
 				sound = "ALERT1", 
@@ -34,9 +37,9 @@ do
 			},
 			spidercd = {
 				var = "spidercd", 
-				varname = "Spider cooldown", 
+				varname = format(L["%s Cooldown"],L["Spider"]),
 				type = "dropdown", 
-				text = "Spiders Spawn", 
+				text = format(L["%s Spawns"],L["Spider"]),
 				time = 30, 
 				flashtime = 5, 
 				sound = "ALERT2", 
@@ -44,11 +47,10 @@ do
 			},
 			enragewarn = {
 				var = "enragewarn", 
-				varname = "Enrage warning", 
+				varname = format(L["%s Warning"],L["Enrage"]),
 				type = "simple", 
-				text = "Enraged!", 
+				text = format("%s!",L["Enraged"]),
 				time = 1.5, 
-				flashtime = 0, 
 				sound = "ALERT3", 
 			},
 		},
@@ -66,13 +68,13 @@ do
 					},
 				},
 			},
-			-- Enraged
+			-- Enrage
 			[2] = {
-				type = "event", 
-				event = "CHAT_MSG_RAID_BOSS_EMOTE", 
+				type = "combatevent", 
+				eventtype = "SPELL_AURA_APPLIED",
+				spellid = {54123,54124},
 				execute = {
 					[1] = {
-						{expect = {"#1#","find","becomes enraged"}},
 						{alert = "enragewarn"},
 					},
 				},

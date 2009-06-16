@@ -1,15 +1,16 @@
 do
+	local L,SN = DXE.L,DXE.SN
+
 	local data = {
 		version = "$Rev$",
 		key = "auriaya", 
-		zone = "Ulduar", 
-		name = "Auriaya", 
-		title = "Auriaya", 
-		tracing = {"Auriaya","Feral Defender"},
+		zone = L["Ulduar"], 
+		name = L["Auriaya"], 
 		triggers = {
-			scan = "Auriaya", 
+			scan = {L["Auriaya"],L["Feral Defender"],L["Sanctum Sentry"]}, 
 		},
 		onactivate = {
+			tracing = {L["Auriaya"],L["Feral Defender"]},
 			autostart = true,
 			autostop = true,
 			leavecombat = true,
@@ -17,6 +18,7 @@ do
 		userdata = {
 			livecount = 8,
 			screechtime = 32,
+			guardianswarmtext = "",
 		},
 		onstart = {
 			[1] = {
@@ -30,8 +32,8 @@ do
 			screechcd = {
 				type = "dropdown",
 				var = "screechcd",
-				varname = "Terrifying Screech cooldown",
-				text = "Terrifying Screech Cooldown",
+				varname = format(L["%s Cooldown"],SN[64386]),
+				text = format(L["%s Cooldown"],SN[64386]),
 				time = "<screechtime>",
 				flashtime = 5,
 				color1 = "PURPLE",
@@ -41,17 +43,17 @@ do
 			sentinelwarn = {
 				type = "simple",
 				var = "sentinelwarn",
-				varname = "Sentinel Blast warning",
-				text = "Sentinel Blast Casted!",
+				varname = format(L["%s Warning"],SN[64389]),
+				text = format(L["%s Casted"],SN[64389]).."!",
 				time = 1.5,
 				color1 = "BLUE",
 				sound = "ALERT2",
 			},
 			sonicscreechwarn = {
 				var = "sonicscreechwarn",
-				varname = "Sonic Screech cast",
+				varname = format(L["%s Cast"],SN[64422]),
 				type = "centerpopup",
-				text = "Sonic Screech Cast",
+				text = format(L["%s Cast"],SN[64422]),
 				time = 2.5,
 				color1 = "MAGENTA",
 				color2 = "MAGENTA",
@@ -59,41 +61,39 @@ do
 			},
 			sonicscreechcd = {
 				var = "sonicscreechcd",
-				varname = "Sonic Screech cooldown",
+				varname = format(L["%s Cooldown"],SN[64422]),
 				type = "dropdown",
-				text = "Sonic Screech Cooldown",
+				text = format(L["%s Cooldown"],SN[64422]),
 				time = 28,
 				flashtime = 5,
 				color1 = "YELLOW",
 				color2 = "INDIGO",
 				sound = "ALERT4",
 			},
-			
 			guardianswarmcd = {
 				var = "guardianswarmcd",
-				varname = "Guardian Swarm Cooldown",
+				varname = format(L["%s Cooldown"],SN[64396]),
 				type = "dropdown",
-				text = "Guardian Swarm Cooldown",
+				text = format(L["%s Cooldown"],SN[64396]),
 				time = 37,
 				flashtime = 5,
 				color1 = "GREEN",
 				color2 = "GREEN",
 				sound = "ALERT5",
 			},
-			--[[
-			guardianswarmdurother = {
-				var = "guardianswarmdur",
-				varname = "Guardian Swarm duration",
-				type = "centerpopup",
-				text = "Swarm: #5#!",
-				time = 37,
-				color1 = "GREEN",
+			guardianswarmwarn = {
+				var = "guardianswarmwarn",
+				varname = format(L["%s Warning"],SN[64396]),
+				type = "simple",
+				text = format("%s: <guardianswarmtext>",SN[64396]),
+				time = 1.5,
+				color1 = "ORANGE",
+				sound = "ALERT8",
 			},
-			]]
 			feraldefenderspawn = {
 				var = "feraldefenderspawn",
-				varname = "Feral Defender spawns",
-				text = "Feral Defender Spawns",
+				varname = format(L["%s Spawn"],L["Feral Defender"]),
+				text = format(L["%s Spawn"],L["Feral Defender"]),
 				type = "dropdown",
 				time = 60,
 				flashtime = 5,
@@ -101,29 +101,11 @@ do
 				color2 = "DCYAN",
 				sound = "ALERT8",
 			},
-			feraldefenderlives = {
-				var = "feraldefenderlives",
-				varname = "Feral Defender lives",
-				type = "simple",
-				text = "Defender Lives: <livecount>/9",
-				time = 1.5,
-				color1 = "BROWN",
-				sound = "ALERT6",
-			},
-			feraldefenderlivesremoval = {
-				var = "feraldefenderlivesremoval",
-				varname = "Feral Defender lives removal",
-				type = "simple",
-				text = "Defender Lives: <livecount>/9",
-				time = 1.5,
-				color1 = "BROWN",
-				sound = "ALERT6",
-			},
 			enragecd = {
 				var = "enragecd",
-				varname = "Enrage",
+				varname = L["Enrage"],
 				type = "dropdown",
-				text = "Enrage",
+				text = L["Enrage"],
 				time = 600,
 				flashtime = 5,
 				color1 = "RED",
@@ -172,38 +154,16 @@ do
 				spellid = 64396,
 				execute = {
 					[1] = {
-						{alert = "guardianswarmcd"}
-						--{expect = {"&playerguid&","==","#4#"}},
-						--{alert = "guardianswarmdurself"},
+						{expect = {"&playerguid&","==","#4#"}},
+						{set = {guardianswarmtext = L["YOU"].."!"}},
 					},
-					--[[
 					[2] = {
 						{expect = {"&playerguid&","~=","#4#"}},
-						{alert = "guardianswarmdurother"},
+						{set = {guardianswarmtext = "#5#"}},
 					},
-					]]
-				},
-			},
-			-- Feral Defender - Feral Essence
-			[5] = {
-				type = "combatevent",
-				eventtype = "SPELL_AURA_APPLIED",
-				spellid = 64455,
-				execute = {
-					[1] = {
-						{alert = "feraldefenderlives"},
-					},
-				},
-			},
-			-- Feral Defender - Feral Essence Removal => Kill
-			[6] = {
-				type = "combatevent",
-				eventtype = "SPELL_AURA_REMOVED_DOSE",
-				spellid = 64455,
-				execute = {
-					[1] = {
-						{set = {livecount = "DECR|1"}},
-						{alert = "feraldefenderlivesremoval"},
+					[3] = {
+						{alert = "guardianswarmcd"},
+						{alert = "guardianswarmwarn"},
 					},
 				},
 			},
@@ -212,5 +172,7 @@ do
 
 	DXE:RegisterEncounter(data)
 end
+
+
 
 

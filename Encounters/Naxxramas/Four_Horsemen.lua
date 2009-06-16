@@ -1,15 +1,16 @@
 do
+	local L,SN = DXE.L,DXE.SN
+
 	local data = {
 		version = "$Rev$",
 		key = "fourhorsemen", 
-		zone = "Naxxramas", 
-		name = "Four Horsemen",
-		title = "Four Horsemen",
-		tracing = {"Thane Korth'azz","Baron Rivendare","Lady Blaumeux","Sir Zeliek"},
+		zone = L["Naxxramas"], 
+		name = L["The Four Horsemen"],
 		triggers = {
-			scan = "Thane Korth'azz", 
+			scan = {L["Thane Korth'azz"],L["Baron Rivendare"],L["Lady Blaumeux"],L["Sir Zeliek"]},
 		},
 		onactivate = {
+			tracing = {L["Thane Korth'azz"],L["Baron Rivendare"],L["Lady Blaumeux"],L["Sir Zeliek"]},
 			autostart = true,
 			leavecombat = true,
 		},
@@ -18,25 +19,25 @@ do
 		alerts = {
 			voidzonecd = {
 				var = "voidzonecd",
-				varname = "Void zone cooldown",
+				varname = format(L["%s Cooldown"],SN[28863]),
 				type = "dropdown",
-				text = "Void Zone Cooldown",
+				text = format(L["%s Cooldown"],SN[28863]),
 				time = 12,
 				color1 = "MAGENTA",
 			},
 			meteorcd = {
 				var = "meteorcd",
-				varname = "Meteor cooldown",
+				varname = format(L["%s Cooldown"],SN[28884]),
 				type = "dropdown",
-				text = "Meteor Cooldown",
+				text = format(L["%s Cooldown"],SN[28884]),
 				time = 12,
 				color1 = "RED",
 			},
 			wrathcd = {
 				var = "wrathcd",
-				varname = "Holy wrath cooldown",
+				varname = format(L["%s Cooldown"],SN[28883]),
 				type = "dropdown",
-				text = "Holy Wrath Cooldown",
+				text = format(L["%s Cooldown"],SN[28883]),
 				time = 12,
 				color1 = "YELLOW",
 			},
@@ -81,15 +82,15 @@ do
 				eventtype = "UNIT_DIED",
 				execute = {
 					[1] = {
-						{expect = {"#5#","==","Sir Zeliek"},},
+						{expect = {"#5#","==",L["Sir Zeliek"]},},
 						{quash = "wrathcd"},
 					},
 					[2] = {
-						{expect = {"#5#","==","Thane Korth'azz"},},
+						{expect = {"#5#","==",L["Thane Korth'azz"]},},
 						{quash = "meteorcd"},
 					},
 					[3] = {
-						{expect = {"#5#","==","Lady Blaumeux"},},
+						{expect = {"#5#","==",L["Lady Blaumeux"]},},
 						{quash = "voidzonecd"},
 					},
 				},

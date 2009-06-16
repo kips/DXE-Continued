@@ -1,7 +1,12 @@
-local UIParent = UIParent
 local DXE = DXE
+local version = tonumber(("$Rev$"):sub(7, -3))
+DXE.version = version > DXE.version and version or DXE.version
+local L = DXE.L
+
+local UIParent = UIParent
 local AceGUI = DXE.AceGUI
 local AceTimer = DXE.AceTimer
+local format = string.format
 local Colors,Sounds = DXE.Constants.Colors,DXE.Constants.Sounds
 
 local GetTime,PlaySoundFile,ipairs,pairs,next,remove = 
@@ -10,6 +15,11 @@ local GetTime,PlaySoundFile,ipairs,pairs,next,remove =
 local scale
 
 local animationTime = 0.3
+local fadeTime = 0.5
+
+---------------------------------------
+-- ALERT LOCALIZATION STRINGS
+---------------------------------------
 
 ---------------------------------------
 -- INITIALIZATION
@@ -25,11 +35,11 @@ local TopStackAnchor,CenterStackAnchor
 
 function Alerts:OnInitialize()
 	-- Top stack anchor
-	TopStackAnchor = DXE:CreateLockableFrame("AlertsTopStackAnchor",245,10,"Alerts - Top Anchor")
+	TopStackAnchor = DXE:CreateLockableFrame("AlertsTopStackAnchor",245,10,format("%s - %s",L["Alerts"],L["Top Anchor"]))
 	DXE:RegisterMoveSaving(TopStackAnchor,"TOP","UIParent","TOP",0,-16)
 
 	-- Bottom stack anchor
-	CenterStackAnchor = DXE:CreateLockableFrame("AlertsCenterStackAnchor",245,10,"Alerts - Center Anchor")
+	CenterStackAnchor = DXE:CreateLockableFrame("AlertsCenterStackAnchor",245,10,format("%s - %s",L["Alerts"],L["Center Anchor"]))
 	DXE:RegisterMoveSaving(CenterStackAnchor,"CENTER","UIParent","CENTER",0,100)
 
 	scale = DXE.db.global.AlertsScale
@@ -106,8 +116,7 @@ do
 
 	function Prototype:LayoutAlertStack(stack,anchor)
 		sort(stack, SortFunc)
-		for i=1,#stack do
-			local alert = stack[i]
+		for alert in ipairs(stack) do
 			alert:ClearAllPoints()
 			alert:SetPoint("TOP",anchor,"BOTTOM")
 			anchor = alert
@@ -132,7 +141,7 @@ do
 	local function AnimationFunc(self,time)
 		local data = self.data
 		local perc = (time - data.t0) / animationTime
-		if perc > 1 then 
+		if perc > 1 or perc < 0 then 
 			self.animFunc = nil
 			self:AnchorToCenter()
 			return 
@@ -144,6 +153,7 @@ do
 	end
 
 	function Prototype:TranslateToCenter()
+		self:RemoveFromStacks()
 		local worldscale,escale = UIParent:GetEffectiveScale(),self:GetEffectiveScale()
 		local fx,fy = self:GetCenter()
 		fy = fy + self:GetHeight()/2
@@ -231,7 +241,7 @@ end
 
 local UIFrameFadeOut = UIFrameFadeOut
 function Prototype:Fade()
-	UIFrameFadeOut(self,2,self:GetAlpha(),0)
+	UIFrameFadeOut(self,fadeTime,self:GetAlpha(),0)
 end
 
 function Prototype:SetID(id)
@@ -359,7 +369,7 @@ function Alerts:Dropdown(id, text, totalTime, flashTime, sound, c1, c2)
 		else alert:ScheduleTimer("TranslateToCenter",waitTime) end
 	end
 	alert:ScheduleTimer("Fade",totalTime)
-	alert:ScheduleTimer("Destroy",totalTime+2)
+	alert:ScheduleTimer("Destroy",totalTime+fadeTime)
 	return alert
 end
 
@@ -377,7 +387,7 @@ function Alerts:CenterPopup(id, text, totalTime, flashTime, sound, c1, c2)
 	alert:SetSound(soundFile)
 	alert:AnchorToCenter()
 	alert:ScheduleTimer("Fade",totalTime)
-	alert:ScheduleTimer("Destroy",totalTime+2)
+	alert:ScheduleTimer("Destroy",totalTime+fadeTime)
 	return alert
 end
 
@@ -394,7 +404,7 @@ function Alerts:Simple(text, totalTime, sound, c1)
 	alert:SetSound(soundFile)
 	alert:AnchorToCenter()
 	alert:ScheduleTimer("Fade",totalTime)
-	alert:ScheduleTimer("Destroy",totalTime+2)
+	alert:ScheduleTimer("Destroy",totalTime+fadeTime)
 	return alert
 end
 

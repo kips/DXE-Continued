@@ -3,6 +3,10 @@
 -- Based off AceConfig's validation
 ---------------------------------------------
 
+local DXE = DXE
+local version = tonumber(("$Rev$"):sub(7, -3))
+DXE.version = version > DXE.version and version or DXE.version
+
 local ipairs,pairs = ipairs,pairs
 local gmatch,match = string.gmatch,string.match
 local assert,type,select = assert,type,select
@@ -32,19 +36,19 @@ local optboolean = {["boolean"] = true, ["nil"] = true, _ = "boolean or nil"}
 
 local baseKeys = {
 	version = optnumberstring,
-	key = optstring,
+	key = isstring,
 	zone = isstring,
 	name = isstring,
-	title = isstring,
+	title = optstring,
 	onstart = opttable,
 	onacquired = opttable,
 	timers = opttable,
 	userdata = opttable,
 	events = opttable,
 	alerts = opttable,
-	tracing = opttable,
 	onactivate = opttable,
 	triggers = opttable,
+	category = optstring,
 }
 
 local baseLineKeys = {
@@ -90,6 +94,7 @@ local baseTables = {
 		autostop = optboolean,
 		entercombat = optboolean,
 		leavecombat = optboolean,
+		tracing = opttable,
 	},
 }
 
@@ -181,6 +186,9 @@ local function validateTracing(tbl,errlvl,...)
 	validateIsArray(tbl,errlvl,"tracing",...)
 	if #tbl > 4 or #tbl == 0 then
 		err(": not an array with 1 <= size <= 4",errlvl,"tracing",...)
+	end
+	for k,v in ipairs(tbl) do
+		validateVal(v,isstring,errlvl,"tracing",...)
 	end
 end
 
@@ -377,8 +385,6 @@ local function validate(data,errlvl,...)
 				validateVal(bundle,istable,errlvl,name,"timers",...)
 				validateCommandBundle(data,bundle,errlvl,name,"timers",...)
 			end
-		elseif k == "tracing" and data.tracing then
-			validateTracing(data.tracing,errlvl,...)
 		end
 	end
 
@@ -387,6 +393,11 @@ local function validate(data,errlvl,...)
 		if data[tblName] then
 			for k,oktypes in pairs(tbl) do
 				validateVal(data[tblName][k],oktypes,errlvl,k,tblName,...)
+				if tblName == "onactivate" then
+					if k == "tracing" and data.onactivate.tracing then
+						validateTracing(data.onactivate.tracing,errlvl,tblName,...)
+					end
+				end
 			end
 			for k in pairs(data[tblName]) do
 				if not tbl[k] then
@@ -410,6 +421,6 @@ end
 
 function DXE:ValidateData(data)
 	errlvl=(errlvl or 0)+1
-	local name = data.name or "Data"
+	local name = data.name or data.key or "Data"
 	validate(data,errlvl,name)
 end

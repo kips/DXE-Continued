@@ -2,8 +2,13 @@
 	Credits to Bazaar
 ]]
 
+local DXE = DXE
+local version = tonumber(("$Rev$"):sub(7, -3))
+DXE.version = version > DXE.version and version or DXE.version
+local L = DXE.L
+
 local AceGUI = DXE.AceGUI
-local DXE,Colors = DXE,DXE.Constants.Colors
+local Colors = DXE.Constants.Colors
 local PlayerName
 
 local ipairs, pairs = ipairs, pairs
@@ -21,7 +26,7 @@ function Distributor:OnInitialize()
 	PlayerName = UnitName("player")
 	DXE:AddPluginOptions("distributor",self:GetOptions())
 
-	StackAnchor = DXE:CreateLockableFrame("DistributorStackAnchor",200,10,"Download/Upload Anchor")
+	StackAnchor = DXE:CreateLockableFrame("DistributorStackAnchor",200,10,L["Download/Upload Anchor"])
 	DXE:RegisterMoveSaving(StackAnchor,"CENTER","UIParent","CENTER",0,300)
 end
 
@@ -90,27 +95,27 @@ function Distributor:GetOptions()
 	return {
 		dist_group = {
 			type = "group",
-			name = "Distributor",
+			name = L["Distributor"],
 			order = 300,
 			get = function(info) return DXE.db.global.Distributor[info[#info]] end,
 			set = function(info,value) DXE.db.global.Distributor[info[#info]] = value end,
 			args = {
 				AutoAccept = {
 					type = "toggle",
-					name = "Auto accept",
+					name = L["Auto accept"],
 					order = 50,
 				},
 				blank = DXE.genblank(75),
 				ListSelect = {
 					type = "select",
 					order = 100,
-					name = "Select an encounter",
+					name = L["Select an encounter"],
 					get = function() return ListSelect end,
 					set = function(info,value) ListSelect = value end,
 					values = function()
 						wipe(EncNames)
 						for k in pairs(DXE.EDB) do
-							if k ~= "Default" then
+							if k ~= "default" then
 								EncNames[k] = k
 							end
 						end
@@ -119,17 +124,18 @@ function Distributor:GetOptions()
 				},
 				send_raid_group = {
 					type = "group",
-					name = "Raid Distributing",
+					name = L["Raid Distributing"],
 					order = 120,
 					inline = true,
 					args = {
 						DistributeToRaid = {
 							type = "execute",
-							name = "Send to raid",
+							name = L["Send to raid"],
 							order = 100,
 							func = function() Distributor:Distribute(ListSelect) end,
 							disabled = function() return not ListSelect end,
 						},
+						--[[
 						DistributeAllToRaid = {
 							type = "execute",
 							name = "Send all to raid",
@@ -142,11 +148,12 @@ function Distributor:GetOptions()
 							confirm = true,
 							confirmText = "Are you sure you want to do this?",
 						},
+						]]
 					},
 				},
 				send_player_group = {
 					type = "group",
-					name = "Player Distributing",
+					name = L["Player Distributing"],
 					order = 200,
 					inline = true,
 					disabled = function() return not ListSelect end,
@@ -154,7 +161,7 @@ function Distributor:GetOptions()
 						PlayerSelect = {
 							type = "select",
 							order = 100,
-							name = "Select a player",
+							name = L["Select a player"],
 							get = function() return PlayerSelect end,
 							set = function(info,value) PlayerSelect = value end,
 							values = function()
@@ -173,10 +180,11 @@ function Distributor:GetOptions()
 						DistributeToPlayer = {
 							type = "execute",
 							order = 300,
-							name = "Send to player",
+							name = L["Send to player"],
 							func = function() Distributor:Distribute(ListSelect, "WHISPER", PlayerSelect) end,
 							disabled = function() return not PlayerSelect end,
 						},
+						--[[
 						DistributeAllToPlayer = {
 							type = "execute",
 							order = 400,
@@ -190,6 +198,7 @@ function Distributor:GetOptions()
 							confirm = true,
 							confirmText = "Are you sure you want to do this?",
 						},
+						]]
 					},
 				},
 			},
@@ -217,7 +226,7 @@ end
 function Distributor:Distribute(name, dist, target)
 	dist = dist or "RAID"
 	local data = DXE:GetEncounterData(name)
-	if not data or Uploads[name] or name == "Default" or GetNumRaidMembers() == 0 then return end
+	if not data or Uploads[name] or name == "default" or GetNumRaidMembers() == 0 then return end
 	if DXE.tablesize(Uploads) == 4 then UploadQueue[name] = self:Serialize(name,dist,target) return end
 	local serialData = self:Serialize(data)
 	local length = len(serialData)
@@ -225,7 +234,7 @@ function Distributor:Distribute(name, dist, target)
 
 	-- Create upload bar
 	local bar = self:GetProgressBar()
-	bar:SetText(format("Waiting for %s responses",firstword(name)))
+	bar:SetText(format(L["Waiting for %s responses"],firstword(name)))
 	bar:SetColor(Colors.GREY)
 	local dest = (dist == "WHISPER") and 1 or (DXE.tablesize(DXE.RosterVersions) - 1)
 
@@ -274,7 +283,7 @@ function Distributor:StartReceiving(name,length,sender,dist)
 
 	-- Create download bar
 	local bar = self:GetProgressBar()
-	bar:SetText(format("In queue for %s download",firstword(name)))
+	bar:SetText(format(L["In queue for %s download"],firstword(name)))
 	bar:SetColor(Colors.GREY)
 	bar.userdata.timeleft = 40
 	bar.userdata.totaltime = 40
@@ -307,7 +316,7 @@ function Distributor:DownloadReceived(prefix, msg, dist, sender)
 
 	local success, data = self:Deserialize(msg)
 	-- Failed to deserialize
-	if not success then DXE:Print(format("Failed to load %s after downloading! Request another distribute from %s",name,dl.sender)) return end
+	if not success then DXE:Print(format(L["Failed to load %s after downloading! Request another distribute from %s"],name,dl.sender)) return end
 
 	-- Unregister
 	DXE:UnregisterEncounter(name)
@@ -356,7 +365,7 @@ function Distributor:OnCommReceived(prefix, msg, dist, sender)
 		local popupname = format("DXE_Confirm_%s",name)
 		if not StaticPopupDialogs[popupname] then
 			local STATIC_CONFIRM = {
-				text = format("%s is sharing an update for %s",sender,firstword(name)),
+				text = format(L["%s is sharing an update for %s"],sender,firstword(name)),
 				OnAccept = function() self:StartReceiving(name,length,sender,dist)
 											 self:Respond(format("RESPONSE:%s:%s",name,"YES"),sender)
 							  end,
@@ -382,7 +391,7 @@ function Distributor:OnCommReceived(prefix, msg, dist, sender)
 			ul.declines = ul.declines + 1
 		end
 
-		ul.bar:SetFormattedText("Waiting for %s responses %d/%d",firstword(name),ul.accepts+ul.declines,ul.dest)
+		ul.bar:SetFormattedText(L["Waiting for %s responses %d/%d"],firstword(name),ul.accepts+ul.declines,ul.dest)
 
 		if ul.dest == ul.accepts + ul.declines then
 			self:CancelTimer(ul.timer,true)
@@ -415,7 +424,7 @@ function Distributor:CHAT_MSG_ADDON(_,prefix, msg, dist, sender)
 			elseif mark == NEXT_MULTIPART or mark == LAST_MULTIPART then
 				local perc = dl.received/dl.length
 				dl.bar:SetValue(perc)
-				dl.bar:SetFormattedText("Downloaded %s %d%%",firstword(name),perc*100)
+				dl.bar:SetFormattedText(L["Downloaded %s %d%%"],firstword(name),perc*100)
 			end	
 		end
 
@@ -429,7 +438,7 @@ function Distributor:CHAT_MSG_ADDON(_,prefix, msg, dist, sender)
 			elseif mark == NEXT_MULTIPART or mark == LAST_MULTIPART then
 				local perc = ul.sent/ul.length
 				ul.bar:SetValue(perc)
-				ul.bar:SetFormattedText("Uploaded %s %d%%",firstword(name),perc*100)
+				ul.bar:SetFormattedText(L["Uploaded %s %d%%"],firstword(name),perc*100)
 				if mark == LAST_MULTIPART then
 					self:ULCompleted(name)
 				end
@@ -443,13 +452,13 @@ end
 ----------------------------------
 
 function Distributor:DLCompleted(name,sender)
-	DXE:Print(format("%s successfully updated from %s",name,sender))
-	self:LoadCompleted(name,Downloads[name],"Download Completed",Colors.GREEN,"RemoveDL")
+	DXE:Print(format(L["%s successfully updated from %s"],name,sender))
+	self:LoadCompleted(name,Downloads[name],L["Download Completed"],Colors.GREEN,"RemoveDL")
 end
 
 function Distributor:DLTimeout(name)
-	DXE:Print(format("%s updating timed out",name))
-	self:LoadCompleted(name,Downloads[name],"Download Timed Out",Colors.Red,"RemoveDL")
+	DXE:Print(format(L["%s updating timed out"],name))
+	self:LoadCompleted(name,Downloads[name],L["Download Timed Out"],Colors.Red,"RemoveDL")
 end
 
 function Distributor:QueueNextUL()
@@ -461,14 +470,14 @@ function Distributor:QueueNextUL()
 end
 
 function Distributor:ULCompleted(name)
-	DXE:Print(format("%s successfully sent",name))
-	self:LoadCompleted(name,Uploads[name],"Upload Completed",Colors.GREEN,"RemoveUL")
+	DXE:Print(format(L["%s successfully sent"],name))
+	self:LoadCompleted(name,Uploads[name],L["Upload Completed"],Colors.GREEN,"RemoveUL")
 	self:QueueNextUL()
 end
 
 function Distributor:ULTimeout(name)
-	DXE:Print(format("%s sending timed out",name))
-	self:LoadCompleted(name,Uploads[name],"Upload Timed Out",Colors.RED,"RemoveUL")
+	DXE:Print(format(L["%s sending timed out"],name))
+	self:LoadCompleted(name,Uploads[name],L["Upload Timed Out"],Colors.RED,"RemoveUL")
 	self:QueueNextUL()
 end
 

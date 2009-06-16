@@ -1,15 +1,23 @@
 do
+	local L,SN = DXE.L,DXE.SN
+
 	local data = {
 		version = "$Rev$",
 		key = "freya", 
-		zone = "Ulduar", 
-		name = "Freya", 
-		title = "Freya", 
-		tracing = {"Freya"},
+		zone = L["Ulduar"], 
+		name = L["Freya"], 
 		triggers = {
-			scan = "Freya", 
+			scan = {
+				L["Freya"], 
+				L["Snaplasher"],
+				L["Storm Lasher"],
+				L["Ancient Water Spirit"],
+				L["Ancient Conservator"],
+				L["Detonating Lasher"],
+			}
 		},
 		onactivate = {
+			tracing = {L["Freya"]},
 			autostart = true,
 			autostop = true,
 			leavecombat = true,
@@ -21,14 +29,13 @@ do
 			[1] = {
 				{alert = "spawncd"},
 				{alert = "enragecd"},
-				--{alert = "groundtremorcd"},
 			},
 		},
 		alerts = {
 			spawncd = {
 				var = "spawncd",
-				varname = "Minion spawn cooldown",
-				text = "Next Minion Spawn",
+				varname = format(L["%s Timer"],SN[62678]),
+				text = SN[62678],
 				type = "dropdown",
 				time = "<spawntime>",
 				flashtime = 5,
@@ -36,45 +43,25 @@ do
 			},
 			giftwarn = {
 				var = "giftwarn",
-				varname = "Eonar's Gift spawn warning",
+				varname = format(L["%s Warning"],L["Eonar's Gift"]),
 				type = "simple",
-				text = "Eonar's Gift Spawned!",
-				time = 1.5,
+				text = format(L["%s Spawned"],L["Eonar's Gift"]).."!",
+				time = 3,
 				sound = "ALERT2",
 				color1 = "VIOLET",
 			},
 			attunedwarn = {
 				var = "attunedwarn",
 				type = "simple",
-				varname = "Attuned to Nature removal warning",
-				text = "Attuned to Nature Removed!",
+				varname = format(L["%s Removal"],SN[62519]),
+				text = format(L["%s Removed"],SN[62519]).."!",
 				time = 1.5,
 				sound = "ALERT9",
 			},
-			--[[
-			sunbeamwarnself = {
-				var = "sunbeamwarn",
-				varname = "Sunbeam warning",
-				type = "simple",
-				text = "Sunbeam: YOU! Move!",
-				time = 1.5,
-				color1 = "GOLD",
-				sound = "ALERT4",
-			},
-			sunbeamwarnother = {
-				var = "sunbeamwarn",
-				varname = "Sunbeam warning",
-				text = "Sunbeam: &tft_unitname&",
-				type = "simple",
-				time = 1.5,
-				color1 = "GOLD",
-				sound = "ALERT4",
-			},
-			]]
 			naturesfuryself = {
 				var = "naturesfuryself",
-				varname = "Nature's Fury on self",
-				text = "Fury: YOU! MOVE NOW!",
+				varname = format(L["%s on self"],SN[62589]),
+				text = format("%s: %s! %s!",L["Fury"],L["YOU"],L["MOVE NOW"]),
 				type = "centerpopup",
 				time = 10,
 				flashtime = 10,
@@ -84,8 +71,8 @@ do
 			},
 			naturesfuryproximitywarn = {
 				var = "naturesfuryproximitywarn",
-				varname = "Nature's Fury proximity warn",
-				text = "Fury: #5#! MOVE AWAY!",
+				varname = format(L["%s Proximity Warning"],SN[62589]),
+				text = format("%s: #5#! %s!",L["Fury"],L["MOVE AWAY"]),
 				type = "simple",
 				time = 2,
 				color1 = "YELLOW",
@@ -93,9 +80,9 @@ do
 			},
 			gripwarn = {
 				var = "gripwarn",
-				varname = "Conservators Grip warning",
+				varname = format(L["%s Warning"],SN[62532]),
 				type = "simple",
-				text = "Get Under a Mushrooom!",
+				text = format("%s: %s! %s!",SN[56689],L["YOU"],L["TAKE COVER"]),
 				time = 1.5,
 				color1 = "GREEN",
 				throttle = 5,
@@ -103,18 +90,18 @@ do
 			},
 			enragecd = {
 				var = "enragecd",
-				varname = "Enrage cooldown",
+				varname = L["Enrage"],
 				type = "dropdown",
-				text = "Enrage",
+				text = L["Enrage"],
 				time = 600,
 				flashtime = 5,
 				color1 = "RED",
 			},
 			groundtremorwarn = {
 				var = "groundtremorwarn",
-				varname = "Ground Tremor warning",
+				varname = format(L["%s Cast"],SN[62437]),
 				type = "centerpopup",
-				text = "Ground Tremor Cast",
+				text = format(L["%s Cast"],SN[62437]),
 				time = 2,
 				flashtime = 2,
 				color1 = "BROWN",
@@ -123,9 +110,9 @@ do
 			},
 			groundtremorcd = {
 				var = "groundtremorcd",
-				varname = "Ground Tremor cooldown",
+				varname = format(L["%s Cooldown"],SN[62437]),
 				type = "dropdown",
-				text = "Ground Tremor Cooldown",
+				text = format(L["%s Cooldown"],SN[62437]),
 				time = 28,
 				flashtime = 5,
 				color1 = "TAN",
@@ -134,10 +121,11 @@ do
 			},
 			unstablewarnself = {
 				var = "unstablewarnself",
-				varname = "Unstable Energy warning on self",
+				varname = format(L["%s on self"],SN[62217]),
 				type = "simple",
-				text = "Unst. Energy: YOU! MOVE!",
+				text = format("%s: %s! %s!",SN[36514],L["YOU"],L["MOVE"]),
 				time = 2,
+				throttle = 3,
 				color1 = "BLACK",
 				sound = "ALERT3",
 			},
@@ -150,20 +138,22 @@ do
 				execute = {
 					-- Ancient Conservator
 					[1] = {
-						{expect = {"#1#","find","^Eonar, your servant"}},
-						{tracing = {"Freya","Ancient Conservator"}},
+						{expect = {"#1#","find",L["^Eonar, your servant"]}},
+						{tracing = {L["Freya"],L["Ancient Conservator"]}},
+						{quash = "spawncd"},
 						{alert = "spawncd"},
 					},
 					-- Detonating Lashers
 					[2] = {
-						{expect = {"#1#","find","^The swarm of the elements"}},
-						--{tracing = {"Freya"}},
+						{expect = {"#1#","find",L["^The swarm of the elements"]}},
+						{quash = "spawncd"},
 						{alert = "spawncd"},
 					},
 					-- Elementals
 					[3] = {
-						{expect = {"#1#","find","^Children, assist"}},
-						{tracing = {"Freya","Ancient Water Spirit", "Storm Lasher", "Snaplasher"}},
+						{expect = {"#1#","find",L["^Children, assist"]}},
+						{tracing = {L["Freya"],L["Ancient Water Spirit"], L["Storm Lasher"], L["Snaplasher"]}},
+						{quash = "spawncd"},
 						{alert = "spawncd"},
 					},	
 				},
@@ -174,25 +164,11 @@ do
 				event = "EMOTE",
 				execute = {
 					[1] = {
-						{expect = {"#1#","find","begins to grow!$"}},
+						{expect = {"#1#","find",L["begins to grow!$"]}},
 						{alert = "giftwarn"},
 					},
 				},
 			},
-			--[[
-			-- Sunbeam
-			[3] = {
-				type = "combatevent",
-				eventtype = "SPELL_CAST_START",
-				spellid = {62872},
-				execute = {
-					[1] = {
-						{scheduletimer = {"sunbeam",0.1}},
-						--{alert = "sunbeamcd"},
-					},
-				},
-			},
-			]]
 			-- Nature's Fury from Ancient Conservator
 			[3] = {
 				type = "combatevent",
@@ -210,13 +186,14 @@ do
 					},
 				},
 			},
-			-- Attuned to Nature
+			-- Attuned to Nature Removal
 			[4] = {
 				type = "combatevent",
 				eventtype = "SPELL_AURA_REMOVED",
 				spellid = 62519,
 				execute = {
 					[1] = {
+						{quash = "spawncd"},
 						{alert = "attunedwarn"},
 					},
 				},

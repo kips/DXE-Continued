@@ -1,15 +1,22 @@
 do
+	local L,SN = DXE.L,DXE.SN
+
+	local L_Sartharion = L["Sartharion"]
+	local L_Vesperon = L["Vesperon"]
+	local L_Shadron = L["Shadron"]
+	local L_Tenebron = L["Tenebron"]
+
 	local data = {
-		version = "$Rev$",
+		version = "$Rev: 41 $",
 		key = "sartharion", 
-		zone = "The Obsidian Sanctum", 
-		name = "Sartharion", 
-		title = "Sartharion", 
-		tracing = {"Sartharion",},
+		zone = L["The Obsidian Sanctum"], 
+		category = L["Northrend"],
+		name = L_Sartharion, 
 		triggers = {
-			scan = "Sartharion", 
+			scan = L_Sartharion, 
 		},
 		onactivate = {
+			tracing = {L_Sartharion},
 			autostart = true,
 			autostop = true,
 			leavecombat = true,
@@ -32,40 +39,40 @@ do
 				-- Tenebron, Shadron, Vesperon
 				[1] = {
 					{expect = {"<tenebronarrived> <shadronarrived> <vesperonarrived>","==","0 0 1"}},
-					{tracing = {"Sartharion","Vesperon"}},
+					{tracing = {L_Sartharion,L_Vesperon}},
 				},
 				[2] = {
 					{expect = {"<tenebronarrived> <shadronarrived> <vesperonarrived>","==","0 1 0"}},
-					{tracing = {"Sartharion","Shadron"}},
+					{tracing = {L_Sartharion,L_Shadron}},
 				},
 				[3] = {
 					{expect = {"<tenebronarrived> <shadronarrived> <vesperonarrived>","==","0 1 1"}},
-					{tracing = {"Sartharion","Shadron","Vesperon"}},
+					{tracing = {L_Sartharion,L_Shadron,L_Vesperon}},
 				},
 				[4] = {
 					{expect = {"<tenebronarrived> <shadronarrived> <vesperonarrived>","==","1 0 0"}},
-					{tracing = {"Sartharion","Tenebron"}},
+					{tracing = {L_Sartharion,L_Tenebron}},
 				},
 				[5] = {
 					{expect = {"<tenebronarrived> <shadronarrived> <vesperonarrived>","==","1 0 1"}},
-					{tracing = {"Sartharion","Tenebron","Vesperon"}},
+					{tracing = {L_Sartharion,L_Tenebron,L_Vesperon}},
 				},
 				[6] = {
 					{expect = {"<tenebronarrived> <shadronarrived> <vesperonarrived>","==","1 1 0"}},
-					{tracing = {"Sartharion","Tenebron","Shadron"}},
+					{tracing = {L_Sartharion,L_Tenebron,L_Shadron}},
 				},
 				[7] = {
 					{expect = {"<tenebronarrived> <shadronarrived> <vesperonarrived>","==","1 1 1"}},
-					{tracing = {"Sartharion","Tenebron","Shadron","Vesperon"}},
+					{tracing = {L_Sartharion,L_Tenebron,L_Shadron,L_Vesperon}},
 				},
 			},
 		},
 		alerts = {
 			lavawallcd = {
 				var = "lavawallcd", 
-				varname = "Lava Wall cooldown", 
+				varname = format(L["%s Cooldown"],L["Lava Wall"]),
 				type = "dropdown", 
-				text = "Lava Wall Cooldown", 
+				text = format(L["%s Cooldown"],L["Lava Wall"]),
 				time = 25, 
 				flashtime = 5, 
 				sound = "ALERT3", 
@@ -73,9 +80,9 @@ do
 			},
 			lavawallwarn = {
 				var = "lavawallwarn", 
-				varname = "Lava Wall warning", 
+				varname = format(L["%s Cast"],L["Lava Wall"]),
 				type = "centerpopup", 
-				text = "Incoming Lava Wall!", 
+				text = format(L["Incoming %s"],L["Lava Wall"]).."!",
 				time = 5, 
 				sound = "ALERT1", 
 				color1 = "RED", 
@@ -83,44 +90,43 @@ do
 			},
 			shadowfissurewarn = {
 				var = "shadowfissurewarn", 
-				varname = "Shadow Fissure warning", 
+				varname = format(L["%s Warning"],SN[59127]),
 				type = "simple", 
-				text = "Shadow Fissure Spawned!", 
+				text = format(L["%s Spawned"],SN[59127]).."!",
 				sound = "ALERT2",
 				color1 = "PURPLE",
 				time = 1.5, 
 			},
 			flamebreathwarn = {
 				var = "flamebreathwarn",
-				varname = "Flame Breath cast",
+				varname = format(L["%s Cast"],SN[56908]),
 				type = "centerpopup",
-				text = "Flame Breath Cast",
+				text = format(L["%s Cast"],SN[56908]),
 				time = 2,
 				color1 = "DCYAN",
 				sound = "ALERT4",
 			},
-			-- No flash times. It gets too polluted during the fight if everything else is on
 			shadronarrives = {
 				type = "dropdown",
 				var = "sharonarrives",
-				varname = "Shadron arrival",
-				text = "Shadron Arrives",
+				varname = format(L["%s Arrival"],L_Shadron),
+				text = format(L["%s Arrives"],L_Shadron),
 				time = 80,
 				color1 = "DCYAN",
 			},
 			tenebronarrives = {
 				type = "dropdown",
 				var = "tenebronarrives",
-				varname = "Tenebron arrival",
-				text = "Tenebron Arrives",
+				varname = format(L["%s Arrival"],L_Tenebron),
+				text = format(L["%s Arrives"],L_Tenebron),
 				time = 30,
 				color1 = "CYAN",
 			},
 			vesperonarrives = {
 				type = "dropdown",
 				var = "vesperonarrives",
-				varname = "Vesperon arrival",
-				text = "Vesperon Arrives",
+				varname = format(L["%s Arrival"],L_Vesperon),
+				text = format(L["%s Arrives"],L_Vesperon),
 				time = 120,
 				color1 = "GREEN",
 			},
@@ -143,34 +149,31 @@ do
 				event = "CHAT_MSG_RAID_BOSS_EMOTE", 
 				execute = {
 					[1] = {
-						{expect = {"#1#","find","lava surrounding"}},
+						{expect = {"#1#","find",L["lava surrounding"]}},
 						{alert = "lavawallwarn"},
 						{alert = "lavawallcd"}, 
 					},
 				},
 			},
- 			-- Tenebron: It is amusing to watch you struggle. Very well, witness how it is done. 
- 			-- Shadron:  I will take pity on you, Sartharion, just this once. 
- 			-- Vesperon: Father was right about you, Sartharion, you ARE a weakling. 
 			[3] = {
 				type = "event",
 				event = "CHAT_MSG_MONSTER_YELL",
 				execute = {
 					-- Tenebron
 					[1] = {
-						{expect = {"#1#","find","^It is amusing"}},
+						{expect = {"#1#","find",L["It is amusing to watch you struggle. Very well, witness how it is done."]}},
 						{set = {tenebronarrived = 1}},
 						{scheduletimer = {"updatetracers",0}},
 					},
 					-- Shadron
 					[2] = {
-						{expect = {"#1#","find","^I will take pity on you"}},
+						{expect = {"#1#","find",L["I will take pity on you, Sartharion, just this once."]}},
 						{set = {shadronarrived = 1}},
 						{scheduletimer = {"updatetracers",0}},
 					},
 					-- Vesperon
 					[3] = {
-						{expect = {"#1#","find","^Father was right about you"}},
+						{expect = {"#1#","find",L["Father was right about you, Sartharion, you ARE a weakling."]}},
 						{set = {vesperonarrived = 1}},
 						{scheduletimer = {"updatetracers",0}},
 					},

@@ -1,15 +1,15 @@
 do
+	local L,SN = DXE.L,DXE.SN
 	local data = {
 		version = "$Rev$",
 		key = "ironcouncil", 
 		zone = "Ulduar", 
-		name = "Iron Council", 
-		title = "Iron Council", 
-		tracing = {"Steelbreaker", "Runemaster Molgeim", "Stormcaller Brundir",},
+		name = L["The Iron Council"], 
 		triggers = {
-			scan = {"Steelbreaker", "Runemaster Molgeim", "Stormcaller Brundir",},
+			scan = {L["Steelbreaker"], L["Runemaster Molgeim"], L["Stormcaller Brundir"],},
 		},
 		onactivate = {
+			tracing = {L["Steelbreaker"], L["Runemaster Molgeim"], L["Stormcaller Brundir"],},
 			autostart = true,
 			leavecombat = true,
 		},
@@ -24,36 +24,29 @@ do
 				{set = {overwhelmtime = 60}},
 			},
 		},
-		--- TODO:
-		-- Runic Barrier Duration 
-		-- Lightning Whirl Cooldown -- Approx 9. Need more logs.
-		-- Static Disruption Cooldown -- Impossible to track 4/21/09
-		-- Rune of Summoning Cooldown
-		-- Lightning Tendrils Cooldown
-		-- Overwhelm Cooldown
 		alerts = {
 			enragecd = {
 				var = "enragecd",
-				varname = "Enrage cooldown",
+				varname = L["Enrage"],
 				type = "dropdown",
-				text = "Enrage",
+				text = L["Enrage"],
 				time = 600,
 				flashtime = 5,
 			},
 			fusionpunchcast = {
 				var = "fushionpunchcast",
-				varname = "Fushion Punch cast",
+				varname = format(L["%s Cast"],SN[61903]),
 				type = "centerpopup",
-				text = "Fusion Punch Cast",
+				text = format(L["%s Cast"],SN[61903]),
 				time = 3,
 				color1 = "BROWN",
 				sound = "ALERT5",
 			},
 			fusionpunchcd = {
 				var = "fushionpunchcd",
-				varname = "Fushion Punch cooldown",
+				varname = format(L["%s Cooldown"],SN[61903]),
 				type = "dropdown",
-				text = "Fusion Punch Cooldown",
+				text = format(L["%s Cooldown"],SN[61903]),
 				time = 12,
 				flashtime = 5,
 				color1 = "TEAL",
@@ -61,35 +54,35 @@ do
 			},
 			runeofsummoningwarn = {
 				var = "runeofsummoningwarn",
-				varname = "Rune of Summoning warning",
+				varname = format(L["%s Warning"],SN[62273]),
 				type = "simple",
-				text = "Rune of Summoning Casted!",
+				text = format(L["%s Casted"],SN[62273]).."!",
 				sound = "ALERT1",
 				color2 = "MAGENTA",
 				time = 1.5,
 			},
 			runeofdeathwarn = {
 				var = "runeofdeathwarn",
-				varname = "Rune of Death warning on self",
+				varname = format(L["%s on self"],SN[62269]),
 				type = "simple",
-				text = "Rune of Death: YOU!",
+				text = format("%s: %s!",SN[62269],L["YOU"]),
 				time = 1.5,
 				sound = "ALERT3",
 			},
 			runeofpowerwarn = {
 				var = "runeofpowerwarn",
-				varname = "Rune of Power cast",
+				varname = format(L["%s Cast"],SN[61973]),
 				type = "centerpopup",
-				text = "Rune of Power Cast",
+				text = format(L["%s Cast"],SN[61973]),
 				sound = "ALERT4",
 				color1 = "GREEN",
 				time = 1.5,
 			},
 			overloadwarn = {
 				var = "overloadwarn",
-				varname = "Overload cast",
+				varname = format(L["%s Cast"],SN[61869]),
 				type = "centerpopup",
-				text = "Overload! Move Away!",
+				text = format("%s! %s!",SN[61869],L["MOVE AWAY"]),
 				time = 6, 
 				flashtime = 6,
 				sound = "ALERT2",
@@ -97,9 +90,9 @@ do
 			},
 			overloadcd = {
 				var = "overloadcd",
-				varname = "Overload cooldown",
+				varname = format(L["%s Cooldown"],SN[61869]),
 				type = "dropdown",
-				text = "Overload Cooldown",
+				text = format(L["%s Cooldown"],SN[61869]),
 				time = 60, 
 				flashtime = 5,
 				sound = "ALERT9",
@@ -108,34 +101,43 @@ do
 			},
 			tendrilsdur = {
 				var = "tendrilscd", 
-				varname = "Lightning Tendrils duration", 
+				varname = format(L["%s Duration"],SN[61887]),
 				type = "centerpopup", 
-				text = "Lightning Tendrils Duration", 
+				text = format(L["%s Duration"],SN[61887]),
 				time = 35, 
 				color1 = "BLUE", 
 			},
 			tendrilswarnself = {
 				var = "tendrilswarn",
-				varname = "Lightning Tendrils targeting warning",
+				varname = format(L["%s Target"],SN[61887]),
 				type = "simple",
-				text = "Lightning Tendrils: YOU! Run!",
+				text = format("%s: %s! %s!",SN[61887],L["YOU"],L["RUN"]),
 				time = 1.5,
 				color1 = "DCYAN",
 				sound = "ALERT5",
 			},
 			tendrilswarnother = {
 				var = "tendrilswarn",
-				varname = "Lightning Tendrils targeting warning",
+				varname = format(L["%s Target"],SN[61887]),
 				type = "simple",
-				text = "Lightning Tendrils: <previoustarget>",
+				text = format("%s: <previoustarget>",SN[61887]),
 				color1 = "YELLOW",
 				time = 1.5,
 			},
+			whirlwarn = {
+				var = "whirlwarn",
+				varname = format(L["%s Warning"],SN[61915]),
+				type = "simple",
+				time = 1.5,
+				text = SN[61915].."!",
+				color1 = "ORANGE",
+				sound = "ALERT7",
+			},
 			overwhelmdurself = {
 				var = "overwhelmdurself",
-				varname = "Overwhelm duration on self",
+				varname = format(L["%s on self"],L["Overwhelm"]),
 				type = "centerpopup",
-				text = "Overwhelm: YOU!",
+				text = format("%s: %s!",L["Overwhelm"],L["YOU"]),
 				time = "<overwhelmtime>",
 				flashtime = 25,
 				color1 = "DCYAN",
@@ -144,9 +146,9 @@ do
 			},
 			overwhelmdurother = {
 				var = "overwhelmdurother",
-				varname = "Overwhelm duration on others",
+				varname = format(L["%s on others"],L["Overwhelm"]),
 				type = "centerpopup",
-				text = "Overwhelm: #5#",
+				text = format("%s: #5#",L["Overwhelm"]),
 				time = "<overwhelmtime>",
 				color2 = "DCYAN",
 			},
@@ -179,7 +181,7 @@ do
 		},
 		events = {
 			-- Stormcaller Brundir - Overload cast
-			[1] = {
+			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
 				spellid = {61869, 63481},
@@ -190,8 +192,19 @@ do
 					},
 				},
 			},
+			-- Stormcaller Brundir - Lightning Whirl +1
+			{
+				type = "combatevent",
+				eventtype = "SPELL_CAST_SUCCESS",
+				spellid = {63483,61915},
+				execute = {
+					[1] =  {
+						{alert = "whirlwarn"},
+					},
+				},
+			},
 			-- Stormcaller Brundir - Lightning Tendrils +2
-			[2] = {
+			{
 				type = "combatevent", 
 				eventtype = "SPELL_AURA_APPLIED", 
 				spellid = {61886, 63485}, 
@@ -204,7 +217,7 @@ do
 				},
 			},
 			-- Runemaster Molgeim - Rune of Power
-			[3] = {
+			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
 				spellid = {61974,61973},
@@ -215,7 +228,7 @@ do
 				},
 			},
 			-- Runemaster Molgeim - Rune of Death +1
-			[4] = {
+			{
 				type = "combatevent", 
 				eventtype = "SPELL_AURA_APPLIED", 
 				spellid = {62269, 63490},
@@ -227,7 +240,7 @@ do
 				},
 			},
 			-- Runemaster Molgeim - Rune of Summoning +2
-			[5] = {
+			{
 				type = "combatevent", 
 				eventtype = "SPELL_CAST_START", 
 				spellid = 62273,
@@ -238,7 +251,7 @@ do
 				},
 			},
 			-- Steelbreaker - Overwhelm - +2
-			[6] = {
+			{
 				type = "combatevent",
 				spellid = {64637, 61888},
 				eventtype = "SPELL_AURA_APPLIED",
@@ -254,7 +267,7 @@ do
 				},
 			},
 			-- Steelbreaker Fusion Punch
-			[7] = {
+			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
 				spellid = {63493,61903},
@@ -266,23 +279,23 @@ do
 				},
 			},
 			-- Deaths
-			[8] = {
+			{
 				type = "combatevent",
 				eventtype = "UNIT_DIED",
 				execute = {
 					[1] = {
-						{expect = {"#5#","==","Steelbreaker"}},
+						{expect = {"#5#","==",L["Steelbreaker"]}},
 						{quash = "fusionpunchcd"},
 						{quash = "fusionpunchcast"},
 					},
 					[2] = {
-						{expect = {"#5#","==","Stormcaller Brundir"}},
+						{expect = {"#5#","==",L["Stormcaller Brundir"]}},
 						{quash = "overloadcd"},
 						{quash = "overloadwarn"},
 					},
 					--[[
 					[3] = {
-						{expect = {"#5#","==","Runemaster Molgeim"}},
+						{expect = {"#5#","==",L["Runemaster Molgeim"]}},
 					},
 					]]
 				},

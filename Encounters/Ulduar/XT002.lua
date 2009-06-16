@@ -1,15 +1,16 @@
 do
+	local L,SN = DXE.L,DXE.SN
+
 	local data = {
 		version = "$Rev$",
 		key = "xt002", 
-		zone = "Ulduar", 
-		name = "XT-002 Deconstructor", 
-		title = "XT-002 Deconstructor", 
-		tracing = {"XT-002 Deconstructor",},
+		zone = L["Ulduar"], 
+		name = L["XT-002 Deconstructor"], 
 		triggers = {
-			scan = "XT-002 Deconstructor", 
+			scan = L["XT-002 Deconstructor"], 
 		},
 		onactivate = {
+			tracing = {L["XT-002 Deconstructor"],},
 			autostart = true,
 			autostop = true,
 			leavecombat = true,
@@ -25,9 +26,9 @@ do
 		alerts = {
 			enragecd = {
 				var = "enragecd",
-				varname = "Enrage",
+				varname = L["Enrage"],
 				type = "dropdown",
-				text = "Enrage",
+				text = L["Enrage"],
 				time = 600,
 				flashtime = 5,
 				sound = "ALERT5",
@@ -36,9 +37,9 @@ do
 			},
 			gravitywarnself = {
 				var = "gravitywarnself",
-				varname = "Gravity Bomb on self",
+				varname = format(L["%s on self"],SN[63024]),
 				type = "centerpopup",
-				text = "Gravity Bomb: YOU! Move!",
+				text = format("%s: %s! %s!",SN[63024],L["YOU"],L["MOVE"]),
 				time = 9,
 				flashtime = 9,
 				sound = "ALERT1",
@@ -47,17 +48,17 @@ do
 			},
 			gravitywarnother = {
 				var = "gravitywarnother",
-				varname = "Gravity Bomb on others",
+				varname = format(L["%s on others"],SN[63024]),
 				type = "centerpopup",
-				text = "Gravity Bomb: #5#",
+				text = format("%s: #5#",SN[63024]),
 				time = 9,
 				color1 = "GREEN",
 			},
 			lightwarnself = {
 				var = "lightwarnself",
-				varname = "Light Bomb on self",
+				varname = format(L["%s on self"],SN[63018]),
 				type = "centerpopup",
-				text = "Light Bomb: YOU! Move!",
+				text = format("%s: %s! %s!",SN[63018],L["YOU"],L["MOVE"]),
 				time = 9,
 				flashtime = 9,
 				sound = "ALERT3",
@@ -66,17 +67,17 @@ do
 			},
 			lightwarnother = {
 				var = "lightwarnother",
-				varname = "Light Bomb on others",
+				varname = format(L["%s on others"],SN[63018]),
 				type = "centerpopup",
-				text = "Light Bomb: #5#",
+				text = format("%s: #5#",SN[63018]),
 				time = 9,
 				color1 = "CYAN",
 			},
 			tympanicwarn = {
 				var = "tympanicwarn",
-				varname = "Tympanic Tantrum cast",
+				varname = format(L["%s Cast"],SN[62776]),
 				type = "centerpopup",
-				text = "Tantrum Cast",
+				text = format(L["%s Cast"],L["Tantrum"]),
 				time = 12,
 				flashtime = 12,
 				color1 = "YELLOW",
@@ -85,9 +86,9 @@ do
 			},
 			tympaniccd = {
 				var = "tympaniccd",
-				varname = "Tympanic Tantrum cooldown",
+				varname = format(L["%s Cooldown"],SN[62776]),
 				type = "dropdown",
-				text = "Tantrum Cooldown",
+				text = format(L["%s Cooldown"],L["Tantrum"]),
 				time = "65",
 				flashtime = 5,
 				color1 = "ORANGE",
@@ -96,9 +97,9 @@ do
 			},
 			exposedwarn = {
 				var = "exposedwarn",
-				varname = "Heart exposed warning",
+				varname = format(L["%s Warning"],L["Heart"]),
 				type = "centerpopup",
-				text = "Heart Exposed!",
+				text = format(L["%s Exposed"],L["Heart"]).."!",
 				time = 30,
 				flashtime = 30,
 				sound = "ALERT4",
@@ -107,9 +108,9 @@ do
 			},
 			hardmodealert = {
 				var = "hardmodealert",
-				varname = "Hard mode activation",
+				varname = format(L["%s Activation"],L["Hard Mode"]),
 				type = "simple",
-				text = "Hard Mode Activated!",
+				text = format(L["%s Activated"],L["Hard Mode"]).."!",
 				time = 1.5,
 				sound = "ALERT5",
 			},
@@ -117,7 +118,7 @@ do
 		timers = {
 			heartunexposed = {
 				[1] = {
-					{tracing = {"XT-002 Deconstructor"}},
+					{tracing = {L["XT-002 Deconstructor"]}},
 				},
 			},
 		},
@@ -176,7 +177,7 @@ do
 					[1] = {
 						{alert = "exposedwarn"},
 						{scheduletimer = {"heartunexposed", 30}},
-						{tracing = {"XT-002 Deconstructor","Heart of the Deconstructor"}},
+						{tracing = {L["XT-002 Deconstructor"],L["Heart of the Deconstructor"]}},
 					},
 				},
 			},
@@ -189,7 +190,7 @@ do
 					[1] = {
 						{quash = "exposedwarn"},
 						{canceltimer = "heartunexposed"},
-						{tracing = {"XT-002 Deconstructor"}},
+						{tracing = {L["XT-002 Deconstructor"]}},
 						{alert = "hardmodealert"},
 						{set = {heartbroken = "1"}},
 					},

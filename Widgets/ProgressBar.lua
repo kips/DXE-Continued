@@ -1,7 +1,6 @@
 local AceGUI = LibStub("AceGUI-3.0")
 local UIParent = UIParent
 
-
 local WHITE = {r=1,g=1,b=1}
 local BLUE = {r=0,g=0,b=1} 
 

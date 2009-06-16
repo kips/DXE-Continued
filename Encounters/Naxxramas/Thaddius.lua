@@ -1,17 +1,20 @@
--- TODO: Add side switching warning
 do
+	local L,SN = DXE.L,DXE.SN
+
+	local L_Thaddius = L["Thaddius"]
+
 	local data = {
 		version = "$Rev$",
 		key = "thaddius", 
-		zone = "Naxxramas", 
-		name = "Thaddius", 
-		title = "Thaddius", 
-		tracing = {"Thaddius","Stalagg","Feugen"},
+		zone = L["Naxxramas"], 
+		name = L_Thaddius, 
+		title = L_Thaddius, 
 		triggers = {
-			scan = {"Thaddius","Feugen","Stalagg"},
-			yell = {"Stalagg crush you!","Feed you to master!"},
+			scan = {L_Thaddius,L["Stalagg"],L["Feugen"]},
+			yell = {L["Stalagg crush you!"],L["Feed you to master!"]},
 		},
 		onactivate = {
+			tracing = {L_Thaddius,L["Stalagg"],L["Feugen"]},
 			autostart = true,
 			autostop = true,
 			leavecombat = true,
@@ -20,13 +23,13 @@ do
 			dead = 0,
 		},
 		onacquired = {
-			["Thaddius"] = {
+			[L_Thaddius] = {
 				[1] = {
 					{resettimer = true},
 					{alert = "enragecd"},
 					{quash = "tankthrowcd"},
 					{canceltimer = "tankthrow"},
-					{tracing = {"Thaddius"}},
+					{tracing = {L_Thaddius}},
 				},
 			},
 		},
@@ -39,18 +42,18 @@ do
 		alerts = {
 			enragecd = {
 				var = "enragecd", 
-				varname = "Enrage cooldown", 
+				varname = L["Enrage"],
 				type = "dropdown", 
-				text = "Enrage", 
+				text = L["Enrage"],
 				time = 360, 
 				flashtime = 5, 
 				sound = "ALERT2", 
 			},
 			tankthrowcd = {
 				var = "tankthrowcd", 
-				varname = "Tank throw cooldown", 
+				varname = format(L["%s Cooldown"],L["Tank Throw"]),
 				type = "dropdown", 
-				text = "Next Tank Throw", 
+				text = format(L["Next %s"],L["Tank Throw"]),
 				time = 20.6, 
 				flashtime = 3, 
 				sound = "ALERT2", 
@@ -58,9 +61,9 @@ do
 			},
 			polarityshiftwarn = {
 				var = "polarityshiftwarn", 
-				varname = "Polarity Shift cast", 
+				varname = format(L["%s Cast"],SN[28089]),
 				type = "centerpopup", 
-				text = "Polarity Shift Cast", 
+				text = format(L["%s Cast"],SN[28089]),
 				time = 3, 
 				flashtime = 3, 
 				sound = "ALERT1", 
@@ -93,12 +96,12 @@ do
 				event = "CHAT_MSG_RAID_BOSS_EMOTE", 
 				execute = {
 					[1] = {
-						{expect = {"#1#","find","overloads!"}},
+						{expect = {"#1#","find",L["overloads!"]}},
 						{set = {dead = "INCR|1"}},
 						{expect = {"<dead>",">=","2"}},
 						{quash = "tankthrowcd"},
 						{canceltimer = "tankthrow"},
-						{tracing = {"Thaddius"}},
+						{tracing = {L_Thaddius}},
 					},
 				},
 			},

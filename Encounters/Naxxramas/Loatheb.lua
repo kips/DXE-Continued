@@ -1,15 +1,18 @@
 do
+	local L,SN = DXE.L,DXE.SN
+
+	local L_Loatheb = L["Loatheb"]
+
 	local data = {
 		version = "$Rev$",
 		key = "loatheb", 
-		zone = "Naxxramas", 
-		name = "Loatheb", 
-		title = "Loatheb", 
-		tracing = {"Loatheb",},
+		zone = L["Naxxramas"], 
+		name = L_Loatheb, 
 		triggers = {
-			scan = "Loatheb", 
+			scan = L_Loatheb, 
 		},
 		onactivate = {
+			tracing = {L_Loatheb,},
 			autostart = true,
 			autostop = true,
 			leavecombat = true,
@@ -28,9 +31,9 @@ do
 		alerts = {
 			necroaura = {
 				var = "necroaura", 
-				varname = "Necrotic aura", 
+				varname = format(L["%s Duration"],SN[55593]),
 				type = "dropdown", 
-				text = "Necrotic Aura Fades", 
+				text = format(L["%s Fades"],SN[55593]),
 				time = 17, 
 				flashtime = 7, 
 				sound = "ALERT2", 
@@ -38,9 +41,9 @@ do
 			},
 			openheals = {
 				var = "necroaura", 
-				varname = "Necrotic aura", 
+				varname = format(L["%s Duration"],SN[55593]),
 				type = "centerpopup", 
-				text = "Open Healing", 
+				text = L["Open Healing"], 
 				time = 3, 
 				sound = "ALERT3", 
 				color1 = "GREEN", 
@@ -48,9 +51,9 @@ do
 			},
 			sporespawn = {
 				var = "sporespawn", 
-				varname = "Spore spawns", 
+				varname = format(L["%s Timer"],SN[29234]),
 				type = "dropdown", 
-				text = "Spore: <sporecount>", 
+				text = format("%s: <sporecount>",SN[29234]),
 				time = "<sporetimer>", 
 				flashtime = 5, 
 				sound = "ALERT1", 

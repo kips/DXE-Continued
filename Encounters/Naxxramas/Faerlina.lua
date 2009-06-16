@@ -1,15 +1,16 @@
 do
+	local L,SN = DXE.L,DXE.SN 
+
 	local data = {
 		version = "$Rev$",
 		key = "grandwidowfaerlina", 
-		zone = "Naxxramas", 
-		name = "Grand Widow Faerlina", 
-		title = "Grand Widow Faerlina", 
-		tracing = {"Grand Widow Faerlina",},
+		zone = L["Naxxramas"], 
+		name = L["Grand Widow Faerlina"],
 		triggers = {
-			scan = "Grand Widow Faerlina", 
+			scan = L["Grand Widow Faerlina"],
 		},
 		onactivate = {
+			tracing = {L["Grand Widow Faerlina"]},
 			autostart = true,
 			autostop = true,
 			leavecombat = true,
@@ -25,9 +26,9 @@ do
 		alerts = {
 			enragecd = {
 				var = "enragecd", 
-				varname = "Enrage cooldown", 
+				varname = L["Enrage"],
 				type = "dropdown", 
-				text = "Enrage Cooldown", 
+				text = L["Enrage"],
 				time = 60, 
 				flashtime = 5, 
 				sound = "ALERT1", 
@@ -35,25 +36,25 @@ do
 			},
 			enragewarn = {
 				var = "enragewarn", 
-				varname = "Enrage warning", 
+				varname = format(L["%s Warning"],L["Enrage"]),
 				type = "simple", 
-				text = "Enraged!", 
+				text = format("%s!",L["Enraged"]), 
 				time = 1.5, 
 				sound = "ALERT2", 
 			},
 			rainwarn = {
 				var = "rainwarn", 
-				varname = "Rain of fire warning", 
+				varname = format(L["%s Warning"],SN[39024]),
 				type = "simple", 
-				text = "Move Out of Rain!", 
+				text = format("%s! %s!",SN[39024],L["MOVE"]),
 				time = 1.5, 
 				sound = "ALERT3", 
 			},
 			silencedur = {
 				var = "silencedur", 
-				varname = "Silence duration", 
+				varname = format(L["%s Duration"],SN[15487]),
 				type = "dropdown", 
-				text = "Silence Duration", 
+				text = format(L["%s Duration"],SN[15487]),
 				time = 30, 
 				flashtime = 5, 
 				sound = "ALERT4", 
@@ -67,7 +68,7 @@ do
 				spellid = {28732,54097}, 
 				execute = {
 					[1] = {
-						{expect = {"#5#","==","Grand Widow Faerlina"}},
+						{expect = {"#5#","==",L["Grand Widow Faerlina"]}},
 						{expect = {"$enraged$","==","true"}},
 						{set = {enraged = "false"}}, 
 						{alert = "enragecd"}, 
@@ -95,7 +96,7 @@ do
 				spellid = 54100,
 				execute = {
 					[1] = {
-						{expect = {"#5#","==","Grand Widow Faerlina"}},
+						{expect = {"#5#","==",L["Grand Widow Faerlina"]}},
 						{quash = "enragecd"},
 						{set = {enraged = "true"}}, 
 						{alert = "enragewarn"},

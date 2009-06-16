@@ -1,16 +1,16 @@
 do
-	-- TODO: Make surge warning scan for targets. Add surgewarnself and surgewarnothers
+	local L,SN = DXE.L,DXE.SN
 	local data = {
-		version = "$Rev$",
+		version = "$Rev: 39 $",
 		key = "malygos", 
-		zone = "The Eye of Eternity", 
-		name = "Malygos", 
-		title = "Malygos", 
-		tracing = {"Malygos"},
+		zone = L["The Eye of Eternity"], 
+		category = L["Northrend"],
+		name = L["Malygos"], 
 		triggers = {
-			scan = "Malygos", 
+			scan = {L["Malygos"],L["Nexus Lord"],L["Scion of Eternity"],L["Power Spark"]}, 
 		},
 		onactivate = {
+			tracing = {L["Malygos"]},
 			autostart = true,
 			autostop = true,
 			leavecombat = true,
@@ -27,9 +27,9 @@ do
 		alerts = {
 			vortexcd = {
 				var = "vortexcd", 
-				varname = "Vortex cooldown", 
+				varname = format(L["%s Cooldown"],SN[56105]),
 				type = "dropdown", 
-				text = "Vortex Cooldown", 
+				text = format(L["%s Cooldown"],SN[56105]),
 				time = "<vortexcd>", 
 				flashtime = 5, 
 				sound = "ALERT1", 
@@ -37,18 +37,18 @@ do
 			},
 			staticfieldwarn = {
 				var = "staticfieldwarn", 
-				varname = "Static field warning", 
+				varname = format(L["%s Warning"],SN[57430]),
 				type = "simple", 
-				text = "Static Field Casted. Move!", 
+				text = format("%s! %s!",format(L["%s Casted"],SN[57430]),L["MOVE"]),
 				time = 1.5, 
 				sound = "ALERT2", 
 				color1 = "YELLOW",
 			},
 			surgewarn = { 
 				var = "surgewarn", 
-				varname = "Surge warning on self", 
+				varname = format(L["%s on self"],L["Surge"]),
 				type = "centerpopup", 
-				text = "Surge: YOU! Careful!", 
+				text = format("%s: %s! %s!",L["Surge"],L["YOU"],L["CAREFUL"]),
 				time = 3,
 				flashtime = 3,
 				sound = "ALERT1", 
@@ -57,18 +57,18 @@ do
 			},
 			presurgewarn = { 
 				var = "surgewarn", 
-				varname = "Surge warning on self", 
+				varname = format(L["%s on self"],L["Surge"]), 
 				type = "simple", 
-				text = "Surge: YOU! Soon!", 
+				text = format("%s: %s! %s!",L["Surge"],L["YOU"],L["SOON"]),
 				time = 1.5, 
 				sound = "ALERT5", 
 				color1 = "TURQUOISE",
 			},
 			deepbreath = {
 				var = "deepbreath", 
-				varname = "Deep breath", 
+				varname = format(L["%s Cooldown"],L["Deep Breath"]), 
 				type = "dropdown", 
-				text = "Next Deep Breath", 
+				text = format(L["Next %s"],L["Deep Breath"]),
 				time = 92, 
 				flashtime = 5, 
 				sound = "ALERT3", 
@@ -76,18 +76,18 @@ do
 			},
 			vortexdur = {
 				var = "vortexdur", 
-				varname = "Vortex duration", 
+				varname = format(L["%s Duration"],SN[56105]),
 				type = "centerpopup", 
-				text = "Vortex Duration", 
+				text = format(L["%s Duration"],SN[56105]),
 				time = 10, 
 				sound = "ALERT1", 
 				color1 = "BLUE", 
 			},
 			powerspark = {
 				var = "powerspark", 
-				varname = "Power spark", 
+				varname = format(L["%s Spawns"],L["Power Spark"]),
 				type = "dropdown", 
-				text = "Next Power Spark", 
+				text = format(L["Next %s"],L["Power Spark"]),
 				time = 17, 
 				flashtime = 5, 
 				sound = "ALERT2", 
@@ -102,7 +102,6 @@ do
 				spellid = 56105, 
 				execute = {
 					[1] = {
-						
 						{alert = "vortexdur"}, 
 						{alert = "vortexcd"}, 
 						{quash = "powerspark"},
@@ -140,7 +139,7 @@ do
 				event = "CHAT_MSG_MONSTER_YELL", 
 				execute = {
 					[1] = {
-						{expect = {"#1#", "find", "I had hoped to end your lives quickly"}},
+						{expect = {"#1#","find",L["I had hoped to end your lives quickly"]}},
 						{quash = "vortexdur"},
 						{quash = "vortexcd"},
 						{quash = "powerspark"},
@@ -148,7 +147,7 @@ do
 						{alert = "deepbreath"},
 					},
 					[2] = {
-						{expect = {"#1#", "find", "ENOUGH!"}},
+						{expect = {"#1#", "find", L["ENOUGH!"]}},
 						{quash = "deepbreath"},
 						{set = {phase = 3}},
 					},
@@ -176,7 +175,7 @@ do
 				event = "WHISPER",
 				execute = {
 					[1] = {
-						{expect = {"#1#","find","fixes his eyes on you!$"}},
+						{expect = {"#1#","find",L["fixes his eyes on you!$"]}},
 						{alert = "presurgewarn"},
 					},
 				},
@@ -186,5 +185,3 @@ do
 
 	DXE:RegisterEncounter(data)
 end
-
-

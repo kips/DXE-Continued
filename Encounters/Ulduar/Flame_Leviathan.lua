@@ -1,16 +1,16 @@
 do
+	local L,SN = DXE.L,DXE.SN
 	local data = {
 		version = "$Rev$",
 		key = "flameleviathan", 
 		zone = "Ulduar", 
-		name = "Flame Leviathan", 
-		title = "Flame Leviathan", 
-		tracing = {"Flame Leviathan",},
+		name = L["Flame Leviathan"], 
 		triggers = {
-			scan = "Flame Leviathan", 
-			yell = "^Hostile entities detected. Threat assessment protocol active",
+			scan = L["Flame Leviathan"], 
+			yell = L["^Hostile entities detected. Threat assessment protocol active"],
 		},
 		onactivate = {
+			tracing = {L["Flame Leviathan"],},
 			leavecombat = true,
 		},
 		userdata = {},
@@ -18,9 +18,9 @@ do
 		alerts = {
 			overloaddur = {
 				var = "overloaddur", 
-				varname = "Overload duration", 
+				varname = format(L["%s Duration"],SN[62475]),
 				type = "centerpopup", 
-				text = "System Overload! +50% DMG!", 
+				text = SN[62475].."!",
 				time = 20, 
 				flashtime = 20,
 				sound = "ALERT1", 
@@ -30,9 +30,9 @@ do
 			},
 			flameventdur = {
 				var = "flameventdur", 
-				varname = "Flame vent duration",
+				varname = format(L["%s Duration"],SN[62396]),
 				type = "centerpopup", 
-				text = "Flame Vents!", 
+				text = SN[62396].."!",
 				time = 10, 
 				flashtime = 5,
 				sound = "ALERT2", 
@@ -41,9 +41,9 @@ do
 			},
 			pursuedurother = {
 				var = "pursuedur", 
-				varname = "Pursue duration", 
+				varname = format(L["%s Duration"],SN[62374]),
 				type = "centerpopup", 
-				text = "Pursue: #5#", 
+				text = format("%s: #5#",SN[62374]),
 				time = 30, 
 				flashtime = 30, 
 				color1 = "CYAN",
@@ -51,9 +51,9 @@ do
 			},
 			pursuedurself = {
 				var = "pursuedur", 
-				varname = "Pursue duration", 
+				varname = format(L["%s Duration"],SN[62374]),
 				type = "centerpopup", 
-				text = "Pursue: YOU!", 
+				text = format("%s: %s!",SN[62374],L["YOU"]),
 				time = 30, 
 				flashtime = 30, 
 				sound = "ALERT4", 
@@ -95,18 +95,18 @@ do
 					},
 				},
 			},
-			-- Pursue
+			-- Pursued
 			[4] = {
 				type = "event",
 				event = "EMOTE",
 				execute = {
 					[1] = {
-						{expect = {"#1#","find","pursues"}},
+						{expect = {"#1#","find",L["pursues"]}},
 						{expect = {"#5#","==","&playername&"}},
 						{alert = "pursuedurself"},
 					},
 					[2] = {
-						{expect = {"#1#","find","pursues"}},
+						{expect = {"#1#","find",L["pursues"]}},
 						{expect = {"#5#","~=","&playername&"}},
 						{alert = "pursuedurother"},
 					},

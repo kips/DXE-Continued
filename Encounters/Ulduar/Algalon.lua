@@ -1,15 +1,15 @@
 do
+	local L,SN = DXE.L,DXE.SN
 	local data = {
 		version = "$Rev$",
 		key = "algalon", 
-		zone = "Ulduar", 
-		name = "Algalon the Observer", 
-		title = "Algalon the Observer", 
-		tracing = {"Algalon the Observer",},
+		zone = L["Ulduar"], 
+		name = L["Algalon the Observer"], 
 		triggers = {
-			scan = "Algalon the Observer",
+			scan = L["Algalon the Observer"],
 		},
 		onactivate = {
+			tracing = {L["Algalon the Observer"],},
          autostart = true,
          autostop = true,
 			leavecombat = true,
@@ -27,9 +27,9 @@ do
 		alerts = {
 			bigbangwarn = {
 				var = "bigbangwarn",
-				varname = "Big Bang cast",
+				varname = format(L["%s Cast"],SN[64443]),
 				type = "centerpopup",
-				text = "Big Bang Cast",
+				text = format(L["%s Cast"],SN[64443]),
 				time = 8,
 				flashtime = 8,
 				sound = "ALERT5",
@@ -38,9 +38,9 @@ do
 			},
 			bigbangcd = {
 				var = "bigbangcd",
-				varname = "Big Bang cooldown",
+				varname = format(L["%s Cooldown"],SN[64443]),
 				type = "dropdown",
-				text = "Next Big Bang",
+				text = format(L["Next %s"],SN[64443]),
 				time = "<bigbangtime>",
 				flashtime = 5,
 				sound = "ALERT2",
@@ -49,9 +49,9 @@ do
 			},
 			cosmicsmashwarn = {
 				var = "cosmicsmashwarn",
-				varname = "Cosmic Smash eta",
+				varname = format(L["%s ETA"],SN[62301]),
 				type = "centerpopup",
-				text = "Cosmic Smash Hits",
+				text = format(L["%s Hits"],SN[62301]),
 				time = 4.2,
 				flashtime = 4.2,
 				sound = "ALERT1",
@@ -60,9 +60,9 @@ do
 			},
 			cosmicsmashcd = {
 				var = "cosmicsmashcd",
-				varname = "Cosmic Smash cooldown",
+				varname = format(L["%s Cooldown"],SN[62301]),
 				type = "dropdown",
-				text = "Next Cosmic Smash",
+				text = format(L["Next %s"],SN[62301]),
 				time = "<cosmicsmashtime>",
 				flashtime = 5,
 				sound = "ALERT3",
@@ -71,13 +71,13 @@ do
 			},
 			punchcd = {
 				var = "punchcd",
-				varname = "Phase Punch cooldown",
+				varname = format(L["%s Cooldown"],SN[64412]),
 				type = "dropdown",
-				text = "Next Phase Punch",
+				text = format(L["Next %s"],SN[64412]),
 				time = 15,
 				flashtime = 5,
-				color1 = "INDIGO",
-				color2 = "INDIGO",
+				color1 = "PURPLE",
+				color2 = "PURPLE",
 			},
 		},
 		events = {

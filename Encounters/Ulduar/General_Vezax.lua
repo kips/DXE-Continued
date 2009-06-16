@@ -1,15 +1,15 @@
 do
+	local L,SN = DXE.L,DXE.SN
 	local data = {
 		version = "$Rev$",
 		key = "generalvezax", 
-		zone = "Ulduar", 
-		name = "General Vezax", 
-		title = "General Vezax", 
-		tracing = {"General Vezax",},
+		zone = L["Ulduar"], 
+		name = L["General Vezax"], 
 		triggers = {
-			scan = {"General Vezax","Saronite Animus"}, 
+			scan = {L["General Vezax"],L["Saronite Animus"]}, 
 		},
 		onactivate = {
+			tracing = {L["General Vezax"],},
 			autostart = true,
 			autostop = true,
 			leavecombat = true,
@@ -27,9 +27,9 @@ do
 		alerts = {
 			enragecd = {
 				var = "enragecd",
-				varname = "Enrage",
+				varname = L["Enrage"],
 				type = "dropdown",
-				text = "Enrage",
+				text = L["Enrage"],
 				time = 600,
 				flashtime = 5,
 				sound = "ALERT7",
@@ -38,27 +38,27 @@ do
 			},
 			searingflamewarn = {
 				var = "searingflamewarn",
-				varname = "Searing Flame cast",
+				varname = format(L["%s Cast"],SN[62661]),
 				type = "centerpopup",
-				text = "Searing Flame Cast",
+				text = format(L["%s Cast"],SN[62661]),
 				time = 2,
 				color1 = "ORANGE",
 				sound = "ALERT1",
 			},
 			darknesswarn = {
 				var = "darknesswarn",
-				varname = "Surge of Darkness cast",
+				varname = format(L["%s Cast"],SN[62662]),
 				type = "centerpopup",
-				text = "Surge of Darkness Cast",
+				text = format(L["%s Cast"],SN[62662]),
 				time = 3,
 				color1 = "VIOLET",
 				sound = "ALERT1",
 			},
 			darknessdur = {
 				var = "darknessdur",
-				varname = "Surge of Darkness duration",
+				varname = format(L["%s Duration"],SN[62662]),
 				type = "centerpopup",
-				text = "Surge of Darkness Ends",
+				text = format(L["%s Duration"],SN[62662]),
 				time = 10,
 				flashtime = 10,
 				color1 = "VIOLET",
@@ -67,24 +67,24 @@ do
 			},
 			animuswarn = {
 				var = "animuswarn",
-				varname = "Saronite Animus spawn warning",
+				varname = format(L["%s Spawn"],L["Saronite Animus"]),
 				type = "simple",
-				text = "Saronite Animus Spawned!",
+				text = format(L["%s Spawned"],L["Saronite Animus"]).."!",
 				time = 1.5,
 				sound = "ALERT3",
 			},
 			vaporcd = {
 				var = "vaporcd",
-				varname = "Saronite Vapor cooldown",
+				varname = format(L["%s Cooldown"],L["Saronite Vapor"]),
 				type = "dropdown",
-				text = "Next Saronite Vapor <saronitecount>",
+				text = format(L["Next %s"],L["Saronite Vapor"]).." <saronitecount>",
 				time = 30,
 				flashtime = 5,
 				color1 = "GREEN",
 			},
 			shadowcrashwarn = {
 				var = "shadowcrashwarn",
-				varname = "Shadow Crash warning",
+				varname = format(L["%s Warning"],SN[62660]),
 				type = "simple",
 				text = "<shadowcrashmessage>",
 				time = 1.5,
@@ -93,27 +93,27 @@ do
 			},
 			facelessdurself = {
 				var = "facelessdurself",
-				varname = "Mark of the Faceless on self",
+				varname = format(L["%s on self"],SN[63276]),
 				type = "centerpopup",
 				time = 10,
 				flashtime = 10,
-				text = "Mark of the Faceless: YOU!",
+				text = format("%s: %s!",L["Mark"],L["YOU"]),
 				sound = "ALERT5",
 				color1 = "RED",
 			},
 			facelessdurothers = {
 				var = "facelessdurothers",
-				varname = "Mark of the Faceless on others",
+				varname = format(L["%s on others"],SN[63276]),
 				type = "centerpopup",
-				text = "Mark of the Faceless: #5#",
+				text = format("%s: #5#",L["Mark"]),
 				time = 10,
 				color1 = "RED",
 			},
 			facelessproxwarn = {
 				var = "facelessproxwarn",
-				varname = "Mark of the Faceless proximity warn",
+				varname = format(L["%s Proximity Warning"],SN[63276]),
 				type = "simple",
-				text = "#5# is Marked! YOU ARE CLOSE!",
+				text = format("%s: #5#! %s",L["Mark"],L["YOU ARE CLOSE"]).."!",
 				time = 1.5,
 				color1 = "MAGENTA",
 				sound = "ALERT6",
@@ -123,14 +123,14 @@ do
 			shadowcrash = {
 				[1] = {
 					{expect = {"&tft_unitexists& &tft_isplayer&","==","1 1"}},
-					{set = {shadowcrashmessage = "Crash: YOU! Move!"}},
+					{set = {shadowcrashmessage = format("%s: %s! %s!",L["Crash"],L["YOU"],L["MOVE"])}},
 					{alert = "shadowcrashwarn"},
 				},
 				
 				[2] = {
 					{expect = {"&tft_unitexists& &tft_isplayer&","==","1 nil"}},
 					{proximitycheck = {"&tft_unitname&",28}},
-					{set = {shadowcrashmessage = "Crash: &tft_unitname&! CAREFUL!"}},
+					{set = {shadowcrashmessage = format("%s: %s! %s!",L["Crash"],"&tft_unitname&",L["CAREFUL"])}},
 					{alert = "shadowcrashwarn"},
 				},
 			},
@@ -153,7 +153,7 @@ do
 				eventtype = "SPELL_INTERRUPT",
 				execute = {
 					[1] = {
-						{expect = {"#5#","==","General Vezax"}},
+						{expect = {"#5#","==",L["General Vezax"]}},
 						{quash = "searingflamewarn"},
 					},
 				},
@@ -216,15 +216,15 @@ do
 				execute = {
 					-- Saronite Vapors
 					[1] = {
-						{expect = {"#1#","find","^A cloud of saronite vapors"}},
+						{expect = {"#1#","find",L["^A cloud of saronite vapors"]}},
 						{alert = "vaporcd"},
 						{set = {saronitecount = "INCR|1"}},
 					},
 					-- Saronite Animus
 					[2] = {
-						{expect = {"#1#","find","A saronite barrier appears around"}},
+						{expect = {"#1#","find",L["A saronite barrier appears around"]}},
 						{alert = "animuswarn"},
-						{tracing = {"General Vezax","Saronite Animus"}},
+						{tracing = {L["General Vezax"],L["Saronite Animus"]}},
 					},
 				},
 			},
@@ -234,8 +234,8 @@ do
 				eventtype = "UNIT_DIED",
 				execute = {
 					[1] = {
-						{expect = {"#5#","==","Saronite Animus"}},
-						{tracing = {"General Vezax"}},
+						{expect = {"#5#","==",L["Saronite Animus"]}},
+						{tracing = {L["General Vezax"]}},
 					},
 				},
 			},

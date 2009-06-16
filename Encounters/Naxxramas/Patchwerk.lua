@@ -1,15 +1,18 @@
 do
+	local L,SN = DXE.L,DXE.SN
+
+	local L_Patchwerk = L["Patchwerk"]
+
 	local data = {
 		version = "$Rev$",
 		key = "patchwerk", 
-		zone = "Naxxramas", 
-		name = "Patchwerk", 
-		title = "Patchwerk", 
-		tracing = {"Patchwerk",},
+		zone = L["Naxxramas"], 
+		name = L_Patchwerk, 
 		triggers = {
-			scan = "Patchwerk", 
+			scan = L_Patchwerk, 
 		},
 		onactivate = {
+			tracing = {L_Patchwerk,},
 			autostart = true,
 			autostop = true,
 			leavecombat = true,
@@ -23,9 +26,9 @@ do
 		alerts = {
 			enragecd = {
 				var = "enragecd", 
-				varname = "Enrage cooldown", 
+				varname = L["Enrage"],
 				type = "dropdown", 
-				text = "Enrage", 
+				text = L["Enrage"],
 				time = 360, 
 				flashtime = 5, 
 				sound = "ALERT2", 
@@ -33,9 +36,9 @@ do
 			},
 			enragewarn = {
 				var = "enragewarn", 
-				varname = "Enrage cooldown", 
+				varname = format(L["%s Warning"],L["Enrage"]),
 				type = "simple", 
-				text = "Enraged!", 
+				text = L["Enraged"].."!",
 				time = 1.5, 
 				sound = "ALERT1", 
 			},

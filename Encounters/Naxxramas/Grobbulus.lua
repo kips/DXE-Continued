@@ -1,15 +1,18 @@
 do
+	local L,SN = DXE.L,DXE.SN
+
+	local L_Grobbulus = L["Grobbulus"]
+
 	local data = {
 		version = "$Rev$",
 		key = "grobbulus",
-		zone = "Naxxramas",
-		name = "Grobbulus",
-		title = "Grobbulus",
-		tracing = {"Grobbulus",},
+		zone = L["Naxxramas"],
+		name = L_Grobbulus,
 		triggers = {
-			scan = "Grobbulus",
+			scan = L_Grobbulus,
 		},
 		onactivate = {
+			tracing = {L_Grobbulus,},
 			autostart = true,
 			autostop = true,
 			leavecombat = true,
@@ -23,17 +26,17 @@ do
 		alerts = {
 			enragecd = {
 				var = "enragecd",
-				varname = "Enrage cooldown",
+				varname = format(L["%s Cooldown"],L["Enrage"]),
 				type = "dropdown",
-				text = "Enrage",
+				text = L["Enrage"],
 				time = 360,
 				flashtime = 5,
 			},
 			injectionwarnself = {
 				var = "injectionwarnself",
-				varname = "Injections on self",
+				varname = format(L["%s on self"],L["Injection"]),
 				type = "centerpopup",
-				text = "Injection: YOU! Move!",
+				text = format("%s: %s! %s!",L["Injection"],L["YOU"],L["MOVE"]),
 				time = 10,
 				flashtime = 10,
 				sound = "ALERT1",
@@ -42,17 +45,17 @@ do
 			},
 			injectionwarnother = {
 				var = "injectionwarnother",
-				varname = "Injections on others",
+				varname = format(L["%s on others"],L["Injection"]),
 				type = "centerpopup",
-				text = "Injection: #5#",
+				text = format("%s: #5#",L["Injection"]),
 				time = 10,
 				color1 = "ORANGE",
 			},
 			cloudcd = {
 				var = "cloudcd",
-				varname = "Poison cloud cooldown",
+				varname = format(L["%s Cooldown"],SN[28240]),
 				type = "dropdown",
-				text = "Next Poison Cloud",
+				text = format(L["Next %s"],SN[28240]),
 				time = 15,
 				flashtime = 5,
 				color1 = "GREEN",

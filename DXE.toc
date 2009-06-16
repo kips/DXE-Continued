@@ -1,5 +1,5 @@
 ## Interface: 30100
-## Title: Deus Vox Encounters
+## Title: DXE
 ## Author: Kollektiv, Fariel
 ## SavedVariables: DXEDB
 ## OptionalDeps: Ace3
@@ -18,11 +18,17 @@ Libs\AceDBOptions-3.0\AceDBOptions-3.0.xml
 Libs\AceTimer-3.0\AceTimer-3.0.xml
 Libs\AceComm-3.0\AceComm-3.0.xml
 Libs\AceSerializer-3.0\AceSerializer-3.0.xml
+Libs\AceLocale-3.0\AceLocale-3.0.xml
+Libs\LibBabble-Boss-3.0\lib.xml
+Libs\LibBabble-Zone-3.0\lib.xml
 #@end-no-lib-strip@
 Libs\LibDataBroker-1.1\LibDataBroker-1.1.lua
 #@no-lib-strip@
 Libs\LibDBIcon-1.0\LibDBIcon-1.0.lua
 #@end-no-lib-strip@
+
+# Locales
+Locales.lua
 
 # AceGUI Widgets
 Widgets\Timer.lua
@@ -33,9 +39,10 @@ Widgets\LogLabel.lua
 
 # Main files
 Core.lua
-#@debug@
+Loader.lua
+#@do-not-package@
 Debug.lua
-#@end-debug@
+#@end-do-not-package@
 Options.lua
 Constants.lua
 Alerts.lua
@@ -44,48 +51,7 @@ HOT.lua
 Config.lua
 Distributor.lua
 Validator.lua
-Logger.lua
 
-# Encounters
-## Naxxramas
-Encounters\Naxxramas\Anub.lua
-Encounters\Naxxramas\Faerlina.lua
-Encounters\Naxxramas\Four Horsemen.lua
-Encounters\Naxxramas\Gluth.lua
-Encounters\Naxxramas\Gothik.lua
-Encounters\Naxxramas\Grobbulus.lua
-Encounters\Naxxramas\Heigan.lua
-Encounters\Naxxramas\KT.lua
-Encounters\Naxxramas\Loatheb.lua
-Encounters\Naxxramas\Maexxna.lua
-Encounters\Naxxramas\Noth.lua
-Encounters\Naxxramas\Patchwerk.lua
-Encounters\Naxxramas\Razuvious.lua
-Encounters\Naxxramas\Sapphiron.lua
-Encounters\Naxxramas\Thaddius.lua
-
-## The Eye of Eternity
-Encounters\The Eye of Eternity\Malygos.lua
-
-## The Obsidian Sanctum
-Encounters\The Obsidian Sanctum\Sartharion.lua
-
-## The Vault of Archavon
-Encounters\Vault of Archavon\Archavon.lua
-Encounters\Vault of Archavon\Emalon.lua
-
-## Ulduar
-Encounters\Ulduar\Algalon.lua
-Encounters\Ulduar\Auriaya.lua
-Encounters\Ulduar\Flame Leviathan.lua
-Encounters\Ulduar\Freya.lua
-Encounters\Ulduar\General Vezax.lua
-Encounters\Ulduar\Hodir.lua
-Encounters\Ulduar\Ignis.lua
-Encounters\Ulduar\Iron Council.lua
-Encounters\Ulduar\Kologarn.lua
-Encounters\Ulduar\Mimiron.lua
-Encounters\Ulduar\Razorscale.lua
-Encounters\Ulduar\Thorim.lua
-Encounters\Ulduar\XT002.lua
-Encounters\Ulduar\Yogg-Saron.lua
+#@do-not-package@
+Encounters.xml
+#@end-do-not-package@

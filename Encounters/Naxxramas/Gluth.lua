@@ -1,15 +1,16 @@
 do
+	local L,SN = DXE.L,DXE.SN
+	local L_Gluth = L["Gluth"]
 	local data = {
 		version = "$Rev$",
 		key = "gluth",
-		zone = "Naxxramas",
-		name = "Gluth",
-		title = "Gluth",
-		tracing = {"Gluth",},
+		zone = L["Naxxramas"],
+		name = L_Gluth,
 		triggers = {
-			scan = "Gluth",
+			scan = L_Gluth,
 		},
 		onactivate = {
+			tracing = {L_Gluth},
 			autostart = true,
 			autostop = true,
 			leavecombat = true,
@@ -23,9 +24,9 @@ do
 		alerts = {
 			decimatecd = {
 				var = "decimatecd",
-				varname = "Decimate cooldown",
+				varname = format(L["%s Cooldown"],SN[28374]),
 				type = "dropdown",
-				text = "Decimate Cooldown", 
+				text = format(L["%s Cooldown"],SN[28374]),
 				time = 105, 
 				flashtime = 5, 
 				sound = "ALERT1", 
@@ -34,9 +35,9 @@ do
 			},
 			enragewarn = {
 				var = "enragewarn", 
-				varname = "Enrage warning", 
+				varname = format(L["%s Warning"],L["Enrage"]),
 				type = "simple", 
-				text = "Enraged!", 
+				text = format("%s!",L["Enraged"]),
 				time = 1.5, 
 			},
 		},
@@ -63,13 +64,13 @@ do
 					},
 				},
 			},
-			-- Emote (Enrage)
+			-- Frenzy
 			[3] = {
-				type = "event", 
-				event = "CHAT_MSG_RAID_BOSS_EMOTE",
+				type = "combatevent", 
+				eventtype = "SPELL_CAST_SUCCESS",
+				spellid = {28371,54427},
 				execute = {
 					[1] = {
-						{expect = {"#1#","find","becomes enraged"}},
 						{alert = "enragewarn"}, 
 					},
 				},

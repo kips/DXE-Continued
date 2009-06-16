@@ -1,27 +1,44 @@
 do
+	local L,SN = DXE.L,DXE.SN
+
+	local L_Sapphiron = L["Sapphiron"]
+
 	local data = {
 		version = "$Rev$",
 		key = "sapphiron", 
-		zone = "Naxxramas", 
-		name = "Sapphiron", 
-		title = "Sapphiron", 
-		tracing = {"Sapphiron"},
+		zone = L["Naxxramas"], 
+		name = L_Sapphiron, 
 		triggers = {
-			scan = "Sapphiron", 
+			scan = L_Sapphiron, 
 		},
 		onactivate = {
 			autostart = true,
 			autostop = true,
 			leavecombat = true,
+			tracing = {L_Sapphiron},
 		},
 		userdata = {},
-		onstart = {},
+		onstart = {
+			[1] = {
+				{alert = "enragecd"},
+			},
+		},
 		alerts = {
+			enragecd = {
+				var = "enragecd",
+				varname = L["Enrage"],
+				type = "dropdown",
+				text = L["Enrage"],
+				time = 900,
+				flashtime = 5,
+				color1 = "RED",
+				color2 = "RED",
+			},
 			lifedraincd = {
 				var = "lifedraincd", 
-				varname = "Life Drain cooldown", 
+				varname = format(L["%s Cooldown"],SN[28542]),
 				type = "dropdown", 
-				text = "Next Life Drain", 
+				text = format(L["Next %s"],SN[28542]),
 				time = 23, 
 				flashtime = 5, 
 				sound = "ALERT3", 
@@ -29,9 +46,9 @@ do
 			},
 			airphasedur = {
 				var = "airphasedur", 
-				varname = "Air phase duration", 
+				varname = format(L["%s Duration"],L["Air Phase"]),
 				type = "centerpopup", 
-				text = "Air Phase Duration", 
+				text = format(L["%s Duration"],L["Air Phase"]), 
 				time = 15.5, 
 				flashtime = 5, 
 				sound = "ALERT2", 
@@ -39,9 +56,9 @@ do
 			},
 			deepbreathwarn = {
 				var = "deepbreathwarn", 
-				varname = "Deep breath warning", 
+				varname = format(L["%s Warning"],L["Deep Breath"]),
 				type = "centerpopup", 
-				text = "Deep Breath! Hide!", 
+				text = format("%s! %s!",L["Deep Breath"],L["HIDE"]),
 				time = 10, 
 				flashtime = 6.5, 
 				sound = "ALERT1", 
@@ -66,12 +83,12 @@ do
 				event = "CHAT_MSG_RAID_BOSS_EMOTE", 
 				execute = {
 					[1] = {
-						{expect = {"#1#","find","lifts"}},
+						{expect = {"#1#","find",L["lifts"]}},
 						{alert = "airphasedur"}, 
 						{quash = "lifedraincd"},
 					},
 					[2] = {
-						{expect = {"#1#","find","deep"}},
+						{expect = {"#1#","find",L["deep"]}},
 						{quash = "airphasedur"},
 						{alert = "deepbreathwarn"}, 
 					},

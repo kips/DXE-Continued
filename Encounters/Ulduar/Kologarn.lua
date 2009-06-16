@@ -1,15 +1,15 @@
 do
+	local L,SN = DXE.L,DXE.SN
 	local data = {
 		version = "$Rev$",
 		key = "kologarn", 
 		zone = "Ulduar", 
-		name = "Kologarn", 
-		title = "Kologarn", 
-		tracing = {"Kologarn","Right Arm","Left Arm"},
+		name = L["Kologarn"], 
 		triggers = {
-			scan = "Kologarn", 
+			scan = L["Kologarn"], 
 		},
 		onactivate = {
+			tracing = {L["Kologarn"],L["Right Arm"],L["Left Arm"]},
 			autostart = true,
 			autostop = true,
 			leavecombat = true,
@@ -23,18 +23,18 @@ do
 		alerts = {
 			stonegripwarnothers = {
 				var = "stonegripothers",
-				varname = "Stone Grip warning on others",
+				varname = format(L["%s on others"],SN[64290]),
 				type = "simple",
-				text = "Stone Gripped: #5#",
+				text = format("%s: #5#",SN[64290]),
 				time = 1.5,
 				color1 = "BROWN",
 				sound = "ALERT2",
 			},
 			armsweepcd = {
 				var = "armsweepcd",
-				varname = "Arm Sweep cooldown",
+				varname = format(L["%s Cooldown"],SN[63766]),
 				type = "dropdown",
-				text = "Arm Sweep Cooldown",
+				text = format(L["%s Cooldown"],SN[63766]),
 				time = 10,
 				flashtime = 5,
 				color1 = "ORANGE",
@@ -42,9 +42,9 @@ do
 			},
 			shockwavecd = {
 				var = "shockwavecd",
-				varname = "Next Shockwave",
+				varname = format(L["%s Cooldown"],SN[63783]),
 				type = "dropdown",
-				text = "Shockwave Cooldown",
+				text = format(L["Next %s"],SN[63783]),
 				time = 16,
 				flashtime = 5,
 				color1 = "YELLOW",
@@ -53,17 +53,17 @@ do
 			},
 			leftarmcd = {
 				var = "leftarmcd",
-				varname = "Left Arm respawn",
+				varname = format(L["%s Respawn"],L["Left Arm"]),
 				type = "dropdown",
-				text = "Left Arm Respawns",
+				text = format(L["%s Respawns"],L["Left Arm"]),
 				time = "<armrespawntime>",
 				color1 = "CYAN",
 			},
 			rightarmcd = {
 				var = "rightarmcd",
-				varname = "Right Arm respawn",
+				varname = format(L["%s Respawn"],L["Right Arm"]),
 				type = "dropdown",
-				text = "Right Arm Respawns",
+				text = format(L["%s Respawns"],L["Right Arm"]),
 				time = "<armrespawntime>",
 				color1 = "DCYAN",
 			},
@@ -112,11 +112,12 @@ do
 				eventtype = "UNIT_DIED",
 				execute = {
 					[1] = {
-						{expect = {"#5#","==","Right Arm"}},
+						{expect = {"#5#","==",L["Right Arm"]}},
 						{alert = "rightarmcd"},
 					},
 					[2] = {
-						{expect = {"#5#","==","Left Arm"}},
+						{expect = {"#5#","==",L["Left Arm"]}},
+						{quash = "shockwavecd"},
 						{alert = "leftarmcd"},
 					},
 				},

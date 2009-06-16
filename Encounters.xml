@@ -1,0 +1,40 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+
+<Script file="Encounters\Naxxramas\Anub.lua"/>
+<Script file="Encounters\Naxxramas\Faerlina.lua"/>
+<Script file="Encounters\Naxxramas\Four_Horsemen.lua"/>
+<Script file="Encounters\Naxxramas\Gluth.lua"/>
+<Script file="Encounters\Naxxramas\Gothik.lua"/>
+<Script file="Encounters\Naxxramas\Grobbulus.lua"/>
+<Script file="Encounters\Naxxramas\Heigan.lua"/>
+<Script file="Encounters\Naxxramas\KT.lua"/>
+<Script file="Encounters\Naxxramas\Loatheb.lua"/>
+<Script file="Encounters\Naxxramas\Maexxna.lua"/>
+<Script file="Encounters\Naxxramas\Noth.lua"/>
+<Script file="Encounters\Naxxramas\Patchwerk.lua"/>
+<Script file="Encounters\Naxxramas\Razuvious.lua"/>
+<Script file="Encounters\Naxxramas\Sapphiron.lua"/>
+<Script file="Encounters\Naxxramas\Thaddius.lua"/>
+
+<Script file="Encounters\Northrend\Malygos.lua"/>
+<Script file="Encounters\Northrend\Sartharion.lua"/>
+<Script file="Encounters\Northrend\Archavon.lua"/>
+<Script file="Encounters\Northrend\Emalon.lua"/>
+
+<Script file="Encounters\Ulduar\Algalon.lua"/>
+<Script file="Encounters\Ulduar\Auriaya.lua"/>
+<Script file="Encounters\Ulduar\Flame_Leviathan.lua"/>
+<Script file="Encounters\Ulduar\Freya.lua"/>
+<Script file="Encounters\Ulduar\General_Vezax.lua"/>
+<Script file="Encounters\Ulduar\Hodir.lua"/>
+<Script file="Encounters\Ulduar\Ignis.lua"/>
+<Script file="Encounters\Ulduar\Iron_Council.lua"/>
+<Script file="Encounters\Ulduar\Kologarn.lua"/>
+<Script file="Encounters\Ulduar\Mimiron.lua"/>
+<Script file="Encounters\Ulduar\Razorscale.lua"/>
+<Script file="Encounters\Ulduar\Thorim.lua"/>
+<Script file="Encounters\Ulduar\XT002.lua"/>
+<Script file="Encounters\Ulduar\Yogg-Saron.lua"/>
+
+</Ui>

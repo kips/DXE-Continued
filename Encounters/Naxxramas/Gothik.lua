@@ -1,16 +1,19 @@
 do
+	local L,SN = DXE.L,DXE.SN
+
+	L_GothikTheHarvester = L["Gothik the Harvester"]
+
 	local data = {
 		version = "$Rev$",
 		key = "gothiktheharvester",
-		zone = "Naxxramas",
-		name = "Gothik the Harvester",
-		title = "Gothik the Harvester",
-		tracing = {"Gothik the Harvester",},
+		zone = L["Naxxramas"],
+		name = L_GothikTheHarvester,
 		triggers = {
-			scan = "Gothik the Harvester", 
-			yell = {"^Foolishly you have sought","^Teamanare shi rikk"},
+			scan = L_GothikTheHarvester,
+			yell = {L["^Foolishly you have sought"],L["^Teamanare shi rikk"]},
 		},
 		onactivate = {
+			tracing = {L_GothikTheHarvester},
 			leavecombat = true,
 		},
 		userdata = {},
@@ -22,9 +25,9 @@ do
 		alerts = {
 			gothikcomesdown = {
 				var = "gothikcomesdown", 
-				varname = "Gothik arrival",
+				varname = format(L["%s Arrival"],L_GothikTheHarvester),
 				type = "dropdown",
-				text = "Gothik Arrives", 
+				text = L["Arrival"],
 				time = 270,
 				flashtime = 5, 
 				sound = "ALERT1", 

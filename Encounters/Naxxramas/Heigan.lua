@@ -1,15 +1,18 @@
 do
+	local L,SN = DXE.L,DXE.SN
+
+	local L_HeiganTheUnclean = L["Heigan the Unclean"]
+
 	local data = {
 		version = "$Rev$",
 		key = "heigantheunclean", 
-		zone = "Naxxramas", 
-		name = "Heigan the Unclean", 
-		title = "Heigan the Unclean", 
-		tracing = {"Heigan the Unclean",},
+		zone = L["Naxxramas"], 
+		name = L_HeiganTheUnclean, 
 		triggers = {
-			scan = "Heigan the Unclean", 
+			scan = L_HeiganTheUnclean, 
 		},
 		onactivate = {
+			tracing = {L_HeiganTheUnclean,},
 			autostart = true,
 			autostop = true,
 			leavecombat = true,
@@ -23,9 +26,9 @@ do
 		alerts = {
 			dancebegins = {
 				var = "dancebegins", 
-				varname = "Dance begins", 
+				varname = format(L["%s Begins"],L["Dance"]),
 				type = "dropdown", 
-				text = "Dance Begins", 
+				text = format(L["%s Begins"],L["Dance"]),
 				time = 90, 
 				flashtime = 5, 
 				sound = "ALERT1", 
@@ -33,9 +36,9 @@ do
 			},
 			danceends = {
 				var = "danceends", 
-				varname = "Dance ends", 
+				varname = format(L["%s Ends"],L["Dance"]),
 				type = "dropdown", 
-				text = "Dance Ends", 
+				text = format(L["%s Ends"],L["Dance"]),
 				time = 45, 
 				flashtime = 5, 
 				sound = "ALERT2", 
@@ -56,7 +59,7 @@ do
 				event = "CHAT_MSG_MONSTER_YELL", 
 				execute = {
 					[1] = {
-						{expect = {"#1#","find","The end is upon you"}},
+						{expect = {"#1#","find",L["^The end is upon you"]}},
 						{alert = "danceends"}, 
 						{scheduletimer = {"backonfloor", 45}},
 					},

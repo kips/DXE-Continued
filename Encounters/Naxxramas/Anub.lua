@@ -1,15 +1,18 @@
 do
+	local L,SN = DXE.L,DXE.SN
+
+	local L_AnubRekhan = L["Anub'Rekhan"]
+
 	local data = {
 		version = "$Rev$",
 		key = "anubrekhan", 
-		zone = "Naxxramas", 
-		name = "Anub'Rekhan", 
-		title = "Anub'Rekhan", 
-		tracing = {"Anub'Rekhan",},
+		zone = L["Naxxramas"], 
+		name = L_AnubRekhan, 
 		triggers = {
-			scan = "Anub'Rekhan", 
+			scan = L_AnubRekhan, 
 		},
 		onactivate = {
+			tracing = {L_AnubRekhan},
 			autostart = true,
 			autostop = true,
 			leavecombat = true,
@@ -29,9 +32,10 @@ do
 		alerts = {
 			locustswarmcd = {
 				var = "locustswarmcd", 
-				varname = "Locust swarm cooldown", 
+				-- Locust Swarm Cooldown
+				varname = format(L["%s Cooldown"],SN[28785]),
 				type = "dropdown", 
-				text = "Locust Swarm Cooldown", 
+				text = format(L["%s Cooldown"],SN[28785]), 
 				time = "<swarmcd>",
 				flashtime = 5, 
 				sound = "ALERT1", 
@@ -39,18 +43,18 @@ do
 			},
 			locustswarmcast = {
 				var = "locustswarmcast", 
-				varname = "Locust swarm cast", 
+				varname = format(L["%s Cast"],SN[28785]), 
 				type = "centerpopup", 
-				text = "Locust Swarm Cast", 
+				text = format(L["%s Cast"],SN[28785]), 
 				time = 3, 
 				sound = "ALERT3", 
 				color1 = "GREY", 
 			},
 			locustswarmgain = {
 				var = "locustswarmgain", 
-				varname = "Locus swarm gain", 
+				varname = format(L["%s Duration"],SN[28785]), 
 				type = "centerpopup", 
-				text = "Locust Swarm Duration", 
+				text = format(L["%s Duration"],SN[28785]), 
 				time = 20, 
 				sound = "ALERT2", 
 				color1 = "YELLOW", 
@@ -64,7 +68,7 @@ do
 				spellid = {28785,54021}, 
 				execute = {
 					[1] = {
-						{expect = {"#5#","==","Anub'Rekhan"}},
+						{expect = {"#5#","==",L_AnubRekhan}},
 						{alert = "locustswarmgain"},
 						{quash = "locustswarmcd"},
 						{alert = "locustswarmcd"}, 

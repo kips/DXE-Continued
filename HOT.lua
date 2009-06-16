@@ -9,6 +9,10 @@
 	Credits to RDX
 ]]
 
+local DXE = DXE
+local version = tonumber(("$Rev$"):sub(7, -3))
+DXE.version = version > DXE.version and version or DXE.version
+
 -- Local accessors
 local wipe = table.wipe
 local ipairs = ipairs
@@ -17,7 +21,6 @@ local UnitIsUnit,UnitName = UnitIsUnit,UnitName
 -- Perf: default delay between traces.
 local TraceDelay = 0.2
 
-local DXE = DXE
 local AceTimer = LibStub("AceTimer-3.0")
 ----------------------------------
 -- INITIALIZATION

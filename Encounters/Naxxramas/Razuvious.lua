@@ -1,18 +1,21 @@
 do
+	local L,SN = DXE.L,DXE.SN
+
+	local L_InstructorRazuvious = L["Instructor Razuvious"]
+
 	local data = {
 		version = "$Rev$",
 		key = "instructorrazuvious", 
-		zone = "Naxxramas", 
-		name = "Instructor Razuvious", 
-		title = "Instructor Razuvious", 
-		tracing = {"Instructor Razuvious",},
+		zone = L["Naxxramas"], 
+		name = L_InstructorRazuvious, 
 		triggers = {
-			scan = "Instructor Razuvious", 
-			yell = "^The time for practice is over!",
+			scan = {L_InstructorRazuvious,L["Death Knight Understudy"]}, 
+			yell = L["^The time for practice is over!"],
 		},
 		onactivate = {
 			autostop = true,
 			leavecombat = true,
+			tracing = {L_InstructorRazuvious,},
 		},
 		userdata = {},
 		onstart = {
@@ -23,9 +26,9 @@ do
 		alerts = {
 			shoutcd = {
 				var = "shoutcd", 
-				varname = "Shout cooldown", 
+				varname = format(L["%s Cooldown"],SN[55543]),
 				type = "dropdown", 
-				text = "Next Disrupting Shout", 
+				text = format(L["Next %s"],SN[55543]),
 				time = 15, 
 				flashtime = 5, 
 				sound = "ALERT1", 
@@ -33,9 +36,9 @@ do
 			},
 			tauntdur = {
 				var = "tauntdur", 
-				varname = "Taunt duration", 
+				varname = format(L["%s Duration"],SN[355]),
 				type = "dropdown", 
-				text = "Taunt Duration", 
+				text = format(L["%s Duration"],SN[355]),
 				time = 20, 
 				flashtime = 5, 
 				sound = "ALERT2", 
@@ -43,9 +46,9 @@ do
 			},
 			shieldwalldur = {
 				var = "shieldwalldur", 
-				varname = "Shield wall duration", 
+				varname = format(L["%s Duration"],SN[871]),
 				type = "dropdown", 
-				text = "Shield Wall Duration", 
+				text = format(L["%s Duration"],SN[871]),
 				time = 20, 
 				flashtime = 5, 
 				sound = "ALERT3", 
