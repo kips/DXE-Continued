@@ -30,6 +30,7 @@ function Loader:OnInitialize()
 			end
 		end
 	end
+	self:LoadModules()
 end
 
 function Loader:LoadModules()
