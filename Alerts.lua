@@ -116,7 +116,7 @@ do
 
 	function Prototype:LayoutAlertStack(stack,anchor)
 		sort(stack, SortFunc)
-		for alert in ipairs(stack) do
+		for _,alert in ipairs(stack) do
 			alert:ClearAllPoints()
 			alert:SetPoint("TOP",anchor,"BOTTOM")
 			anchor = alert
