@@ -49,9 +49,9 @@ externals:
     Libs/LibDBIcon-1.0: svn://svn.wowace.com/wow/libdbicon-1-0/mainline/trunk/LibDBIcon-1.0
 
 move-folders:
-    Encounters/Ulduar: DXE_Ulduar
-    Encounters/Naxxramas: DXE_Naxxramas
-    Encounters/Northrend: DXE_Northrend
+    DXE/Encounters/Ulduar: DXE_Ulduar
+    DXE/Encounters/Naxxramas: DXE_Naxxramas
+    DXE/Encounters/Northrend: DXE_Northrend
 
 ignore:
     - Debug.lua
