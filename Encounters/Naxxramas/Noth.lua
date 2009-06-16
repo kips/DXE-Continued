@@ -50,9 +50,9 @@ do
 			},
 			teleportroom = {
 				var = "teleportroom", 
-				varname = L["Teleport To Room"], 
+				varname = L["Teleport to Room"], 
 				type = "dropdown", 
-				text = L["Teleport To Room"], 
+				text = L["Teleport to Room"], 
 				time = "<balconytime>", 
 				flashtime = 5, 
 				sound = "ALERT2", 
