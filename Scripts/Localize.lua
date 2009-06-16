@@ -10,10 +10,6 @@ local ptnstr = "L%[\"(.-)\"%]"
 local fmtstr = "L[\"%s\"]"
 local seperator = "----------------------------"
 
-local ignores = {
-	["Algalon the Observer"] = true,
-}
-
 -- Run through main files
 
 local file = io.open(out, "w")
@@ -55,9 +51,7 @@ for _,filename in ipairs(files) do
 		writefilename(filename)
 	end
 	for _,v in ipairs(strings) do
-		if not ignores[v] then
-			file:write(fmt(fmtstr.." = true",v),"\n")
-		end
+		file:write(fmt(fmtstr.." = true",v),"\n")
 	end
 end
 file:write("\n")

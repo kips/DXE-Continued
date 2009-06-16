@@ -36,6 +36,7 @@ function Loader:LoadModules()
 	local zone = GetRealZoneText()
 	if ZoneModules[zone] then
 		for module in pairs(ZoneModules[zone]) do
+			DXE:Print((module:match("DXE_(%w+)") or module) .. " module loaded")
 			LoadAddOn(module)
 			ZoneModules[zone][module] = nil
 		end
