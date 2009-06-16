@@ -590,9 +590,12 @@ end
 
 local UnitName = UnitName
 local UnitIsEnemy = UnitIsEnemy
-local friendlyExceptions = {
-	[L["Algalon the Observer"]] = true
-}
+local friendlyExceptions = {}
+
+function DXE:AddFriendlyException(name)
+	friendlyExceptions[name] = true
+end
+
 function DXE:Scan()
 	for i,unit in pairs(DXE.Roster) do
 		local target = rIDtarget[i]

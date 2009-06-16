@@ -167,7 +167,7 @@ do
 					},
 					-- Shadron
 					[2] = {
-						{expect = {"#1#","find",L["I will take pity on you, Sartharion, just this once."]}},
+						{expect = {"#1#","find",L["I will take pity on you, Sartharion, just this once"]}},
 						{set = {shadronarrived = 1}},
 						{scheduletimer = {"updatetracers",0}},
 					},

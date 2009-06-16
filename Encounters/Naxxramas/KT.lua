@@ -52,7 +52,7 @@ do
 				var = "detonatewarn", 
 				varname = format(L["%s Warning"],SN[29870]),
 				type = "centerpopup", 
-				text = format("%s: %s!",SN[29870],L["YOU!"]),
+				text = format("%s: %s!",SN[29870],L["YOU"]),
 				time = 5, 
 				sound = "ALERT3", 
 				color1 = "WHITE", 

@@ -119,4 +119,5 @@ do
 		}
 	}
 	DXE:RegisterEncounter(data)
+	DXE:AddFriendlyException(L["Algalon the Observer"])
 end

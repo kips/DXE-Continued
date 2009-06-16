@@ -96,7 +96,7 @@ do
 				event = "CHAT_MSG_RAID_BOSS_EMOTE", 
 				execute = {
 					[1] = {
-						{expect = {"#1#","find",L["overloads!"]}},
+						{expect = {"#1#","find",L["overloads"]}},
 						{set = {dead = "INCR|1"}},
 						{expect = {"<dead>",">=","2"}},
 						{quash = "tankthrowcd"},
