@@ -44,6 +44,8 @@ local userdata = {}
 local Invoker = DXE:NewModule("Invoker","AceEvent-3.0","AceTimer-3.0")
 local HW = DXE.HW
 local Alerts = DXE.Alerts
+-- Hold event info
+local RegEvents,CombatEvents = {},{}
 
 --@debug@
 local debug
@@ -83,6 +85,12 @@ function Invoker:OnStart()
 	if CE.onstart then
 		self:InvokeCommands(CE.onstart)
 	end
+	if next(CombatEvents) then
+		self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED","COMBAT_EVENT")
+	end
+	for event in pairs(RegEvents) do
+		self:RegisterEvent(event,"REG_EVENT")
+	end
 	DXE:SetTracing(CE.onactivate.tracing)
 	-- Reset colors
 	for i,hw in ipairs(HW) do
@@ -94,6 +102,10 @@ end
 
 function Invoker:OnStop()
 	if not CE then return end
+	self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+	for event in pairs(RegEvents) do
+		self:UnregisterEvent(event)
+	end
 	-- Reset userdata
 	self:ResetUserData()
 	-- Quashes all alerts
@@ -647,8 +659,6 @@ end
 -- EVENTS
 ---------------------------------------------
 
-local RegEvents,CombatEvents = {},{}
-
 --event, timestamp, eventtype, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, spellID, spellName,...
 function Invoker:COMBAT_EVENT(event,timestamp,eventtype,...)
 	if not CombatEvents[eventtype] then return end
@@ -673,13 +683,13 @@ local REG_ALIASES = {
 	WHISPER = "CHAT_MSG_RAID_BOSS_WHISPER",
 }
 
-function Invoker:RegisterEvents()
+function Invoker:AddEventData()
 	if not CE.events then return end
 	-- Iterate over events table
 	for _,info in ipairs(CE.events) do
 		if info.type == "combatevent" then
 			-- Register combat log event
-			self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED","COMBAT_EVENT")
+			-- self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED","COMBAT_EVENT")
 			CombatEvents[info.eventtype] = CombatEvents[info.eventtype] or DXE.new()
 			if not info.spellid then
 				CombatEvents[info.eventtype]["*"] = info.execute
@@ -695,7 +705,7 @@ function Invoker:RegisterEvents()
 		elseif info.type == "event" then
 			local event = REG_ALIASES[info.event] or info.event
 			-- Register regular event
-			self:RegisterEvent(event,"REG_EVENT")
+			-- self:RegisterEvent(event,"REG_EVENT")
 			-- Add execute list to the appropriate key
 			RegEvents[event] = info.execute
 		end
@@ -753,7 +763,7 @@ function Invoker:OnSet(_,data)
 	-- Wipe events
 	self:WipeEvents()
 	-- Register events
-	self:RegisterEvents()
+	self:AddEventData()
 	-- Copy data.userdata to userdata upvalue
 	self:ResetUserData()
 	-- OnAcquired

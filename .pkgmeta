@@ -40,12 +40,6 @@ externals:
     Libs/AceLocale-3.0:
        url: svn://svn.wowace.com/wow/ace3/mainline/trunk/AceLocale-3.0
        tag: latest
-    Libs/LibBabble-Boss-3.0: 
-       url: svn://svn.wowace.com/wow/libbabble-boss-3-0/mainline/trunk
-       tag: latest
-    Libs/LibBabble-Zone-3.0: 
-       url: svn://svn.wowace.com/wow/libbabble-zone-3-0/mainline/trunk
-       tag: latest
     Libs/LibDBIcon-1.0: svn://svn.wowace.com/wow/libdbicon-1-0/mainline/trunk/LibDBIcon-1.0
 
 move-folders:

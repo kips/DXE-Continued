@@ -15,7 +15,7 @@ local GetTime,PlaySoundFile,ipairs,pairs,next,remove =
 local scale
 
 local animationTime = 0.3
-local fadeTime = 0.5
+local fadeTime = 2
 
 ---------------------------------------
 -- ALERT LOCALIZATION STRINGS
