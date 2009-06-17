@@ -579,9 +579,9 @@ function DXE:CHAT_MSG_MONSTER_YELL(_,msg,...)
 	--@debug@
 	debug("CHAT_MSG_MONSTER_YELL",msg,...)
 	--@end-debug@
-	for fragment,data in pairs(yellTriggers) do
+	for fragment,key in pairs(yellTriggers) do
 		if find(msg,fragment) then
-			self:SetActiveEncounter(data.key)
+			self:SetActiveEncounter(key)
 			self:StopEncounter()
 			self:StartEncounter()
 		end
