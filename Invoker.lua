@@ -81,9 +81,9 @@ end
 -- CONTROLS
 ---------------------------------------------
 
-function Invoker:OnStart()
+function Invoker:OnStart(_,...)
 	if CE.onstart then
-		self:InvokeCommands(CE.onstart)
+		self:InvokeCommands(CE.onstart,...)
 	end
 	if next(CombatEvents) then
 		self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED","COMBAT_EVENT")
@@ -283,7 +283,7 @@ ReplaceNums = function(str,...)
 	if ... then
 		-- Enclosed in ##
 		for index in gmatch(str,"%b##") do
-			local num = tonumber(match(index,"#(%d)#"))
+			local num = tonumber(match(index,"#(%d+)#"))
 			local val = num and select(num,...)
 			if num and val then
 				--@debug@

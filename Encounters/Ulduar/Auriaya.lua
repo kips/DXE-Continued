@@ -1,4 +1,5 @@
 do
+	-- TODO: Add Terrifying Screech Cast, Sentinel Blast channel time
 	local L,SN = DXE.L,DXE.SN
 
 	local data = {

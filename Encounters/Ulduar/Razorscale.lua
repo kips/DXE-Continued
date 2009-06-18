@@ -65,15 +65,6 @@ do
 				color1 = "BROWN",
 				sound = "ALERT3",
 			},
-			chainwarn = {
-				var = "chainwarn",
-				varname = format(L["%s Warning"],L["Chain"]),
-				type = "simple",
-				text = format("%s: %s!",L["Chain"],L["Razorscale"]),
-				time = 1.5,
-				sound = "ALERT5",
-				color1 = "GOLD",
-			},
 			permlandwarn = {
 				var = "permlandwarn",
 				varname = format(L["%s Warning"],L["Permanent Landing"]),
@@ -104,7 +95,6 @@ do
 					[1] = {
 						{expect = {"#1#","find",L["^Move quickly"]}},
 						{alert = "chaindur"},
-						{alert = "chainwarn"},
 					},
 					-- Razorscale lifts off
 					[2] = {

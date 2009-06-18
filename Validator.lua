@@ -174,9 +174,9 @@ local function validateReplaces(data,text,errlvl,...)
 	end
 
 	for var in gmatch(text,"%b##") do 
-		local key = tonumber(match(var,"#(%d)#"))
-		if not key or key < 1 or key > 7 then
-			err(": replace num is invalid. it should be [1,7] - got '"..var.."'",errlvl,...)
+		local key = tonumber(match(var,"#(%d+)#"))
+		if not key or key < 1 or key > 10 then
+			err(": replace num is invalid. it should be [1,10] - got '"..var.."'",errlvl,...)
 		end
 	end
 end

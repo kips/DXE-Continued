@@ -49,8 +49,8 @@ do
 				text = format(L["%s Cooldown"],SN[61903]),
 				time = 12,
 				flashtime = 5,
-				color1 = "TEAL",
-				color2 = "BLUE",
+				color1 = "BLUE",
+				color2 = "GREY",
 			},
 			runeofsummoningwarn = {
 				var = "runeofsummoningwarn",
@@ -126,11 +126,13 @@ do
 			},
 			whirlwarn = {
 				var = "whirlwarn",
-				varname = format(L["%s Warning"],SN[61915]),
-				type = "simple",
-				time = 1.5,
+				varname = format(L["%s Cast"],SN[61915]),
+				type = "centerpopup",
+				time = 5,
+				flashtime = 5,
 				text = SN[61915].."!",
 				color1 = "ORANGE",
+				color2 = "ORANGE",
 				sound = "ALERT7",
 			},
 			overwhelmdurself = {
@@ -150,7 +152,7 @@ do
 				type = "centerpopup",
 				text = format("%s: #5#",L["Overwhelm"]),
 				time = "<overwhelmtime>",
-				color2 = "DCYAN",
+				color1 = "DCYAN",
 			},
 		},
 		timers = {
@@ -200,6 +202,21 @@ do
 				execute = {
 					[1] =  {
 						{alert = "whirlwarn"},
+					},
+				},
+			},
+			-- Stormcaller Brundir - Lightning Whirl Interruption +1
+			{
+				type = "combatevent",
+				eventtype = "SPELL_INTERRUPT",
+				execute = {
+					[1] = {
+						{expect = {"#10#","==","63483"}},
+						{quash = "whirlwarn"},
+					},
+					[2] = {
+						{expect = {"#10#","==","61915"}},
+						{quash = "whirlwarn"},
 					},
 				},
 			},

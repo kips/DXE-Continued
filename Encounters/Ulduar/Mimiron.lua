@@ -33,6 +33,15 @@ do
 			[1] = {
 				{alert = "plasmablastcd"},
 			},
+			-- Hard mode activation
+			[2] = {
+				{expect = {"#1#","find",L["^Self%-destruct sequence initiated"]}},
+				{alert = "hardmodetimer"},
+				{alert = "flamesuppressantcd"},
+				{alert = "flamecd"},
+				{set = {flametime = 27.5}},
+				{scheduletimer = {"flames",6.5}},
+			},
 		},
 		timers = {
 			flames = {
@@ -301,15 +310,6 @@ do
 						{scheduletimer = {"startbarragecd",14}},
 						{scheduletimer = {"startblastcd",25}},
 						{alert = "threetofour"},
-					},
-					-- Hard mode activation
-					[4] = {
-						{expect = {"#1#","find",L["^Self%-destruct sequence initiated"]}},
-						{alert = "hardmodetimer"},
-						{alert = "flamesuppressantcd"},
-						{alert = "flamecd"},
-						{set = {flametime = 27.5}},
-						{scheduletimer = {"flames",6.5}},
 					},
 				},
 			},

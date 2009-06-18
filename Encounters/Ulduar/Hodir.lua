@@ -43,7 +43,7 @@ do
 				flashtime = 5,
 				sound = "ALERT2", 
 				color1 = "TURQUOISE",
-				color2 = "MAGENTA",
+				color2 = "TURQUOISE",
 			},
 			enragecd = {
 				var = "enragecd",

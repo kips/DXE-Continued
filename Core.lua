@@ -300,9 +300,9 @@ function DXE:UpgradeEncounters()
 end
 
 -- Start the current encounter
-function DXE:StartEncounter()
+function DXE:StartEncounter(...)
 	if self:IsRunning() then return end
-	self.callbacks:Fire("StartEncounter")
+	self.callbacks:Fire("StartEncounter",...)
 	self:StartTimer()
 end
 
@@ -583,7 +583,7 @@ function DXE:CHAT_MSG_MONSTER_YELL(_,msg,...)
 		if find(msg,fragment) then
 			self:SetActiveEncounter(key)
 			self:StopEncounter()
-			self:StartEncounter()
+			self:StartEncounter(msg)
 		end
 	end
 end
