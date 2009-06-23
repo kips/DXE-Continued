@@ -1070,17 +1070,6 @@ function DXE:ResetTimer()
 	self.Pane.timer:SetTime(0)
 end
 
---[[
---- Toggles the Pane timer
-function DXE:ToggleTimer()
-	if self:IsRunning() then
-		self:StopEncounter()
-	else
-		self:StartTimer()
-	end
-end
-]]
-
 ---------------------------------------------
 -- ALERT TEST
 ---------------------------------------------
@@ -1323,7 +1312,6 @@ end
 DXE:ThrottleFunc("BroadcastAllVersions",10,true)
 
 function DXE:OnCommAllVersionsBroadcast(event,commType,sender,versionString)
-	print(versionString)
 	RosterVersions[sender] = RosterVersions[sender] or {}
 	for key,version in gmatch(versionString,"([^:,]+),([^:,]+)") do
 		RosterVersions[sender][key] = tonumber(version)
