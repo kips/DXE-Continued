@@ -1323,6 +1323,7 @@ end
 DXE:ThrottleFunc("BroadcastAllVersions",10,true)
 
 function DXE:OnCommAllVersionsBroadcast(event,commType,sender,versionString)
+	print(versionString)
 	RosterVersions[sender] = RosterVersions[sender] or {}
 	for key,version in gmatch(versionString,"([^:,]+),([^:,]+)") do
 		RosterVersions[sender][key] = tonumber(version)
@@ -1350,39 +1351,42 @@ do
 	local sort = table.sort
 	-- TODO: Make a GUI for this
 	function DXE:PrintRosterVersions(info, key)
-		--[[
 		if GetNumRaidMembers() == 0 then
 			self:Print(L["|cffff3300Failed: You are not in a Raid|r"])
 			return
 		end
-		key = key == "" and "addon" or key
-		local name = EDB[key] and EDB[key].name
-
-		self:Print(format("Raid Version Check (%s)",key))
-
-		if key ~= "dxe" and not name then
-			print(format(L["|cffff3300Failed: %s is not a known encounter|r"], key))
+		if not EDB[key] and key ~= "addon" then
+			self:Print("Failed: Encounter does not exist")
 			return
 		end
+		local name = key ~= "addon" and EDB[key].name or "AddOn"
 
-		for _,uname in ipairs(self.SortedRoster) do
-			if RosterVersions[uname] and RosterVersions[uname][key] then
-				local version = RosterVersions[uname][name] or RosterVersions[uname]["DXE"]
-				local mversion = key == "dxe" and self.version or EDB[key].version
-				if vers < myvers then
-					color = RED -- red
-				elseif vers == myvers then
-					color = GREEN -- green
-				else
-					color = BLUE -- blue - above your version
-				end
+		self:Print(format("Raid Version Check (%s)",name))
 
-				self:Print(format("|c%s%s|r: v%s",color,uname,vers))
-			else
-				self:Print(format("|c%s%s|r: None",GREY,uname))
+		local work = {}
+		for name in pairs(Roster.name_to_id) do
+			if name ~= self.pName then
+				work[#work+1] = name
 			end
 		end
-		]]
+
+		sort(work)
+
+		for _,unit in ipairs(work) do
+			if RosterVersions[unit] and RosterVersions[unit][key] then
+				local color = BLUE
+				local version = RosterVersions[unit][key]
+				local mversion = key == "addon" and self.version or EDB[key].version
+				if version < mversion then
+					color = RED 
+				elseif version == mversion then
+					color = GREEN
+				end
+				self:Print(format("|c%s%s|r: v%s",color,unit,version))
+			else
+				self:Print(format("|c%s%s|r: None",GREY,unit))
+			end
+		end
 	end
 end
 

@@ -47,6 +47,7 @@ function Loader:LoadModules()
 		for module in pairs(ZoneModules[zone]) do
 			DXE:Print(format(L["%s module loaded"],(module:match("DXE_(%w+)") or module)))
 			LoadAddOn(module)
+			DXE:BroadcastAllVersions()
 			ZoneModules[zone][module] = nil
 		end
 		if not next(ZoneModules[zone]) then
