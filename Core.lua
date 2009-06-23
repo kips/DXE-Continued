@@ -1344,12 +1344,12 @@ do
 			return
 		end
 		if not EDB[key] and key ~= "addon" then
-			self:Print("Failed: Encounter does not exist")
+			self:Print("|cffff3300Failed: Encounter does not exist|r")
 			return
 		end
-		local name = key ~= "addon" and EDB[key].name or "AddOn"
+		local name = key ~= "addon" and EDB[key].name or L["AddOn"]
 
-		self:Print(format("Raid Version Check (%s)",name))
+		self:Print(format(L["Raid Version Check (%s)"],name))
 
 		local work = {}
 		for name in pairs(Roster.name_to_id) do

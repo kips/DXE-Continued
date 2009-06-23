@@ -422,12 +422,12 @@ function Distributor:CHAT_MSG_ADDON(_,prefix, msg, dist, sender)
 			self:RemoveFromUpdating(key.."DL")
 			dl.received = dl.received + len(msg)
 			if mark == FIRST_MULTIPART then
-				dl.bar:SetText("Downloaded 0%")
+				dl.bar:SetFormattedText(L["%s Progress - %d%%"],firstword(dl.name),0)
 				dl.bar:SetColor(Colors.ORANGE)
 			elseif mark == NEXT_MULTIPART or mark == LAST_MULTIPART then
 				local perc = dl.received/dl.length
 				dl.bar:SetValue(perc)
-				dl.bar:SetFormattedText(L["Downloaded %s %d%%"],firstword(dl.name),perc*100)
+				dl.bar:SetFormattedText(L["%s Progress - %d%%"],firstword(dl.name),perc*100)
 			end	
 		end
 
@@ -436,12 +436,12 @@ function Distributor:CHAT_MSG_ADDON(_,prefix, msg, dist, sender)
 		if ul and sender == PlayerName then
 			ul.sent = ul.sent + len(msg)
 			if mark == FIRST_MULTIPART then
-				ul.bar:SetText("Uploaded 0%")
+				ul.bar:SetFormattedText(L["%s Progress - %d%%"],firstword(ul.name),0)
 				ul.bar:SetColor(Colors.YELLOW)
 			elseif mark == NEXT_MULTIPART or mark == LAST_MULTIPART then
 				local perc = ul.sent/ul.length
 				ul.bar:SetValue(perc)
-				ul.bar:SetFormattedText(L["Uploaded %s %d%%"],firstword(ul.name),perc*100)
+				ul.bar:SetFormattedText(L["%s Progress - %d%%"],firstword(ul.name),perc*100)
 				if mark == LAST_MULTIPART then
 					self:ULCompleted(key)
 				end
