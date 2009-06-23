@@ -12,6 +12,7 @@
 local DXE = DXE
 local version = tonumber(("$Rev$"):sub(7, -3))
 DXE.version = version > DXE.version and version or DXE.version
+local Roster = DXE.Roster
 
 -- Local accessors
 local wipe = table.wipe
@@ -55,7 +56,7 @@ end
 local mt = {__index = Prototype}
 
 function HOT:New()
-	local tracer = DXE.new()
+	local tracer = {}
 	setmetatable(tracer, mt)
 	AceTimer:Embed(tracer)
 	
@@ -64,9 +65,9 @@ function HOT:New()
 	tracer.distinct = true -- Show only distinct mobs matching the filter, or all mobs?
 	tracer.n = 0 -- The number of acquired traces
 	tracer.lostTime = 0 -- The time the signal was last lost
-	tracer.proto_uids = DXE.new() -- The uids of all units that tripped the trace
-	tracer.uids = DXE.new() -- The uids of all the target units
-	tracer.events = DXE.new() -- Callbacks
+	tracer.proto_uids = {} -- The uids of all units that tripped the trace
+	tracer.uids = {} -- The uids of all the target units
+	tracer.events = {} -- Callbacks
 
 	return tracer
 end
@@ -101,7 +102,7 @@ function Prototype:Execute()
 
 	-- Scan
 	-- Roster only contains units that exist
-	for _,unit in pairs(DXE.Roster) do
+	for _,unit in pairs(Roster.index_to_id) do
 		-- Get unit and test it
 		proto_uid = unit
 		proto_uid, uid = test(self,proto_uid)

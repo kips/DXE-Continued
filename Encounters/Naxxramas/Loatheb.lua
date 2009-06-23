@@ -22,7 +22,7 @@ do
 			sporetimer = 15,
 		},
 		onstart = {
-			[1] = {
+			{
 				{alert = "sporespawn"},
 				{expect = {"&difficulty&","==","1"}},
 				{set = {sporetimer = 30}}
@@ -62,7 +62,7 @@ do
 		},
 		timers = {
 			healtime = {
-				[1] = {
+				{
 					{quash = "necroaura"},
 					{alert = "openheals"},
 				},
@@ -70,24 +70,24 @@ do
 		},
 		events = {
 			-- Necrotic aura
-			[1] = {
+			{
 				type = "combatevent", 
 				eventtype = "SPELL_CAST_SUCCESS", 
 				spellid = 55593, 
 				execute = {
-					[1] = {
+					{
 						{alert = "necroaura"}, 
 						{scheduletimer = {"healtime", 17}},
 					},
 				},
 			},
 			-- Spore
-			[2] = {
+			{
 				type = "combatevent", 
 				eventtype = "SPELL_CAST_SUCCESS", 
 				spellid = 29234, 
 				execute = {
-					[1] = {
+					{
 						{set = {sporecount = "INCR|1"}},
 						{alert = "sporespawn"}, 
 					},

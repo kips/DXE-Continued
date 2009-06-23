@@ -19,7 +19,7 @@ do
 		},
 		userdata = {},
 		onstart = {
-			[1] = {
+			{
 				{alert = "shoutcd"},
 			}
 		},
@@ -57,35 +57,35 @@ do
 		},
 		events = {
 			-- Disrupting shout
-			[1] = {
+			{
 				type = "combatevent", 
 				eventtype = "SPELL_CAST_SUCCESS", 
 				spellid = {29107,55543}, 
 				execute = {
-					[1] = {
+					{
 						{alert = "shoutcd"}, 
 					},
 				},
 			},
 			-- Taunt
-			[2] = {
+			{
 				type = "combatevent", 
 				eventtype = "SPELL_CAST_SUCCESS", 
 				spellid = 29060, 
 				execute = {
-					[1] = {
+					{
 						
 						{alert = "tauntdur"}, 
 					},
 				},
 			},
 			-- Shield wall
-			[3] = {
+			{
 				type = "combatevent", 
 				eventtype = "SPELL_CAST_SUCCESS", 
 				spellid = 29061, 
 				execute = {
-					[1] = {
+					{
 						{alert = "shieldwalldur"}, 
 					},
 				},

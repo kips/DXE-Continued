@@ -44,52 +44,52 @@ do
 		},
 		events = {
 			-- Void Zone
-			[1] = {
+			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_SUCCESS",
 				spellid = {28863,57463},
 				execute = {
-					[1] = {
+					{
 						{alert = "voidzonecd"},
 					},
 				},
 			},
 			-- Meteor
-			[2] = {
+			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
 				spellid = {28884,57467},
 				execute = {
-					[1] = {
+					{
 						{alert = "meteorcd"},
 					},
 				},
 			},
 			-- Wrath
-			[3] = {
+			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_SUCCESS",
 				spellid = {28883,57466},
 				execute = {
-					[1] = {
+					{
 						{alert = "wrathcd"},
 					},
 				},
 			},
 			-- Boss quashes
-			[4] = {
+			{
 				type = "combatevent",
 				eventtype = "UNIT_DIED",
 				execute = {
-					[1] = {
+					{
 						{expect = {"#5#","==",L["Sir Zeliek"]},},
 						{quash = "wrathcd"},
 					},
-					[2] = {
+					{
 						{expect = {"#5#","==",L["Thane Korth'azz"]},},
 						{quash = "meteorcd"},
 					},
-					[3] = {
+					{
 						{expect = {"#5#","==",L["Lady Blaumeux"]},},
 						{quash = "voidzonecd"},
 					},

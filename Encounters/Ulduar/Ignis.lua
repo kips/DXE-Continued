@@ -20,7 +20,7 @@ do
 			slagpotmessage = "",
 		},
 		onstart = {
-			[1] = {
+			{
 				{alert = "flamejetscd"},
 				{alert = "hardmodeends"},
 			},
@@ -89,61 +89,61 @@ do
 		},
 		timers = {
 			flamejet = {
-				[1] = {
+				{
 					{alert = "flamejetscd"},
 				},
 			},
 		},
 		events = {
 			-- Scorch cooldown",
-			[1] = {
+			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
 				spellid = {62546, 63474},
 				execute = {
-					[1] = {
+					{
 						{alert = "scorchcd"},
 					},
 				},
 			},
 			-- Scorch warning on self
-			[2] = {
+			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
 				spellid = {62548, 63476},
 				execute = {
-					[1] = {
+					{
 						{expect = {"#4#","==","&playerguid&"},},
 						{alert = "scorchwarnself"},
 					},
 				},
 			},
 			-- Slag Pot
-			[3] = {
+			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
 				spellid = {62717, 63477},
 				execute = {
-					[1] = {
+					{
 						{expect = {"#4#","==","&playerguid&"}},
 						{set = {slagpotmessage = format("%s: %s!",SN[62717],L["YOU"])}},
 					},
-					[2] = {
+					{
 						{expect = {"#4#","~=","&playerguid&"}},
 						{set = {slagpotmessage = format("%s: #5#",SN[62717])}},
 					},
-					[3] = {
+					{
 						{alert = "slagpotdur"},
 					},
 				},
 			},
 			-- Flame Jets cast
-			[4] = {
+			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
 				spellid = {63472,62680},
 				execute = {
-					[1] = {
+					{
 						{quash = "flamejetscd"},
 						{alert = "flamejetswarn",},
 						{scheduletimer = {"flamejet",2.7}},

@@ -1,8 +1,9 @@
 ## Interface: 30100
 ## Title: DXE
+## Notes: Deus Vox Encounters
 ## Author: Kollektiv, Fariel
 ## SavedVariables: DXEDB
-## OptionalDeps: Ace3
+## OptionalDeps: Ace3, LibDBIcon-1.0
 
 # Libraries
 #@no-lib-strip@
@@ -40,6 +41,7 @@ Widgets\LogLabel.lua
 # Main files
 Core.lua
 Loader.lua
+Window.lua
 #@do-not-package@
 Debug.lua
 #@end-do-not-package@

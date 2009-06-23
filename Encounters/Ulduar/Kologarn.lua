@@ -15,7 +15,7 @@ do
 			leavecombat = true,
 		},
 		onstart = {
-			[1] = {
+			{
 				{expect = {"&difficulty&","==","1"}},
 				{set = {armrespawntime = 40}},
 			},
@@ -73,49 +73,49 @@ do
 		},
 		events = {
 			-- Stone Grip
-			[1] = {
+			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
 				spellid = {64290,64292},
 				execute = {
-					[1] = {
+					{
 						{expect = {"#4#","~=","&playerguid&"}},
 						{alert = "stonegripwarnothers"},
 					},
 				},
 			},
-			[2] = {
+			{
 				type = "event",
 				event = "YELL",
 				execute = {
 					-- Shockwave
-					[1] = {
+					{
 						{expect = {"#1#","find","^OBLIVION"}},
 						{alert = "shockwavecd"},
 					},
 				},
 			},
 			-- Arm Sweep
-			[3] = {
+			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_SUCCESS",
 				spellid = {63766,63983},
 				execute = {
-					[1] = {
+					{
 						{alert = "armsweepcd"},
 					},
 				},
 			},
 			-- Arm Deaths
-			[4] = {
+			{
 				type = "combatevent",
 				eventtype = "UNIT_DIED",
 				execute = {
-					[1] = {
+					{
 						{expect = {"#5#","==",L["Right Arm"]}},
 						{alert = "rightarmcd"},
 					},
-					[2] = {
+					{
 						{expect = {"#5#","==",L["Left Arm"]}},
 						{quash = "shockwavecd"},
 						{alert = "leftarmcd"},

@@ -8,7 +8,11 @@ do
 		zone = L["Ulduar"], 
 		name = L["Auriaya"], 
 		triggers = {
-			scan = {L["Auriaya"],L["Feral Defender"],L["Sanctum Sentry"]}, 
+			scan = {
+				L["Auriaya"],
+				L["Feral Defender"],
+				L["Sanctum Sentry"]
+			}, 
 		},
 		onactivate = {
 			tracing = {L["Auriaya"],L["Feral Defender"]},
@@ -22,7 +26,7 @@ do
 			guardianswarmtext = "",
 		},
 		onstart = {
-			[1] = {
+			{
 				{alert = "enragecd"},
 				{alert = "feraldefenderspawn"},
 				{alert = "screechcd"},
@@ -115,54 +119,54 @@ do
 		},
 		events = {
 			-- Terrifying Screech - Fear
-			[1] = {
+			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
 				spellid = 64386,
 				execute = {
-					[1] = {
+					{
 						{alert = "screechcd"},
 					}	
 				},
 			},
 			-- Sentinel Blast
-			[2] = {
+			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
 				spellid = {64389,64678},
 				execute = {
-					[1] = {
+					{
 						{alert = "sentinelwarn"},
 					},
 				},
 			},
 			-- Sonic Screech
-			[3] = {
+			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
 				spellid = {64422,64688},
 				execute = {
-					[1] = {
+					{
 						{alert = "sonicscreechwarn"},
 						{alert = "sonicscreechcd"},
 					},
 				},
 			},
 			-- Guardian Swarm
-			[4] = {
+			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
 				spellid = 64396,
 				execute = {
-					[1] = {
+					{
 						{expect = {"&playerguid&","==","#4#"}},
 						{set = {guardianswarmtext = L["YOU"].."!"}},
 					},
-					[2] = {
+					{
 						{expect = {"&playerguid&","~=","#4#"}},
 						{set = {guardianswarmtext = "#5#"}},
 					},
-					[3] = {
+					{
 						{alert = "guardianswarmcd"},
 						{alert = "guardianswarmwarn"},
 					},
@@ -173,7 +177,3 @@ do
 
 	DXE:RegisterEncounter(data)
 end
-
-
-
-

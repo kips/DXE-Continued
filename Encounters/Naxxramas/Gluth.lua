@@ -17,7 +17,7 @@ do
 		},
 		userdata = {},
 		onstart = {
-			[1] = {
+			{
 				{alert = "decimatecd"},
 			}
 		},
@@ -43,34 +43,34 @@ do
 		},
 		events = {
 			-- Decimate (hit)
-			[1] = {
+			{
 				type = "combatevent",
 				eventtype = "SPELL_DAMAGE",
 				spellid = {28375,54426},
 				execute = {
-					[1] = {
+					{
 						{alert = "decimatecd"},
 					},
 				},
 			},
 			-- Decimate (miss)
-			[2] = {
+			{
 				type = "combatevent",
 				eventtype = "SPELL_MISSED",
 				spellid = {28375,54426},
 				execute = {
-					[1] = {
+					{
 						{alert = "decimatecd"},
 					},
 				},
 			},
 			-- Frenzy
-			[3] = {
+			{
 				type = "combatevent", 
 				eventtype = "SPELL_CAST_SUCCESS",
 				spellid = {28371,54427},
 				execute = {
-					[1] = {
+					{
 						{alert = "enragewarn"}, 
 					},
 				},

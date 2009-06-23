@@ -19,7 +19,7 @@ do
 			enraged = "false",
 		},
 		onstart = {
-			[1] = {
+			{
 				{alert = "enragecd"},
 			}
 		},
@@ -62,12 +62,12 @@ do
 		},
 		events = {
 			-- Silence
-			[1] = {
+			{
 				type = "combatevent", 
 				eventtype = "SPELL_AURA_APPLIED", 
 				spellid = {28732,54097}, 
 				execute = {
-					[1] = {
+					{
 						{expect = {"#5#","==",L["Grand Widow Faerlina"]}},
 						{expect = {"$enraged$","==","true"}},
 						{set = {enraged = "false"}}, 
@@ -78,24 +78,24 @@ do
 				},
 			},
 			-- Rain
-			[2] = {
+			{
 				type = "combatevent", 
 				eventtype = "SPELL_AURA_APPLIED",
 				spellid = 54099,
 				execute = {
-					[1] = {
+					{
 						{expect = {"#4#","==","&playerguid&"}},
 						{alert = "rainwarn"},
 					}
 				},
 			},
 			-- Enrage
-			[3] = {
+			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
 				spellid = 54100,
 				execute = {
-					[1] = {
+					{
 						{expect = {"#5#","==",L["Grand Widow Faerlina"]}},
 						{quash = "enragecd"},
 						{set = {enraged = "true"}}, 

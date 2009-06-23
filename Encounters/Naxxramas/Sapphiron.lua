@@ -19,7 +19,7 @@ do
 		},
 		userdata = {},
 		onstart = {
-			[1] = {
+			{
 				{alert = "enragecd"},
 			},
 		},
@@ -67,27 +67,27 @@ do
 		},
 		events = {
 			-- Life drain
-			[1] = {
+			{
 				type = "combatevent", 
 				eventtype = "SPELL_CAST_SUCCESS", 
 				spellid = {28542,55665}, 
 				execute = {
-					[1] = {
+					{
 						{alert = "lifedraincd"}, 
 					},
 				},
 			},
 			-- Emotes
-			[2] = {
+			{
 				type = "event", 
 				event = "CHAT_MSG_RAID_BOSS_EMOTE", 
 				execute = {
-					[1] = {
+					{
 						{expect = {"#1#","find",L["lifts"]}},
 						{alert = "airphasedur"}, 
 						{quash = "lifedraincd"},
 					},
-					[2] = {
+					{
 						{expect = {"#1#","find",L["deep"]}},
 						{quash = "airphasedur"},
 						{alert = "deepbreathwarn"}, 

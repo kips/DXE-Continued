@@ -19,11 +19,10 @@ local defaults = {
 		_Minimap = {},
 		--@debug@
 		debug = {
-			BroadcastVersion = false,
+			BroadcastAllVersions = false,
 			RequestVersions = false,
-			DeleteUnusedVersions = false,
+			CleanVersions = false,
 			UpdateVersionString = false,
-			OnCommReceived = false,
 			UpdateRosterTables = false,
 			CheckForEngage = false,
 			CheckForWipe = false,
@@ -46,7 +45,7 @@ local debug
 -- INITIALIZATION
 ---------------------------------------------
 
-local DXE = LibStub("AceAddon-3.0"):NewAddon("DXE","AceEvent-3.0","AceTimer-3.0","AceConsole-3.0","AceComm-3.0")
+local DXE = LibStub("AceAddon-3.0"):NewAddon("DXE","AceEvent-3.0","AceTimer-3.0","AceConsole-3.0","AceComm-3.0","AceSerializer-3.0")
 DXE.version = tonumber(("$Rev$"):sub(7, -3))
 DXE:SetDefaultModuleState(false)
 DXE.callbacks = LibStub("CallbackHandler-1.0"):New(DXE)
@@ -62,8 +61,10 @@ end
 ---------------------------------------------
 
 local wipe,concat = table.wipe,table.concat
-local match,find = string.match,string.find
-local _G,select,tostring,type = _G,select,tostring,type
+local match,find,gmatch = string.match,string.find,string.gmatch
+local _G,select,tostring,type,assert,tonumber = _G,select,tostring,type,assert,tonumber
+local GetTime,GetNumRaidMembers = GetTime,GetNumRaidMembers
+local UnitName,UnitGUID = UnitName,UnitGUID
 
 ---------------------------------------------
 -- LIBS
@@ -104,51 +105,10 @@ end
 ---------------------------------------------
 local ipairs,pairs = ipairs,pairs
 
-DXE.noop = function() end
+local util = {}
+DXE.util = util
 
-do
-	local cache = {}
-	setmetatable(cache,{__mode = "kv"})
-	local new = function()
-		local t = next(cache) or {}
-		cache[t] = nil
-		return t
-	end
-	local type = type
-	local delete = function(t)
-		if type(t) == "table" then
-			wipe(t)
-			t[""] = true
-			t[""] = nil
-			cache[t] = true
-		end
-		return nil
-	end
-
-	-- Recursive delete
-	local rdelete
-	rdelete = function(t)
-		if type(t) == "table" then
-			for k,v in pairs(t) do
-				if type(v) == "table" then
-					rdelete(v)
-				end
-				t[k] = nil
-			end
-			t[""] = true
-			t[""] = nil
-			cache[t] = true
-		end
-		return nil
-	end
-
-	DXE.new = new
-	DXE.delete = delete
-	DXE.rdelete = rdelete
-end
-
-
-DXE.tablesize = function(t)
+util.tablesize = function(t)
 	local n = 0
 	for _ in pairs(t) do n = n + 1 end
 	return n
@@ -178,6 +138,43 @@ local rID,rIDtarget = {},{}
 for i=1,40 do
 	rID[i] = "raid"..i
 	rIDtarget[i] = "raid"..i.."target" 
+end
+
+---------------------------------------------
+-- FUNCTION THROTTLING
+---------------------------------------------
+
+do
+	-- Error margin added to ScheduleTimer to ensure it fires after the throttling period
+	local _epsilon = 0.2
+	-- @_postcall A boolean determining whether or not the function is called 
+	--           after the end of the throttle period if called during it. If this
+	--			    is set to true the function should not be passing in arguments
+	local function ThrottleFunc(_obj,_func,_time,_postcall)
+		assert(type(_func) == "string","Expected _func to be a string")
+		assert(type(_obj) == "table","Expected _obj to be a table")
+		assert(type(_obj[_func]) == "function","Expected _obj[func] to be a function")
+		assert(type(_time) == "number","Expected _time to be a number")
+		assert(type(_postcall) == "boolean","Expected _postcall to be a boolean")
+		assert(AceTimer.embeds[_obj],"Expected obj to be AceTimer embedded")
+		local _old_func = _obj[_func]
+		local _last,_handle = GetTime() - _time
+		_obj[_func] = function(self,...)
+			local _t = GetTime()
+			if _last + _time > _t then
+				if _postcall and not _handle then
+					_handle = self:ScheduleTimer(_func,_last + _time - _t + _epsilon)
+				end
+				return
+			end
+			_last = _t
+			self:CancelTimer(_handle,true)
+			_handle = nil
+			return _old_func(self,...)
+		end
+	end
+
+	DXE.ThrottleFunc = ThrottleFunc
 end
 
 ---------------------------------------------
@@ -226,7 +223,7 @@ function DXE:UnregisterEncounter(key)
 	-- Remove options
 	self:RemoveEncounterOptions(EDB[key])
 	-- Remove from the database
-	EDB[key] = self.rdelete(EDB[key])
+	EDB[key] = nil
 	-- Close options
 	ACD:Close("DXE")
 	-- Update triggers
@@ -294,7 +291,7 @@ function DXE:UpgradeEncounters()
 			self:RegisterEncounter(data)
 		-- Deleting old versions
 		elseif EDB[key] and EDB[key].version >= data.version then
-			RDB[key] = self.rdelete(RDB[key])
+			RDB[key] = nil
 		end
 	end
 end
@@ -314,10 +311,53 @@ function DXE:StopEncounter()
 end
 
 ---------------------------------------------
+-- ROSTER
+---------------------------------------------
+
+local Roster = {}
+DXE.Roster = Roster
+
+local refreshFuncs = {
+	name_to_id = function(t,i,id) 
+		t[UnitName(id)] = id
+	end,
+	guid_to_id = function(t,i,id) 
+		t[UnitGUID(id)] = id
+	end,
+	index_to_id = function(t,i,id) 
+		t[i] = id
+	end,
+}
+
+for name in pairs(refreshFuncs) do 
+	Roster[name] = {}
+end
+
+local UnitIsConnected = UnitIsConnected
+function DXE:UpdateRosterTables()
+	--@debug@
+	debug("UpdateRosterTables","Invoked")
+	--@end-debug@
+	for name,t in pairs(Roster) do wipe(t) end
+	for i,id in ipairs(rID) do
+		if UnitExists(id) and UnitIsConnected(id) then
+			for name,t in pairs(Roster) do
+				refreshFuncs[name](t,i,id)
+			end
+		end
+	end
+end
+
+local IsRaidLeader,IsRaidOfficer = IsRaidLeader,IsRaidOfficer
+function DXE:IsSelfPromoted()
+	return IsRaidLeader() or IsRaidOfficer()
+end
+
+---------------------------------------------
 -- TRIGGER BUILDING
 ---------------------------------------------
-local nameTriggers = {} -- Activation names. Source: data.triggers.scan
-local yellTriggers = {} -- Yell activations. Source: data.triggers.yell
+local NameTriggers = {} -- Activation names. Source: data.triggers.scan
+local YellTriggers = {} -- Yell activations. Source: data.triggers.yell
 
 do
 	local function addData(tbl,info,key)
@@ -341,12 +381,12 @@ do
 				if data.triggers then
 					local scan = data.triggers.scan
 					if scan then 
-						addData(nameTriggers,scan,key)
+						addData(NameTriggers,scan,key)
 						hasName = true
 					end
 					local yell = data.triggers.yell
 					if yell then 
-						addData(yellTriggers,yell,key) 
+						addData(YellTriggers,yell,key) 
 						hasYell = true
 					end
 				end
@@ -355,18 +395,20 @@ do
 		return hasName,hasYell
 	end
 
+	local ScanHandle
 	function DXE:UpdateTriggers()
 		-- Clear trigger tables
-		wipe(nameTriggers)
-		wipe(yellTriggers)
+		wipe(NameTriggers)
+		wipe(YellTriggers)
 		self:UnregisterEvent("CHAT_MSG_MONSTER_YELL")
-		self:CancelTimer(self.scanhandle,true)
+		self:CancelTimer(ScanHandle,true)
 		-- Build trigger lists
 		local scan, yell = BuildTriggerLists()
 		-- Start invokers
-		if scan then self.scanhandle = self:ScheduleRepeatingTimer("ScanUpdate",2) end
+		if scan then ScanHandle = self:ScheduleRepeatingTimer("ScanUpdate",2) end
 		if yell then self:RegisterEvent("CHAT_MSG_MONSTER_YELL") end
 	end
+	DXE:ThrottleFunc("UpdateTriggers",1,true)
 end
 
 ---------------------------------------------
@@ -375,7 +417,6 @@ end
 
 do
 	local prevNumRaidMembers = 0
-	local GetNumRaidMembers = GetNumRaidMembers
 	function DXE:RAID_ROSTER_UPDATE()
 		local numRaidMembers = GetNumRaidMembers()
 		-- Raid members changed
@@ -385,13 +426,14 @@ do
 			--@end-debug@
 			self:UpdatePaneVisibility()
 			self:UpdateRosterTables()
+			self:CleanVersions()
 		end
 		-- Raid member joined the raid
 		if numRaidMembers > prevNumRaidMembers then
 			--@debug@
 			debug("RAID_ROSTER_UPDATE","Raid member joined")
 			--@end-debug@
-			self:BroadcastVersion()
+			self:BroadcastAllVersions()
 		end
 
 		-- Raid member left the raid
@@ -399,7 +441,6 @@ do
 			--@debug@
 			debug("RAID_ROSTER_UPDATE","Raid member left")
 			--@end-debug@
-			self:DeleteUnusedVersions()
 		end
 		prevNumRaidMembers = numRaidMembers
 	end
@@ -464,7 +505,7 @@ function DXE:OnInitialize()
 	-- Register queued data 
 	-- TODO: Check for versions between RDB and EDB before registering
 	for _,data in ipairs(loadQueue) do self:RegisterEncounter(data) end
-	loadQueue = self.delete(loadQueue)
+	loadQueue = nil
 	-- Upgrade
 	self:UpgradeEncounters()
 	-- Health watchers
@@ -491,11 +532,11 @@ function DXE:OnEnable()
 	self:RegisterEvent("PLAYER_ENTERING_WORLD")
 	self:SetActiveEncounter("default")
 	self:EnableAllModules()
-	self:RegisterComm("DXE_Core","OnCommReceived")
+	self:RegisterComm("DXE")
 	self:UpdateVersionString()
 	self:RequestVersions()
 	self:UpdateRosterTables()
-	self:BroadcastVersion()
+	self:ScheduleTimer("BroadcastAllVersions",5)
 end
 
 function DXE:OnDisable()
@@ -560,7 +601,7 @@ do
 		end
 		frame:SetScript("OnMouseUp",stopmoving)
 		-- Add default position
-		local tbl = self.new()
+		local tbl = {}
 		tbl.point = point
 		tbl.relativeTo = relativeTo
 		tbl.relativePoint = relativePoint
@@ -579,7 +620,7 @@ function DXE:CHAT_MSG_MONSTER_YELL(_,msg,...)
 	--@debug@
 	debug("CHAT_MSG_MONSTER_YELL",msg,...)
 	--@end-debug@
-	for fragment,key in pairs(yellTriggers) do
+	for fragment,key in pairs(YellTriggers) do
 		if find(msg,fragment) then
 			self:SetActiveEncounter(key)
 			self:StopEncounter()
@@ -597,16 +638,16 @@ function DXE:AddFriendlyException(name)
 end
 
 function DXE:Scan()
-	for i,unit in pairs(DXE.Roster) do
+	for i,unit in pairs(Roster.index_to_id) do
 		local target = rIDtarget[i]
 		local name = UnitName(target)
 		if UnitExists(target) and 
-			nameTriggers[name] and 
+			NameTriggers[name] and 
 			not UnitIsDead(target) 
 			-- Hack to get Algalon to activate
 			and (UnitIsEnemy("player",target) or friendlyExceptions[name]) then
 			-- Return name
-			return nameTriggers[name]
+			return NameTriggers[name]
 		end
 	end
 	return nil
@@ -618,7 +659,7 @@ function DXE:ScanUpdate()
 end
 
 ---------------------------------------------
--- EXPLICIT SCANNING
+-- UNIT UTILITY
 ---------------------------------------------
 
 -- For scanning bosses
@@ -629,7 +670,7 @@ end
 function DXE:UnitID(name, unitattributefunc)
 	unitattributefunc = unitattributefunc or UnitName
 	if not name then return end
-	for i,unit in pairs(DXE.Roster) do
+	for i,unit in pairs(Roster.index_to_id) do
 		local uid = rIDtarget[i]
 		local _name = unitattributefunc(uid)
 		if _name == name then
@@ -651,6 +692,13 @@ function DXE:TargetName(name)
 	end
 end
 
+function DXE:GetUnitID(target)
+	if find(target,"0x%x+") then 
+		return Roster.guid_to_id[target]
+	else 
+		return Roster.name_to_id[target]
+	end
+end
 
 ---------------------------------------------
 -- TOOLTIP TEXT
@@ -699,16 +747,6 @@ end
 
 function DXE:ToggleConfig()
 	ACD[ACD.OpenFrames.DXE and "Close" or "Open"](ACD,"DXE")
-end
-
-function DXE:SetPlay()
-	self.Pane.startStop:SetNormalTexture("Interface\\Addons\\DXE\\Textures\\Pane\\Play")
-	self.Pane.startStop:SetHighlightTexture("Interface\\Addons\\DXE\\Textures\\Pane\\Play")
-end
-
-function DXE:SetStop()
-	self.Pane.startStop:SetNormalTexture("Interface\\Addons\\DXE\\Textures\\Pane\\Stop")
-	self.Pane.startStop:SetHighlightTexture("Interface\\Addons\\DXE\\Textures\\Pane\\Stop")
 end
 
 local backdrop = {
@@ -789,11 +827,11 @@ function DXE:CreatePane()
 
 	-- Add StartStop control
 	Pane.startStop = self:AddPaneButton(
-		PaneTextures.."Play",
-		PaneTextures.."Play",
-		function() self:ToggleTimer() end,
-		L["Start/Stop"],
-		L["Starts the timer or simultaneously stops the timer and encounter"]
+		PaneTextures.."Stop",
+		PaneTextures.."Stop",
+		function() self:StopEncounter() end,
+		L["Stop"],
+		L["Stops the current encounter"]
 	)
 	
 	-- Add Config control
@@ -930,7 +968,7 @@ do
 			info.justifyH = "LEFT"
 			UIDropDownMenu_AddButton(info,level)
 			for key,data in pairs(EDB) do
-				local info = DXE.new()
+				local info = {}
 				if data.zone == "" then
 					info.text = data.name
 					info.value = key
@@ -952,7 +990,7 @@ do
 			local category = UIDROPDOWNMENU_MENU_VALUE
 			for key,data in pairs(EDB) do
 				if data.zone == category then
-					local info = DXE.new()
+					local info = {}
 					info.hasArrow = false
 					info.text = data.name
 					info.owner = self
@@ -991,7 +1029,7 @@ end
 local isRunning,elapsedTime
 
 --- Returns the encounter start time based off GetTime()
--- @return A number >= 0
+-- @return number >= 0
 function DXE:GetElapsedTime()
 	return elapsedTime
 end
@@ -1016,13 +1054,13 @@ function DXE:StartTimer()
 	elapsedTime = 0
 	self.Pane.timer.frame:SetScript("OnUpdate",Timer_OnUpdate)
 	self:SetRunning(true)
-	self:SetStop()
+	--self:SetStop()
 end
 
 --- Stops the Pane timer
 function DXE:StopTimer()
 	self.Pane.timer.frame:SetScript("OnUpdate",nil)
-	self:SetPlay()
+	--self:SetPlay()
 	self:SetRunning(false)
 end
 
@@ -1032,6 +1070,7 @@ function DXE:ResetTimer()
 	self.Pane.timer:SetTime(0)
 end
 
+--[[
 --- Toggles the Pane timer
 function DXE:ToggleTimer()
 	if self:IsRunning() then
@@ -1040,6 +1079,11 @@ function DXE:ToggleTimer()
 		self:StartTimer()
 	end
 end
+]]
+
+---------------------------------------------
+-- ALERT TEST
+---------------------------------------------
 
 function DXE:AlertTest()
 	DXE.Alerts:CenterPopup("AlertTest1", "Decimating. Life Tap Now!", 10, 5, "ALERT1", "DCYAN")
@@ -1122,7 +1166,7 @@ end
 do
 	-- Throttling is needed because sometimes bosses pulsate in and out of combat at the start.
 	-- UnitAffectingCombat can return false at the start even if the boss is moving towards a player.
-	local UnitIsFriend,UnitIsDead,UnitAffectingCombat,GetTime = UnitIsFriend,UnitIsDead,UnitAffectingCombat,GetTime
+	local UnitIsFriend,UnitIsDead,UnitAffectingCombat = UnitIsFriend,UnitIsDead,UnitAffectingCombat
 	-- Lookup table so we don't have to concatenate every update
 	local targetof = {}
 	for i=1,40 do targetof["raid"..i.."target"] = "raid"..i.."targettarget" end
@@ -1195,198 +1239,151 @@ function DXE:CheckForEngage()
 end
 
 ---------------------------------------------
--- ROSTER
+-- COMMS
 ---------------------------------------------
-local UnitGUID = UnitGUID
--- Keys are [1-40]
-local Roster = {}
-DXE.Roster = Roster
--- Keys are the names
-local NameRoster = {}
-DXE.NameRoster = NameRoster
--- Keys are the GUIDs
-local GUIDRoster = {}
-DXE.GUIDRoster = GUIDRoster
--- Keys are unit names
-local SortedRoster = {}
 
--- Raid Version Tracking
--- Keys are the names
--- Values are the versions for the mod
+function DXE:SendComm(commType,...)
+	assert(type(commType) == "string","Expected commType to be a string")
+	self:SendCommMessage("DXE", self:Serialize(commType,...), "RAID")
+end
+
+function DXE:OnCommReceived(prefix, msg, dist, sender)
+	if dist ~= "RAID" or sender == self.pName then return end
+	self:DispatchComm(sender, self:Deserialize(msg))
+end
+
+function DXE:DispatchComm(sender,success,commType,...)
+	if success then
+		local callback = "OnComm"..commType
+		if self[callback] and type(self[callback]) == "function" then
+			self[callback](self,callback,commType,sender,...)
+		end
+		self.callbacks:Fire(callback,commType,sender,...)
+	end
+end
+
+---------------------------------------------
+-- VERSION CHECKING
+---------------------------------------------
+-- Cached string of all versions in EDB
+local VersionString
+-- Contains versions of all online raid members
 local RosterVersions = {}
 DXE.RosterVersions = RosterVersions
 
-local sort = table.sort
-local UnitIsConnected = UnitIsConnected
-function DXE:UpdateRosterTables()
+function DXE:GetNumWithAddOn()
+	return util.tablesize(RosterVersions)
+end
+
+function DXE:CleanVersions()
 	--@debug@
-	debug("UpdateRosterTables","Invoked")
+	debug("CleanVersions","Invoked")
 	--@end-debug@
-	wipe(Roster)
-	wipe(NameRoster)
-	wipe(GUIDRoster) 
-	wipe(SortedRoster)
-	for i,id in ipairs(rID) do
-		-- Exists and is connected
-		if UnitExists(id) and UnitIsConnected(id) then 
-			Roster[i] = id
-			NameRoster[UnitName(id)] = id
-			GUIDRoster[UnitGUID(id)] = id
-			SortedRoster[#SortedRoster+1] = UnitName(id)
-		end 
-	end
-	sort(SortedRoster)
-end
-
-function DXE:GetUnitID(target)
-	if find(target,"0x%x+") then 
-		return GUIDRoster[target]
-	else 
-		return NameRoster[target]
-	end
-end
-
--- TODO: It should categorize them
-function DXE:PrintRosterVersions(info, encname)
-	local color = "ff99ff33"
-	if encname == "" then
-		encname = "DXE"
-	end
-	local L_name = EDB[encname] and EDB[encname].name
-
-	print(format("|cff99ff33DXE|r: Raid Version Check (%s)", encname))
-
-	-- Check that the command is valid (i.e. in a raid with a valid encounter name)
-	if GetNumRaidMembers() == 0 then
-		print(L["|cffff3300Failed: You are not in a Raid|r"])
-		return
-	end
-	if encname ~= "DXE" and not L_name then
-		print(format(L["|cffff3300Failed: %s is not a known encounter|r"], encname))
-		return
-	end
-
-	for _, unitname in ipairs(SortedRoster) do
-		if RosterVersions[unitname] and RosterVersions[unitname][L_name] then
-			local vers = RosterVersions[unitname][L_name]
-			local myvers = encname == "DXE" and DXE.version or EDB[encname].version
-			if vers < myvers then
-				color = "ffff3300" -- red
-			elseif vers == myvers then
-				color = "ff99ff33" -- green
-			else
-				color = "ff3399ff" -- blue - above your version
-			end
-
-			print(format("|c%s%s|r: v%s",color,unitname,vers))
-		else
-			color = "ff999999"
-			print(format("|c%s%s|r: None",color,unitname))
+	for name in pairs(RosterVersions) do
+		if not NameRoster[name] then
+			RosterVersions[name] = nil
 		end
 	end
 end
-
-
-
-----------------------------------
--- COMMS
-----------------------------------
-
--- TODO Recode comm system
-
--- Redo system to use a dispatch system for comms
 
 function DXE:RequestVersions()
 	--@debug@
 	debug("RequestVersions","Invoked")
 	--@end-debug@
-	self:SendCommMessage("DXE_Core", "REQUESTVERSIONS:ARGS", "RAID")
+	self:SendComm("RequestAllVersions")
 end
 
-function DXE:DeleteUnusedVersions()
-	--@debug@
-	debug("DeleteUnusedVersions","Invoked")
-	--@end-debug@
-	for name in pairs(RosterVersions) do
-		if not NameRoster[name] then
-			RosterVersions[name] = self.delete(RosterVersions[name])
-		end
-	end
+function DXE:OnCommRequestAllVersions()
+	self:BroadcastAllVersions()
 end
 
-local versionString
 function DXE:UpdateVersionString()
 	--@debug@
 	debug("UpdateVersionString","Invoked")
 	--@end-debug@
-	local tbl = self.new()
-	tbl[1] = "VERSIONBROADCAST"
-	tbl[2] = format("%s,%s","DXE",DXE.version)
+	local work = {}
+	work[1] = format("%s,%s","addon",self.version)
 	for key, data in pairs(EDB) do
 		if key ~= "default" then
-			tbl[#tbl+1] = format("%s,%s",data.name,data.version)
+			work[#work+1] = format("%s,%s",data.key,data.version)
 		end
 	end
-	versionString = concat(tbl,":")
-	tbl = self.delete(tbl)
+	VersionString = concat(work,":")
+
+	self.db.global.tempString = VersionString
 end
+DXE:ThrottleFunc("UpdateVersionString",1,true)
 
---- Broadcasts all or a specific one. Throttles broadcasting all.
--- @param name Assumed to exist in EDB. It is only used in Distributor after downloading.
-do
-	-- Time since we last broadcasted
-	local last = 0
-	-- How long to wait to broadcast
-	local waitTime = 4
-	-- ScheduleTimer handle
-	local handle
-
-	function DXE:BroadcastVersion(key)
-		--@debug@
-		debug("BroadcastVersion","name: %s",name) 
-		--@end-debug@
-		local msg
-		-- Broadcasts all
-		if not name then
-			-- Throttling
-			local t = GetTime()
-			if last + waitTime - 0.5 > t then
-				if not handle then
-					handle = self:ScheduleTimer("BroadcastVersion",waitTime)
-				end
-				return
-			end
-			handle = nil
-			last = t
-			msg = versionString
-		-- Broadcasts a single one
-		else
-			if not EDB[key] then return end
-			local data = EDB[key]
-			msg = format("VERSIONBROADCAST:%s,%s",data.name,data.version)
-		end
-		self:SendCommMessage("DXE_Core", msg, "RAID")
-	end
-end
-
-function DXE:OnCommReceived(prefix, msg, dist, sender)
-	local commType,args = match(msg,"^(%w+):(.+)$")
-	
-	if commType == "VERSIONBROADCAST" then
-		if not RosterVersions[sender] then
-			RosterVersions[sender] = self.new()
-		end
-		-- TODO: Should inform you that you can get an upgrade from raid member x
-		for name, vers in args:gmatch("([^:,]+),([^:,]+)") do
-			RosterVersions[sender][name] = tonumber(vers)
-		end
-	elseif commType == "REQUESTVERSIONS" and sender ~= self.pName then
-		self:BroadcastVersion()
-	end
+function DXE:BroadcastAllVersions()
 	--@debug@
-	if type(args) == "string" then args = #args > 10 and args:sub(1,15).."..." or args end
-	debug("OnCommReceived","type: %s sender: %s args: %s",commType,sender,args)
+	debug("BroadcastAllVersions","Invoked")
 	--@end-debug@
+	self:SendComm("AllVersionsBroadcast",VersionString)
+end
+DXE:ThrottleFunc("BroadcastAllVersions",10,true)
+
+function DXE:OnCommAllVersionsBroadcast(event,commType,sender,versionString)
+	RosterVersions[sender] = RosterVersions[sender] or {}
+	for key,version in gmatch(versionString,"([^:,]+),([^:,]+)") do
+		RosterVersions[sender][key] = tonumber(version)
+	end
+end
+
+--- Broadcasts a specific encounter version
+-- @param key Assumed to exist in EDB. It is only used in Distributor after downloading.
+function DXE:BroadcastVersion(key)
+	if not EDB[key] then return end
+	self:SendComm("VersionBroadcast",key,EDB[key].version)
+end
+
+function DXE:OnCommVersionBroadcast(event,commType,sender,key,version)
+	RosterVersions[sender] = RosterVersions[sender] or {}
+	RosterVersions[sender][key] = version
+end
+
+do
+	local GREEN = "ff99ff33"
+	local BLUE  = "ff3399ff"
+	local GREY  = "ff999999"
+	local RED   = "ffff3300"
+	local color
+	local sort = table.sort
+	-- TODO: Make a GUI for this
+	function DXE:PrintRosterVersions(info, key)
+		--[[
+		if GetNumRaidMembers() == 0 then
+			self:Print(L["|cffff3300Failed: You are not in a Raid|r"])
+			return
+		end
+		key = key == "" and "addon" or key
+		local name = EDB[key] and EDB[key].name
+
+		self:Print(format("Raid Version Check (%s)",key))
+
+		if key ~= "dxe" and not name then
+			print(format(L["|cffff3300Failed: %s is not a known encounter|r"], key))
+			return
+		end
+
+		for _,uname in ipairs(self.SortedRoster) do
+			if RosterVersions[uname] and RosterVersions[uname][key] then
+				local version = RosterVersions[uname][name] or RosterVersions[uname]["DXE"]
+				local mversion = key == "dxe" and self.version or EDB[key].version
+				if vers < myvers then
+					color = RED -- red
+				elseif vers == myvers then
+					color = GREEN -- green
+				else
+					color = BLUE -- blue - above your version
+				end
+
+				self:Print(format("|c%s%s|r: v%s",color,uname,vers))
+			else
+				self:Print(format("|c%s%s|r: None",GREY,uname))
+			end
+		end
+		]]
+	end
 end
 
 _G.DXE = DXE

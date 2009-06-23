@@ -19,8 +19,9 @@ do
 			saronitecount = 1,
 		},
 		onstart = {
-			[1] = {
+			{
 				{alert = "vaporcd"},
+				{alert = "enragecd"},
 				{set = {saronitecount = "INCR|1"}},
 			},
 		},
@@ -121,13 +122,13 @@ do
 		},
 		timers = {
 			shadowcrash = {
-				[1] = {
+				{
 					{expect = {"&tft_unitexists& &tft_isplayer&","==","1 1"}},
 					{set = {shadowcrashmessage = format("%s: %s! %s!",L["Crash"],L["YOU"],L["MOVE"])}},
 					{alert = "shadowcrashwarn"},
 				},
 				
-				[2] = {
+				{
 					{expect = {"&tft_unitexists& &tft_isplayer&","==","1 nil"}},
 					{proximitycheck = {"&tft_unitname&",28}},
 					{set = {shadowcrashmessage = format("%s: %s! %s!",L["Crash"],"&tft_unitname&",L["CAREFUL"])}},
@@ -137,72 +138,72 @@ do
 		},
 		events = {
 			-- Searing Flame cast
-			[1] = {
+			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
 				spellid = 62661,
 				execute = {
-					[1] = {
+					{
 						{alert = "searingflamewarn"},
 					},
 				},
 			},
 			-- Searing Flame interrupt
-			[2] = {
+			{
 				type = "combatevent",
 				eventtype = "SPELL_INTERRUPT",
 				execute = {
-					[1] = {
+					{
 						{expect = {"#5#","==",L["General Vezax"]}},
 						{quash = "searingflamewarn"},
 					},
 				},
 			},
 			-- Surge of Darkness cast
-			[3] = {
+			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
 				spellid = 62662,
 				execute = {
-					[1] = {
+					{
 						{alert = "darknesswarn"},
 					},
 				},
 			},
 			-- Surge of Darkness gain
-			[4] = {
+			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
 				spellid = 62662,
 				execute = {
-					[1] = {
+					{
 						{quash = "darknesswarn"},
 						{alert = "darknessdur"},
 					},
 				},
 			},
 			-- Shadow Crash
-			[5] = {
+			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_SUCCESS",
 				spellid = {60835,62660},
 				execute = {
-					[1] = {
+					{
 						{scheduletimer = {"shadowcrash",0.1}},
 					},
 				},
 			},
 			-- Mark of the Faceless
-			[6] = {
+			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_SUCCESS",
 				spellid = 63276,
 				execute = {
-					[1] = {
+					{
 						{expect = {"#4#","==","&playerguid&"}},
 						{alert = "facelessdurself"},
 					},
-					[2] = {
+					{
 						{expect = {"#4#","~=","&playerguid&"}},
 						{alert = "facelessdurothers"},
 						{proximitycheck = {"#5#",18}},
@@ -210,18 +211,18 @@ do
 					},
 				},
 			},
-			[7] = {
+			{
 				type = "event",
 				event = "EMOTE",
 				execute = {
 					-- Saronite Vapors
-					[1] = {
+					{
 						{expect = {"#1#","find",L["^A cloud of saronite vapors"]}},
 						{alert = "vaporcd"},
 						{set = {saronitecount = "INCR|1"}},
 					},
 					-- Saronite Animus
-					[2] = {
+					{
 						{expect = {"#1#","find",L["A saronite barrier appears around"]}},
 						{alert = "animuswarn"},
 						{tracing = {L["General Vezax"],L["Saronite Animus"]}},
@@ -229,11 +230,11 @@ do
 				},
 			},
 			-- Saronite Animus dies
-			[8] = {
+			{
 				type = "combatevent",
 				eventtype = "UNIT_DIED",
 				execute = {
-					[1] = {
+					{
 						{expect = {"#5#","==",L["Saronite Animus"]}},
 						{tracing = {L["General Vezax"]}},
 					},

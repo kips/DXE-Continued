@@ -15,6 +15,8 @@ DXE.genblank = function(order)
 	}
 end
 
+local enc_group_args
+
 function DXE:InitializeOptions()
 	local options = {
 		type = "group",
@@ -112,7 +114,7 @@ function DXE:InitializeOptions()
 					PaneOnlyInInstance = {
 						order = 250,
 						type = "toggle",
-						name = L["Only in instance"],
+						name = L["Only in instances"],
 						set = function(info,v)
 							self.db.global.PaneOnlyInInstance = v
 							self:UpdatePaneVisibility()
@@ -192,6 +194,8 @@ function DXE:InitializeOptions()
 	options_args.debug = debug
 	--@end-debug@
 
+	enc_group_args = options.plugins.encounters.encs_group.args
+
 	return options
 end
 
@@ -237,6 +241,10 @@ end
 -- ENCOUNTERS
 -----------------------------------------
 
+local function convert_to_key(str)
+	return str:gsub(" ",""):lower()
+end
+
 local function findversion(key)
 	for name,data in pairs(DXE.EDB) do
 		if data.key == key then
@@ -254,27 +262,53 @@ local version = {
 
 -- Only used with UnregisterEncounter
 function DXE:RemoveEncounterOptions(data)
-	local zonekey = data.zone:gsub(" ",""):lower()
-	local groupargs = self.options.plugins.encounters.encs_group.args
-	groupargs[zonekey].args[data.key] = DXE.delete(groupargs[zonekey].args[data.key])
-	-- Remove zone category if there are no more encounters in it
-	if not next(groupargs[zonekey].args) then
-		groupargs[zonekey] = DXE.delete(groupargs[zonekey])
+	local catkey = data.category and convert_to_key(data.category) or convert_to_key(data.zone)
+	enc_group_args[catkey].args[data.key] = nil
+	-- Remove category if there are no more encounters in it
+	if not next(enc_group_args[catkey].args) then
+		enc_group_args[catkey] = nil
 	end
+end
+
+function DXE:GetCategoryOptions(category)
+	return {
+		type = "group",
+		name = category,
+		args = {}
+	}
+end
+
+local loadmodule = {
+	type = "execute",
+	name = L["Load Module"],
+	desc = L["This module will automatically load when you enter the appropriate zone. Click if you want to force load it."],
+	func = function(info) LoadAddOn(info[#info]) end,
+	width = "full",
+}
+
+local loadGroups = {}
+
+function DXE:AddCategoryLoader(category,module)
+	local catkey = convert_to_key(category)
+	enc_group_args[catkey] = self:GetCategoryOptions(category)
+	enc_group_args[catkey].args[module] = loadmodule
+	loadGroups[enc_group_args[catkey]] = true
 end
 
 function DXE:AddEncounterOptions(data)
 	-- Pointer to args
-	local args = self.options.plugins.encounters.encs_group.args
-	-- Add a zone group if it doesn't exist
-	local zonekey = data.category and data.category:gsub(" ",""):lower() or data.zone:gsub(" ",""):lower()
-	args[zonekey] = args[zonekey] or {	
-		type = "group",
-		name = data.category or data.zone,
-		args = {}
-	}
+	local args = enc_group_args
+	-- Add a zone group if it doesn't exist. category supersedes zone
+	local catkey = data.category and convert_to_key(data.category) or convert_to_key(data.zone)
+	args[catkey] = args[catkey] or self:GetCategoryOptions(data.category or data.zone)
+
+	if loadGroups[args[catkey]] then
+		wipe(args[catkey].args)
+		loadGroups[args[catkey]] = nil
+	end
+
 	-- Update args pointer
-	args = args[zonekey].args
+	args = args[catkey].args
 	-- Exists, wipe it for upgrading
 	if args[data.key] then
 		wipe(args[data.key].args)

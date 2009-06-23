@@ -19,7 +19,7 @@ do
 			heartbroken = "0",
 		},
 		onstart = {
-			[1] = {
+			{
 				{alert = "enragecd"},
 			},
 		},
@@ -117,51 +117,51 @@ do
 		},
 		timers = {
 			heartunexposed = {
-				[1] = {
+				{
 					{tracing = {L["XT-002 Deconstructor"]}},
 				},
 			},
 		},
 		events = {
 			-- Gravity Bomb
-			[1] = {
+			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
 				spellid = {63024, 64234},
 				execute = {
-					[1] = {
+					{
 						{expect = {"#4#", "==", "&playerguid&"}},
 						{alert = "gravitywarnself"},
 					},
-					[2] = {
+					{
 						{expect = {"#4#", "~=", "&playerguid&"}},
 						{alert = "gravitywarnother"},
 					},
 				},
 			},
 			-- Light Bomb
-			[2] = {
+			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
 				spellid = {63018,65121},
 				execute = {
-					[1] = {
+					{
 						{expect = {"#4#", "==", "&playerguid&"}},
 						{alert = "lightwarnself"},
 					},
-					[2] = {
+					{
 						{expect = {"#4#", "~=", "&playerguid&"}},
 						{alert = "lightwarnother"},
 					},
 				},
 			},
 			-- Tympanic
-			[3] = {
+			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
 				spellid = {62776},
 				execute = {
-					[1] = {
+					{
 						{alert = "tympanicwarn"},
 						{expect = {"<heartbroken>","==","1"}},
 						{alert = "tympaniccd"},
@@ -169,12 +169,12 @@ do
 				},
 			},
 			-- Heart Exposed
-			[4] = {
+			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
 				spellid = 63849,
 				execute = {
-					[1] = {
+					{
 						{alert = "exposedwarn"},
 						{scheduletimer = {"heartunexposed", 30}},
 						{tracing = {L["XT-002 Deconstructor"],L["Heart of the Deconstructor"]}},
@@ -182,12 +182,12 @@ do
 				},
 			},
 			-- Heartbreak
-			[5] = {
+			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
 				spellid = 64193,
 				execute = {
-					[1] = {
+					{
 						{quash = "exposedwarn"},
 						{canceltimer = "heartunexposed"},
 						{tracing = {L["XT-002 Deconstructor"]}},

@@ -19,7 +19,7 @@ do
 		},
 		userdata = {},
 		onstart = {
-			[1] = {
+			{
 				{alert = "dancebegins"},
 			}
 		},
@@ -47,18 +47,18 @@ do
 		},
 		timers = {
 			backonfloor = {
-				[1] = {
+				{
 					{alert = "dancebegins"},
 				}
 			}
 		},
 		events = {
 			-- Dance starts
-			[1] = {
+			{
 				type = "event", 
 				event = "CHAT_MSG_MONSTER_YELL", 
 				execute = {
-					[1] = {
+					{
 						{expect = {"#1#","find",L["^The end is upon you"]}},
 						{alert = "danceends"}, 
 						{scheduletimer = {"backonfloor", 45}},

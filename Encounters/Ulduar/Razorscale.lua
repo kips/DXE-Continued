@@ -19,7 +19,7 @@ do
 			leavecombat = true,
 		},
 		onstart = {
-			[1] = {
+			{
 				{alert = "enragecd"},
 			},
 		},
@@ -76,42 +76,42 @@ do
 		},
 		events = {
 			-- Devouring Flame
-			[1] = {
+			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
 				spellid = {63014,63816},
 				execute = {
-					[1] = {
+					{
 						{expect = {"#4#","==","&playerguid&"}},
 						{alert = "devourwarnself"},
 					},
 				},
 			},
-			[2] = {
+			{
 				type = "event",
 				event = "YELL",
 				execute = {
 					-- Razorscale gets chained
-					[1] = {
+					{
 						{expect = {"#1#","find",L["^Move quickly"]}},
 						{alert = "chaindur"},
 					},
 					-- Razorscale lifts off
-					[2] = {
+					{
 						{expect = {"#1#","find",L["^Give us a moment to"]}},
 						{quash = "chaindur"},
 					},
 				},
 			},
-			[3] = {
+			{
 				type = "event",
 				event = "EMOTE",
 				execute = {
-					[1] = {
+					{
 						{expect = {"#1#","find",L["deep breath...$"]}},
 						{alert = "breathwarn"},
 					},
-					[2] = {
+					{
 						{expect = {"#1#","find",L["lands permanently!$"]}},
 						{alert = "permlandwarn"},
 					},

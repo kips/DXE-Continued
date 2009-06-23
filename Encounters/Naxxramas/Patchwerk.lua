@@ -19,7 +19,7 @@ do
 		},
 		userdata = {},
 		onstart = {
-			[1] = {
+			{
 				{alert = "enragecd"},
 			}
 		},
@@ -45,12 +45,12 @@ do
 		},
 		events = {
 			-- Enrage
-			[1] = {
+			{
 				type = "combatevent", 
 				eventtype = "SPELL_AURA_APPLIED", 
 				spellid = 28131, 
 				execute = {
-					[1] = {
+					{
 						{alert = "enragewarn"}, 
 						{quash = "enragecd"},
 					},

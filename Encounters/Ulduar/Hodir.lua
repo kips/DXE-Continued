@@ -16,7 +16,7 @@ do
 		},
 		userdata = {},
 		onstart = {
-			[1] = {
+			{
 				{alert = "enragecd"},
 				{alert = "flashfreezecd"},
 				{alert = "hardmodeends"},
@@ -97,39 +97,39 @@ do
 		},
 		events = {
 			-- Flash Freeze cast
-			[1] = {
+			{
 				type = "combatevent", 
 				eventtype = "SPELL_CAST_START",
 				spellid = 61968, 
 				execute = {
-					[1] = {
+					{
 						{alert = "flashfreezewarn"},
 						{alert = "flashfreezecd"},
 					},
 				},
 			},
 			-- Frozen Blow
-			[2] = {
+			{
 				type = "combatevent", 
 				eventtype = "SPELL_AURA_APPLIED", 
 				spellid = {62478,63512},
 				execute = {
-					[1] = {
+					{
 						{alert = "frozenblowdur"},
 					},
 				},
 			},
 			-- Storm Cloud
-			[3] = {
+			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
 				spellid = {65133,65123},
 				execute = {
-					[1] = {
+					{
 						{expect = {"#4#","==","&playerguid&"}},
 						{alert = "stormcloudwarnself"},
 					},
-					[2] = {
+					{
 						{expect = {"#4#","~=","&playerguid&"}},
 						{alert = "stormcloudwarnother"},
 					},

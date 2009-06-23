@@ -18,10 +18,8 @@
 		tracing
 		proximitycheck
 		raidicon
-
-TODO:
-	Sync start/stopping
-	Register COMBAT_LOG_EVENT_UNFILTERED onstart, unregister onstop
+		
+		TODO: Sync start/stopping
 ]]
 
 local DXE = DXE
@@ -33,9 +31,32 @@ local type,next,select = type,next,select
 local ipairs,pairs,unpack = ipairs,pairs,unpack
 local tostring,tonumber = tostring,tonumber
 local match,gmatch,gsub,find = string.match,string.gmatch,string.gsub,string.find
+local wipe = table.wipe
 
 local EncDB,CE
 local userdata = {}
+
+---------------------------------------------
+-- TABLE POOL
+---------------------------------------------
+
+local cache = {}
+setmetatable(cache,{__mode = "k"})
+local new = function()
+	local t = next(cache)
+	if t then 
+		cache[t] = nil
+	else
+		t = {} 
+	end
+	return t
+end
+
+local del = function(t)
+	wipe(t)
+	cache[t] = true
+	return nil
+end
 
 ---------------------------------------------
 -- INITIALIZATION
@@ -416,7 +437,8 @@ local Timers = {}
 local function canceltimer(name)
 	if Timers[name] then
 		Invoker:CancelTimer(Timers[name].handle,true)
-		Timers[name] = DXE.rdelete(Timers[name])
+		Timers[name].args = del(Timers[name].args)
+		Timers[name] = del(Timers[name])
 	end
 	return true
 end
@@ -534,9 +556,9 @@ function Invoker:SetRaidIcon(name)
 		local delta = 0.5
 		if duration<delta then return end
 		canceltimer(name)
-		Timers[name] = DXE.new()
+		Timers[name] = new()
 		Timers[name].handle = Invoker:ScheduleTimer("SetRaidIcon",delta,name)
-		local args = DXE.new()
+		local args = new()
 		args[1],args[2],args[3] = icon,target,(duration-delta)
 		Timers[name].args = args
 		return
@@ -549,7 +571,7 @@ function Invoker:SetRaidIcon(name)
 		-- Must cancel old icon removal for target if a new one is placed
 		-- while old is still active
 		canceltimer(name)
-		Timers[name] = DXE.new()
+		Timers[name] = new()
 		Timers[name].handle = Invoker:ScheduleTimer("RemoveRaidIcon", duration, target)
 	end 
 end
@@ -590,9 +612,9 @@ local CommandFuncs = {
 		local name,time = info[1],info[2]
 		-- Rescheduled Timers are overwritten
 		canceltimer(name)
-		Timers[name] = DXE.new()
+		Timers[name] = new()
 		Timers[name].handle = Invoker:ScheduleTimer("FireTimer",time,name)
-		local args = DXE.new()
+		local args = new()
 		-- Only need the first 7 (up to spellID)
 		args[1],args[2],args[3],args[4],args[5],args[6],args[7] = ...
 		Timers[name].args = args
@@ -627,9 +649,9 @@ local CommandFuncs = {
 
 		-- Cancel timer if same icon is trying to be set elsewhere
 		canceltimer(name)
-		Timers[name] = DXE.new()
+		Timers[name] = new()
 		-- Timers[name].handle = Invoker:ScheduleTimer("SetRaidIcon",0,name)
-		local args = DXE.new()
+		local args = new()
 		args[1],args[2],args[3] = icon,target,duration
 		Timers[name].args = args
 		Invoker:SetRaidIcon(name)
@@ -689,8 +711,7 @@ function Invoker:AddEventData()
 	for _,info in ipairs(CE.events) do
 		if info.type == "combatevent" then
 			-- Register combat log event
-			-- self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED","COMBAT_EVENT")
-			CombatEvents[info.eventtype] = CombatEvents[info.eventtype] or DXE.new()
+			CombatEvents[info.eventtype] = CombatEvents[info.eventtype] or new()
 			if not info.spellid then
 				CombatEvents[info.eventtype]["*"] = info.execute
 			else
@@ -705,7 +726,6 @@ function Invoker:AddEventData()
 		elseif info.type == "event" then
 			local event = REG_ALIASES[info.event] or info.event
 			-- Register regular event
-			-- self:RegisterEvent(event,"REG_EVENT")
 			-- Add execute list to the appropriate key
 			RegEvents[event] = info.execute
 		end
@@ -715,7 +735,7 @@ end
 function Invoker:WipeEvents()
 	wipe(RegEvents)
 	for k,v in pairs(CombatEvents) do
-		if type(v) == "table" then DXE.delete(v) end
+		if type(v) == "table" then del(v) end
 		CombatEvents[k] = nil
 	end
 	self:UnregisterAllEvents()

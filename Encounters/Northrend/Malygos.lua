@@ -20,7 +20,7 @@ do
 			vortexcd = {29,59,loop=false},
 		},
 		onstart = {
-			[1] = {
+			{
 				{alert = "vortexcd"},
 			}
 		},
@@ -96,12 +96,12 @@ do
 		},
 		events = {
 			-- Vortex/Power spark
-			[1] = {
+			{
 				type = "combatevent", 
 				eventtype = "SPELL_CAST_SUCCESS", 
 				spellid = 56105, 
 				execute = {
-					[1] = {
+					{
 						{alert = "vortexdur"}, 
 						{alert = "vortexcd"}, 
 						{quash = "powerspark"},
@@ -110,12 +110,12 @@ do
 				},
 			},
 			-- Surge
-			[2] = {
+			{
 				type = "combatevent", 
 				eventtype = "SPELL_AURA_APPLIED", 
 				spellid = {57407, 60936}, 
 				execute = {
-					[1] = {
+					{
 						{expect = {"#4#","==","&vehicleguid&"}},
 						{quash = "presurgewarn"},
 						{alert = "surgewarn"},
@@ -123,22 +123,22 @@ do
 				},
 			},
 			-- Static field
-			[3] = {
+			{
 				type = "combatevent", 
 				eventtype = "SPELL_CAST_SUCCESS", 
 				spellid = 57430, 
 				execute = {
-					[1] = {
+					{
 						{alert = "staticfieldwarn"},
 					},
 				},
 			},
 			-- Yells
-			[4] = {
+			{
 				type = "event", 
 				event = "CHAT_MSG_MONSTER_YELL", 
 				execute = {
-					[1] = {
+					{
 						{expect = {"#1#","find",L["I had hoped to end your lives quickly"]}},
 						{quash = "vortexdur"},
 						{quash = "vortexcd"},
@@ -146,7 +146,7 @@ do
 						{set = {phase = 2}},
 						{alert = "deepbreath"},
 					},
-					[2] = {
+					{
 						{expect = {"#1#", "find", L["ENOUGH!"]}},
 						{quash = "deepbreath"},
 						{set = {phase = 3}},
@@ -154,27 +154,27 @@ do
 				},
 			},
 			-- Emotes
-			[5] = {
+			{
 				type = "event", 
 				event = "CHAT_MSG_RAID_BOSS_EMOTE", 
 				execute = {
-					[1] = {
+					{
 						{expect = {"<phase>","==","1"}},
 						{quash = "powerspark"},
 						{alert = "powerspark"},
 					},
-					[2] = {
+					{
 						{expect = {"<phase>","==","2"}},
 						{alert = "deepbreath"},
 					},
 				},
 			},
 			-- Whispers
-			[6] = {
+			{
 				type = "event",
 				event = "WHISPER",
 				execute = {
-					[1] = {
+					{
 						{expect = {"#1#","find",L["fixes his eyes on you!$"]}},
 						{alert = "presurgewarn"},
 					},

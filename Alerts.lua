@@ -265,7 +265,7 @@ local function CreateAlert()
 	self:SetHeight(30)
 	self:SetBackdrop(Backdrop)
 
-	self.data = DXE.new()
+	self.data = {}
 
 	local bar = CreateFrame("StatusBar",nil,self)
 	bar:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")

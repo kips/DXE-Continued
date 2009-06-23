@@ -18,7 +18,7 @@ do
 		},
 		userdata = {},
 		onstart = {
-			[1] = {
+			{
 				{alert = "gothikcomesdown"},
 			}
 		},

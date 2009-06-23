@@ -26,7 +26,7 @@ do
 			spawntime = {10,60,loop=false}
 		},
 		onstart = {
-			[1] = {
+			{
 				{alert = "spawncd"},
 				{alert = "enragecd"},
 			},
@@ -132,25 +132,25 @@ do
 		},
 		events = {
 			-- Spawn waves
-			[1] = {
+			{
 				type = "event",
 				event = "YELL",
 				execute = {
 					-- Ancient Conservator
-					[1] = {
+					{
 						{expect = {"#1#","find",L["^Eonar, your servant"]}},
 						{tracing = {L["Freya"],L["Ancient Conservator"]}},
 						{quash = "spawncd"},
 						{alert = "spawncd"},
 					},
 					-- Detonating Lashers
-					[2] = {
+					{
 						{expect = {"#1#","find",L["^The swarm of the elements"]}},
 						{quash = "spawncd"},
 						{alert = "spawncd"},
 					},
 					-- Elementals
-					[3] = {
+					{
 						{expect = {"#1#","find",L["^Children, assist"]}},
 						{tracing = {L["Freya"],L["Ancient Water Spirit"], L["Storm Lasher"], L["Snaplasher"]}},
 						{quash = "spawncd"},
@@ -159,27 +159,27 @@ do
 				},
 			},
 			-- Eonar's Gift
-			[2] = {
+			{
 				type = "event",
 				event = "EMOTE",
 				execute = {
-					[1] = {
+					{
 						{expect = {"#1#","find",L["begins to grow!$"]}},
 						{alert = "giftwarn"},
 					},
 				},
 			},
 			-- Nature's Fury from Ancient Conservator
-			[3] = {
+			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
 				spellid = {62589,63571},
 				execute = {
-					[1] = {
+					{
 						{expect = {"#4#","==","&playerguid&"}},
 						{alert = "naturesfuryself"},
 					},
-					[2] = {
+					{
 						{expect = {"#4#","~=","&playerguid&"}},
 						{proximitycheck = {"#5#",11}},
 						{alert = "naturesfuryproximitywarn"},
@@ -187,60 +187,60 @@ do
 				},
 			},
 			-- Attuned to Nature Removal
-			[4] = {
+			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_REMOVED",
 				spellid = 62519,
 				execute = {
-					[1] = {
+					{
 						{quash = "spawncd"},
 						{alert = "attunedwarn"},
 					},
 				},
 			},
 			-- Ancient Conservator - Conservator's Grip 
-			[5] = {
+			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
 				spellid = 62532,
 				execute = {
-					[1] = {
+					{
 						{expect = {"#4#","==","&playerguid&"}},
 						{alert = "gripwarn"},
 					},
 				},
 			},
 			-- Ground Tremor (Hard Mode)
-			[6] = {
+			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
 				spellid = {62437,62859},
 				execute = {
-					[1] = {
+					{
 						{alert = "groundtremorwarn"},
 						{alert = "groundtremorcd"},
 					},
 				},
 			},
 			-- Unstable Energy
-			[7] = {
+			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
 				spellid = {62865,62451},
 				execute = {
-					[1] = {
+					{
 						{expect = {"#4#","==","&playerguid&"}},
 						{alert = "unstablewarnself"},
 					},
 				},
 			},
 			-- Nature's Fury removed from player
-			[8] = {
+			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_REMOVED",
 				spellid = {62589,63571},
 				execute = {
-					[1] = {
+					{
 						{expect = {"#4#","==","&playerguid&"}},
 						{quash = "naturesfuryself"},
 					},

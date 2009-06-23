@@ -18,7 +18,7 @@ do
 			previoustarget = "",
 		},
 		onstart = {
-			[1] = {
+			{
 				{alert = "enragecd"},
 				{expect = {"&difficulty&","==","1"}},
 				{set = {overwhelmtime = 60}},
@@ -157,26 +157,26 @@ do
 		},
 		timers = {
 			canceltendril = {
-				[1] = {
+				{
 					{canceltimer = "tendriltargets"},
 					{set = {previoustarget = ""}},
 				},
 			},
 			-- tft3 = Stormcaller Brundir's Target
 			tendriltargets = {
-				[1] = {
+				{
 					{expect = {"&tft3_unitexists& &tft3_isplayer&","==","1 1"}},
 					{expect = {"&tft3_unitname&","~=","<previoustarget>"}},
 					{set = {previoustarget = "&tft3_unitname&"}},
 					{alert = "tendrilswarnself"},
 				},
-				[2] = {
+				{
 					{expect = {"&tft3_unitexists& &tft3_isplayer&","==","1 nil"}},
 					{expect = {"&tft3_unitname&","~=","<previoustarget>"}},
 					{set = {previoustarget = "&tft3_unitname&"}},
 					{alert = "tendrilswarnother"},
 				},
-				[3] = {
+				{
 					{scheduletimer = {"tendriltargets",0.2}},
 				},
 			},
@@ -188,7 +188,7 @@ do
 				eventtype = "SPELL_AURA_APPLIED",
 				spellid = {61869, 63481},
 				execute = {
-					[1] = {
+					{
 						{alert = "overloadwarn"},
 						{alert = "overloadcd"},
 					},
@@ -200,7 +200,7 @@ do
 				eventtype = "SPELL_CAST_SUCCESS",
 				spellid = {63483,61915},
 				execute = {
-					[1] =  {
+					{
 						{alert = "whirlwarn"},
 					},
 				},
@@ -210,11 +210,11 @@ do
 				type = "combatevent",
 				eventtype = "SPELL_INTERRUPT",
 				execute = {
-					[1] = {
+					{
 						{expect = {"#10#","==","63483"}},
 						{quash = "whirlwarn"},
 					},
-					[2] = {
+					{
 						{expect = {"#10#","==","61915"}},
 						{quash = "whirlwarn"},
 					},
@@ -226,7 +226,7 @@ do
 				eventtype = "SPELL_AURA_APPLIED", 
 				spellid = {61886, 63485}, 
 				execute = {
-					[1] = {
+					{
 						{alert = "tendrilsdur"},
 						{scheduletimer = {"tendriltargets",0}},
 						{scheduletimer = {"canceltendril",35}},
@@ -239,7 +239,7 @@ do
 				eventtype = "SPELL_CAST_START",
 				spellid = {61974,61973},
 				execute = {
-					[1] = {
+					{
 						{alert = "runeofpowerwarn"},
 					},
 				},
@@ -250,7 +250,7 @@ do
 				eventtype = "SPELL_AURA_APPLIED", 
 				spellid = {62269, 63490},
 				execute = {
-					[1] = {
+					{
 						{expect = {"&playerguid&","==","#4#"}},
 						{alert = "runeofdeathwarn"},
 					},
@@ -262,7 +262,7 @@ do
 				eventtype = "SPELL_CAST_START", 
 				spellid = 62273,
 				execute = {
-					[1] = {
+					{
 						{alert = "runeofsummoningwarn"},
 					},
 				},
@@ -273,11 +273,11 @@ do
 				spellid = {64637, 61888},
 				eventtype = "SPELL_AURA_APPLIED",
 				execute = {
-					[1] = {
+					{
 						{expect = {"&playerguid&","==","#4#"}},
 						{alert = "overwhelmdurself"},
 					},
-					[2] = {
+					{
 						{expect = {"&playerguid&","~=","#4#"}},
 						{alert = "overwhelmdurother"},
 					},
@@ -289,7 +289,7 @@ do
 				eventtype = "SPELL_CAST_START",
 				spellid = {63493,61903},
 				execute = {
-					[1] = {
+					{
 						{alert = "fusionpunchcd"},
 						{alert = "fusionpunchcast",},
 					},
@@ -300,18 +300,18 @@ do
 				type = "combatevent",
 				eventtype = "UNIT_DIED",
 				execute = {
-					[1] = {
+					{
 						{expect = {"#5#","==",L["Steelbreaker"]}},
 						{quash = "fusionpunchcd"},
 						{quash = "fusionpunchcast"},
 					},
-					[2] = {
+					{
 						{expect = {"#5#","==",L["Stormcaller Brundir"]}},
 						{quash = "overloadcd"},
 						{quash = "overloadwarn"},
 					},
 					--[[
-					[3] = {
+					{
 						{expect = {"#5#","==",L["Runemaster Molgeim"]}},
 					},
 					]]

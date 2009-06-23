@@ -24,7 +24,7 @@ do
 		},
 		userdata = {},
 		onstart = {
-			[1] = {
+			{
 				{alert = "ktarrives"},
 			}
 		},
@@ -78,45 +78,45 @@ do
 		},
 		events = {
 			-- Fissure
-			[1] = {
+			{
 				type = "combatevent", 
 				eventtype = "SPELL_CAST_SUCCESS", 
 				spellid = 27810, 
 				execute = {
-					[1] = {
+					{
 						{alert = "fissurewarn"}, 
 					},
 				},
 			},
 			-- Frost blast
-			[2] = {
+			{
 				type = "combatevent", 
 				eventtype = "SPELL_AURA_APPLIED", 
 				spellid = 27808, 
 				execute = {
-					[1] = {
+					{
 						{alert = "frostblastwarn"}, 
 					},
 				},
 			},
 			-- Mana detonate
-			[3] = {
+			{
 				type = "combatevent", 
 				eventtype = "SPELL_AURA_APPLIED", 
 				spellid = 27819, 
 				execute = {
-					[1] = {
+					{
 						{expect = {"#4#","==","&playerguid&"}},
 						{alert = "detonatewarn"}, 
 					},
 				},
 			},
 			-- Guardians
-			[4] = {
+			{
 				type = "event", 
 				event = "CHAT_MSG_MONSTER_YELL", 
 				execute = {
-					[1] = {
+					{
 						{expect = {"#1#","find",L["^Very well. Warriors of the frozen wastes, rise up!"]}},
 						{alert = "guardianswarn"}, 
 					},

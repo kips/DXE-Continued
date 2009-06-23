@@ -22,7 +22,7 @@ do
 			balconytime = {70,95,120,loop=false},
 		},
 		onstart = {
-			[1] = {
+			{
 				{alert = "teleportbalc"},
 				{expect = {"&difficulty&","==","2"}},
 				{alert = "blinkcd"},
@@ -68,31 +68,31 @@ do
 		},
 		events = {
 			-- Curses
-			[1] = {
+			{
 				type = "combatevent", 
 				eventtype = "SPELL_CAST_SUCCESS", 
 				spellid = {29213,54835}, 
 				execute = {
-					[1] = {
+					{
 						{alert = "cursewarn"}, 
 					},
 				},
 			},
 			-- Emotes
-			[2] = {
+			{
 				type = "event", 
 				event = "CHAT_MSG_RAID_BOSS_EMOTE", 
 				execute = {
-					[1] = {
+					{
 						{expect = {"#1#","find",L["blinks away"]}},
 						{alert = "blinkcd"}, 
 					},
-					[2] = {
+					{
 						{expect = {"#1#","find",L["teleports to the balcony"]}},
 						{quash = "blinkcd"},
 						{alert = "teleportroom"}, 
 					},
-					[3] = {
+					{
 						{expect = {"#1#","find",L["teleports back into battle"]}},
 						{alert = "teleportbalc"}, 
 					},

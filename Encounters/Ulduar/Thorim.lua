@@ -26,14 +26,14 @@ do
 			chargetime = 34,
 		},
 		onstart = {
-			[1] = {
+			{
 				{alert = "hardmodecd"},
 				{scheduletimer = {"hardmodefailed", 180}},
 			},
 		},
 		timers = {
 			hardmodefailed = {
-				[1] = {
+				{
 					{alert = "enrage2cd"},
 				},
 			},
@@ -111,12 +111,12 @@ do
 			},
 		},
 		events = {
-			[1] = {
+			{
 				type = "event",
 				event = "CHAT_MSG_MONSTER_YELL",
 				execute = {
 					-- Phase 3
-					[1] = {
+					{
 						{expect = {"#1#","find",L["^Impertinent"]}},
 						{quash = "hardmodecd"},
 						{quash = "enrage2cd"},
@@ -126,53 +126,53 @@ do
 						{set = {chargetime = 15}},
 					},
 					-- Hard mode activation
-					[2] = {
+					{
 						{expect = {"#1#","find",L["^Impossible!"]}},
 						{alert = "hardmodeactivation"},
 					},
 				},
 			},
 			-- Lightning Charge
-			[2] = {
+			{
 				type = "combatevent", 
 				eventtype = "SPELL_CAST_SUCCESS", 
 				spellid = 62279, 
 				execute = {
-					[1] = {
+					{
 						{set = {chargecount = "INCR|1"}},
 						{alert = "chargecd"},
 					},
 				},
 			},
 			-- Chain Lightning
-			[3] = {
+			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
 				spellid = 64390,
 				execute = {
-					[1] = {
+					{
 						{alert = "chainlightningcd"},
 					},
 				},
 			},
 			-- Sif's Frost Nova
-			[4] = {
+			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
 				spellid = {62605,62597},
 				execute = {
-					[1] = {
+					{
 						{alert = "frostnovacast"},
 					},
 				},
 			},
 			-- Unbalancing Strike
-			[5] = {
+			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_SUCCESS",
 				spellid = 62130,
 				execute = {
-					[1] = {
+					{
 						{alert = "strikecd"},
 					},
 				},

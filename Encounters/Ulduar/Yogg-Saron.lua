@@ -29,7 +29,7 @@ do
 			phase = "1",
 		},
 		onstart = {
-			[1] = {
+			{
 				{alert = "enragecd"},
 			},
 		},
@@ -109,7 +109,7 @@ do
 				varname = format(L["%s on others"],SN[64126]),
 				type = "simple",
 				text = format("%s: #5#",SN[64126]),
-				time = 1.5,
+				time = 3,
 				color1 = "YELLOW",
 				sound = "ALERT7",
 			},
@@ -137,7 +137,7 @@ do
 				var = "crushertentaclespawn",
 				varname = format(L["%s Spawns"],L["Crusher Tentacle"]),
 				type = "dropdown",
-				text = format(L["%s Spawned"],L["Crusher Tentacle"]).."!",
+				text = format(L["%s Spawns"],L["Crusher Tentacle"]).."!",
 				time = "<crushertime>",
 				flashtime = 7,
 				color1 = "DCYAN",
@@ -146,30 +146,30 @@ do
 		},
 		events = {
 			-- Lunatic Gaze
-			[1] = {
+			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
 				spellid = {64163,64164},
 				execute = {
-					[1] = {
+					{
 						{alert = "lunaticgazewarn"},
 						{alert = "lunaticgazecd"},
 					},
 				},
 			},
 			-- Brain Link
-			[2] = {
+			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
 				spellid = 63802,
 				execute = {
-					[1] = {
+					{
 						{expect = {"#4#","==","&playerguid&"}},
 						{alert = "brainlinkdur"},
 					},
 				},
 			},
-			[3] = {
+			{
 				type = "event",
 				event = "YELL",
 				execute = {
@@ -192,17 +192,17 @@ do
 					},
 				},
 			},
-			[4] = {
+			{
 				type = "event",
 				event = "EMOTE",
 				execute = {
 					-- Portal
-					[1] = {
+					{
 						{expect = {"#1#","find",L["^Portals open"]}},
 						{alert = "portalcd"},
 					},
 					-- Weakened
-					[2] = {
+					{
 						{expect = {"#1#","find",L["^The illusion shatters and a path"]}},
 						{alert = "weakeneddur"},
 						{quash = "inducewarn"},
@@ -213,31 +213,31 @@ do
 						{alert = "crushertentaclespawn"},
 					},
 					-- Empowering Shadows
-					[3] = {
+					{
 						{expect = {"#1#","find",L["prepares to unleash Empowering Shadows!$"]}},
 						{alert = "empoweringshadowscd"},
 					},
 				},
 			},
 			-- Squeeze
-			[5] = {
+			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
 				spellid = 64126,
 				execute = {
-					[1] = {
+					{
 						{expect = {"#4#","~=","&playerguid&"}},
 						{alert = "squeezewarn"},
 					},
 				},
 			},
 			-- Malady of the Mind
-			[6] = {
+			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellid = 63830,
+				spellid = {63830,63881},
 				execute = {
-					[1] = {
+					{
 						{expect = {"#4#","~=","&playerguid&"}},
 						{proximitycheck = {"#5#",28}},
 						{alert = "maladywarn"},
@@ -245,37 +245,37 @@ do
 				},
 			}, 
 			-- Induce Madness
-			[7] = {
+			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
 				spellid = 64059,
 				execute = {
-					[1] = {
+					{
 						{alert = "inducewarn"},
 					},
 				},
 			},
 			-- Brain Link removal
-			[8] = {
+			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_REMOVED",
 				spellid = {63802,63803,63804},
 				execute = {
-					[1] = {
+					{
 						{expect = {"#4#","==","&playerguid&"}},
 						{quash = "brainlinkdur"},
 					},
 				},
 			},
 			-- Crusher Tentacle spawn
-			[9] = {
+			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_SUCCESS",
 				spellid = 64144,
 				execute = {
-					[1] = {
+					{
 						{expect = {"&timeleft|crushertentaclespawn&","<","0.5"}},
-						{expect = {"<phase>","==","2"}},
+						--{expect = {"<phase>","==","2"}},
 						{set = {crushertime = 50}},
 						{quash = "crushertentaclespawn"},
 						{alert = "crushertentaclespawn"},

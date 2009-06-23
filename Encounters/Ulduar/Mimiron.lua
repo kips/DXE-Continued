@@ -30,11 +30,11 @@ do
 		},
 		onstart = {
 			-- Phase 1
-			[1] = {
+			{
 				{alert = "plasmablastcd"},
 			},
 			-- Hard mode activation
-			[2] = {
+			{
 				{expect = {"#1#","find",L["^Self%-destruct sequence initiated"]}},
 				{alert = "hardmodetimer"},
 				{alert = "flamesuppressantcd"},
@@ -45,40 +45,40 @@ do
 		},
 		timers = {
 			flames = {
-				[1] = {
+				{
 					{expect = {"<phase>","~=","4"}},
 					{alert = "flamecd"},
 					{scheduletimer = {"flames",27.5}},
 				},
-				[2] = {
+				{
 					{expect = {"<phase>","==","4"}},
 					{alert = "flamecd"},
 					{scheduletimer = {"flames",18}},
 				},
 			},
 			startbarragedur = {
-				[1] = {
+				{
 					{alert = "laserbarragedur"},
 					{quash = "spinupwarn"},
 				},
 			},
 			startbarragecd = {
-				[1] = {
+				{
 					{alert = "laserbarragecd"},
 				},
 			},
 			startblastcd = {
-				[1] = {
+				{
 					{alert = "shockblastcd"},
 				},
 			},
 			startfrostbombexplodes = {
-				[1] = {
+				{
 					{alert = "frostbombexplodes"},
 				},
 			},
 			startplasmablastdur = {
-				[1] = {
+				{
 					{alert = "plasmablastdur"},
 				},
 			},
@@ -270,12 +270,12 @@ do
 			},
 		},
 		events = {
-			[1] = {
+			{
 				type = "event",
 				event = "YELL",
 				execute = {
 					-- Transition from Phase 1 to Phase 2
-					[1] = {
+					{
 						{expect = {"#1#","find",L["^WONDERFUL! Positively"]}},
 						{set = {phase = "2"}},
 						{quash = "plasmablastcd"},
@@ -288,7 +288,7 @@ do
 						{alert = "onetotwo"},
 					},
 					-- Transition from Phase 2 to Phase 3
-					[2] = {
+					{
 						{expect = {"#1#","find",L["^Thank you, friends!"]}},
 						{set = {phase = "3"}},
 						{tracing = {L["Aerial Command Unit"]}},
@@ -301,7 +301,7 @@ do
 						{alert = "twotothree"},
 					},
 					-- Transition from Phase 3 to Phase 4
-					[3] = {
+					{
 						{expect = {"#1#","find",L["^Preliminary testing phase complete"]}},
 						{quash = "weakeneddur"},
 						{set = {phase = "4"}},
@@ -315,12 +315,12 @@ do
 			},
 			--- Phase 1 - Leviathan MKII
 			-- Plasma Blast
-			[2] = {
+			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
 				spellid = {62997,64529},
 				execute = {
-					[1] = {
+					{
 						{alert = "plasmablastwarn"},
 						{alert = "plasmablastcd"},
 						{scheduletimer = {"startplasmablastdur",3}},
@@ -328,12 +328,12 @@ do
 				},
 			},
 			-- Shock Blast
-			[3] = {
+			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
 				spellid = 63631,
 				execute = {
-					[1] = {
+					{
 						{quash = "shockblastcd"},
 						{alert = "shockblastwarn"},
 						{scheduletimer = {"startblastcd",4}},
@@ -342,12 +342,12 @@ do
 			},
 			--- Phase 2 - VX-001
 			-- Spinning Up ->  Laser Barrage
-			[4] = {
+			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_SUCCESS",
 				spellid = 63414,
 				execute = {
-					[1] = {
+					{
 						{alert = "spinupwarn"},
 						{scheduletimer = {"startbarragedur",4}},
 						{scheduletimer = {"startbarragecd",14}},
@@ -355,47 +355,47 @@ do
 				},
 			},
 			-- Flame Suppressant
-			[5] = {
+			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
 				spellid = 64570,
 				execute = {
-					[1] = {
+					{
 						{alert = "flamesuppressantwarn"},
 						{alert = "flamesuppressantcd"},
 					},
 				},
 			},
 			-- Frost Bomb
-			[6] = {
+			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
 				spellid = 64623,
 				execute = {
-					[1] = {
+					{
 						{alert = "frostbombwarn"},
 						{scheduletimer = {"startfrostbombexplodes",2}},
 					},
 				},
 			},
 			-- Bomb Bot
-			[7] = {
+			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
 				spellid = 63811,
 				execute = {
-					[1] = {
+					{
 						{alert = "bombbotwarn"},
 					},	
 				},
 			},
 			-- Weakened
-			[8] = {
+			{
 				type = "combatevent",
 				eventtype = "SPELL_SUMMON",
 				spellid = 64444,
 				execute = {
-					[1] = {
+					{
 						{alert = "weakeneddur"},
 					},
 				},

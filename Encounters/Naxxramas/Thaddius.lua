@@ -24,7 +24,7 @@ do
 		},
 		onacquired = {
 			[L_Thaddius] = {
-				[1] = {
+				{
 					{resettimer = true},
 					{alert = "enragecd"},
 					{quash = "tankthrowcd"},
@@ -34,7 +34,7 @@ do
 			},
 		},
 		onstart = {
-			[1] = {
+			{
 				{alert = "tankthrowcd"},
 				{scheduletimer = {"tankthrow", 20.6}},
 			},
@@ -72,7 +72,7 @@ do
 		},
 		timers = {
 			tankthrow = {
-				[1] = {
+				{
 					{alert = "tankthrowcd"},
 					{scheduletimer = {"tankthrow", 20.6}},
 				},
@@ -80,22 +80,22 @@ do
 		},
 		events = {
 			-- Polarity shift
-			[1] = {
+			{
 				type = "combatevent", 
 				eventtype = "SPELL_CAST_START", 
 				spellid = 28089, 
 				execute = {
-					[1] = {
+					{
 						{alert = "polarityshiftwarn"}, 
 					},
 				},
 			},
 			-- Emotes
-			[2] = {
+			{
 				type = "event", 
 				event = "CHAT_MSG_RAID_BOSS_EMOTE", 
 				execute = {
-					[1] = {
+					{
 						{expect = {"#1#","find",L["overloads"]}},
 						{set = {dead = "INCR|1"}},
 						{expect = {"<dead>",">=","2"}},

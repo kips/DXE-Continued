@@ -1,19 +1,21 @@
---[[
-	Credits to Bazaar
-]]
-
 local DXE = DXE
 local version = tonumber(("$Rev$"):sub(7, -3))
 DXE.version = version > DXE.version and version or DXE.version
 local L = DXE.L
 
+local util = DXE.util
+local Roster = DXE.Roster
+
 local AceGUI = DXE.AceGUI
 local Colors = DXE.Constants.Colors
-local PlayerName
 
 local ipairs, pairs = ipairs, pairs
 local remove,wipe = table.remove,table.wipe
 local match,len,format,split = string.match,string.len,string.format,string.split
+
+local locale = GetLocale()
+
+-- Credits to Bazaar for this implementation
 
 ----------------------------------
 -- INITIALIZATION
@@ -23,7 +25,6 @@ local Distributor = DXE:NewModule("Distributor","AceEvent-3.0","AceTimer-3.0","A
 local StackAnchor
 
 function Distributor:OnInitialize()
-	PlayerName = UnitName("player")
 	DXE:AddPluginOptions("distributor",self:GetOptions())
 
 	StackAnchor = DXE:CreateLockableFrame("DistributorStackAnchor",200,10,L["Download/Upload Anchor"])
@@ -31,7 +32,7 @@ function Distributor:OnInitialize()
 end
 
 function Distributor:OnEnable()
-	self:RegisterComm("DXE_Dist","OnCommReceived")
+	self:RegisterComm("DXE_Dist")
 	self:RegisterEvent("CHAT_MSG_ADDON")
 end
 
@@ -46,7 +47,7 @@ local MAIN_PREFIX = "DXE_Dist"
 -- UTILITY
 ----------------------------------
 
--- @return The first word of a string
+-- @return string The first word of a string
 local function firstword(str)
 	return match(str,"[%w'%-]+")
 end
@@ -71,14 +72,14 @@ local function OnUpdate(self,elapsed)
 	if not next(UpdateStack) then self:SetScript("OnUpdate",nil) end
 end
 
-function Distributor:StartUpdating(name,bar)
-	UpdateStack[name] = bar
+function Distributor:StartUpdating(key,bar)
+	UpdateStack[key] = bar
 	frame:SetScript("OnUpdate",OnUpdate)
 end
 
-function Distributor:RemoveFromUpdating(name)
-	if not UpdateStack[name] then return end
-	UpdateStack[name] = nil
+function Distributor:RemoveFromUpdating(key)
+	if not UpdateStack[key] then return end
+	UpdateStack[key] = nil
 	if not next(UpdateStack) then
 		frame:SetScript("OnUpdate",nil)
 	end
@@ -89,7 +90,7 @@ end
 ----------------------------------
 
 
-local EncNames,RaidNames = {},{}
+local EncKeys,RaidNames = {},{}
 local ListSelect,PlayerSelect
 function Distributor:GetOptions()
 	return {
@@ -113,13 +114,13 @@ function Distributor:GetOptions()
 					get = function() return ListSelect end,
 					set = function(info,value) ListSelect = value end,
 					values = function()
-						wipe(EncNames)
+						wipe(EncKeys)
 						for k in pairs(DXE.EDB) do
 							if k ~= "default" then
-								EncNames[k] = DXE.EDB[k].name
+								EncKeys[k] = DXE.EDB[k].name
 							end
 						end
-						return EncNames
+						return EncKeys
 					end,
 				},
 				send_raid_group = {
@@ -141,8 +142,10 @@ function Distributor:GetOptions()
 							name = "Send all to raid",
 							order = 200,
 							func = function() 
-										for name in pairs(DXE.EDB) do
-											Distributor:Distribute(name)
+										for key in pairs(DXE.EDB) do
+											if key ~= "default" then
+												Distributor:Distribute(name)
+											end
 										end
 									 end,
 							confirm = true,
@@ -166,9 +169,9 @@ function Distributor:GetOptions()
 							set = function(info,value) PlayerSelect = value end,
 							values = function()
 								wipe(RaidNames)
-								for k,uid in pairs(DXE.Roster) do
+								for k,uid in pairs(Roster.index_to_id) do
 									local name = UnitName(uid)
-									if name ~= PlayerName then
+									if name ~= DXE.pName then
 										 RaidNames[name] = name
 									end
 								end
@@ -190,8 +193,10 @@ function Distributor:GetOptions()
 							order = 400,
 							name = "Send all to player",
 							func = function()
-										for name in pairs(DXE.EDB) do
-											Distributor:Distribute(name, "WHISPER", PlayerSelect)
+										for key in pairs(DXE.EDB) do
+											if key ~= "default" then
+												Distributor:Distribute(name, "WHISPER", PlayerSelect)
+											end
 										end
 									 end,
 							disabled = function() return not PlayerSelect end,
@@ -212,48 +217,46 @@ end
 ----------------------------------
 -- The active uploads
 local Uploads = {}
-Distributor.Uploads = Uploads
 -- The queues uploads
 local UploadQueue = {}
-Distributor.UploadQueue = UploadQueue
 
--- TODO: Test this
 function Distributor:DispatchDistribute(info)
-	local success,name,dist,target = self:Deserialize(info)
-	if success then self:Distribute(name,dist,target) end
+	local success,key,dist,target = self:Deserialize(info)
+	if success then self:Distribute(key,dist,target) end
 end
 
-function Distributor:Distribute(name, dist, target)
+function Distributor:Distribute(key, dist, target)
 	dist = dist or "RAID"
-	local data = DXE:GetEncounterData(name)
-	if not data or Uploads[name] or name == "default" or GetNumRaidMembers() == 0 then return end
-	if DXE.tablesize(Uploads) == 4 then UploadQueue[name] = self:Serialize(name,dist,target) return end
+	local data = DXE:GetEncounterData(key)
+	if not data or Uploads[key] or key == "default" or GetNumRaidMembers() == 0 then return end
+	if util.tablesize(Uploads) == 4 then UploadQueue[key] = self:Serialize(key,dist,target) return end
 	local serialData = self:Serialize(data)
 	local length = len(serialData)
-	local message = format("UPDATE:%s:%d:%d",name,data.version,length)
+	local message = format("UPDATE:%s:%d:%d:%s:%s",key,data.version,length,data.name,locale) -- ex. UPDATE:sartharion:150:800:Sartharion:enUS
 
 	-- Create upload bar
 	local bar = self:GetProgressBar()
-	bar:SetText(format(L["Waiting for %s responses"],firstword(name)))
+	bar:SetText(format(L["Waiting for %s responses"],firstword(data.name)))
 	bar:SetColor(Colors.GREY)
-	local dest = (dist == "WHISPER") and 1 or (DXE.tablesize(DXE.RosterVersions) - 1)
+	local dest = (dist == "WHISPER") and 1 or DXE:GetNumWithAddOn()
 
-	local info = DXE.new()
-	info.accepts = 0
-	info.declines = 0
-	info.sent = 0
-	info.length = length
-	info.bar = bar
-	info.dest = dest
-	info.serialData = serialData
-	info.timer = self:ScheduleTimer("StartUpload",30,name)
-	info.dist = dist
-	info.target = target
-	Uploads[name] = info
+	Uploads[key] = {
+		accepts = 0,
+		declines = 0,
+		sent = 0,
+		length = length,
+		name = data.name,
+		bar = bar,
+		dest = dest,
+		serialData = serialData,
+		timer = self:ScheduleTimer("StartUpload",30,key),
+		dist = dist,
+		target = target,
+	}
 
 	bar.userdata.timeleft = 30
 	bar.userdata.totaltime = 30
-	self:StartUpdating(name.."UL",bar)
+	self:StartUpdating(key.."UL",bar)
 	
 	self:SendCommMessage(MAIN_PREFIX, message, dist, target)
 end
@@ -262,13 +265,13 @@ end
 -- UPLOADING
 ----------------------------------
 
-function Distributor:StartUpload(name)
-	local ul = Uploads[name]
-	if ul.accepts == 0 then self:ULTimeout(name) return end
+function Distributor:StartUpload(key)
+	local ul = Uploads[key]
+	if ul.accepts == 0 then self:ULTimeout(key) return end
 	local message = ul.serialData
-	self:SendCommMessage(format("DXE_DistR_%s",name), message, ul.dist, ul.target)
-	ul.bar:SetText(format("Sending %s",name))
-	self:RemoveFromUpdating(name.."UL")
+	self:SendCommMessage(format("DXE_DistR_%s",key), message, ul.dist, ul.target)
+	ul.bar:SetText(format("Sending %s",ul.name))
+	self:RemoveFromUpdating(key.."UL")
 end
 
 ----------------------------------
@@ -277,9 +280,9 @@ end
 -- The active downloads
 local Downloads = {}
 
-function Distributor:StartReceiving(name,length,sender,dist)
-	local prefix = format("DXE_DistR_%s",name)
-	if Downloads[name] then self:RemoveDL(name) end
+function Distributor:StartReceiving(key,length,sender,dist,name)
+	local prefix = format("DXE_DistR_%s",key)
+	if Downloads[key] then self:RemoveDL(key) end
 
 	-- Create download bar
 	local bar = self:GetProgressBar()
@@ -288,25 +291,26 @@ function Distributor:StartReceiving(name,length,sender,dist)
 	bar.userdata.timeleft = 40
 	bar.userdata.totaltime = 40
 
-	local info = DXE.new()
-	info.name = name
-	info.sender = sender
-	info.received = 0
-	info.length = length
-	info.bar = bar
-	info.timer = self:ScheduleTimer("DLTimeout",40,name)
-	info.dist = dist
-	Downloads[name] = info
+	Downloads[key] = {
+		key = key,
+		name = name,
+		sender = sender,
+		received = 0,
+		length = length,
+		bar = bar,
+		timer = self:ScheduleTimer("DLTimeout",40,key),
+		dist = dist,
+	}
 	
-	self:StartUpdating(name.."DL",bar)
+	self:StartUpdating(key.."DL",bar)
 	self:RegisterComm(prefix, "DownloadReceived")
 end
 
 function Distributor:DownloadReceived(prefix, msg, dist, sender)
 	self:UnregisterComm(prefix)
-	local name = match(prefix, "DXE_DistR_([%w'%- ]+)")
+	local key = match(prefix, "DXE_DistR_([%w'%- ]+)")
 
-	local dl = Downloads[name]
+	local dl = Downloads[key]
 	if not dl then return end
 
 	-- For WHISPER distributions
@@ -316,20 +320,19 @@ function Distributor:DownloadReceived(prefix, msg, dist, sender)
 
 	local success, data = self:Deserialize(msg)
 	-- Failed to deserialize
-	if not success then DXE:Print(format(L["Failed to load %s after downloading! Request another distribute from %s"],name,dl.sender)) return end
+	if not success then DXE:Print(format(L["Failed to load %s after downloading! Request another distribute from %s"],dl.name,dl.sender)) return end
 
 	-- Unregister
-	DXE:UnregisterEncounter(name)
+	DXE:UnregisterEncounter(key)
 	-- Register
 	DXE:RegisterEncounter(data)
 	-- Store it in SavedVariables
-	DXE.RDB[name] = DXE.rdelete(DXE.RDB[name])
-	DXE.RDB[name] = data	
+	DXE.RDB[key] = data	
 
-	self:DLCompleted(name,dl.sender)
+	self:DLCompleted(key,dl.sender,dl.name)
 
 	-- Update versions for everyone
-	DXE:BroadcastVersion(name)
+	DXE:BroadcastVersion(key)
 end
 
 ----------------------------------
@@ -341,35 +344,35 @@ function Distributor:Respond(msg,sender)
 end
 
 function Distributor:OnCommReceived(prefix, msg, dist, sender)
-	if sender == PlayerName then return end
+	if sender == DXE.pName then return end
 	local type,args = match(msg,"(%w+):(.+)")
 	if type == "UPDATE" then
-		local name,version,length = split(":",args)
+		local key,version,length,name,rlocale = split(":",args)
 		length = tonumber(length)
 		version = tonumber(version)
 
-		local data = DXE.EDB[name]
+		local data = DXE.EDB[key]
 		-- Don't want the same version
-		if data and data.version >= version then
-			self:Respond(format("RESPONSE:%s:%s",name,"NO"),sender)
+		if (data and data.version >= version) or rlocale ~= locale then
+			self:Respond(format("RESPONSE:%s:%s",key,"NO"),sender)
 			return
 		end
 
 		if DXE.db.global.Distributor.AutoAccept then
-			self:StartReceiving(name,length,sender,dist)
-			self:Respond(format("RESPONSE:%s:%s",name,"YES"),sender)
+			self:StartReceiving(key,length,sender,dist,name)
+			self:Respond(format("RESPONSE:%s:%s",key,"YES"),sender)
 			return
 		end
 
 
-		local popupname = format("DXE_Confirm_%s",name)
-		if not StaticPopupDialogs[popupname] then
+		local popupkey = format("DXE_Confirm_%s",key)
+		if not StaticPopupDialogs[popupkey] then
 			local STATIC_CONFIRM = {
 				text = format(L["%s is sharing an update for %s"],sender,firstword(name)),
-				OnAccept = function() self:StartReceiving(name,length,sender,dist)
-											 self:Respond(format("RESPONSE:%s:%s",name,"YES"),sender)
+				OnAccept = function() self:StartReceiving(key,length,sender,dist,name)
+											 self:Respond(format("RESPONSE:%s:%s",key,"YES"),sender)
 							  end,
-				OnCancel = function() self:Respond(format("RESPONSE:%s:%s",name,"NO"),sender) end,
+				OnCancel = function() self:Respond(format("RESPONSE:%s:%s",key,"NO"),sender) end,
 				button1 = "Accept",
 				button2 = "Reject",
 				timeout = 25,
@@ -377,13 +380,13 @@ function Distributor:OnCommReceived(prefix, msg, dist, sender)
 				hideOnEscape = 1,
 			}
 
-			StaticPopupDialogs[popupname] = STATIC_CONFIRM
+			StaticPopupDialogs[popupkey] = STATIC_CONFIRM
 		end
 
-		StaticPopup_Show(popupname)
+		StaticPopup_Show(popupkey)
 	elseif type == "RESPONSE" and dist == "WHISPER" then
-		local name,answer = split(":",args)
-		local ul = Uploads[name]
+		local key,answer = split(":",args)
+		local ul = Uploads[key]
 		if not ul then return end
 		if answer == "YES" then
 			ul.accepts = ul.accepts + 1
@@ -391,32 +394,32 @@ function Distributor:OnCommReceived(prefix, msg, dist, sender)
 			ul.declines = ul.declines + 1
 		end
 
-		ul.bar:SetFormattedText(L["Waiting for %s responses %d/%d"],firstword(name),ul.accepts+ul.declines,ul.dest)
+		ul.bar:SetFormattedText(L["Waiting for %s responses %d/%d"],firstword(ul.name),ul.accepts+ul.declines,ul.dest)
 
 		if ul.dest == ul.accepts + ul.declines then
 			self:CancelTimer(ul.timer,true)
-			self:StartUpload(name)
+			self:StartUpload(key)
 		end
 	end
 end
 
 local find = string.find
 function Distributor:CHAT_MSG_ADDON(_,prefix, msg, dist, sender)
-	if find(prefix,"DXE_DistR") and dist == "RAID" or dist == "WHISPER" and (next(Downloads) or next(Uploads)) then
-		local name, mark = match(prefix, "DXE_DistR_([%w'%- ]+)(.*)")
-		if not name then return end
+	if find(prefix,"DXE_DistR") and (dist == "RAID" or dist == "WHISPER") and (next(Downloads) or next(Uploads)) then
+		local key, mark = match(prefix, "DXE_DistR_([%w'%- ]+)(.*)")
+		if not key then return end
 		-- For WHISPER distributions
-		if msg == "COMPLETED" and Uploads[name] then
-			self:ULCompleted(name)
+		if msg == "COMPLETED" and Uploads[key] then
+			self:ULCompleted(key)
 			return
 		end
 
 		-- Make sure the mark exists
 		if #mark == 0 then return end
 		-- Track downloads
-		local dl = Downloads[name]
+		local dl = Downloads[key]
 		if dl and dl.sender == sender then
-			self:RemoveFromUpdating(name.."DL")
+			self:RemoveFromUpdating(key.."DL")
 			dl.received = dl.received + len(msg)
 			if mark == FIRST_MULTIPART then
 				dl.bar:SetText("Downloaded 0%")
@@ -424,12 +427,12 @@ function Distributor:CHAT_MSG_ADDON(_,prefix, msg, dist, sender)
 			elseif mark == NEXT_MULTIPART or mark == LAST_MULTIPART then
 				local perc = dl.received/dl.length
 				dl.bar:SetValue(perc)
-				dl.bar:SetFormattedText(L["Downloaded %s %d%%"],firstword(name),perc*100)
+				dl.bar:SetFormattedText(L["Downloaded %s %d%%"],firstword(dl.name),perc*100)
 			end	
 		end
 
 		-- Track uploads
-		local ul = Uploads[name]
+		local ul = Uploads[key]
 		if ul and sender == PlayerName then
 			ul.sent = ul.sent + len(msg)
 			if mark == FIRST_MULTIPART then
@@ -438,9 +441,9 @@ function Distributor:CHAT_MSG_ADDON(_,prefix, msg, dist, sender)
 			elseif mark == NEXT_MULTIPART or mark == LAST_MULTIPART then
 				local perc = ul.sent/ul.length
 				ul.bar:SetValue(perc)
-				ul.bar:SetFormattedText(L["Uploaded %s %d%%"],firstword(name),perc*100)
+				ul.bar:SetFormattedText(L["Uploaded %s %d%%"],firstword(ul.name),perc*100)
 				if mark == LAST_MULTIPART then
-					self:ULCompleted(name)
+					self:ULCompleted(key)
 				end
 			end	
 		end
@@ -451,14 +454,14 @@ end
 -- COMPLETIONS
 ----------------------------------
 
-function Distributor:DLCompleted(name,sender)
+function Distributor:DLCompleted(key,sender,name)
 	DXE:Print(format(L["%s successfully updated from %s"],name,sender))
-	self:LoadCompleted(name,Downloads[name],L["Download Completed"],Colors.GREEN,"RemoveDL")
+	self:LoadCompleted(key,Downloads[key],L["Download Completed"],Colors.GREEN,"RemoveDL")
 end
 
-function Distributor:DLTimeout(name)
-	DXE:Print(format(L["%s updating timed out"],name))
-	self:LoadCompleted(name,Downloads[name],L["Download Timed Out"],Colors.Red,"RemoveDL")
+function Distributor:DLTimeout(key)
+	DXE:Print(format(L["%s updating timed out"],Downloads[key].name))
+	self:LoadCompleted(key,Downloads[key],L["Download Timed Out"],Colors.Red,"RemoveDL")
 end
 
 function Distributor:QueueNextUL()
@@ -469,45 +472,45 @@ function Distributor:QueueNextUL()
 	end
 end
 
-function Distributor:ULCompleted(name)
-	DXE:Print(format(L["%s successfully sent"],name))
-	self:LoadCompleted(name,Uploads[name],L["Upload Completed"],Colors.GREEN,"RemoveUL")
+function Distributor:ULCompleted(key)
+	DXE:Print(format(L["%s successfully sent"],Uploads[key].name))
+	self:LoadCompleted(key,Uploads[key],L["Upload Completed"],Colors.GREEN,"RemoveUL")
 	self:QueueNextUL()
 end
 
-function Distributor:ULTimeout(name)
-	DXE:Print(format(L["%s sending timed out"],name))
-	self:LoadCompleted(name,Uploads[name],L["Upload Timed Out"],Colors.RED,"RemoveUL")
+function Distributor:ULTimeout(key)
+	DXE:Print(format(L["%s sending timed out"],Uploads[key].name))
+	self:LoadCompleted(key,Uploads[key],L["Upload Timed Out"],Colors.RED,"RemoveUL")
 	self:QueueNextUL()
 end
 
-function Distributor:LoadCompleted(name,ld,text,color,func)
+function Distributor:LoadCompleted(key,ld,text,color,func)
 	if not ld then return end
 	local bar = ld.bar
 	bar:SetText(text)
 	bar:SetColor(color)
 	bar:SetValue(1)
 	self:FadeBar(bar)
-	self:ScheduleTimer(func,3,name)
+	self:ScheduleTimer(func,3,key)
 end
 
-function Distributor:RemoveDL(name)
-	self:RemoveLoad(Downloads,name)
+function Distributor:RemoveDL(key)
+	self:RemoveLoad(Downloads,key)
 end
 
-function Distributor:RemoveUL(name)
-	self:RemoveLoad(Uploads,name)
+function Distributor:RemoveUL(key)
+	self:RemoveLoad(Uploads,key)
 end
 
-function Distributor:RemoveLoad(tbl,name)
-	self:RemoveFromUpdating(name.."UL")
-	self:RemoveFromUpdating(name.."DL")
-	local ld = tbl[name]
+function Distributor:RemoveLoad(tbl,key)
+	self:RemoveFromUpdating(key.."UL")
+	self:RemoveFromUpdating(key.."DL")
+	local ld = tbl[key]
 	if not ld then return end
 	self:CancelTimer(ld.timer,true)
 	self:RemoveProgressBar(ld.bar)
 	AceGUI:Release(ld.bar)
-	tbl[name] = DXE.delete(tbl[name])
+	tbl[key] = nil
 end
 
 function Distributor:FadeBar(bar)

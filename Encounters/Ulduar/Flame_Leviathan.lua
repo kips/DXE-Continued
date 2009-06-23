@@ -63,49 +63,49 @@ do
 		},
 		events = {
 			-- Flame vents
-			[1] = {
+			{
 				type = "combatevent", 
 				eventtype = "SPELL_AURA_APPLIED", 
 				spellid = 62396, 
 				execute = {
-					[1] = {
+					{
 						{alert = "flameventdur"},
 					},
 				},
 			},
 			-- Remove flame vents
-			[2] = {
+			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_REMOVED",
 				spellid = 62396,
 				execute = {
-					[1] = {
+					{
 						{quash = "flameventdur"},
 					},
 				},
 			},
 			-- Overload circuits
-			[3] = {
+			{
 				type = "combatevent", 
 				eventtype = "SPELL_AURA_APPLIED", 
 				spellid = 62475, 
 				execute = {
-					[1] = {
+					{
 						{alert = "overloaddur"},
 					},
 				},
 			},
 			-- Pursued
-			[4] = {
+			{
 				type = "event",
 				event = "EMOTE",
 				execute = {
-					[1] = {
+					{
 						{expect = {"#1#","find",L["pursues"]}},
 						{expect = {"#5#","==","&playername&"}},
 						{alert = "pursuedurself"},
 					},
-					[2] = {
+					{
 						{expect = {"#1#","find",L["pursues"]}},
 						{expect = {"#5#","~=","&playername&"}},
 						{alert = "pursuedurother"},

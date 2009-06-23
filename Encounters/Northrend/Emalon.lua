@@ -17,7 +17,7 @@ do
 		},
 		userdata = {},
 		onstart = {
-			[1] = {
+			{
 				{alert = "overchargecd"},
 			}
 		},
@@ -69,36 +69,36 @@ do
 		},
 		events = {
 			-- Lightning Nova
-			[1] = {
+			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
 				spellid = {64216,65279},
 				execute = {
-					[1] = {
+					{
 						{alert = "novacd"},
 						{alert = "novawarn"},
 					},
 				},
 			},
 			-- Overcharge and Overcharged Blast
-			[2] = {
+			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_SUCCESS",
 				spellid = 64218,
 				execute = {
-					[1] = {
+					{
 						{alert = "overchargecd"},
 						{alert = "overchargedblastdur"},
 					},
 				},
 			},
 			-- Overcharge Removal
-			[3] = {
+			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_REMOVED",
 				spellid = 64217,
 				execute = {
-					[1] = {
+					{
 						{quash = "overchargedblastdur"},
 					},
 				},

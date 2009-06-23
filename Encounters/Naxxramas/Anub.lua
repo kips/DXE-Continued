@@ -21,11 +21,11 @@ do
 			swarmcd = {90, 85, loop=false},
 		},
 		onstart = {
-			[1] = {
+			{
 				{expect = {"&difficulty&","==","1"}},
 				{set = {swarmcd = {102,85,loop = false}}},
 			},
-			[2] = {
+			{
 				{alert = "locustswarmcd"},
 			},
 		},
@@ -62,12 +62,12 @@ do
 		},
 		events = {
 			-- Locust swarm gain
-			[1] = {
+			{
 				type = "combatevent", 
 				eventtype = "SPELL_AURA_APPLIED", 
 				spellid = {28785,54021}, 
 				execute = {
-					[1] = {
+					{
 						{expect = {"#5#","==",L_AnubRekhan}},
 						{alert = "locustswarmgain"},
 						{quash = "locustswarmcd"},
@@ -76,12 +76,12 @@ do
 				},
 			},
 			-- Locust swarm cast
-			[2] = {
+			{
 				type = "combatevent", 
 				eventtype = "SPELL_CAST_START", 
 				spellid = {28785,54021}, 
 				execute = {
-					[1] = {
+					{
 						{alert = "locustswarmcast"},
 					},
 				},

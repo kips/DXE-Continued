@@ -19,7 +19,7 @@ do
 		},
 		userdata = {},
 		onstart = {
-			[1] = {
+			{
 				{alert = "spraycd"},
 				{alert = "spidercd"},
 			}
@@ -56,12 +56,12 @@ do
 		},
 		events = {
 			-- Spray
-			[1] = {
+			{
 				type = "combatevent", 
 				eventtype = "SPELL_CAST_SUCCESS", 
 				spellid = {29484,54125}, 
 				execute = {
-					[1] = {
+					{
 						
 						{alert = "spraycd"}, 
 						{alert = "spidercd"},
@@ -69,12 +69,12 @@ do
 				},
 			},
 			-- Enrage
-			[2] = {
+			{
 				type = "combatevent", 
 				eventtype = "SPELL_AURA_APPLIED",
 				spellid = {54123,54124},
 				execute = {
-					[1] = {
+					{
 						{alert = "enragewarn"},
 					},
 				},

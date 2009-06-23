@@ -19,7 +19,7 @@ do
 		},
 		userdata = {},
 		onstart = {
-			[1] = {
+			{
 				{alert = "enragecd"},
 			}
 		},
@@ -63,28 +63,28 @@ do
 		},
 		events = {
 			-- Injection
-			[1] = {
+			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
 				spellid = 28169,
 				execute = {
-					[1] = {
+					{
 						{expect = {"#4#", "==", "&playerguid&"}},
 						{alert = "injectionwarnself"},
 					},
-					[2] = {
+					{
 						{expect = {"#4#", "~=", "&playerguid&"}},
 						{alert = "injectionwarnother"},
 					},
 				},
 			},
 			-- Poison cloud
-			[2] = {
+			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_SUCCESS",
 				spellid = 28240,
 				execute = {
-					[1] = {
+					{
 						{alert = "cloudcd"},
 					},
 				},

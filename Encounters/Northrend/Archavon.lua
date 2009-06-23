@@ -17,7 +17,7 @@ do
 		},
 		userdata = {},
 		onstart = {
-			[1] = {
+			{
 				{alert = "enragecd"},
 				{alert = "stompcd"},
 			}
@@ -81,11 +81,11 @@ do
 		},
 		timers = {
 			shards = {
-				[1] = {
+				{
 					{expect = {"&tft_unitexists& &tft_isplayer&","==","1 1"}},
 					{alert = "shardswarnself"},
 				},
-				[2] = {
+				{
 					{expect = {"&tft_unitexists& &tft_isplayer&","==","1 nil"}},
 					{alert = "shardswarnother"},
 				},
@@ -93,44 +93,44 @@ do
 		},
 		events = {
 			-- Stomp
-			[1] = {
+			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
 				spellid = {58663, 60880}, 
 				execute = {
-					[1] = {
+					{
 						{alert = "stompcd"}, 
 					},
 				},
 			},
 			-- Shards
-			[2] = {
+			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
 				spellid = 58678,
 				execute = {
-					[1] = {
+					{
 						{scheduletimer = {"shards",0.2}},
 					}
 				},
 			},
 			-- Cloud
-			[3] = {
+			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
 				spellid = {58965, 61672},
 				execute = {
-					[1] = {
+					{
 						{expect = {"#4#","==","&playerguid&"}},
 						{alert = "cloudwarn"},
 					},
 				},
 			},
-			[4] = {
+			{
 				type = "event",
 				event = "CHAT_MSG_MONSTER_EMOTE",
 				execute = {
-					[1] = {
+					{
 						{alert = "chargewarn"},
 					},
 				},

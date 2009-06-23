@@ -17,6 +17,7 @@ local Colors = DXE.Constants.Colors
 local conditions = DXE.Invoker:GetConditions()
 local RepFuncs = DXE.Invoker:GetRepFuncs()
 local ProximityFuncs = DXE.Invoker:GetProximityFuncs()
+local util = DXE.util
 
 local isstring = {["string"] = true, _ = "string"}
 local isstringtable = {["string"] = true, ["table"] = true, _ = "string or table"}
@@ -106,17 +107,8 @@ local eventBaseKeys = {
 	execute = istable,
 }
 
-local function tableSize(t)
-	local n = 0
-	for _ in pairs(t) do
-		n = n + 1
-	end
-	return n
-end
-
-local temp = {}
 local function err(msg, errlvl, ...)
-	wipe(temp)
+	local work = {}
 	for i=select("#",...),1,-1 do
 		local key = (select(i,...))
 		if type(key) == "number" then
@@ -126,9 +118,9 @@ local function err(msg, errlvl, ...)
 		else
 			key = "["..key.."]: data"
 		end
-		temp[#temp+1] = key
+		work[#work+1] = key
 	end
-	error("DXE:ValidateOptions() "..concat(temp)..msg, errlvl+2)
+	error("DXE:ValidateOptions() "..concat(work)..msg, errlvl+2)
 end
 
 local function validateIsArray(tbl,errlvl,...)
@@ -246,10 +238,10 @@ local function validateCommandLine(data,line,errlvl,...)
 		local target,range = info[1],info[2]
 		validateVal(target,isstring,errlvl,type,...)
 		validateVal(range,isnumber,errlvl,type,...)
-		if not target:match("^#[1-7]#$") and not target:match("^&[^&]+&$") then
+		if not target:find("^#[1-7]#$") and not target:find("^&[^&]+&$") then
 			err(": invalid target, has to be exactly of the form #[1-7]# or &func& - got '"..target.."'",errlvl,type,...)
 		end
-		if target:match("^&[^&]+&$") then
+		if target:find("^&[^&]+&$") then
 			validateReplaceFuncs(data,target,errlvl,type,...)
 		end
 		if not ProximityFuncs[range] then
@@ -261,7 +253,7 @@ end
 local function validateCommandList(data,list,errlvl,...)
 	for k,line in ipairs(list) do
 		validateVal(line,istable,errlvl,k,...)
-		local size = tableSize(line) 
+		local size = util.tablesize(line)
 		if size ~= 1 then
 			err(": command line should only have one key",errlvl,k,...)
 		end
@@ -373,9 +365,9 @@ local function validate(data,errlvl,...)
 	-- Base keys
 	for k,oktypes in pairs(baseKeys) do
 		validateVal(data[k],oktypes,errlvl,k,...)
-		if k == "onstart" and data[k] and tableSize(data[k]) > 0 then
+		if k == "onstart" and data[k] and util.tablesize(data[k]) > 0 then
 			validateCommandBundle(data,data.onstart,errlvl,"onstart",...)
-		elseif k == "onacquired" and data[k] and tableSize(data[k]) > 0 then
+		elseif k == "onacquired" and data[k] and util.tablesize(data[k]) > 0 then
 			for name,bundle in pairs(data[k]) do
 				validateVal(name,isstring,errlvl,name,"onacquired",...)
 				validateCommandBundle(data,bundle,errlvl,name,"onacquired",...)
@@ -408,12 +400,12 @@ local function validate(data,errlvl,...)
 	end
 
 	-- Alerts
-	if data.alerts and tableSize(data.alerts) > 0 then
+	if data.alerts and util.tablesize(data.alerts) > 0 then
 		validateAlerts(data,data.alerts,errlvl,"alerts",...)
 	end
 
 	-- Events
-	if data.events and tableSize(data.events) > 0 then
+	if data.events and util.tablesize(data.events) > 0 then
 		validateIsArray(data.events,errlvl,"events",...)
 		validateEvents(data,data.events,errlvl,"events",...)
 	end
