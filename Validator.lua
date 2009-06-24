@@ -32,6 +32,7 @@ local optnumberstring = {["number"] = true, ["string"] = true, ["nil"] = true, _
 local opttable = {["table"] = true, ["nil"] = true, _= "table or nil"}
 local optstring = {["string"] = true, ["nil"] = true, _ = "string or nil"}
 local optstringtable = {["string"] = true, ["table"] = true, ["nil"] = true, _ = "string or table"}
+local optstringnumbertable = {["string"] = true, ["table"] = true, ["number"] = true, ["nil"] = true, _ = "string, number or table"}
 local optnumber = {["number"] = true, ["nil"] = true, _ = "number or nil"}
 local optboolean = {["boolean"] = true, ["nil"] = true, _ = "boolean or nil"}
 
@@ -87,7 +88,7 @@ local alertTypeValues = {
 
 local baseTables = {
 	triggers = {
-		scan = optstringtable,
+		scan = optstringnumbertable,
 		yell = optstringtable,
 	},
 	onactivate = {

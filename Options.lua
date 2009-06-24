@@ -282,7 +282,7 @@ local loadmodule = {
 	type = "execute",
 	name = L["Load Module"],
 	desc = L["This module will automatically load when you enter the appropriate zone. Click if you want to force load it."],
-	func = function(info) LoadAddOn(info[#info]); DXE:BroadcastAllVersions() end,
+	func = function(info) LoadAddOn(info[#info]); DXE:ScheduleTimer("BroadcastAllVersions",5) end,
 	width = "full",
 }
 

@@ -33,6 +33,7 @@ local tostring,tonumber = tostring,tonumber
 local match,gmatch,gsub,find = string.match,string.gmatch,string.gsub,string.find
 local wipe = table.wipe
 
+local UT,NID = DXE.UT,DXE.NID
 local EncDB,CE
 local userdata = {}
 
@@ -213,6 +214,7 @@ local RepFuncs = {
 	-- Get's an alert's timeleft
 	timeleft = function(name,delta) return tostring(Alerts:GetAlertTimeleft(name) + (tonumber(delta) or 0)) end,
 	unitname = function(name) return tostring(UnitName(name)) end,
+	npcid = function(guid) if UT[guid] ~= 3 then return "" else return NID[guid] or "" end end,
 }
 
 -- Add funcs for the other health watchers
