@@ -65,6 +65,7 @@ local match,find,gmatch = string.match,string.find,string.gmatch
 local _G,select,tostring,type,assert,tonumber = _G,select,tostring,type,assert,tonumber
 local GetTime,GetNumRaidMembers = GetTime,GetNumRaidMembers
 local UnitName,UnitGUID = UnitName,UnitGUID
+local band = bit.band
 
 ---------------------------------------------
 -- LIBS
@@ -75,14 +76,37 @@ local AC = LibStub("AceConfig-3.0")
 local AceGUI = LibStub("AceGUI-3.0")
 local AceTimer = LibStub("AceTimer-3.0")
 local L = LibStub("AceLocale-3.0"):GetLocale("DXE")
+
 -- Localized spell names
 local SN = setmetatable({},{
 	__index = function(t,k)
-		if not k or type(k) ~= "number" then return "nil" end
+		if type(k) ~= "number" then return "nil" end
 		local name = GetSpellInfo(k)
 		if not name then error("Invalid spell name attempted to be retrieved") end
 		t[k] = name
 		return name
+	end,
+})
+
+--- GUIDS
+
+-- NPC IDs
+local NID = setmetatable({},{
+	__index = function(t,guid)
+		if type(guid) ~= "string" or #guid ~= 18 then return end
+		local npcid = tonumber(guid:sub(9, 12), 16)
+		t[guid] = npcid
+		return npcid
+	end,
+})
+
+-- Unit Types
+local UT = setmetatable({},{
+	__index = function(t,guid)
+		if type(guid) ~= "string" or #guid ~= 18 then return end
+		local unitType = band(tonumber(guid:sub(3,5),16),0x00F)
+		t[guid] = unitType
+		return unitType
 	end,
 })
 
@@ -94,6 +118,8 @@ do
 		AceTimer = AceTimer,
 		L = L,
 		SN = SN,
+		NID = NID,
+		UT = UT,
 	}
 	for k,lib in pairs(libs) do
 		DXE[k] = lib
@@ -148,8 +174,8 @@ do
 	-- Error margin added to ScheduleTimer to ensure it fires after the throttling period
 	local _epsilon = 0.2
 	-- @_postcall A boolean determining whether or not the function is called 
-	--           after the end of the throttle period if called during it. If this
-	--			    is set to true the function should not be passing in arguments
+	--            after the end of the throttle period if called during it. If this
+	--			     is set to true the function should not be passing in arguments
 	local function ThrottleFunc(_obj,_func,_time,_postcall)
 		assert(type(_func) == "string","Expected _func to be a string")
 		assert(type(_obj) == "table","Expected _obj to be a table")
@@ -210,7 +236,10 @@ function DXE:RegisterEncounter(data,forceValid)
 	EDB[data.key] = data
 	-- Build trigger lists
 	self:UpdateTriggers()
-	if self.enabled then self:UpdateVersionString() end
+	if self.enabled then 
+		-- Unnecessary if the addon is loaded disabled
+		self:UpdateVersionString() 
+	end
 end
 
 --- Remove an encounter previously added with RegisterEncounter.
@@ -244,8 +273,8 @@ function DXE:GetActiveEncounter()
 	return CE and CE.key or "default"
 end
 
-function DXE:SetCombat(bool,event,func)
-	if bool then self:RegisterEvent(event,func) end
+function DXE:SetCombat(flag,event,func)
+	if flag then self:RegisterEvent(event,func) end
 end
 
 --- Change the currently-active encounter.
@@ -1254,6 +1283,8 @@ end
 ---------------------------------------------
 -- VERSION CHECKING
 ---------------------------------------------
+-- TODO Remove auto broadcasting. Allow the gui button to request versions and send in a whisper
+
 -- Cached string of all versions in EDB
 local VersionString
 -- Contains versions of all online raid members
@@ -1269,7 +1300,7 @@ function DXE:CleanVersions()
 	debug("CleanVersions","Invoked")
 	--@end-debug@
 	for name in pairs(RosterVersions) do
-		if not NameRoster[name] then
+		if not Roster.name_to_id[name] then
 			RosterVersions[name] = nil
 		end
 	end
@@ -1360,11 +1391,11 @@ do
 
 		sort(work)
 
+		local mversion = key == "addon" and self.version or EDB[key].version
 		for _,unit in ipairs(work) do
 			if RosterVersions[unit] and RosterVersions[unit][key] then
 				local color = BLUE
 				local version = RosterVersions[unit][key]
-				local mversion = key == "addon" and self.version or EDB[key].version
 				if version < mversion then
 					color = RED 
 				elseif version == mversion then
