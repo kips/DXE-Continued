@@ -44,6 +44,7 @@ Loader.lua
 Window.lua
 #@do-not-package@
 Debug.lua
+Tests.lua
 #@end-do-not-package@
 Options.lua
 Constants.lua

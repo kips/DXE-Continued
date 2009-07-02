@@ -17,7 +17,7 @@ end
 
 local enc_group_args
 
-function DXE:InitializeOptions()
+function DXE:GetOptions()
 	local options = {
 		type = "group",
 		name = "DXE",
@@ -41,12 +41,6 @@ function DXE:InitializeOptions()
 						else self:Disable() end
 				end,
 				disabled = function() return false end,
-			},
-			AlertsTest = {
-				type = "execute",
-				name = L["Alerts Test"],
-				order = 200,
-				func = "AlertTest",
 			},
 		},
 		plugins = {
@@ -85,6 +79,7 @@ function DXE:InitializeOptions()
 		order = 100,
 		get = function(info) return self.db.global[info[#info]] end,
 		set = function(info,v) self.db.global[info[#info]] = v end,
+		handler = self,
 		args = {
 			pane_group = {
 				type = "group",
@@ -141,6 +136,12 @@ function DXE:InitializeOptions()
 				order = 200,
 				inline = true,
 				args = {
+					AlertsTest = {
+						type = "execute",
+						name = L["Alerts Test"],
+						order = 100,
+						func = "AlertTest",
+					},
 					AlertsScale = {
 						order = 200,
 						type = "range",
@@ -253,7 +254,7 @@ local function findversion(key)
 	end
 end
 
-local version = {
+local versionHeader = {
 	type = "header",
 	name = function(info) return L["Version"]..": |cff99ff33"..tostring(findversion(info[#info-1])).."|r" end,
 	order = 1,
@@ -278,23 +279,6 @@ function DXE:GetCategoryOptions(category)
 	}
 end
 
-local loadmodule = {
-	type = "execute",
-	name = L["Load Module"],
-	desc = L["This module will automatically load when you enter the appropriate zone. Click if you want to force load it."],
-	func = function(info) LoadAddOn(info[#info]); DXE:ScheduleTimer("BroadcastAllVersions",5) end,
-	width = "full",
-}
-
-local loadGroups = {}
-
-function DXE:AddCategoryLoader(category,module)
-	local catkey = convert_to_key(category)
-	enc_group_args[catkey] = self:GetCategoryOptions(category)
-	enc_group_args[catkey].args[module] = loadmodule
-	loadGroups[enc_group_args[catkey]] = true
-end
-
 function DXE:AddEncounterOptions(data)
 	-- Pointer to args
 	local args = enc_group_args
@@ -302,16 +286,11 @@ function DXE:AddEncounterOptions(data)
 	local catkey = data.category and convert_to_key(data.category) or convert_to_key(data.zone)
 	args[catkey] = args[catkey] or self:GetCategoryOptions(data.category or data.zone)
 
-	if loadGroups[args[catkey]] then
-		wipe(args[catkey].args)
-		loadGroups[args[catkey]] = nil
-	end
-
 	-- Update args pointer
 	args = args[catkey].args
-	-- Exists, wipe it for upgrading
+	-- Exists, delete args
 	if args[data.key] then
-		wipe(args[data.key].args)
+		args[data.key].args = {}
 	else
 	-- Add the encounter group
 		args[data.key] = {
@@ -323,22 +302,20 @@ function DXE:AddEncounterOptions(data)
 	-- Set pointer to the correct encounter group
 	args = args[data.key].args
 	-- Add key to defaults
-	self.defaults.profile.Encounters[data.key] = self.defaults.profile.Encounters[data.key] or {}
+	self.defaults.profile.Encounters[data.key] = {}
 	-- Pointer to defaults
 	local defaults = self.defaults.profile.Encounters[data.key]
-	-- Wipe defaults for upgrading
-	wipe(defaults)
 	-- Traverse alerts table
 	for _,info in pairs(data.alerts) do
 		-- Add var to defaults
 		defaults[info.var] = true
-		-- Add toggle option
-		args[info.var] = args[info.var] or {}
-		-- For alerts that share the same var
-		wipe(args[info.var])
-		args.version = version
-		args[info.var].name = info.varname
-		args[info.var].type = "toggle"
-		args[info.var].width = "full"
+		-- Version header
+		args.version = versionHeader
+		-- Add toggle options
+		args[info.var] = {
+			name = info.varname,
+			type = "toggle",
+			width = "full",
+		}
 	end
 end

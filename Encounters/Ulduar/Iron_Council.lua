@@ -224,7 +224,7 @@ do
 			{
 				type = "combatevent", 
 				eventtype = "SPELL_AURA_APPLIED", 
-				spellid = {61886, 63485}, 
+				spellid = {61887, 63486}, 
 				execute = {
 					{
 						{alert = "tendrilsdur"},

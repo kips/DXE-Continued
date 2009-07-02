@@ -148,6 +148,7 @@ do
 				execute = {
 					{
 						{alert = "sonicscreechwarn"},
+						{quash = "sonicscreechcd"},
 						{alert = "sonicscreechcd"},
 					},
 				},

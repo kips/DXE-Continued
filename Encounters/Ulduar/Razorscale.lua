@@ -113,6 +113,7 @@ do
 					},
 					{
 						{expect = {"#1#","find",L["lands permanently!$"]}},
+						{quash = "chaindur"},
 						{alert = "permlandwarn"},
 					},
 				},

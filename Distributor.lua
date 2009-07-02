@@ -169,8 +169,8 @@ function Distributor:GetOptions()
 							set = function(info,value) PlayerSelect = value end,
 							values = function()
 								wipe(RaidNames)
-								for k,uid in pairs(Roster.index_to_id) do
-									local name = UnitName(uid)
+								for _,unit in pairs(Roster.index_to_unit) do
+									local name = UnitName(unit)
 									if name ~= DXE.pName then
 										 RaidNames[name] = name
 									end

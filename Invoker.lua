@@ -71,6 +71,19 @@ local RegEvents,CombatEvents = {},{}
 
 --@debug@
 local debug
+
+local debugDefaults = {
+	-- Related to function names
+	ReplaceFuncs = false,
+	ReplaceVars = false,
+	ReplaceNums = false,
+	SetUserData = false,
+	Alerts = false,
+	REG_EVENT = false,
+	FindUnitID = false,
+	HW_TRACER_ACQUIRED = false,
+}
+
 --@end-debug@
 
 function Invoker:OnInitialize()
@@ -81,21 +94,11 @@ function Invoker:OnInitialize()
 	--@debug@
 	self.db = DXE.db:RegisterNamespace("Invoker", {
 		global = {
-			debug = {
-				-- Related to function names
-				ReplaceFuncs = false,
-				ReplaceVars = false,
-				ReplaceNums = false,
-				SetUserData = false,
-				Alerts = false,
-				REG_EVENT = false,
-				FindUnitID = false,
-				HW_TRACER_ACQUIRED = false,
-			},
+			debug = debugDefaults
 		},
 	})
 
-	debug = DXE:CreateDebugger("Invoker",self.db.global)
+	debug = DXE:CreateDebugger("Invoker",self.db.global,debugDefaults)
 	--@end-debug@
 end
 
@@ -152,21 +155,34 @@ end
 conditions['~='] = function(a, b)
 	return a ~= b
 end
-conditions['>'] = function(a, b)
-	return type(a) == type(b) and a > b
-end
-conditions['>='] = function(a, b)
-	return type(a) == type(b) and a >= b
-end
-conditions['<'] = function(a, b)
-	return type(a) == type(b) and a < b
-end
-conditions['<='] = function(a, b)
-	return type(a) == type(b) and a <= b
-end
 
 conditions['find'] = function(a,b)
-	return find(tostring(a),tostring(b))
+	return find(a,b)
+end
+
+-- Intended to be used on numbers
+conditions['>'] = function(a, b)
+	a,b = tonumber(a),tonumber(b)
+	if not a or not b then return false 
+	else return a > b end
+end
+
+conditions['>='] = function(a, b)
+	a,b = tonumber(a),tonumber(b)
+	if not a or not b then return false
+	else return a >= b end
+end
+
+conditions['<'] = function(a, b)
+	a,b = tonumber(a),tonumber(b)
+	if not a or not b then return false
+	else return a < b end
+end
+
+conditions['<='] = function(a, b)
+	a,b = tonumber(a),tonumber(b)
+	if not a or not b then return false
+	else return a <= b end
 end
 
 do
@@ -212,7 +228,7 @@ local RepFuncs = {
 	tft_unitname = function() return tostring(UnitName(tft())) end,
 	--- Functions with passable arguments
 	-- Get's an alert's timeleft
-	timeleft = function(name,delta) return tostring(Alerts:GetAlertTimeleft(name) + (tonumber(delta) or 0)) end,
+	timeleft = function(id,delta) return tostring(Alerts:GetAlertTimeleft(id) + (tonumber(delta) or 0)) end,
 	unitname = function(name) return tostring(UnitName(name)) end,
 	npcid = function(guid) if UT[guid] ~= 3 then return "" else return NID[guid] or "" end end,
 }
@@ -294,7 +310,7 @@ ReplaceFuncs = function(str,...)
 				val = func() 
 			end
 			--@debug@
-			debug("ReplaceFuncs","funcid: %s str: %s rep: %s val: %s",funcid,str,rep,val)
+			debug("ReplaceFuncs","funcid: %s str: %s rep: %s val: %s",funcid,str:gsub("|","||"),rep:gsub("|","||"),val)
 			--@end-debug@
 			str = gsub(str,rep,val)
 		end
@@ -303,7 +319,7 @@ ReplaceFuncs = function(str,...)
 end
 
 ReplaceNums = function(str,...)
-	if ... then
+	if select("#",...) > 0 then
 		-- Enclosed in ##
 		for index in gmatch(str,"%b##") do
 			local num = tonumber(match(index,"#(%d+)#"))

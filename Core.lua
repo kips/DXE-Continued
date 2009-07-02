@@ -2,6 +2,21 @@
 -- DEFAULTS
 ---------------------------------------------
 
+--@debug@
+local debug
+
+local debugDefaults = {
+	BroadcastAllVersions = false,
+	RequestVersions = false,
+	CleanVersions = false,
+	UpdateVersionString = false,
+	CheckForEngage = false,
+	CheckForWipe = false,
+	CHAT_MSG_MONSTER_YELL = false,
+}
+
+--@end-debug@
+
 local defaults = {
 	global = {
 		Enabled = true,
@@ -18,17 +33,7 @@ local defaults = {
 		ShowMinimap = true,
 		_Minimap = {},
 		--@debug@
-		debug = {
-			BroadcastAllVersions = false,
-			RequestVersions = false,
-			CleanVersions = false,
-			UpdateVersionString = false,
-			UpdateRosterTables = false,
-			CheckForEngage = false,
-			CheckForWipe = false,
-			RAID_ROSTER_UPDATE = false,
-			CHAT_MSG_MONSTER_YELL = false,
-		},
+		debug = debugDefaults
 		--@end-debug@
 	},
 	profile = {
@@ -36,10 +41,6 @@ local defaults = {
 		Encounters = {},
 	},
 }
-
---@debug@
-local debug
---@end-debug@
 
 ---------------------------------------------
 -- INITIALIZATION
@@ -55,15 +56,14 @@ function DXE:RefreshDefaults()
 	self.db:RegisterDefaults(defaults)
 end
 
-
 ---------------------------------------------
 -- UPVALUES
 ---------------------------------------------
 
 local wipe,concat = table.wipe,table.concat
-local match,find,gmatch = string.match,string.find,string.gmatch
+local match,find,gmatch,sub = string.match,string.find,string.gmatch,string.sub
 local _G,select,tostring,type,assert,tonumber = _G,select,tostring,type,assert,tonumber
-local GetTime,GetNumRaidMembers = GetTime,GetNumRaidMembers
+local GetTime,GetNumRaidMembers,GetRaidRosterInfo = GetTime,GetNumRaidMembers,GetRaidRosterInfo
 local UnitName,UnitGUID = UnitName,UnitGUID
 local band = bit.band
 
@@ -89,12 +89,16 @@ local SN = setmetatable({},{
 })
 
 --- GUIDS
+local GUID_LENGTH = 18
+local UT_MASK = 0x00F
 
 -- NPC IDs
 local NID = setmetatable({},{
 	__index = function(t,guid)
-		if type(guid) ~= "string" or #guid ~= 18 then return end
-		local npcid = tonumber(guid:sub(9, 12), 16)
+		if type(guid) ~= "string" or #guid ~= GUID_LENGTH or not guid:find("%xx%x+") then
+			error("Invalid guid passed into NID") 
+		end
+		local npcid = tonumber(sub(guid,9,12),16)
 		t[guid] = npcid
 		return npcid
 	end,
@@ -103,8 +107,10 @@ local NID = setmetatable({},{
 -- Unit Types
 local UT = setmetatable({},{
 	__index = function(t,guid)
-		if type(guid) ~= "string" or #guid ~= 18 then return end
-		local unitType = band(tonumber(guid:sub(3,5),16),0x00F)
+		if type(guid) ~= "string" or #guid ~= GUID_LENGTH or not guid:find("%xx%x+") then 
+			error("Invalid guid passed into UT") 
+		end
+		local unitType = band(tonumber(sub(guid,3,5),16),UT_MASK)
 		t[guid] = unitType
 		return unitType
 	end,
@@ -176,6 +182,7 @@ do
 	-- @_postcall A boolean determining whether or not the function is called 
 	--            after the end of the throttle period if called during it. If this
 	--			     is set to true the function should not be passing in arguments
+	--            because they will be lost
 	local function ThrottleFunc(_obj,_func,_time,_postcall)
 		assert(type(_func) == "string","Expected _func to be a string")
 		assert(type(_obj) == "table","Expected _obj to be a table")
@@ -211,55 +218,71 @@ local EDB = {}
 DXE.EDB = EDB
 -- Current encounter data
 local CE 
+-- Received database
+local RDB
 
-local loadQueue = {}
--- @param forcedValid Used with received encounters since they've already been validated.
-function DXE:RegisterEncounter(data,forceValid)
-	-- Save for loading after initialization
-	if not self.loaded then loadQueue[#loadQueue+1] = data return end
-	-- Validate data
-	if not forceValid then self:ValidateData(data) end
-	-- Unregister before registering the same
-	if EDB[data.key] then error("Encounter already exists - Requires unregistering") return end
+-- TODO: Fix options when force loading a module
+local RegisterQueue = {}
+function DXE:RegisterEncounter(data)
+	local key = data.key
+
+	-- Convert version
+	data.version = type(data.version) == "string" and tonumber(data.version:sub(7, -3)) or data.version
+
+	-- Add to queue if we're not loaded yet
+	if not self.Loaded then RegisterQueue[key] = data return end
+
+	self:ValidateData(data)
+
+	-- Upgrading
+	if RDB[key] and RDB[key] ~= data then
+		if RDB[key].version <= data.version then
+			RDB[key] = nil
+			-- Don't need to do anything
+			if RDB[key].version == data.version then 
+				return
+			else 
+				self:UnregisterEncounter(key) 
+			end
+		-- RDB version is higher
+		else
+			return
+		end
+	end
+
+	-- Unregister before registering the same encounter
+	if EDB[key] then error("Encounter "..key.." already exists - Requires unregistering") return end
+
 	-- Only encounters with field key have options
-	if data.key ~= "default" then
-		-- Add options
+	if key ~= "default" then
 		self:AddEncounterOptions(data)
-		-- Refresh defaults
 		self:RefreshDefaults()
 	end
-	-- Replace Rev keyword
-	if data.version and type(data.version) == "string" then
-		data.version = tonumber(data.version:sub(7, -3))
-	end
-	-- Add data to database
-	EDB[data.key] = data
-	-- Build trigger lists
+
+	EDB[key] = data
+
 	self:UpdateTriggers()
-	if self.enabled then 
-		-- Unnecessary if the addon is loaded disabled
-		self:UpdateVersionString() 
-	end
+
+	self:UpdateVersionString() 
 end
 
 --- Remove an encounter previously added with RegisterEncounter.
 -- There's no need to update the version string because we always register after an unregister
 function DXE:UnregisterEncounter(key)
-	-- Sanity checks
 	if key == "default" or not EDB[key] then return end
+
 	-- Swap to default if we're trying to unregister the current encounter
 	if CE.key == key then self:SetActiveEncounter("default") end
-	-- Remove options
+
 	self:RemoveEncounterOptions(EDB[key])
-	-- Remove from the database
+
 	EDB[key] = nil
-	-- Close options
+
 	ACD:Close("DXE")
-	-- Update triggers
+
 	self:UpdateTriggers()
 end
 
---- For now, get the encounter module table for distributor
 function DXE:GetEncounterData(key)
 	return EDB[key]
 end
@@ -312,19 +335,6 @@ function DXE:SetActiveEncounter(key)
 	self.callbacks:Fire("SetActiveEncounter",CE)
 end
 
-function DXE:UpgradeEncounters()
-	for key,data in pairs(RDB) do
-		-- Upgrading to new versions
-		if not EDB[key] or EDB[key].version < data.version then
-			self:UnregisterEncounter(key)
-			self:RegisterEncounter(data)
-		-- Deleting old versions
-		elseif EDB[key] and EDB[key].version >= data.version then
-			RDB[key] = nil
-		end
-	end
-end
-
 -- Start the current encounter
 function DXE:StartEncounter(...)
 	if self:IsRunning() then return end
@@ -340,56 +350,13 @@ function DXE:StopEncounter()
 end
 
 ---------------------------------------------
--- ROSTER
----------------------------------------------
-
-local Roster = {}
-DXE.Roster = Roster
-
-local refreshFuncs = {
-	name_to_id = function(t,i,id) 
-		t[UnitName(id)] = id
-	end,
-	guid_to_id = function(t,i,id) 
-		t[UnitGUID(id)] = id
-	end,
-	index_to_id = function(t,i,id) 
-		t[i] = id
-	end,
-}
-
-for name in pairs(refreshFuncs) do 
-	Roster[name] = {}
-end
-
-local UnitIsConnected = UnitIsConnected
-function DXE:UpdateRosterTables()
-	--@debug@
-	debug("UpdateRosterTables","Invoked")
-	--@end-debug@
-	for name,t in pairs(Roster) do wipe(t) end
-	for i,id in ipairs(rID) do
-		if UnitExists(id) and UnitIsConnected(id) then
-			for name,t in pairs(Roster) do
-				refreshFuncs[name](t,i,id)
-			end
-		end
-	end
-end
-
-local IsRaidLeader,IsRaidOfficer = IsRaidLeader,IsRaidOfficer
-function DXE:IsSelfPromoted()
-	return IsRaidLeader() or IsRaidOfficer()
-end
-
----------------------------------------------
 -- TRIGGER BUILDING
 ---------------------------------------------
 local NameTriggers = {} -- Activation names. Source: data.triggers.scan
 local YellTriggers = {} -- Yell activations. Source: data.triggers.yell
 
 do
-	local function addData(tbl,info,key)
+	local function add_data(tbl,info,key)
 		if type(info) == "table" then
 			-- Info contains names
 			for _,name in ipairs(info) do
@@ -410,12 +377,12 @@ do
 				if data.triggers then
 					local scan = data.triggers.scan
 					if scan then 
-						addData(NameTriggers,scan,key)
+						add_data(NameTriggers,scan,key)
 						hasName = true
 					end
 					local yell = data.triggers.yell
 					if yell then 
-						addData(YellTriggers,yell,key) 
+						add_data(YellTriggers,yell,key) 
 						hasYell = true
 					end
 				end
@@ -440,40 +407,53 @@ do
 	DXE:ThrottleFunc("UpdateTriggers",1,true)
 end
 
+
+---------------------------------------------
+-- ROSTER
+---------------------------------------------
+
+local Roster = {}
+DXE.Roster = Roster
+
+local refreshFuncs = {
+	name_to_unit = function(t,i,id) 
+		t[UnitName(id)] = id
+	end,
+	guid_to_unit = function(t,i,id) 
+		t[UnitGUID(id)] = id
+	end,
+	-- Remember to iterate using pairs
+	index_to_unit = function(t,i,id) 
+		t[i] = id
+	end,
+}
+
+for k in pairs(refreshFuncs) do 
+	Roster[k] = {}
+end
+
+function DXE:RAID_ROSTER_UPDATE()
+	self:UpdatePaneVisibility()
+	for name,t in pairs (Roster) do wipe(t) end
+	for i=1,GetNumRaidMembers() do
+		local name, rank, _, _, _, _, _, online = GetRaidRosterInfo(i)
+		local unit = rID[i]
+		-- For now we only want online units
+		if online then
+			for k,t in pairs(Roster) do
+				refreshFuncs[k](t,i,unit)
+			end
+		end
+	end
+end
+
+function DXE:IsPromoted()
+	return IsRaidLeader() or IsRaidOfficer()
+end
+
 ---------------------------------------------
 -- GENERIC EVENTS
 ---------------------------------------------
-
-do
-	local prevNumRaidMembers = 0
-	function DXE:RAID_ROSTER_UPDATE()
-		local numRaidMembers = GetNumRaidMembers()
-		-- Raid members changed
-		if numRaidMembers ~= prevNumRaidMembers then
-			--@debug@
-			debug("RAID_ROSTER_UPDATE","Raid members changed")
-			--@end-debug@
-			self:UpdatePaneVisibility()
-			self:UpdateRosterTables()
-			self:CleanVersions()
-		end
-		-- Raid member joined the raid
-		if numRaidMembers > prevNumRaidMembers then
-			--@debug@
-			debug("RAID_ROSTER_UPDATE","Raid member joined")
-			--@end-debug@
-			self:BroadcastAllVersions()
-		end
-
-		-- Raid member left the raid
-		if numRaidMembers < prevNumRaidMembers then
-			--@debug@
-			debug("RAID_ROSTER_UPDATE","Raid member left")
-			--@end-debug@
-		end
-		prevNumRaidMembers = numRaidMembers
-	end
-end
 
 function DXE:PLAYER_ENTERING_WORLD()
 	self.pGUID = self.pGUID or UnitGUID("player")
@@ -511,65 +491,83 @@ end
 
 -- Initialization
 function DXE:OnInitialize()
-	self.loaded = true
-	-- Options
+	self.Loaded = true
+
+	-- Database
 	self.db = LibStub("AceDB-3.0"):New("DXEDB",self.defaults)
-	self.options = self:InitializeOptions()
-	self.InitializeOptions = nil
-	-- Received database
-	RDB = self.db:RegisterNamespace("RDB", {global = {}})
-	RDB = RDB.global
-	DXE.RDB = RDB
-	-- Pane
-	self:CreatePane()
-	-- GUI Options
+
+
+	-- Options
+	self.options = self:GetOptions()
 	AC:RegisterOptionsTable("DXE", self.options)
-	ACD:SetDefaultSize("DXE", 730,500)
-	-- Slash Commands
-	AC:RegisterOptionsTable(L["Deus Vox Encounters"], self:GetSlashOptions(),"dxe")
-	self.GetSlashOptions = nil
-	-- The default encounter
-	self:RegisterEncounter({key = "default", name = "Default", title = "Default", zone = ""})
-	self:SetActiveEncounter("default")
-	-- Register queued data 
-	-- TODO: Check for versions between RDB and EDB before registering
-	for _,data in ipairs(loadQueue) do self:RegisterEncounter(data) end
-	loadQueue = nil
-	-- Upgrade
-	self:UpgradeEncounters()
-	-- Health watchers
-	self:SetEnabledState(self.db.global.Enabled)
-	-- Minimap
-	self:SetupMinimapIcon()
-	self:Print(L["Type |cffffff00/dxe|r for slash commands"])
+	ACD:SetDefaultSize("DXE", 730,550)
 
 	--@debug@
-	debug = DXE:CreateDebugger("Core",self.db.global)
+	debug = self:CreateDebugger("Core",self.db.global,debugDefaults)
 	--@end-debug@
+
+	-- Slash Commands
+	AC:RegisterOptionsTable(L["Deus Vox Encounters"], self:GetSlashOptions(),"dxe")
+
+	-- Received database
+	RDB = self.db:RegisterNamespace("RDB", {global = {}}).global
+	self.RDB = RDB
+
+	-- Pane
+	self:CreatePane()
+
+	-- The default encounter
+	self:RegisterEncounter({key = "default", name = L["Default"], title = L["Default"], zone = ""})
+	self:SetActiveEncounter("default")
+
+	-- Register addon/received encounter data
+	for key,data in pairs(RegisterQueue) do
+		if RDB[key] and RDB[key].version > data.version then
+			self:RegisterEncounter(RDB[key])
+		else
+			self:RegisterEncounter(data)
+			RDB[key] = nil
+		end
+
+		RegisterQueue[key] = nil
+	end
+
+	-- The rest that don't exist
+	for key,data in pairs(RDB) do
+		if not EDB[key] then
+			self:RegisterEncounter(data)
+		end
+	end
+
+	RegisterQueue = nil
+
+	-- Minimap
+	self:SetupMinimapIcon()
+
+	self:SetEnabledState(self.db.global.Enabled)
+	self:Print(L["Type |cffffff00/dxe|r for slash commands"])
 end
 
 function DXE:OnEnable()
-	self.enabled = true
 	self:LoadPositions()
 	self:UpdateTriggers()
 	self:UpdateLock()
-	self:UpdatePaneVisibility()
 	self:UpdatePaneScale()
 	self:LayoutHealthWatchers()
+
+	-- Events
 	self:RegisterEvent("RAID_ROSTER_UPDATE")
 	self:RegisterEvent("ZONE_CHANGED_NEW_AREA","UpdateTriggers")
 	self:RegisterEvent("PLAYER_ENTERING_WORLD")
+
 	self:SetActiveEncounter("default")
 	self:EnableAllModules()
 	self:RegisterComm("DXE")
 	self:UpdateVersionString()
-	self:RequestVersions()
-	self:UpdateRosterTables()
-	self:ScheduleTimer("BroadcastAllVersions",5)
+	self:RAID_ROSTER_UPDATE()
 end
 
 function DXE:OnDisable()
-	self.enabled = false
 	self:UpdateLockedFrames("Hide")
 	self:StopEncounter()
 	self:SetActiveEncounter("default")
@@ -660,21 +658,20 @@ end
 
 local UnitName = UnitName
 local UnitIsEnemy = UnitIsEnemy
-local friendlyExceptions = {}
+local FriendlyExceptions = {}
 
 function DXE:AddFriendlyException(name)
-	friendlyExceptions[name] = true
+	FriendlyExceptions[name] = true
 end
 
 function DXE:Scan()
-	for i,unit in pairs(Roster.index_to_id) do
+	for i,unit in pairs(Roster.index_to_unit) do
 		local target = rIDtarget[i]
 		local name = UnitName(target)
 		if UnitExists(target) and 
 			NameTriggers[name] and 
 			not UnitIsDead(target) 
-			-- Hack to get Algalon to activate
-			and (UnitIsEnemy("player",target) or friendlyExceptions[name]) then
+			and (UnitIsEnemy("player",target) or FriendlyExceptions[name]) then
 			-- Return name
 			return NameTriggers[name]
 		end
@@ -699,7 +696,7 @@ end
 function DXE:UnitID(name, unitattributefunc)
 	unitattributefunc = unitattributefunc or UnitName
 	if not name then return end
-	for i,unit in pairs(Roster.index_to_id) do
+	for i,unit in pairs(Roster.index_to_unit) do
 		local uid = rIDtarget[i]
 		local _name = unitattributefunc(uid)
 		if _name == name then
@@ -723,9 +720,9 @@ end
 
 function DXE:GetUnitID(target)
 	if find(target,"0x%x+") then 
-		return Roster.guid_to_id[target]
+		return Roster.guid_to_unit[target]
 	else 
-		return Roster.name_to_id[target]
+		return Roster.name_to_unit[target]
 	end
 end
 
@@ -832,7 +829,6 @@ function DXE:CreatePane()
 	Pane:Hide()
 	Pane:SetClampedToScreen(true)
 	Pane:SetBackdrop(backdrop)
-	--Pane:SetBackdropBorderColor(0.66,0.66,0.66)
 	Pane:SetBackdropBorderColor(0.33,0.33,0.33)
 	Pane:SetWidth(220)
 	Pane:SetHeight(25)
@@ -966,81 +962,89 @@ end
 ---------------------------------------------
 -- SELECTOR CREATION
 ---------------------------------------------
-local sort = table.sort
 
 do
-	local function CloseAll()
-		CloseDropDownMenus(1)
-	end
+	local function closeall() CloseDropDownMenus(1) end
 
 	local function onclick(self)
 		DXE:SetActiveEncounter(self.value)
 		CloseDropDownMenus()
 	end
 
-	local function textsort(a,b)
-		return a.text < b.text
-	end
+	local YELLOW = "|cffffff00"
 
-	-- Selector tables
-	local infoTable = {}
-	local cats = {}
+	local work,list = {},{}
+
 	local function initialize(self,level)
-		wipe(infoTable)
-		wipe(cats)
+		wipe(work)
+		wipe(list)
+
 		level = level or 1
+
 		if level == 1 then
 			local info = UIDropDownMenu_CreateInfo()
 			info.isTitle = true 
-			info.text = "Encounter Selector"
+			info.text = L["Encounter Selector"]
 			info.notCheckable = true 
 			info.justifyH = "LEFT"
-			UIDropDownMenu_AddButton(info,level)
+			UIDropDownMenu_AddButton(info,1)
+
+			local info = UIDropDownMenu_CreateInfo()
+			info.text = L["Default"]
+			info.value = "default"
+			info.func = onclick
+			info.colorCode = YELLOW
+			info.owner = self
+			UIDropDownMenu_AddButton(info,1)
+
 			for key,data in pairs(EDB) do
-				local info = {}
-				if data.zone == "" then
-					info.text = data.name
-					info.value = key
-					info.func = onclick
-					info.colorCode = "|cffffff00"
-					info.owner = self
-					infoTable[#infoTable+1] = info
-				elseif not cats[data.zone]  then
-					cats[data.zone] = true
-					info.text = data.zone
-					info.value = data.zone
-					info.hasArrow = true
-					info.notCheckable = true
-					info.owner = self
-					infoTable[#infoTable+1] = info
+				if key ~= "default" then
+					work[data.category or data.zone] = true
 				end
 			end
-		elseif level == 2 then
-			local category = UIDROPDOWNMENU_MENU_VALUE
-			for key,data in pairs(EDB) do
-				if data.zone == category then
-					local info = {}
-					info.hasArrow = false
-					info.text = data.name
-					info.owner = self
-					info.value = key
-					info.func = onclick
-					infoTable[#infoTable+1] = info
-				end
+			for cat in pairs(work) do
+				list[#list+1] = cat
 			end
-		end
-		sort(infoTable,textsort)
-		local incombat = InCombatLockdown()
-		for _,button in ipairs(infoTable) do	
-		if incombat then button.disabled = true end
-		UIDropDownMenu_AddButton(button,level) end
-		if level == 1 then
+
+			table.sort(list)
+
+			for _,cat in ipairs(list) do
+				local info = UIDropDownMenu_CreateInfo()
+				info.text = cat
+				info.value = cat
+				info.hasArrow = true
+				info.notCheckable = true
+				info.owner = self
+				UIDropDownMenu_AddButton(info,1)
+			end
+
 			local info = UIDropDownMenu_CreateInfo()
 			info.notCheckable = true 
 			info.justifyH = "LEFT"
-			info.text = "Cancel"
-			info.func = CloseAll
+			info.text = L["Cancel"]
+			info.func = closeall
 			UIDropDownMenu_AddButton(info,1)
+		elseif level == 2 then
+			local cat = UIDROPDOWNMENU_MENU_VALUE
+
+			for key,data in pairs(EDB) do
+				if (data.category or data.zone) == cat then
+					list[#list+1] = data.name
+					work[data.name] = key
+				end
+			end
+
+			table.sort(list)
+
+			for _,name in ipairs(list) do
+				local info = UIDropDownMenu_CreateInfo()
+				info.hasArrow = false
+				info.text = name
+				info.owner = self
+				info.value = work[name]
+				info.func = onclick
+				UIDropDownMenu_AddButton(info,2)
+			end
 		end
 	end
 
@@ -1083,13 +1087,11 @@ function DXE:StartTimer()
 	elapsedTime = 0
 	self.Pane.timer.frame:SetScript("OnUpdate",Timer_OnUpdate)
 	self:SetRunning(true)
-	--self:SetStop()
 end
 
 --- Stops the Pane timer
 function DXE:StopTimer()
 	self.Pane.timer.frame:SetScript("OnUpdate",nil)
-	--self:SetPlay()
 	self:SetRunning(false)
 end
 
@@ -1300,7 +1302,7 @@ function DXE:CleanVersions()
 	debug("CleanVersions","Invoked")
 	--@end-debug@
 	for name in pairs(RosterVersions) do
-		if not Roster.name_to_id[name] then
+		if not Roster.name_to_unit[name] then
 			RosterVersions[name] = nil
 		end
 	end
@@ -1383,7 +1385,7 @@ do
 		self:Print(format(L["Raid Version Check (%s)"],name))
 
 		local work = {}
-		for name in pairs(Roster.name_to_id) do
+		for name in pairs(Roster.name_to_unit) do
 			if name ~= self.pName then
 				work[#work+1] = name
 			end

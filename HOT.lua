@@ -95,14 +95,14 @@ function Prototype:Execute()
 	wipe(proto_uids)
 
 	-- Local data
-	local proto_uid, uid, ix, flag = nil, nil, 0, nil;
+	local proto_uid, uid, ix, flag = nil, nil, 0, nil
 	
 	-- Hack to get focus in
 	local testedfocus = false
 
 	-- Scan
 	-- Roster only contains units that exist
-	for _,unit in pairs(Roster.index_to_id) do
+	for _,unit in pairs(Roster.index_to_unit) do
 		-- Get unit and test it
 		proto_uid = unit
 		proto_uid, uid = test(self,proto_uid)

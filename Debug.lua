@@ -85,7 +85,14 @@ local function CreateDebugFunction(name,global,outputWindow)
 	end
 end
 
-function DXE:CreateDebugger(name,global,windowName)
+function DXE:CreateDebugger(name,global,defaults,windowName)
+	-- Remove leftover variables in globals
+	for k in pairs(global.debug) do
+		if defaults[k] == nil then
+			global.debug[k] = nil
+		end
+	end
+
 	self:AddDebugOptions(name,global)
 	return CreateDebugFunction(name,global,windowName)
 end

@@ -22,9 +22,21 @@ do
 			{
 				{alert = "cosmicsmashcd"},
 				{alert = "bigbangcd"},
+				{alert = "enragecd"},
 			},
 		},
 		alerts = {
+			enragecd = {
+				var = "enragecd",
+				varname = L["Enrage"],
+				type = "dropdown",
+				text = L["Enrage"],
+				time = 360,
+				flashtime = 10,
+				sound = "ALERT6",
+				color1 = "GREY",
+				color2 = "GREY",
+			},
 			bigbangwarn = {
 				var = "bigbangwarn",
 				varname = format(L["%s Cast"],SN[64443]),

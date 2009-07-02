@@ -275,7 +275,7 @@ do
 				execute = {
 					{
 						{expect = {"&timeleft|crushertentaclespawn&","<","0.5"}},
-						--{expect = {"<phase>","==","2"}},
+						{expect = {"<phase>","==","2"}},
 						{set = {crushertime = 50}},
 						{quash = "crushertentaclespawn"},
 						{alert = "crushertentaclespawn"},
