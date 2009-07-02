@@ -221,7 +221,6 @@ local CE
 -- Received database
 local RDB
 
--- TODO: Fix options when force loading a module
 local RegisterQueue = {}
 function DXE:RegisterEncounter(data)
 	local key = data.key
@@ -237,9 +236,10 @@ function DXE:RegisterEncounter(data)
 	-- Upgrading
 	if RDB[key] and RDB[key] ~= data then
 		if RDB[key].version <= data.version then
+			local version = RDB[key].version
 			RDB[key] = nil
-			-- Don't need to do anything
-			if RDB[key].version == data.version then 
+			if version == data.version then 
+				-- Don't need to do anything
 				return
 			else 
 				self:UnregisterEncounter(key) 
@@ -520,6 +520,7 @@ function DXE:OnInitialize()
 	self:RegisterEncounter({key = "default", name = L["Default"], title = L["Default"], zone = ""})
 	self:SetActiveEncounter("default")
 
+	--@debug@
 	-- Register addon/received encounter data
 	for key,data in pairs(RegisterQueue) do
 		if RDB[key] and RDB[key].version > data.version then
@@ -531,6 +532,7 @@ function DXE:OnInitialize()
 
 		RegisterQueue[key] = nil
 	end
+	--@end-debug@
 
 	-- The rest that don't exist
 	for key,data in pairs(RDB) do

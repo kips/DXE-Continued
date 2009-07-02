@@ -10,14 +10,13 @@ local L = DXE.L
 ]]
 
 local Loader = DXE:NewModule("Loader","AceEvent-3.0")
-local ZoneModules = {}
-local ModulesWithOptions = {}
+local ZMS = {}
 
 local function AddZoneModule(name,zone,...)
 	if not zone then return end
 	zone = L[zone:trim()]
-	ZoneModules[zone] = ZoneModules[zone] or {}
-	ZoneModules[zone][name] = true
+	ZMS[zone] = ZMS[zone] or {}
+	ZMS[zone][name] = true
 	AddZoneModule(name,...)
 end
 
@@ -36,69 +35,74 @@ function Loader:OnInitialize()
 end
 
 function Loader:OnEnable()
-	if next(ZoneModules) then
-		self:RegisterEvent("ZONE_CHANGED_NEW_AREA","LoadModules")
+	if next(ZMS) then
+		self:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 		self:RegisterEvent("ADDON_LOADED")
-		self:LoadModules()
+		self:ZONE_CHANGED_NEW_AREA()
 	end
 end
 
-do
-	local values = {}
-	local selected
+local modules = {}
+local selected
 
-	function Loader:AddToOptions(category,module)
-		if not DXE.options.args.LoaderSelect then
-			selected = module
-			DXE.options.args.LoaderSelect = {
-				type = "select",
-				order = 200,
-				name = L["Module"],
-				get = function() return selected end,
-				set = function(info,v) selected = v end,
-				values = values,
-			}
-			DXE.options.args.Load = {
-				type = "execute",
-				name = "Load",
-				desc = L["Modules will automatically load when you enter the appropriate zone. Click if you want to force load the currently selected one."],
-				order = 300,
-				func = function() 
-					LoadAddOn(selected)
-				end,
-				width = "half",
-			}
-		end
-		values[module] = L[category]
+function Loader:AddToOptions(category,module)
+	if not DXE.options.args.LoaderSelect then
+		selected = module
+		DXE.options.args.LoaderSelect = {
+			type = "select",
+			order = 200,
+			name = L["Module"],
+			get = function() return selected end,
+			set = function(info,v) selected = v end,
+			values = modules,
+		}
+		DXE.options.args.Load = {
+			type = "execute",
+			name = "Load",
+			desc = L["Modules will automatically load when you enter the appropriate zone. Click if you want to force load the currently selected one."],
+			order = 300,
+			func = function()
+				LoadAddOn(selected)
+			end,
+			width = "half",
+		}
 	end
+	modules[module] = L[category]
+end
 
-	function Loader:ADDON_LOADED(_,module)
-		if values[module] then
-			values[module] = nil
-			selected = next(values)
+function Loader:CleanZoneModules(module)
+	for zone,list in pairs(ZMS) do
+		for addon in pairs(list) do
+			if addon == module then
+				ZMS[zone][module] = nil
+				break
+			end
 		end
-		if not next(values) then
-			values = nil
-			DXE.options.args.LoaderSelect = nil
-			DXE.options.args.Load = nil
-		end
+		ZMS[zone] = next(ZMS[zone]) and ZMS[zone]
+	end
+	ZMS = next(ZMS) and ZMS
+end
+
+function Loader:ADDON_LOADED(_,module)
+	if modules[module] then
+		DXE:Print(format(L["%s module loaded"],(L[module:match("DXE_(%w+)")] or module)))
+		modules[module] = nil
+		selected = next(modules)
+		self:CleanZoneModules(module)
+	end
+	if not next(modules) then
+		modules = nil
+		self:UnregisterAllEvents()
+		DXE.options.args.LoaderSelect = nil
+		DXE.options.args.Load = nil
 	end
 end
 
-function Loader:LoadModules()
+function Loader:ZONE_CHANGED_NEW_AREA()
 	local zone = GetRealZoneText()
-	if ZoneModules[zone] then
-		for module in pairs(ZoneModules[zone]) do
-			DXE:Print(format(L["%s module loaded"],(module:match("DXE_(%w+)") or module)))
+	if ZMS[zone] then
+		for module in pairs(ZMS[zone]) do
 			LoadAddOn(module)
-			ZoneModules[zone][module] = nil
-		end
-		if not next(ZoneModules[zone]) then
-			ZoneModules[zone] = nil
-		end
-		if not next(ZoneModules) then
-			self:UnregisterAllEvents()
-			ZoneModules = nil
 		end
 	end
 end
