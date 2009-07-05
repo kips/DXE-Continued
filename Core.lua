@@ -1363,6 +1363,8 @@ function DXE:CleanVersions()
 	self:RefreshVersionList()
 end
 
+----- COMMS
+
 function DXE:RequestAllVersions()
 	self:SendComm("RequestAllVersions")
 end
@@ -1426,8 +1428,10 @@ function DXE:OnCommVersionBroadcast(event,commType,sender,key,version)
 	self:RefreshVersionList()
 end
 
+----- GUI
+-- Thanks to oRA3 for some of the implementation
+
 do
-	--- Version Check GUI
 	local dropdown, heading, scrollFrame
 	local list,headers = {},{}
 	local value = "addon"
@@ -1451,7 +1455,6 @@ do
 		SetHeaderText(list[v],EDB[v].version)
 		DXE:RefreshVersionList()
 	end
-
 
 	local function RefreshEncDropdown()
 		wipe(list)
@@ -1580,6 +1583,7 @@ do
 	end
 
 	function DXE:VersionCheck()
+		self:RequestAllVersions()
 		if window and not window:IsShown() then
 			window:Show()
 			RefreshEncDropdown()
@@ -1598,16 +1602,16 @@ do
 			addonButton:SetText("AddOn")
 			addonButton:SetPoint("TOPLEFT",content,"TOPLEFT",0,-1)
 			addonButton:RegisterForClicks("LeftButtonUp","RightButtonUp")
-			addonButton:SetScript("OnClick",function(self,button) 
+			addonButton:SetScript("OnClick",function(_,button) 
 				if button == "LeftButton" then
-					SetHeaderText(L["AddOn"],DXE.version)
+					SetHeaderText(L["AddOn"],self.version)
 					value = "addon"
 				elseif button == "RightButton" then
 					if not dropdown.value then return end
 					SetHeaderText(list[dropdown.value],EDB[dropdown.value].version)
 					value = dropdown.value
 				end
-				DXE:RefreshVersionList() 
+				self:RefreshVersionList() 
 			end)
 
 			dropdown = AceGUI:Create("Dropdown")
@@ -1618,28 +1622,53 @@ do
 			dropdown:SetValue(next(list))
 			dropdown.frame:SetParent(content)
 
-			heading = AceGUI:Create("Heading")
+			heading = CreateFrame("Frame",nil,content)
 			heading:SetWidth(content:GetWidth())
-			SetHeaderText(L["AddOn"],self.version)
+			heading:SetHeight(18)
 			heading:SetPoint("TOPLEFT",addonButton,"BOTTOMLEFT",0,-2)
-			heading.frame:SetParent(content)
-			heading.label:SetFont(GameFontNormalSmall:GetFont())
+			local label = heading:CreateFontString(nil,"ARTWORK")
+		 	label:SetFont(GameFontNormalSmall:GetFont())
+			label:SetPoint("CENTER")
+			label:SetTextColor(1,1,0)
+			function heading:SetText(text) label:SetText(text) end
+			SetHeaderText(L["AddOn"],self.version)
+
+			local left = heading:CreateTexture(nil, "BACKGROUND")
+			left:SetHeight(8)
+			left:SetPoint("LEFT",heading,"LEFT",3,0)
+			left:SetPoint("RIGHT",label,"LEFT",-5,0)
+			left:SetTexture("Interface\\Tooltips\\UI-Tooltip-Border")
+			left:SetTexCoord(0.81, 0.94, 0.5, 1)
+
+			local right = heading:CreateTexture(nil, "BACKGROUND")
+			right:SetHeight(8)
+			right:SetPoint("RIGHT",heading,"RIGHT",-3,0)
+			right:SetPoint("LEFT",label,"RIGHT",5,0)
+			right:SetTexture("Interface\\Tooltips\\UI-Tooltip-Border")
+			right:SetTexCoord(0.81, 0.94, 0.5, 1)
 
 			for i=1,2 do headers[i] = CreateHeader(content,i) end
-			headers[1]:SetPoint("TOPLEFT",heading.frame,"BOTTOMLEFT")
+			headers[1]:SetPoint("TOPLEFT",heading,"BOTTOMLEFT")
 			headers[1]:SetText(L["Name"])
 			headers[1]:SetWidth(120)
 
-			headers[2] = CreateHeader(content,2)
 			headers[2]:SetPoint("LEFT",headers[1],"LEFT",content:GetWidth()/2,0)
 			headers[2]:SetText(L["Version"])
 			headers[2]:SetWidth(80)
 
-			scrollFrame = CreateFrame("ScrollFrame", "DXEVersionCheckScrollFrame", content, "FauxScrollFrameTemplate")
+			scrollFrame = CreateFrame("ScrollFrame", "DXEVCScrollFrame", content, "FauxScrollFrameTemplate")
 			scrollFrame:SetPoint("TOPLEFT", headers[1], "BOTTOMLEFT")
 			scrollFrame:SetPoint("BOTTOMRIGHT",-21,0)
 			scrollFrame:SetBackdrop(backdrop)
 			scrollFrame:SetBackdropBorderColor(0.33,0.33,0.33)
+
+			local scrollBar = _G[scrollFrame:GetName() .. "ScrollBar"]
+			local scrollBarBG = CreateFrame("Frame",nil,scrollBar)
+			scrollBarBG:SetBackdrop(backdrop)
+			scrollBarBG:SetPoint("TOPLEFT",-3,19)
+			scrollBarBG:SetPoint("BOTTOMRIGHT",3,-18)
+			scrollBarBG:SetBackdropBorderColor(0.33,0.33,0.33)
+			scrollBarBG:SetFrameLevel(scrollBar:GetFrameLevel()-2)
 
 			scrollFrame:SetScript("OnVerticalScroll", function(self, offset) 
 				FauxScrollFrame_OnVerticalScroll(self, offset, ROW_HEIGHT, UpdateScroll) 
