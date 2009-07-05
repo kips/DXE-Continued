@@ -1375,7 +1375,7 @@ function DXE:RequestAddOnVersions()
 	self:SendComm("RequestAddOnVersion")
 end
 
-function DXE:OnRequestAddOnVersion()
+function DXE:OnCommRequestAddOnVersions()
 	self:BroadcastVersion("addon")
 end
 
@@ -1392,7 +1392,6 @@ DXE:ThrottleFunc("UpdateVersionString",1,true)
 function DXE:BroadcastAllVersions()
 	self:SendComm("AllVersionsBroadcast",VersionString)
 end
-DXE:ThrottleFunc("BroadcastAllVersions",10,true)
 
 function DXE:OnCommAllVersionsBroadcast(event,commType,sender,versionString)
 	local k = search(RVS,sender,1)
@@ -1404,7 +1403,7 @@ function DXE:OnCommAllVersionsBroadcast(event,commType,sender,versionString)
 	local versions = RVS[k].versions
 
 	for key,version in gmatch(versionString,"([^:,]+),([^:,]+)") do
-		versions[key] = version
+		versions[key] = tonumber(version)
 	end
 
 	self:RefreshVersionList()
@@ -1422,7 +1421,7 @@ function DXE:OnCommVersionBroadcast(event,commType,sender,key,version)
 		RVS[k] = {sender, versions = {}}
 	end
 
-	RVS[k].versions[key] = version
+	RVS[k].versions[key] = tonumber(version)
 
 	self:RefreshVersionList()
 end
@@ -1571,7 +1570,7 @@ do
 			end
 
 			for name in pairs(Roster.name_to_unit) do
-				if not search(RVS,name,1) then
+				if not search(RVS,name,1) and name ~= self.pName then
 					RVS[#RVS+1] = {name,NONE,versions = {}}
 				end
 			end
