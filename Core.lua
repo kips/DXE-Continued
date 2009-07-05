@@ -1534,7 +1534,6 @@ do
 		text:SetFontObject(GameFontNormalSmall)
 		text:SetJustifyH("LEFT")
 		text:SetTextColor(1,1,1)
-		text:SetText("Vercietorixafds")
 		return text
 	end
 
@@ -1602,7 +1601,7 @@ do
 			addonButton:RegisterForClicks("LeftButtonUp","RightButtonUp")
 			addonButton:SetScript("OnClick",function(self,button) 
 				if button == "LeftButton" then
-					SetHeaderText("AddOn",DXE.version)
+					SetHeaderText(L["AddOn"],DXE.version)
 					value = "addon"
 				elseif button == "RightButton" then
 					if not dropdown.value then return end
@@ -1622,19 +1621,19 @@ do
 
 			heading = AceGUI:Create("Heading")
 			heading:SetWidth(content:GetWidth())
-			SetHeaderText("AddOn",self.version)
+			SetHeaderText(L["AddOn"],self.version)
 			heading:SetPoint("TOPLEFT",addonButton,"BOTTOMLEFT",0,-2)
 			heading.frame:SetParent(content)
 			heading.label:SetFont(GameFontNormalSmall:GetFont())
 
 			for i=1,2 do headers[i] = CreateHeader(content,i) end
 			headers[1]:SetPoint("TOPLEFT",heading.frame,"BOTTOMLEFT")
-			headers[1]:SetText("Name")
+			headers[1]:SetText(L["Name"])
 			headers[1]:SetWidth(120)
 
 			headers[2] = CreateHeader(content,2)
 			headers[2]:SetPoint("LEFT",headers[1],"LEFT",content:GetWidth()/2,0)
-			headers[2]:SetText("Version")
+			headers[2]:SetText(L["Version"])
 			headers[2]:SetWidth(80)
 
 			scrollFrame = CreateFrame("ScrollFrame", "DXEVersionCheckScrollFrame", content, "FauxScrollFrameTemplate")
