@@ -29,6 +29,7 @@ function Distributor:OnInitialize()
 
 	StackAnchor = DXE:CreateLockableFrame("DistributorStackAnchor",200,10,L["Download/Upload Anchor"])
 	DXE:RegisterMoveSaving(StackAnchor,"CENTER","UIParent","CENTER",0,300)
+	DXE:LoadPosition("DXEDistributorStackAnchor")
 end
 
 function Distributor:OnEnable()
@@ -60,7 +61,7 @@ local UpdateStack = {}
 -- Frame used for updating
 local frame = CreateFrame("Frame",nil,UIParent)
 
-local function OnUpdate(self,elapsed)
+local function onUpdate(self,elapsed)
 	for name,bar in pairs(UpdateStack) do
 		local timeleft,totaltime = bar.userdata.timeleft - elapsed,bar.userdata.totaltime
 		bar.userdata.timeleft = timeleft
@@ -74,7 +75,7 @@ end
 
 function Distributor:StartUpdating(key,bar)
 	UpdateStack[key] = bar
-	frame:SetScript("OnUpdate",OnUpdate)
+	frame:SetScript("OnUpdate",onUpdate)
 end
 
 function Distributor:RemoveFromUpdating(key)
@@ -115,10 +116,8 @@ function Distributor:GetOptions()
 					set = function(info,value) ListSelect = value end,
 					values = function()
 						wipe(EncKeys)
-						for k in pairs(DXE.EDB) do
-							if k ~= "default" then
-								EncKeys[k] = DXE.EDB[k].name
-							end
+						for k in DXE:IterateEDB() do
+							EncKeys[k] = DXE.EDB[k].name
 						end
 						return EncKeys
 					end,
@@ -327,12 +326,11 @@ function Distributor:DownloadReceived(prefix, msg, dist, sender)
 	-- Register
 	DXE:RegisterEncounter(data)
 	-- Store it in SavedVariables
-	DXE.RDB[key] = data	
+	DXE.RDB[key] = data
+
+	DXE:BroadcastVersion(key)
 
 	self:DLCompleted(key,dl.sender,dl.name)
-
-	-- Update versions for everyone
-	DXE:BroadcastVersion(key)
 end
 
 ----------------------------------

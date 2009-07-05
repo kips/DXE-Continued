@@ -224,10 +224,10 @@ function DXE:GetSlashOptions()
 				func = "ToggleConfig",
 				order = 300,
 			},
-			versioncheck = {
+			vc = {
 				type = "input",
-				name = L["Print versions of encounters"],
-				set = "PrintRosterVersions",
+				name = L["Show version check window"],
+				set = "VersionCheck",
 				order = 400,
 			},
 		},

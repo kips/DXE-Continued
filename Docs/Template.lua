@@ -1,5 +1,4 @@
 do
-	-- Remember to add Rev keyword
 	local data = {
 		version = "$Rev: 34 $",
 		key = "boss", 

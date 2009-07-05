@@ -33,10 +33,12 @@ function Alerts:OnInitialize()
 	-- Top stack anchor
 	TopStackAnchor = DXE:CreateLockableFrame("AlertsTopStackAnchor",245,10,format("%s - %s",L["Alerts"],L["Top Anchor"]))
 	DXE:RegisterMoveSaving(TopStackAnchor,"TOP","UIParent","TOP",0,-16)
+	DXE:LoadPosition("DXEAlertsTopStackAnchor")
 
 	-- Bottom stack anchor
 	CenterStackAnchor = DXE:CreateLockableFrame("AlertsCenterStackAnchor",245,10,format("%s - %s",L["Alerts"],L["Center Anchor"]))
 	DXE:RegisterMoveSaving(CenterStackAnchor,"CENTER","UIParent","CENTER",0,100)
+	DXE:LoadPosition("DXEAlertsCenterStackAnchor")
 
 	scale = DXE.db.global.AlertsScale
 end
@@ -57,7 +59,7 @@ end
 -- UPDATING
 ---------------------------------------
 
-local function OnUpdate(self,elapsed)
+local function onUpdate(self,elapsed)
 	local alert = next(Active)
 	if not alert then self:Hide() return end
 	local time = GetTime()
@@ -69,7 +71,7 @@ local function OnUpdate(self,elapsed)
 end
 
 local UpdateFrame = CreateFrame("Frame",nil,UIParent)
-UpdateFrame:SetScript("OnUpdate",OnUpdate)
+UpdateFrame:SetScript("OnUpdate",onUpdate)
 UpdateFrame:Hide()
 
 ---------------------------------------

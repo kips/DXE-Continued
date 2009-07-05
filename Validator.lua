@@ -39,7 +39,7 @@ local optboolean = {["boolean"] = true, ["nil"] = true, _ = "boolean or nil"}
 local baseKeys = {
 	version = optnumberstring,
 	key = isstring,
-	zone = isstring,
+	zone = optstring,
 	name = isstring,
 	title = optstring,
 	onstart = opttable,

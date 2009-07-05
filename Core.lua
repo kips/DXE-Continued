@@ -6,15 +6,11 @@
 local debug
 
 local debugDefaults = {
-	BroadcastAllVersions = false,
-	RequestVersions = false,
-	CleanVersions = false,
-	UpdateVersionString = false,
 	CheckForEngage = false,
 	CheckForWipe = false,
 	CHAT_MSG_MONSTER_YELL = false,
+	RAID_ROSTER_UPDATE = false,
 }
-
 --@end-debug@
 
 local defaults = {
@@ -60,7 +56,7 @@ end
 -- UPVALUES
 ---------------------------------------------
 
-local wipe,concat = table.wipe,table.concat
+local wipe,concat,remove = table.wipe,table.concat,table.remove
 local match,find,gmatch,sub = string.match,string.find,string.gmatch,string.sub
 local _G,select,tostring,type,assert,tonumber = _G,select,tostring,type,assert,tonumber
 local GetTime,GetNumRaidMembers,GetRaidRosterInfo = GetTime,GetNumRaidMembers,GetRaidRosterInfo
@@ -140,11 +136,23 @@ local ipairs,pairs = ipairs,pairs
 local util = {}
 DXE.util = util
 
-util.tablesize = function(t)
+local function tablesize(t)
 	local n = 0
 	for _ in pairs(t) do n = n + 1 end
 	return n
 end
+
+local function search(t,value,i)
+	for k,v in pairs(t) do
+		if i then
+			if type(v) == "table" and v[i] == value then return k end
+		elseif v == value then return k end
+	end
+	return nil
+end
+
+util.tablesize = tablesize
+util.search = search
 
 ---------------------------------------------
 -- MODULES
@@ -222,6 +230,7 @@ local CE
 local RDB
 
 local RegisterQueue = {}
+local Initialized = false
 function DXE:RegisterEncounter(data)
 	local key = data.key
 
@@ -229,7 +238,7 @@ function DXE:RegisterEncounter(data)
 	data.version = type(data.version) == "string" and tonumber(data.version:sub(7, -3)) or data.version
 
 	-- Add to queue if we're not loaded yet
-	if not self.Loaded then RegisterQueue[key] = data return end
+	if not Initialized then RegisterQueue[key] = data return end
 
 	self:ValidateData(data)
 
@@ -244,8 +253,8 @@ function DXE:RegisterEncounter(data)
 			else 
 				self:UnregisterEncounter(key) 
 			end
-		-- RDB version is higher
 		else
+			-- RDB version is higher
 			return
 		end
 	end
@@ -349,6 +358,18 @@ function DXE:StopEncounter()
 	self:StopTimer()
 end
 
+do
+	local function iter(t,i)
+		local k,v = next(t,i)
+		if k == "default" then return next(t,k)
+		else return k,v end
+	end
+
+	function DXE:IterateEDB()
+		return iter,EDB
+	end
+end
+
 ---------------------------------------------
 -- TRIGGER BUILDING
 ---------------------------------------------
@@ -372,7 +393,7 @@ do
 		-- Get zone name
 		local zone = GetRealZoneText()
 		local hasName,hasYell = false,false
-		for key, data in pairs(EDB) do
+		for key, data in DXE:IterateEDB() do
 			if data.zone == zone then
 				if data.triggers then
 					local scan = data.triggers.scan
@@ -432,19 +453,46 @@ for k in pairs(refreshFuncs) do
 	Roster[k] = {}
 end
 
+local numOnline = 0
+local numMembers = 0
+local tmpOnline,tmpMembers
 function DXE:RAID_ROSTER_UPDATE()
-	self:UpdatePaneVisibility()
+	--@debug@
+	debug("RAID_ROSTER_UPDATE","Invoked")
+	--@end-debug@
+
+	tmpOnline,tmpMembers = 0,GetNumRaidMembers()
 	for name,t in pairs (Roster) do wipe(t) end
-	for i=1,GetNumRaidMembers() do
+	for i=1,tmpMembers do
 		local name, rank, _, _, _, _, _, online = GetRaidRosterInfo(i)
 		local unit = rID[i]
-		-- For now we only want online units
 		if online then
+			tmpOnline = tmpOnline + 1
 			for k,t in pairs(Roster) do
 				refreshFuncs[k](t,i,unit)
 			end
 		end
 	end
+
+	--- Number of raid member differences
+
+	if tmpMembers ~= numMembers then
+		self:UpdatePaneVisibility()
+	end
+
+	numMembers = tmpMembers
+
+	--- Number of ONLINE raid member differences
+
+	if tmpOnline > numOnline then
+		self:BroadcastVersion("addon")
+	end
+
+	if tmpOnline < numOnline then
+		self:CleanVersions()
+	end
+
+	numOnline = tmpOnline
 end
 
 function DXE:IsPromoted()
@@ -458,6 +506,7 @@ end
 function DXE:PLAYER_ENTERING_WORLD()
 	self.pGUID = self.pGUID or UnitGUID("player")
 	self.pName = self.pName or UnitName("player")
+	self:UpdatePaneVisibility()
 	self:UpdateTriggers()
 end
 
@@ -491,7 +540,7 @@ end
 
 -- Initialization
 function DXE:OnInitialize()
-	self.Loaded = true
+	Initialized = true
 
 	-- Database
 	self.db = LibStub("AceDB-3.0"):New("DXEDB",self.defaults)
@@ -517,7 +566,7 @@ function DXE:OnInitialize()
 	self:CreatePane()
 
 	-- The default encounter
-	self:RegisterEncounter({key = "default", name = L["Default"], title = L["Default"], zone = ""})
+	self:RegisterEncounter({key = "default", name = L["Default"], title = L["Default"]})
 	self:SetActiveEncounter("default")
 
 	--@debug@
@@ -551,7 +600,6 @@ function DXE:OnInitialize()
 end
 
 function DXE:OnEnable()
-	self:LoadPositions()
 	self:UpdateTriggers()
 	self:UpdateLock()
 	self:UpdatePaneScale()
@@ -565,8 +613,8 @@ function DXE:OnEnable()
 	self:SetActiveEncounter("default")
 	self:EnableAllModules()
 	self:RegisterComm("DXE")
-	self:UpdateVersionString()
-	self:RAID_ROSTER_UPDATE()
+	self:UpdatePaneVisibility()
+	self:RequestAddOnVersions()
 end
 
 function DXE:OnDisable()
@@ -581,7 +629,6 @@ end
 -- POSITIONING
 ---------------------------------------------
 
--- Saves position
 function DXE:SavePosition(f)
 	local point, relativeTo, relativePoint, xOfs, yOfs = f:GetPoint()
 	local name = f:GetName()
@@ -592,29 +639,31 @@ function DXE:SavePosition(f)
 	self.db.profile.Positions[name].yOfs = yOfs
 end
 
--- Loads position
-function DXE:LoadPositions()
-	for k,v in pairs(self.db.profile.Positions) do
-		local f = _G[k]
-		if f then
-			f:ClearAllPoints()
-			f:SetPoint(v.point,_G[v.relativeTo] or UIParent,v.relativePoint,v.xOfs,v.yOfs)
-		end
+function DXE:LoadPosition(name)
+	local f = _G[name]
+	if not f then return end
+	f:ClearAllPoints()
+	local pos = self.db.profile.Positions[name]
+	if not pos then
+		f:SetPoint("CENTER",UIParent,"CENTER",0,0)
+		self.db.profile.Positions[name] = {}
+	else
+		f:SetPoint(pos.point,_G[pos.relativeTo] or UIParent,pos.relativePoint,pos.xOfs,pos.yOfs)
 	end
 end
 
 do
-	local function startmovingshift(self)
+	local function startMovingShift(self)
 		if IsShiftKeyDown() then
 			self:StartMoving()
 		end
 	end
 
-	local function startmoving(self)
+	local function startMoving(self)
 		self:StartMoving()
 	end
 
-	local function stopmoving(self)
+	local function stopMoving(self)
 		self:StopMovingOrSizing()
 		DXE:SavePosition(self)
 	end
@@ -624,19 +673,19 @@ do
 		assert(type(frame) == "table","expected 'frame' to be a table")
 		assert(frame.IsObjectType and frame:IsObjectType("Region"),"'frame' is not a blizzard frame")
 		if withShift then
-			frame:SetScript("OnMouseDown",startmovingshift)
+			frame:SetScript("OnMouseDown",startMovingShift)
 		else
-			frame:SetScript("OnMouseDown",startmoving)
+			frame:SetScript("OnMouseDown",startMoving)
 		end
-		frame:SetScript("OnMouseUp",stopmoving)
+		frame:SetScript("OnMouseUp",stopMoving)
 		-- Add default position
-		local tbl = {}
-		tbl.point = point
-		tbl.relativeTo = relativeTo
-		tbl.relativePoint = relativePoint
-		tbl.xOfs = xOfs
-		tbl.yOfs = yOfs
-		defaults.profile.Positions[frame:GetName()] = tbl
+		local pos = {}
+		pos.point = point
+		pos.relativeTo = relativeTo
+		pos.relativePoint = relativePoint
+		pos.xOfs = xOfs
+		pos.yOfs = yOfs
+		defaults.profile.Positions[frame:GetName()] = pos
 		self:RefreshDefaults()
 	end
 end
@@ -749,22 +798,22 @@ do
 		end
 	end
 
-	local function onenter(self)
+	local function onEnter(self)
 		GameTooltip:SetOwner(self, calculatepoint(self))
 		GameTooltip:AddLine(self._ttTitle)
 		GameTooltip:AddLine(self._ttText,1,1,1,true)
 		GameTooltip:Show()
 	end
 
-	local function onleave(self)
+	local function onLeave(self)
 		GameTooltip:Hide()
 	end
 
 	function DXE:AddTooltipText(obj,title,text)
 		obj._ttTitle = title
 		obj._ttText = text
-		obj:SetScript("OnEnter",onenter)
-		obj:SetScript("OnLeave",onleave) 
+		obj:SetScript("OnEnter",onEnter)
+		obj:SetScript("OnLeave",onLeave) 
 	end
 end
 
@@ -809,12 +858,12 @@ do
 	-- @param highlight The highlight texture for the button
 	-- @param onclick The function of the OnClick script
 	-- @param anchor SetPoints the control LEFT, anchor, RIGHT
-	function DXE:AddPaneButton(normal,highlight,onclick,name,text)
+	function DXE:AddPaneButton(normal,highlight,onClick,name,text)
 		local control = CreateFrame("Button",nil,self.Pane)
 		control:SetWidth(size)
 		control:SetHeight(size)
 		control:SetPoint("LEFT",controls[#controls] or self.Pane.timer.frame,"RIGHT")
-		control:SetScript("OnClick",onclick)
+		control:SetScript("OnClick",onClick)
 		control:SetNormalTexture(normal)
 		control:SetHighlightTexture(highlight)
 		self:AddTooltipText(control,name,text)
@@ -827,7 +876,7 @@ end
 -- Idea based off RDX's Pane
 function DXE:CreatePane()
 	if self.Pane then self.Pane:Show() return end
-	local Pane = CreateFrame("Frame","DXE_Pane",UIParent)
+	local Pane = CreateFrame("Frame","DXEPane",UIParent)
 	Pane:Hide()
 	Pane:SetClampedToScreen(true)
 	Pane:SetBackdrop(backdrop)
@@ -838,9 +887,10 @@ function DXE:CreatePane()
 	Pane:SetMovable(true)
 	Pane:SetPoint("CENTER")
 	self:RegisterMoveSaving(Pane,"CENTER","UIParent","CENTER",nil,nil,true)
+	self:LoadPosition("DXEPane")
 	self:AddTooltipText(Pane,"Pane",L["|cffffff00Shift + Click|r to move"])
-	local function onupdate() DXE:LayoutHealthWatchers() end
-	Pane:HookScript("OnMouseDown",function(self) self:SetScript("OnUpdate",onupdate) end)
+	local function onUpdate() DXE:LayoutHealthWatchers() end
+	Pane:HookScript("OnMouseDown",function(self) self:SetScript("OnUpdate",onUpdate) end)
 	Pane:HookScript("OnMouseUp",function(self) self:SetScript("OnUpdate",nil) end)
   	self.Pane = Pane
 	
@@ -968,7 +1018,7 @@ end
 do
 	local function closeall() CloseDropDownMenus(1) end
 
-	local function onclick(self)
+	local function onClick(self)
 		DXE:SetActiveEncounter(self.value)
 		CloseDropDownMenus()
 	end
@@ -977,7 +1027,7 @@ do
 
 	local work,list = {},{}
 
-	local function initialize(self,level)
+	local function Initialize(self,level)
 		wipe(work)
 		wipe(list)
 
@@ -994,15 +1044,13 @@ do
 			local info = UIDropDownMenu_CreateInfo()
 			info.text = L["Default"]
 			info.value = "default"
-			info.func = onclick
+			info.func = onClick
 			info.colorCode = YELLOW
 			info.owner = self
 			UIDropDownMenu_AddButton(info,1)
 
-			for key,data in pairs(EDB) do
-				if key ~= "default" then
-					work[data.category or data.zone] = true
-				end
+			for key,data in DXE:IterateEDB() do
+				work[data.category or data.zone] = true
 			end
 			for cat in pairs(work) do
 				list[#list+1] = cat
@@ -1029,7 +1077,7 @@ do
 		elseif level == 2 then
 			local cat = UIDROPDOWNMENU_MENU_VALUE
 
-			for key,data in pairs(EDB) do
+			for key,data in self:IterateEDB() do
 				if (data.category or data.zone) == cat then
 					list[#list+1] = data.name
 					work[data.name] = key
@@ -1044,7 +1092,7 @@ do
 				info.text = name
 				info.owner = self
 				info.value = work[name]
-				info.func = onclick
+				info.func = onClick
 				UIDropDownMenu_AddButton(info,2)
 			end
 		end
@@ -1052,7 +1100,7 @@ do
 
 	function DXE:CreateSelector()
 		local selector = CreateFrame("Frame", "DXE_Selector", UIParent, "UIDropDownMenuTemplate") 
-		UIDropDownMenu_Initialize(selector, initialize, "MENU")
+		UIDropDownMenu_Initialize(selector, Initialize, "MENU")
 		UIDropDownMenu_SetSelectedValue(selector,"default")
 		return selector
 	end
@@ -1061,46 +1109,48 @@ end
 ---------------------------------------------
 -- PANE FUNCTIONS
 ---------------------------------------------
-local isRunning,elapsedTime
+do
+	local isRunning,elapsedTime
 
---- Returns the encounter start time based off GetTime()
--- @return number >= 0
-function DXE:GetElapsedTime()
-	return elapsedTime
-end
+	--- Returns the encounter start time based off GetTime()
+	-- @return number >= 0
+	function DXE:GetElapsedTime()
+		return elapsedTime
+	end
 
---- Returns whether or not the timer is running
--- @return A boolean
-function DXE:IsRunning()
-	return isRunning
-end
+	--- Returns whether or not the timer is running
+	-- @return A boolean
+	function DXE:IsRunning()
+		return isRunning
+	end
 
-function DXE:SetRunning(val)
-	isRunning = val
-end
+	function DXE:SetRunning(val)
+		isRunning = val
+	end
 
-local function Timer_OnUpdate(self,elapsed)
-	elapsedTime = elapsedTime + elapsed
-	self.obj:SetTime(elapsedTime)
-end
+	local function onUpdate(self,elapsed)
+		elapsedTime = elapsedTime + elapsed
+		self.obj:SetTime(elapsedTime)
+	end
 
---- Starts the Pane timer
-function DXE:StartTimer()
-	elapsedTime = 0
-	self.Pane.timer.frame:SetScript("OnUpdate",Timer_OnUpdate)
-	self:SetRunning(true)
-end
+	--- Starts the Pane timer
+	function DXE:StartTimer()
+		elapsedTime = 0
+		self.Pane.timer.frame:SetScript("OnUpdate",onUpdate)
+		self:SetRunning(true)
+	end
 
---- Stops the Pane timer
-function DXE:StopTimer()
-	self.Pane.timer.frame:SetScript("OnUpdate",nil)
-	self:SetRunning(false)
-end
+	--- Stops the Pane timer
+	function DXE:StopTimer()
+		self.Pane.timer.frame:SetScript("OnUpdate",nil)
+		self:SetRunning(false)
+	end
 
---- Resets the Pane timer
-function DXE:ResetTimer()
-	elapsedTime = 0
-	self.Pane.timer:SetTime(0)
+	--- Resets the Pane timer
+	function DXE:ResetTimer()
+		elapsedTime = 0
+		self.Pane.timer:SetTime(0)
+	end
 end
 
 ---------------------------------------------
@@ -1234,16 +1284,19 @@ end
 
 local UnitAffectingCombat = UnitAffectingCombat
 
+-- TODO: Needs testing
 function DXE:CheckForWipe()
 	--@debug@
 	debug("CheckForWipe","Invoked")
 	--@end-debug@
-	local key = DXE:Scan()
-	if not key then
-		self:StopEncounter()	
-		return
-	end
-	if not UnitAffectingCombat("player") then
+	if (UnitHealth("player") > 0 or UnitIsGhost("player")) and not UnitAffectingCombat("player") then
+		local key = self:Scan()
+		if not key then
+			self:StopEncounter()	
+			return
+		end
+		self:ScheduleTimer("CheckForWipe",2)
+	elseif UnitIsDead("player") then
 		self:ScheduleTimer("CheckForWipe",2)
 	end
 end
@@ -1287,33 +1340,30 @@ end
 ---------------------------------------------
 -- VERSION CHECKING
 ---------------------------------------------
--- TODO Remove auto broadcasting. Allow the gui button to request versions and send in a whisper
 
 -- Cached string of all versions in EDB
 local VersionString
 -- Contains versions of all online raid members
-local RosterVersions = {}
-DXE.RosterVersions = RosterVersions
+local RVS = {}
+DXE.RVS = RVS
+
+local window
 
 function DXE:GetNumWithAddOn()
-	return util.tablesize(RosterVersions)
+	return util.tablesize(RVS)
 end
 
 function DXE:CleanVersions()
-	--@debug@
-	debug("CleanVersions","Invoked")
-	--@end-debug@
-	for name in pairs(RosterVersions) do
-		if not Roster.name_to_unit[name] then
-			RosterVersions[name] = nil
-		end
+	local n,i = #RVS,1
+	while i <= n do
+		local v = RVS[i]
+		if Roster.name_to_unit[v[1]] then i = i + 1
+		else remove(RVS,i); n = n - 1 end
 	end
+	self:RefreshVersionList()
 end
 
-function DXE:RequestVersions()
-	--@debug@
-	debug("RequestVersions","Invoked")
-	--@end-debug@
+function DXE:RequestAllVersions()
 	self:SendComm("RequestAllVersions")
 end
 
@@ -1321,94 +1371,284 @@ function DXE:OnCommRequestAllVersions()
 	self:BroadcastAllVersions()
 end
 
+function DXE:RequestAddOnVersions()
+	self:SendComm("RequestAddOnVersion")
+end
+
+function DXE:OnRequestAddOnVersion()
+	self:BroadcastVersion("addon")
+end
+
 function DXE:UpdateVersionString()
-	--@debug@
-	debug("UpdateVersionString","Invoked")
-	--@end-debug@
 	local work = {}
 	work[1] = format("%s,%s","addon",self.version)
-	for key, data in pairs(EDB) do
-		if key ~= "default" then
-			work[#work+1] = format("%s,%s",data.key,data.version)
-		end
+	for key, data in self:IterateEDB() do
+		work[#work+1] = format("%s,%s",data.key,data.version)
 	end
 	VersionString = concat(work,":")
-
-	self.db.global.tempString = VersionString
 end
 DXE:ThrottleFunc("UpdateVersionString",1,true)
 
 function DXE:BroadcastAllVersions()
-	--@debug@
-	debug("BroadcastAllVersions","Invoked")
-	--@end-debug@
 	self:SendComm("AllVersionsBroadcast",VersionString)
 end
 DXE:ThrottleFunc("BroadcastAllVersions",10,true)
 
 function DXE:OnCommAllVersionsBroadcast(event,commType,sender,versionString)
-	RosterVersions[sender] = RosterVersions[sender] or {}
-	for key,version in gmatch(versionString,"([^:,]+),([^:,]+)") do
-		RosterVersions[sender][key] = tonumber(version)
+	local k = search(RVS,sender,1)
+	if not k then 
+		k = #RVS+1
+		RVS[k] = {sender, versions={}}
 	end
+
+	local versions = RVS[k].versions
+
+	for key,version in gmatch(versionString,"([^:,]+),([^:,]+)") do
+		versions[key] = version
+	end
+
+	self:RefreshVersionList()
 end
 
---- Broadcasts a specific encounter version
--- @param key Assumed to exist in EDB. It is only used in Distributor after downloading.
 function DXE:BroadcastVersion(key)
-	if not EDB[key] then return end
-	self:SendComm("VersionBroadcast",key,EDB[key].version)
+	if not EDB[key] and key ~= "addon" then return end
+	self:SendComm("VersionBroadcast",key,key == "addon" and self.version or EDB[key].version)
 end
 
 function DXE:OnCommVersionBroadcast(event,commType,sender,key,version)
-	RosterVersions[sender] = RosterVersions[sender] or {}
-	RosterVersions[sender][key] = version
+	local k = search(RVS,sender,1)
+	if not k then
+		k = #RVS+1
+		RVS[k] = {sender, versions = {}}
+	end
+
+	RVS[k].versions[key] = version
+
+	self:RefreshVersionList()
 end
 
 do
-	local GREEN = "ff99ff33"
-	local BLUE  = "ff3399ff"
-	local GREY  = "ff999999"
-	local RED   = "ffff3300"
-	local color
-	local sort = table.sort
-	-- TODO: Make a GUI for this
-	function DXE:PrintRosterVersions(info, key)
-		if GetNumRaidMembers() == 0 then
-			self:Print(L["|cffff3300Failed: You are not in a Raid|r"])
-			return
+	--- Version Check GUI
+	local dropdown, heading, scrollFrame
+	local list,headers = {},{}
+	local value = "addon"
+	local sortIndex = 1
+	local sortDir = true
+
+	local NONE = -1
+	local GREEN = "|cff99ff33"
+	local BLUE  = "|cff3399ff"
+	local GREY  = "|cff999999"
+	local RED   = "|cffff3300"
+	local NUM_ROWS = 12
+	local ROW_HEIGHT = 16
+
+	local function SetHeaderText(name,version)
+		heading:SetText(format("%s: |cffffffff%s|r",name,version))
+	end
+
+	local function dropdownChanged(widget,event,v)
+		value = v
+		SetHeaderText(list[v],EDB[v].version)
+		DXE:RefreshVersionList()
+	end
+
+
+	local function RefreshEncDropdown()
+		wipe(list)
+		for key,data in DXE:IterateEDB() do
+			list[key] = data.name
 		end
-		if not EDB[key] and key ~= "addon" then
-			self:Print("|cffff3300Failed: Encounter does not exist|r")
-			return
+		dropdown:SetList(list)
+	end
+
+	local class_to_color = {}
+	for class,color in pairs(RAID_CLASS_COLORS) do
+		class_to_color[class] = ("|cff%02x%02x%02x"):format(color.r * 255, color.g * 255, color.b * 255)
+	end
+
+	local colorName = setmetatable({}, {__index =
+		function(t, name)
+			local class = select(2,UnitClass(name))
+			if not class then return name end
+			t[name] = class_to_color[class]..name.."|r"
+			return t[name]
 		end
-		local name = key ~= "addon" and EDB[key].name or L["AddOn"]
+	})
 
-		self:Print(format(L["Raid Version Check (%s)"],name))
-
-		local work = {}
-		for name in pairs(Roster.name_to_unit) do
-			if name ~= self.pName then
-				work[#work+1] = name
-			end
-		end
-
-		sort(work)
-
-		local mversion = key == "addon" and self.version or EDB[key].version
-		for _,unit in ipairs(work) do
-			if RosterVersions[unit] and RosterVersions[unit][key] then
-				local color = BLUE
-				local version = RosterVersions[unit][key]
-				if version < mversion then
-					color = RED 
-				elseif version == mversion then
-					color = GREEN
-				end
-				self:Print(format("|c%s%s|r: v%s",color,unit,version))
+	local function colorCode(text)
+		if type(text) == "string" then
+			return colorName[text]
+		elseif type(text) == "number" then
+			if text == NONE then
+				return GREY..L["None"].."|r"
 			else
-				self:Print(format("|c%s%s|r: None",GREY,unit))
+				local v = value == "addon" and DXE.version or EDB[value].version
+				if v > text then
+					return RED..text.."|r"
+				elseif v < text then
+					return BLUE..text.."|r"
+				else
+					return GREEN..text.."|r"
+				end
 			end
+		end
+	end
+
+	local function UpdateScroll()
+		local n = #RVS
+		FauxScrollFrame_Update(scrollFrame, n, NUM_ROWS, ROW_HEIGHT,nil,nil,nil,nil,nil,nil,true)
+		for i = 1, NUM_ROWS do
+			local j = i + FauxScrollFrame_GetOffset(scrollFrame)
+			if j <= n then
+				for k, header in ipairs(headers) do
+					local text = colorCode(RVS[j][k])
+					header.rows[i]:SetText(text)
+					header.rows[i]:Show()
+				end
+			else
+				for k, header in ipairs(headers) do
+					header.rows[i]:Hide()
+				end
+			end
+		end
+	end
+
+	local function sortAsc(a,b) return a[sortIndex] < b[sortIndex] end
+	local function sortDesc(a,b) return a[sortIndex] > b[sortIndex] end
+
+	local function SortColumn(column)
+		local header = headers[column]
+		sortIndex = column
+		if sortDir then
+			table.sort(RVS, sortAsc)
+		else
+			table.sort(RVS, sortDesc)
+		end
+		UpdateScroll()
+	end
+
+	local function CreateRow(parent)
+		local text = parent:CreateFontString(nil,"OVERLAY")
+		text:SetHeight(ROW_HEIGHT)
+		text:SetFontObject(GameFontNormalSmall)
+		text:SetJustifyH("LEFT")
+		text:SetTextColor(1,1,1)
+		text:SetText("Vercietorixafds")
+		return text
+	end
+
+	local function CreateHeader(content,column)
+		local header =  CreateFrame("Button", nil, content)
+		header:SetScript("OnClick",function() sortDir = not sortDir; SortColumn(column) end)
+		header:SetHeight(20)
+		local title = header:CreateFontString(nil,"OVERLAY")
+		title:SetPoint("LEFT",header,"LEFT",10,0)
+		header:SetFontString(title)
+		header:SetNormalFontObject(GameFontNormalSmall)
+		header:SetHighlightFontObject(GameFontNormal)
+
+		local rows = {}
+		header.rows = rows
+		local text = CreateRow(header)
+		text:SetPoint("TOPLEFT",header,"BOTTOMLEFT",10,-3)
+		text:SetPoint("TOPRIGHT",header,"BOTTOMRIGHT",0,-3)
+		rows[1] = text
+
+		for i=2,NUM_ROWS do
+			text = CreateRow(header)
+			text:SetPoint("TOPLEFT", rows[i-1], "BOTTOMLEFT")
+			text:SetPoint("TOPRIGHT", rows[i-1], "BOTTOMRIGHT")
+			rows[i] = text
+		end
+
+		return header
+	end
+
+	function DXE:RefreshVersionList()
+		if window and window:IsShown() then
+			for k,v in ipairs(RVS) do
+				v[2] = v.versions[value] or NONE
+			end
+
+			for name in pairs(Roster.name_to_unit) do
+				if not search(RVS,name,1) then
+					RVS[#RVS+1] = {name,NONE,versions = {}}
+				end
+			end
+
+			SortColumn(sortIndex)
+		end
+	end
+
+	function DXE:VersionCheck()
+		if window and not window:IsShown() then
+			window:Show()
+			RefreshEncDropdown()
+			self:RefreshVersionList()
+		elseif not window then
+			window = self:CreateWindow("Version Check",220,295)--175,220)
+			window:AddTitleButton("Interface\\Addons\\DXE\\Textures\\Window\\Sync.tga",
+											function() self:RequestAllVersions() end)
+			local content = window.content
+			local addonButton = CreateFrame("Button", nil, content, "UIPanelButtonTemplate")
+			addonButton:SetWidth(content:GetWidth()/3)
+			addonButton:SetHeight(25)
+			addonButton:SetNormalFontObject(GameFontNormalSmall)
+			addonButton:SetHighlightFontObject(GameFontHighlightSmall)
+			addonButton:SetDisabledFontObject(GameFontDisableSmall)
+			addonButton:SetText("AddOn")
+			addonButton:SetPoint("TOPLEFT",content,"TOPLEFT",0,-1)
+			addonButton:RegisterForClicks("LeftButtonUp","RightButtonUp")
+			addonButton:SetScript("OnClick",function(self,button) 
+				if button == "LeftButton" then
+					SetHeaderText("AddOn",DXE.version)
+					value = "addon"
+				elseif button == "RightButton" then
+					if not dropdown.value then return end
+					SetHeaderText(list[dropdown.value],EDB[dropdown.value].version)
+					value = dropdown.value
+				end
+				DXE:RefreshVersionList() 
+			end)
+
+			dropdown = AceGUI:Create("Dropdown")
+			dropdown:SetPoint("TOPRIGHT",content,"TOPRIGHT")
+			dropdown:SetWidth(content:GetWidth()*2/3)
+			dropdown:SetCallback("OnValueChanged", dropdownChanged)
+			RefreshEncDropdown()
+			dropdown:SetValue(next(list))
+			dropdown.frame:SetParent(content)
+
+			heading = AceGUI:Create("Heading")
+			heading:SetWidth(content:GetWidth())
+			SetHeaderText("AddOn",self.version)
+			heading:SetPoint("TOPLEFT",addonButton,"BOTTOMLEFT",0,-2)
+			heading.frame:SetParent(content)
+			heading.label:SetFont(GameFontNormalSmall:GetFont())
+
+			for i=1,2 do headers[i] = CreateHeader(content,i) end
+			headers[1]:SetPoint("TOPLEFT",heading.frame,"BOTTOMLEFT")
+			headers[1]:SetText("Name")
+			headers[1]:SetWidth(120)
+
+			headers[2] = CreateHeader(content,2)
+			headers[2]:SetPoint("LEFT",headers[1],"LEFT",content:GetWidth()/2,0)
+			headers[2]:SetText("Version")
+			headers[2]:SetWidth(80)
+
+			scrollFrame = CreateFrame("ScrollFrame", "DXEVersionCheckScrollFrame", content, "FauxScrollFrameTemplate")
+			scrollFrame:SetPoint("TOPLEFT", headers[1], "BOTTOMLEFT")
+			scrollFrame:SetPoint("BOTTOMRIGHT",-21,0)
+			scrollFrame:SetBackdrop(backdrop)
+			scrollFrame:SetBackdropBorderColor(0.33,0.33,0.33)
+
+			scrollFrame:SetScript("OnVerticalScroll", function(self, offset) 
+				FauxScrollFrame_OnVerticalScroll(self, offset, ROW_HEIGHT, UpdateScroll) 
+			end)
+
+			self:RefreshVersionList()
+			UpdateScroll()
 		end
 	end
 end
