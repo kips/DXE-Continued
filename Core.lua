@@ -1323,6 +1323,7 @@ function DXE:SendComm(commType,...)
 end
 
 function DXE:OnCommReceived(prefix, msg, dist, sender)
+	print(prefix,msg,dist,sender)
 	if dist ~= "RAID" or sender == self.pName then return end
 	self:DispatchComm(sender, self:Deserialize(msg))
 end
@@ -1375,7 +1376,7 @@ function DXE:RequestAddOnVersions()
 	self:SendComm("RequestAddOnVersion")
 end
 
-function DXE:OnCommRequestAddOnVersions()
+function DXE:OnCommRequestAddOnVersion()
 	self:BroadcastVersion("addon")
 end
 
