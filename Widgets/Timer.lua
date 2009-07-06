@@ -1,6 +1,5 @@
 local AceGUI = LibStub("AceGUI-3.0")
 
-local fmod = math.fmod
 local floor = math.floor
 
 do
@@ -21,7 +20,7 @@ do
 		time = time < 0 and 0 or time
 		local dec = (time - floor(time)) * 100
 		local min = floor(time/60)
-		local sec = fmod(time,60)
+		local sec = time % 60
 		self.left:SetFormattedText("%d:%02d",min,sec)
 		self.right:SetFormattedText("%02d",dec)
 	end
