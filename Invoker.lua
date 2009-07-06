@@ -64,6 +64,7 @@ end
 ---------------------------------------------
 
 local Invoker = DXE:NewModule("Invoker","AceEvent-3.0","AceTimer-3.0")
+DXE.Invoker = Invoker
 local HW = DXE.HW
 local Alerts = DXE.Alerts
 -- Hold event info
@@ -217,8 +218,8 @@ end
 
 -- IMPORTANT - Return values should all be strings
 local RepFuncs = {
-	playerguid = function() return DXE.pGUID end,
-	playername = function() return DXE.pName end,
+	playerguid = function() return DXE.PGUID end,
+	playername = function() return DXE.PNAME end,
 	vehicleguid  = function() return UnitGUID("vehicle") or "" end,
 	difficulty = function() return tostring(GetCurrentDungeonDifficulty()) end,
 	-- First health watcher
@@ -808,4 +809,3 @@ function Invoker:OnSet(_,data)
 	self:SetOnAcquired()
 end
 
-DXE.Invoker = Invoker

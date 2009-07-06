@@ -43,6 +43,7 @@ local defaults = {
 ---------------------------------------------
 
 local DXE = LibStub("AceAddon-3.0"):NewAddon("DXE","AceEvent-3.0","AceTimer-3.0","AceConsole-3.0","AceComm-3.0","AceSerializer-3.0")
+_G.DXE = DXE
 DXE.version = tonumber(("$Rev$"):sub(7, -3))
 DXE:SetDefaultModuleState(false)
 DXE.callbacks = LibStub("CallbackHandler-1.0"):New(DXE)
@@ -60,7 +61,8 @@ local wipe,concat,remove = table.wipe,table.concat,table.remove
 local match,find,gmatch,sub = string.match,string.find,string.gmatch,string.sub
 local _G,select,tostring,type,assert,tonumber = _G,select,tostring,type,assert,tonumber
 local GetTime,GetNumRaidMembers,GetRaidRosterInfo = GetTime,GetNumRaidMembers,GetRaidRosterInfo
-local UnitName,UnitGUID = UnitName,UnitGUID
+local UnitName,UnitGUID,UnitIsEnemy,UnitClass,UnitAffectingCombat,UnitHealth,UnitIsFriend,UnitIsDead = 
+		UnitName,UnitGUID,UnitIsEnemy,UnitClass,UnitAffectingCombat,UnitHealth,UnitIsFriend,UnitIsDead
 local band = bit.band
 
 ---------------------------------------------
@@ -504,8 +506,8 @@ end
 ---------------------------------------------
 
 function DXE:PLAYER_ENTERING_WORLD()
-	self.pGUID = self.pGUID or UnitGUID("player")
-	self.pName = self.pName or UnitName("player")
+	self.PGUID = self.PGUID or UnitGUID("player")
+	self.PNAME = self.PNAME or UnitName("player")
 	self:UpdatePaneVisibility()
 	self:UpdateTriggers()
 end
@@ -707,8 +709,6 @@ function DXE:CHAT_MSG_MONSTER_YELL(_,msg,...)
 	end
 end
 
-local UnitName = UnitName
-local UnitIsEnemy = UnitIsEnemy
 local FriendlyExceptions = {}
 
 function DXE:AddFriendlyException(name)
@@ -818,7 +818,7 @@ do
 end
 
 ---------------------------------------------
--- PANE CREATION
+-- PANE
 ---------------------------------------------
 
 
@@ -1012,7 +1012,7 @@ do
 end
 
 ---------------------------------------------
--- SELECTOR CREATION
+-- SELECTOR
 ---------------------------------------------
 
 do
@@ -1026,6 +1026,7 @@ do
 	local YELLOW = "|cffffff00"
 
 	local work,list = {},{}
+	local info
 
 	local function Initialize(self,level)
 		wipe(work)
@@ -1034,14 +1035,14 @@ do
 		level = level or 1
 
 		if level == 1 then
-			local info = UIDropDownMenu_CreateInfo()
+			info = UIDropDownMenu_CreateInfo()
 			info.isTitle = true 
 			info.text = L["Encounter Selector"]
 			info.notCheckable = true 
 			info.justifyH = "LEFT"
 			UIDropDownMenu_AddButton(info,1)
 
-			local info = UIDropDownMenu_CreateInfo()
+			info = UIDropDownMenu_CreateInfo()
 			info.text = L["Default"]
 			info.value = "default"
 			info.func = onClick
@@ -1058,8 +1059,8 @@ do
 
 			table.sort(list)
 
+			info = UIDropDownMenu_CreateInfo()
 			for _,cat in ipairs(list) do
-				local info = UIDropDownMenu_CreateInfo()
 				info.text = cat
 				info.value = cat
 				info.hasArrow = true
@@ -1068,7 +1069,7 @@ do
 				UIDropDownMenu_AddButton(info,1)
 			end
 
-			local info = UIDropDownMenu_CreateInfo()
+			info = UIDropDownMenu_CreateInfo()
 			info.notCheckable = true 
 			info.justifyH = "LEFT"
 			info.text = L["Cancel"]
@@ -1077,7 +1078,7 @@ do
 		elseif level == 2 then
 			local cat = UIDROPDOWNMENU_MENU_VALUE
 
-			for key,data in self:IterateEDB() do
+			for key,data in DXE:IterateEDB() do
 				if (data.category or data.zone) == cat then
 					list[#list+1] = data.name
 					work[data.name] = key
@@ -1086,8 +1087,8 @@ do
 
 			table.sort(list)
 
+			info = UIDropDownMenu_CreateInfo()
 			for _,name in ipairs(list) do
-				local info = UIDropDownMenu_CreateInfo()
 				info.hasArrow = false
 				info.text = name
 				info.owner = self
@@ -1151,16 +1152,6 @@ do
 		elapsedTime = 0
 		self.Pane.timer:SetTime(0)
 	end
-end
-
----------------------------------------------
--- ALERT TEST
----------------------------------------------
-
-function DXE:AlertTest()
-	DXE.Alerts:CenterPopup("AlertTest1", "Decimating. Life Tap Now!", 10, 5, "ALERT1", "DCYAN")
-	DXE.Alerts:Dropdown("AlertTest2", "Big City Opening", 20, 5, "ALERT2", "BLUE")
-	DXE.Alerts:Simple("Gay",3,"ALERT3","RED")
 end
 
 ---------------------------------------------
@@ -1238,7 +1229,7 @@ end
 do
 	-- Throttling is needed because sometimes bosses pulsate in and out of combat at the start.
 	-- UnitAffectingCombat can return false at the start even if the boss is moving towards a player.
-	local UnitIsFriend,UnitIsDead,UnitAffectingCombat = UnitIsFriend,UnitIsDead,UnitAffectingCombat
+
 	-- Lookup table so we don't have to concatenate every update
 	local targetof = {}
 	for i=1,40 do targetof["raid"..i.."target"] = "raid"..i.."targettarget" end
@@ -1282,7 +1273,6 @@ end
 -- Credits to BigWigs for these functions
 ---------------------------------------------
 
-local UnitAffectingCombat = UnitAffectingCombat
 
 -- TODO: Needs testing
 function DXE:CheckForWipe()
@@ -1323,7 +1313,7 @@ function DXE:SendComm(commType,...)
 end
 
 function DXE:OnCommReceived(prefix, msg, dist, sender)
-	if dist ~= "RAID" or sender == self.pName then return end
+	if dist ~= "RAID" or sender == self.PNAME then return end
 	self:DispatchComm(sender, self:Deserialize(msg))
 end
 
@@ -1343,7 +1333,7 @@ end
 
 -- Cached string of all versions in EDB
 local VersionString
--- Contains versions of all online raid members
+-- Roster versions
 local RVS = {}
 DXE.RVS = RVS
 
@@ -1499,7 +1489,7 @@ do
 
 	local function UpdateScroll()
 		local n = #RVS
-		FauxScrollFrame_Update(scrollFrame, n, NUM_ROWS, ROW_HEIGHT,nil,nil,nil,nil,nil,nil,true)
+		FauxScrollFrame_Update(scrollFrame, n, NUM_ROWS, ROW_HEIGHT, nil, nil, nil, nil, nil, nil, true)
 		for i = 1, NUM_ROWS do
 			local j = i + FauxScrollFrame_GetOffset(scrollFrame)
 			if j <= n then
@@ -1540,7 +1530,7 @@ do
 	end
 
 	local function CreateHeader(content,column)
-		local header =  CreateFrame("Button", nil, content)
+		local header = CreateFrame("Button", nil, content)
 		header:SetScript("OnClick",function() sortDir = not sortDir; SortColumn(column) end)
 		header:SetHeight(20)
 		local title = header:CreateFontString(nil,"OVERLAY")
@@ -1573,7 +1563,7 @@ do
 			end
 
 			for name in pairs(Roster.name_to_unit) do
-				if not search(RVS,name,1) and name ~= self.pName then
+				if not search(RVS,name,1) and name ~= self.PNAME then
 					RVS[#RVS+1] = {name,NONE,versions = {}}
 				end
 			end
@@ -1680,4 +1670,3 @@ do
 	end
 end
 
-_G.DXE = DXE

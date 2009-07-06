@@ -28,6 +28,7 @@ local AceTimer = LibStub("AceTimer-3.0")
 ----------------------------------
 
 local HOT,Prototype = {},{}
+DXE.HOT = HOT
 
 ----------------------------------
 -- CORE
@@ -191,4 +192,3 @@ function Prototype:FirstProto()
 	return self.proto_uids[1] 
 end
 
-DXE.HOT = HOT

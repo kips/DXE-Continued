@@ -53,6 +53,7 @@ Invoker.lua
 HOT.lua
 Config.lua
 Distributor.lua
+Arrows.lua
 Validator.lua
 
 #@do-not-package@

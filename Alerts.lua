@@ -22,6 +22,7 @@ local fadeTime = 2
 ---------------------------------------
 
 local Alerts = DXE:NewModule("Alerts","AceTimer-3.0")
+DXE.Alerts = Alerts
 local Active = {}
 local TopAlertStack = {}
 local CenterAlertStack = {}
@@ -406,4 +407,13 @@ function Alerts:Simple(text, totalTime, sound, c1)
 	return alert
 end
 
-DXE.Alerts = Alerts
+---------------------------------------------
+-- ALERT TEST
+---------------------------------------------
+
+function DXE:AlertTest()
+	Alerts:CenterPopup("AlertTest1", "Decimating. Life Tap Now!", 10, 5, "ALERT1", "DCYAN")
+	Alerts:Dropdown("AlertTest2", "Big City Opening", 20, 5, "ALERT2", "BLUE")
+	Alerts:Simple("Gay",3,"ALERT3","RED")
+end
+

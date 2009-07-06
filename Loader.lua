@@ -10,6 +10,7 @@ local L = DXE.L
 ]]
 
 local Loader = DXE:NewModule("Loader","AceEvent-3.0")
+DXE.Loader = Loader
 local ZMS = {}
 
 local function AddZoneModule(name,zone,...)
@@ -107,4 +108,3 @@ function Loader:ZONE_CHANGED_NEW_AREA()
 	end
 end
 
-DXE.Loader = Loader

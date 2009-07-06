@@ -170,7 +170,7 @@ function Distributor:GetOptions()
 								wipe(RaidNames)
 								for _,unit in pairs(Roster.index_to_unit) do
 									local name = UnitName(unit)
-									if name ~= DXE.pName then
+									if name ~= DXE.PNAME then
 										 RaidNames[name] = name
 									end
 								end
@@ -342,7 +342,7 @@ function Distributor:Respond(msg,sender)
 end
 
 function Distributor:OnCommReceived(prefix, msg, dist, sender)
-	if sender == DXE.pName then return end
+	if sender == DXE.PNAME then return end
 	local type,args = match(msg,"(%w+):(.+)")
 	if type == "UPDATE" then
 		local key,version,length,name,rlocale = split(":",args)
