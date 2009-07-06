@@ -1,5 +1,5 @@
 local DXE = DXE
-local version = tonumber(("$Rev: 225 $"):sub(7, -3))
+local version = tonumber(("$Rev$"):sub(7, -3))
 DXE.version = version > DXE.version and version or DXE.version
 local L = DXE.L
 
@@ -38,6 +38,7 @@ local function SetAngle(self,angle)
 end
 
 local function SetTarget(self,name,persist)
+	self:SetAlpha(1)
 	self.unit = name
 	self.elapsed = 0
 	self.persist = persist
@@ -45,6 +46,7 @@ local function SetTarget(self,name,persist)
 end
 
 local function Destroy(self)
+	self.unit = nil
 	self:Hide()
 end
 
@@ -56,6 +58,7 @@ local function onUpdate(self,elapsed)
 		local x_0,y_0 = GetPlayerMapPosition("player")
 		local x,y = GetPlayerMapPosition(self.unit)
 		local dx,dy = x - x_0, y - y_0
+		if dy == 0 then dy = 10e-5 end
 		local angle_axis = dy < 0 and PI + atan(dx/dy) or atan(dx/dy)
 		local angle = (PI-(GetPlayerFacing()-angle_axis)) % PI2
 		self:SetAngle(angle)
@@ -112,7 +115,7 @@ end
 function Arrows:AddTarget(name,persist)
 	if name_to_unit[name] then
 		for i,arrow in ipairs(frames) do
-			if not arrow:IsShown() then
+			if arrow:GetAlpha() < 0 or not arrow:IsShown() then
 				arrow:SetTarget(name,persist)
 				break
 			end
@@ -122,7 +125,7 @@ end
 
 function Arrows:RemoveTarget(name)
 	for i,arrow in ipairs(frames) do
-		if arrow:IsShown() and arrow.unit == name then
+		if arrow:GetAlpha() == 1 and arrow.unit == name then
 			arrow:Destroy()
 			break
 		end
@@ -131,7 +134,7 @@ end
 
 function Arrows:RemoveAll()
 	for i,arrow in ipairs(frames) do
-		if arrow:IsShown() then
+		if arrow:GetAlpha() == 1 then
 			arrow:Destroy()
 		end
 	end
