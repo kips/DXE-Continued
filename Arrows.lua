@@ -121,7 +121,8 @@ local function SetTarget(self,name,persist,action)
 	self.t:SetVertexColor(color.r,color.g,color.b)
 	self:SetAngle(self:GetAngle())
 	units[name] = true
-	self.label:SetText(name)
+	self.label:SetText("Roots > "..name)
+	self.label2:SetText("KILL IT")
 	self:SetAlpha(1)
 	self:SetScript("OnUpdate",OnUpdate)
 	self:Show()
@@ -147,9 +148,14 @@ local function CreateArrow()
 	t:SetAllPoints(true)
 	arrow.t = t
 
-	local label = arrow:CreateFontString(nil,"ARTWORK","GameFontNormal")
-	label:SetPoint("TOP",arrow,"BOTTOM")
+	local label = arrow:CreateFontString(nil,"ARTWORK","GameFontNormalSmall")
+	label:SetPoint("BOTTOM",arrow,"TOP")
 	arrow.label = label
+
+	local label2 = arrow:CreateFontString(nil,"ARTWORK","GameFontNormal")
+	label2:SetPoint("TOP",arrow,"BOTTOM")
+	label2:SetTextColor(1,1,1)
+	arrow.label2 = label2
 
 	arrow.SetAngle = SetAngle
 	arrow.GetAngle = GetAngle
@@ -171,7 +177,7 @@ function Arrows:OnInitialize()
 	for i=1,3 do 
 		local arrow = CreateArrow()
 		local anchor = DXE:CreateLockableFrame("ArrowsAnchor"..i,85,42,format("%s - %s",L["Arrows"],L["Anchor"].." "..i))
-		DXE:RegisterMoveSaving(anchor,"CENTER","UIParent","CENTER",0,-(25 + (i*60)))
+		DXE:RegisterMoveSaving(anchor,"CENTER","UIParent","CENTER",0,-(25 + (i*65)))
 		DXE:LoadPosition("DXEArrowsAnchor"..i)
 		arrow:SetPoint("CENTER",anchor,"CENTER")
 		frames[i] = arrow
@@ -190,10 +196,12 @@ function Arrows:AddTarget(name,persist,action)
 	--@end-debug@
 	if name_to_unit[name] then
 		for i,arrow in ipairs(frames) do
-			if not units[name] and not arrow.unit then
+			--if not units[name] and not arrow.unit then
+			if not arrow.unit then
 				arrow:SetTarget(name,persist,action)
 				break
 			end
+			--end
 		end
 	end
 end
