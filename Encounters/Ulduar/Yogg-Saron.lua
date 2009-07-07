@@ -159,7 +159,7 @@ do
 				var = "brainlinkarrow",
 				varname = SN[63802],
 				unit = "<brainlinkpartner>",
-				persist = 29.8,
+				persist = 29.9,
 				action = "TOWARD",
 				msg = L["CONVERGE"],
 				spell = SN[63802],

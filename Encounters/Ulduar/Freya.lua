@@ -139,6 +139,7 @@ do
 				action = "TOWARD",
 				msg = L["KILL IT"],
 				spell = L["Roots"],
+				sound = "ALERT4",
 			},
 		},
 		events = {

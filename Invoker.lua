@@ -415,7 +415,7 @@ local GetTime = GetTime
 local function StartAlert(name,...)
 	local info = CE.alerts[name]
 	-- Sanity check
-	if not info then return end
+	if not info then return true end
 	-- Throttling
 	if info.throttle then
 		-- Initialize to 0 if non-existant
@@ -500,7 +500,9 @@ end
 -- Arrows
 ---------------------------------------------
 
-local function StartArrow(info,...)
+local function StartArrow(name,...)
+	local info = CE.arrows[name]
+	if not info then return true end
 	local unit = ReplaceTokens(info.unit,...)
 	Arrows:AddTarget(unit,info.persist,info.action,info.msg,info.spell,info.sound)
 end
