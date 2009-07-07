@@ -15,6 +15,7 @@ local units = {}
 
 local name_to_unit = DXE.Roster.name_to_unit
 local ProximityFuncs = DXE:GetProximityFuncs()
+local Sounds = DXE.Constants.Sounds
 local util = DXE.util
 local CN = DXE.CN
 
@@ -65,12 +66,13 @@ local function SetColor(self)
 	self.dt = self.elapsed + TRANS_TIME
 end
 
+local e = 10e-5
 local function GetAngle(self)
 	if not UnitIsVisible(self.unit) then self:Destroy() return end
 	local x_0,y_0 = GetPlayerMapPosition("player")
 	local x,y = GetPlayerMapPosition(self.unit)
 	local dx,dy = x - x_0, y - y_0
-	if not dx or dy == 0 then dy = 10e-5 end -- Prevents NaN
+	if dy == 0 then dy = e end -- Prevents NaN
 	local angle_axis = dy < 0 and PI + atan(dx/dy) or atan(dx/dy)
 	local angle = (PI-(GetPlayerFacing()-angle_axis)) % PI2
 	if self.action == "AWAY" then angle = (PI + angle) % PI2 end
@@ -114,7 +116,7 @@ end
 
 -- @param action a string == "TOWARD" or "AWAY"
 local function SetTarget(self,unit,persist,action,msg,spell,sound)
-	if sound then PlaySoundFile(sound) end
+	if sound then PlaySoundFile(Sounds[sound]) end
 	UIFrameFadeRemoveFrame(self)
 	self.action = action
 	self.unit = unit
