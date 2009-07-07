@@ -16,7 +16,7 @@ local Sounds = DXE.Constants.Sounds
 local Colors = DXE.Constants.Colors
 local conditions = DXE.Invoker:GetConditions()
 local RepFuncs = DXE.Invoker:GetRepFuncs()
-local ProximityFuncs = DXE.Invoker:GetProximityFuncs()
+local ProximityFuncs = DXE:GetProximityFuncs()
 local util = DXE.util
 
 local isstring = {["string"] = true, _ = "string"}

@@ -153,8 +153,16 @@ local function search(t,value,i)
 	return nil
 end
 
+local function blend(c1, c2, factor)
+	local r = (1-factor) * c1.r + factor * c2.r
+	local g = (1-factor) * c1.g + factor * c2.g
+	local b = (1-factor) * c1.b + factor * c2.b
+	return r,g,b
+end
+
 util.tablesize = tablesize
 util.search = search
+util.blend = blend
 
 ---------------------------------------------
 -- MODULES
@@ -169,6 +177,52 @@ end
 function DXE:DisableAllModules()
 	for name in self:IterateModules() do
 		self:DisableModule(name)
+	end
+end
+
+---------------------------------------------
+-- PROXIMITY CHECKING
+---------------------------------------------
+
+do
+	-- 18 yards
+	local bandages = {
+		[21991] = true, -- Heavy Netherweave Bandage
+		[21990] = true, -- Netherweave Bandage
+		[14530] = true, -- Heavy Runecloth Bandage
+		[14529] = true, -- Runecloth Bandage
+		[8545] = true, -- Heavy Mageweave Bandage
+		[8544] = true, -- Mageweave Bandage
+		[6451] = true, -- Heavy Silk Bandage
+		[6450] = true, -- Silk Bandage
+		[3531] = true, -- Heavy Wool Bandage
+		[3530] = true, -- Wool Bandage
+		[2581] = true, -- Heavy Linen Bandage
+		[1251] = true, -- Linen Bandage
+	}
+	-- CheckInteractDistance(unit,i)
+	-- 2 = Trade, 11.11 yards 
+	-- 3 = Duel, 9.9 yards 
+	-- 4 = Follow, 28 yards 
+
+	local IsItemInRange = IsItemInRange
+	-- Keys refer to yards
+	local ProximityFuncs = {
+		[10] = function(unit) return CheckInteractDistance(unit,3) end,
+		[11] = function(unit) return CheckInteractDistance(unit,2) end,
+		[18] = function(unit) 
+			for itemid in pairs(bandages) do
+				if IsItemInRange(itemid,unit) == 1 then
+					return true
+				end
+			end
+			return false
+		end,
+		[28] = function(unit) return CheckInteractDistance(unit,4) end,
+	}
+
+	function DXE:GetProximityFuncs()
+		return ProximityFuncs
 	end
 end
 
@@ -609,6 +663,7 @@ function DXE:OnEnable()
 
 	-- Events
 	self:RegisterEvent("RAID_ROSTER_UPDATE")
+	self:RegisterEvent("PARTY_MEMBERS_CHANGED","RAID_ROSTER_UPDATE")
 	self:RegisterEvent("ZONE_CHANGED_NEW_AREA","UpdateTriggers")
 	self:RegisterEvent("PLAYER_ENTERING_WORLD")
 

@@ -13,6 +13,7 @@ local GetTime,PlaySoundFile,ipairs,pairs,next,remove =
 		GetTime,PlaySoundFile,ipairs,pairs,next,tremove
 
 local scale
+local util = DXE.util
 
 local animationTime = 0.3
 local fadeTime = 2
@@ -197,13 +198,6 @@ do
 		self.bar:SetValue(value)
 	end
 
-	local function blend(c1, c2, factor)
-		local r = (1-factor) * c1.r + factor * c2.r
-		local g = (1-factor) * c1.g + factor * c2.g
-		local b = (1-factor) * c1.b + factor * c2.b
-		return r,g,b
-	end
-
 	local cos = math.cos
 	local function CountdownFlashFunc(self,time)
 		local data = self.data
@@ -218,7 +212,7 @@ do
 		local value = 1 - (timeleft / data.totalTime)
 		self.bar:SetValue(value)
 		if timeleft < data.flashTime then 
-			self.bar:SetStatusBarColor(blend(data.c1, data.c2, 0.5*(cos(timeleft*12) + 1))) 
+			self.bar:SetStatusBarColor(util.blend(data.c1, data.c2, 0.5*(cos(timeleft*12) + 1))) 
 		end
 	end
 

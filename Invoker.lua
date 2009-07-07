@@ -67,6 +67,7 @@ local Invoker = DXE:NewModule("Invoker","AceEvent-3.0","AceTimer-3.0")
 DXE.Invoker = Invoker
 local HW = DXE.HW
 local Alerts = DXE.Alerts
+local Arrows = DXE.Arrows
 -- Hold event info
 local RegEvents,CombatEvents = {},{}
 
@@ -136,6 +137,8 @@ function Invoker:OnStop()
 	self:ResetUserData()
 	-- Quashes all alerts
 	Alerts:QuashAllAlerts()
+	-- Removes all arrows
+	Arrows:RemoveAll()
 	-- Remove Timers
 	self:RemoveAllTimers()
 	-- Remove Throttles
@@ -481,45 +484,7 @@ end
 -- Proximity Checking
 ---------------------------------------------
 
--- 18 yards
-local bandages = {
-	[21991] = true, -- Heavy Netherweave Bandage
-	[21990] = true, -- Netherweave Bandage
-	[14530] = true, -- Heavy Runecloth Bandage
-	[14529] = true, -- Runecloth Bandage
-	[8545] = true, -- Heavy Mageweave Bandage
-	[8544] = true, -- Mageweave Bandage
-	[6451] = true, -- Heavy Silk Bandage
-	[6450] = true, -- Silk Bandage
-	[3531] = true, -- Heavy Wool Bandage
-	[3530] = true, -- Wool Bandage
-	[2581] = true, -- Heavy Linen Bandage
-	[1251] = true, -- Linen Bandage
-}
--- CheckInteractDistance(unit,i)
--- 2 = Trade, 11.11 yards 
--- 3 = Duel, 9.9 yards 
--- 4 = Follow, 28 yards 
-
-local IsItemInRange = IsItemInRange
--- Keys refer to yards
-local ProximityFuncs = {
-	[10] = function(unit) return CheckInteractDistance(unit,3) end,
-	[11] = function(unit) return CheckInteractDistance(unit,2) end,
-	[18] = function(unit)  
-		for itemid in pairs(bandages) do
-			if IsItemInRange(itemid,unit) == 1 then
-				return true
-			end
-		end
-		return false
-	end,
-	[28] = function(unit) return CheckInteractDistance(unit,4) end,
-}
-
-function Invoker:GetProximityFuncs()
-	return ProximityFuncs
-end
+local ProximityFuncs DXE:GetProximityFuncs() 
 
 -- @param target Name/GUID of a unit
 -- @param range Number of yards to check to see if player is in range of target.

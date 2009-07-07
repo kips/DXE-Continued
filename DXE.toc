@@ -49,11 +49,11 @@ Tests.lua
 Options.lua
 Constants.lua
 Alerts.lua
+Arrows.lua
 Invoker.lua
 HOT.lua
 Config.lua
 Distributor.lua
-Arrows.lua
 Validator.lua
 
 #@do-not-package@
