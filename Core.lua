@@ -680,6 +680,8 @@ function DXE:OnEnable()
 
 	-- Events
 	self:RegisterEvent("RAID_ROSTER_UPDATE")
+	-- Refresh roster tables every half minute to detect offline players
+	self:ScheduleRepeatingTimer("RAID_ROSTER_UPDATE",30) 
 	self:RegisterEvent("ZONE_CHANGED_NEW_AREA","UpdateTriggers")
 	self:RegisterEvent("PLAYER_ENTERING_WORLD")
 
