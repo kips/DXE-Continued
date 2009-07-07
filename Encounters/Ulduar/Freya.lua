@@ -130,6 +130,17 @@ do
 				sound = "ALERT3",
 			},
 		},
+		arrows = {
+			rootarrow = {
+				var = "rootarrow",
+				varname = SN[62283],
+				unit = "#5#",
+				persist = 20,
+				action = "TOWARD",
+				msg = L["KILL IT"],
+				spell = L["Roots"],
+			},
+		},
 		events = {
 			-- Spawn waves
 			{
@@ -243,6 +254,30 @@ do
 					{
 						{expect = {"#4#","==","&playerguid&"}},
 						{quash = "naturesfuryself"},
+					},
+				},
+			},
+			-- Iron Roots
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellid = {62861,62930,62283,62438},
+				execute = {
+					{
+						{expect = {"#4#","~=","&playerguid&"}},
+						{arrow = "rootarrow"},
+					},
+				},
+			},
+			-- Iron Roots Removal
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_REMOVED",
+				spellid = {62861,62930,62283,62438},
+				execute = {
+					{
+						{expect = {"#4#","~=","&playerguid&"}},
+						{removearrow = "#5#"},
 					},
 				},
 			},

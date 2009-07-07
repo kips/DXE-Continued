@@ -497,6 +497,15 @@ local function CheckProximity(target,range)
 end
 
 ---------------------------------------------
+-- Arrows
+---------------------------------------------
+
+local function StartArrow(info,...)
+	local unit = ReplaceTokens(info.unit,...)
+	Arrows:AddTarget(unit,info.persist,info.action,info.msg,info.spell,info.sound)
+end
+
+---------------------------------------------
 -- Raid Icons
 ---------------------------------------------
 
@@ -641,14 +650,13 @@ local CommandFuncs = {
 		return true
 	end,
 
-	addarrow = function(info,...)
-		local unit,persist,action,msg,spell = unpack(info)
-		unit = ReplaceNums(unit,...)
-		Arrows:AddTarget(unit,persist,action,msg,spell)
+	arrow = function(info,...)
+		if EncDB[CE.arrows[info].var] then StartArrow(info,...) end
 		return true
 	end,
 
 	removearrow = function(info,...)
+		info = ReplaceTokens(info,...)
 		Arrows:RemoveTarget(info)
 		return true
 	end,

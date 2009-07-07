@@ -27,6 +27,7 @@ do
 			crushertime = 14,
 			allowcrusher = 1,
 			phase = "1",
+			brainlinkpartner = "",
 		},
 		onstart = {
 			{
@@ -144,6 +145,29 @@ do
 				color2 = "INDIGO",
 			},
 		},
+		arrows = {
+			maladyarrow = {
+				var = "maladyarrow",
+				varname = SN[63830],
+				unit = "#5#",
+				persist = 4,
+				action = "AWAY",
+				msg = L["MOVE AWAY"],
+				spell = L["Malady"],
+			},
+			brainlinkarrow = {
+				var = "brainlinkarrow",
+				varname = SN[63802],
+				unit = "<brainlinkpartner>",
+				persist = 29.8,
+				action = "TOWARD",
+				msg = L["CONVERGE"],
+				spell = SN[63802],
+			},
+		},
+		timers = {
+			startbrainarrow = {{{arrow = "brainlinkarrow"}}},
+		},
 		events = {
 			-- Lunatic Gaze
 			{
@@ -164,8 +188,13 @@ do
 				spellid = 63802,
 				execute = {
 					{
+						{expect = {"#4#","~=","&playerguid&"}},
+						{set = {brainlinkpartner = "#5#"}},
+					},
+					{
 						{expect = {"#4#","==","&playerguid&"}},
 						{alert = "brainlinkdur"},
+						{scheduletimer = {"startbrainarrow",0.1}},
 					},
 				},
 			},
@@ -241,6 +270,7 @@ do
 						{expect = {"#4#","~=","&playerguid&"}},
 						{proximitycheck = {"#5#",28}},
 						{alert = "maladywarn"},
+						{arrow = "maladyarrow"},
 					},
 				},
 			}, 

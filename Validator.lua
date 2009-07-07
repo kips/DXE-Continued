@@ -48,6 +48,7 @@ local baseKeys = {
 	userdata = opttable,
 	events = opttable,
 	alerts = opttable,
+	arrows = opttable,
 	onactivate = opttable,
 	triggers = opttable,
 	category = optstring,
@@ -64,8 +65,8 @@ local baseLineKeys = {
 	tracing = istable,
 	proximitycheck = istable,
 	raidicon = istable,
-	addarrow = istable,
-	removearrow = string,
+	arrow = isstring,
+	removearrow = isstring,
 }
 
 local alertBaseKeys = {
@@ -85,6 +86,22 @@ local alertTypeValues = {
 	centerpopup = true,
 	dropdown = true,
 	simple = true,
+}
+
+local arrowBaseKeys = {
+	var = isstring,
+	varname = isstring,
+	msg = isstring,
+	persist = isnumber,
+	unit = isstring,
+	action = isstring,
+	spell = isstring,
+	sound = optstring,
+}
+
+local arrowTypeValues = {
+	TOWARD = true,
+	AWAY = true,
 }
 
 
@@ -147,6 +164,7 @@ local function validateVal(v, oktypes, errlvl, ...)
 end
 
 local function validateReplaceFuncs(data,text,errlvl,...)
+	errlvl=(errlvl or 0)+1
 	for rep in gmatch(text,"%b&&") do
 		local func = match(rep,"&(.+)&")
 		if func:find("|") then func = match(func,"^([^|]+)|(.+)") end
@@ -157,6 +175,7 @@ local function validateReplaceFuncs(data,text,errlvl,...)
 end
 
 local function validateReplaceNums(data,text,errlvl,...)
+	errlvl=(errlvl or 0)+1
 	for var in gmatch(text,"%b##") do 
 		local key = tonumber(match(var,"#(%d+)#"))
 		if not key or key < 1 or key > 10 then
@@ -166,6 +185,7 @@ local function validateReplaceNums(data,text,errlvl,...)
 end
 
 local function validateReplaceVars(data,text,errlvl,...)
+	errlvl=(errlvl or 0)+1
 	for var in gmatch(text,"%b<>") do 
 		local key = match(var,"<(.+)>")
 		if not data.userdata[key] then
@@ -256,21 +276,12 @@ local function validateCommandLine(data,line,errlvl,...)
 		if not ProximityFuncs[range] then
 			err(": invalid range - got '"..range.."'",errlvl,type,...)
 		end
-	elseif type == "addarrow" then
-		validateIsArray(info,errlvl,"addarrow",...)
-		if #info ~= 5 then
-			err(": array is not size 5",errlvl,type,...)
+	elseif type == "arrow" then
+		if not data.arrows or not data.arrows[info] then
+			err(": starting/removing a non-existent arrow '"..info.."'",errlvl,type,...)
 		end
-		local unit,persist,action,msg,spell = unpack(info)
-		validateVal(unit,isstring,errlvl,type,...)
-		validateVal(persist,isnumber,errlvl,type,...)
-		validateVal(action,isstring,errlvl,type,...)
-		validateVal(msg,isstring,errlvl,type,...)
-		validateVal(spell,isstring,errlvl,type,...)
-
-		if action ~= "TOWARD" and action ~= "AWAY" then
-			err(": invalid action, expected TOWARD or AWAY - got '"..action.."'",errlvl,type,...)
-		end
+	elseif type == "removearrow" then
+		validateReplaces(data,info,errlvl,type,...)
 	end
 end
 
@@ -329,6 +340,37 @@ local function validateAlerts(data,alerts,errlvl,...)
 	for k,info in pairs(alerts) do
 		validateVal(k,isstring,errlvl,...)
 		validateAlert(data,info,errlvl,k,...)
+	end
+end
+
+local function validateArrow(data,info,errlvl,...)
+	errlvl=(errlvl or 0)+1
+	for k in pairs(info) do
+		if not arrowBaseKeys[k] then
+			err(": unknown key '"..k.."'",errlvl,tostring(k),...)
+		end
+	end
+	for k,oktypes in pairs(arrowBaseKeys) do
+		validateVal(info[k],oktypes,errlvl,k,...)
+		if info[k] then
+			-- check type
+			if k == "type" and not arrowTypeValues[info[k]] then
+				err(": expected AWAY or TOWARD - got '"..info[k].."'",errlvl,k,...)
+			-- check sounds
+			elseif k == "unit" then
+				validateReplaces(data,info[k],errlvl,k,...)
+			elseif k == "sound" and not Sounds[info[k]] then
+				err(": unknown sound '"..info[k].."'",errlvl,k,...)
+			end
+		end
+	end
+end
+
+local function validateArrows(data,arrows,errlvl,...)
+	errlvl=(errlvl or 0)+1
+	for k,info in pairs(arrows) do
+		validateVal(k,isstring,errlvl,...)
+		validateArrow(data,info,errlvl,k,...)
 	end
 end
 
@@ -425,6 +467,11 @@ local function validate(data,errlvl,...)
 	-- Alerts
 	if data.alerts and util.tablesize(data.alerts) > 0 then
 		validateAlerts(data,data.alerts,errlvl,"alerts",...)
+	end
+
+	-- Arrows
+	if data.arrows and util.tablesize(data.arrows) > 0 then
+		validateArrows(data,data.arrows,errlvl,"arrows",...)
 	end
 
 	-- Events

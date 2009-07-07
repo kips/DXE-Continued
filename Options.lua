@@ -279,6 +279,26 @@ function DXE:GetCategoryOptions(category)
 	}
 end
 
+local function AddOutputOptions(data,args,defaults,order,name,l_name)
+	if not data then return end
+	args[name] = {
+		type = "group",
+		name = l_name,
+		inline = true,
+		order = order,
+		args = {},
+	}
+	local s_args = args[name].args
+	for _,info in pairs(data) do
+		defaults[info.var] = true
+		s_args[info.var] = {
+			name = info.varname,
+			type = "toggle",
+			width = "full",
+		}
+	end
+end
+
 function DXE:AddEncounterOptions(data)
 	-- Pointer to args
 	local args = enc_group_args
@@ -307,24 +327,6 @@ function DXE:AddEncounterOptions(data)
 	self.defaults.profile.Encounters[data.key] = {}
 	-- Pointer to defaults
 	local defaults = self.defaults.profile.Encounters[data.key]
-	if data.alerts then
-		args.alerts = {
-			type = "group",
-			name = L["Alerts"],
-			inline = true,
-			order = 100,
-			args = {},
-		}
-		local alert_args = args.alerts.args
-		for _,info in pairs(data.alerts) do
-			-- Add var to defaults
-			defaults[info.var] = true
-			-- Add toggle options
-			alert_args[info.var] = {
-				name = info.varname,
-				type = "toggle",
-				width = "full",
-			}
-		end
-	end
+	AddOutputOptions(data.alerts,args,defaults,100,"alerts",L["Alerts"])
+	AddOutputOptions(data.arrows,args,defaults,200,"arrows",L["Arrows"])
 end

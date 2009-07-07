@@ -44,14 +44,18 @@ for _,filename in ipairs(files) do
 	io.input("../"..filename)
 	local text = io.read("*all")
 	for match in string.gmatch(text,ptnstr) do
-		strings[#strings+1] = match
+		strings[match] = true
 	end
-	table.sort(strings)
-	if (#strings > 0) then
+	local work = {}
+	for str in pairs(strings) do
+		work[#work+1] = str
+	end
+	table.sort(work)
+	if (#work > 0) then
 		writefilename(filename)
-	end
-	for _,v in ipairs(strings) do
-		file:write(fmt(fmtstr.." = true",v),"\n")
+		for _,v in ipairs(work) do
+			file:write(fmt(fmtstr.." = true",v),"\n")
+		end
 	end
 end
 file:write("\n")

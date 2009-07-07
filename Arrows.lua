@@ -113,19 +113,20 @@ local function OnUpdate(self,elapsed)
 end
 
 -- @param action a string == "TOWARD" or "AWAY"
-local function SetTarget(self,name,persist,action,msg,spell)
+local function SetTarget(self,unit,persist,action,msg,spell,sound)
+	if sound then PlaySoundFile(sound) end
 	UIFrameFadeRemoveFrame(self)
 	self.action = action
-	self.unit = name
+	self.unit = unit
 	self.elapsed = 0
 	self.persist = persist
 
 	local color = self:GetColor()
 	self.color = color
 	self.t:SetVertexColor(color.r,color.g,color.b)
-	units[name] = true
+	units[unit] = true
 	self.label:SetText(msg)
-	self.label2:SetText(spell .. " > " .. CN[name])
+	self.label2:SetText(spell .. " > " .. CN[unit])
 	self:SetAlpha(1)
 	self:SetScript("OnUpdate",OnUpdate)
 	self:SetAngle(self:GetAngle() or 0)
@@ -196,18 +197,18 @@ end
 
 -- addarrow = {unit,persist,"TOWARD" or "AWAY",msg,spell}
 -- removearrow = unit, usually #5#
-function Arrows:AddTarget(name,persist,action,msg,spell)
+function Arrows:AddTarget(unit,persist,action,msg,spell,sound)
 	--@debug@
-	assert(type(name) == "string")
+	assert(type(unit) == "string")
 	assert(type(persist) == "number")
 	assert(type(action) == "string")
 	assert(type(msg) == "string")
 	assert(type(spell) == "string")
 	--@end-debug@
-	if name_to_unit[name] then
+	if name_to_unit[unit] then
 		for i,arrow in ipairs(frames) do
-			if not units[name] and not arrow.unit and UnitIsVisible(name) then
-				arrow:SetTarget(name,persist,action,msg,spell)
+			if not units[unit] and not arrow.unit and UnitIsVisible(unit) then
+				arrow:SetTarget(unit,persist,action,msg,spell,sound)
 				break
 			end
 		end

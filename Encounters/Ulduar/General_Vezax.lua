@@ -120,6 +120,26 @@ do
 				sound = "ALERT6",
 			},
 		},
+		arrows = {
+			crasharrow = {
+				var = "crasharrow",
+				varname = SN[62660],
+				unit = "&tft_unitname&",
+				persist = 5,
+				action = "AWAY",
+				msg = L["MOVE AWAY"],
+				spell = L["Crash"],
+			},
+			facelessarrow = {
+				var = "facelessarrow",
+				varname = SN[63276],
+				unit = "#5#",
+				persist = 10,
+				action = "AWAY",
+				msg = L["STAY AWAY"],
+				spell = L["Mark"],
+			},
+		},
 		timers = {
 			shadowcrash = {
 				{
@@ -127,12 +147,12 @@ do
 					{set = {shadowcrashmessage = format("%s: %s! %s!",L["Crash"],L["YOU"],L["MOVE"])}},
 					{alert = "shadowcrashwarn"},
 				},
-				
 				{
 					{expect = {"&tft_unitexists& &tft_isplayer&","==","1 nil"}},
 					{proximitycheck = {"&tft_unitname&",28}},
 					{set = {shadowcrashmessage = format("%s: %s! %s!",L["Crash"],"&tft_unitname&",L["CAREFUL"])}},
 					{alert = "shadowcrashwarn"},
+					{arrow = "crasharrow"},
 				},
 			},
 		},
@@ -208,6 +228,7 @@ do
 						{alert = "facelessdurothers"},
 						{proximitycheck = {"#5#",18}},
 						{alert = "facelessproxwarn"},
+						{arrow = "facelessarrow"},
 					},
 				},
 			},
