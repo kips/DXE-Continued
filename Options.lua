@@ -50,8 +50,8 @@ function DXE:GetOptions()
 					name = L["Encounters"],
 					order = 200,
 					childGroups = "tab",
-					get = function(info) return self.db.profile.Encounters[info[#info-1]][info[#info]]  end,
-					set = function(info, v) self.db.profile.Encounters[info[#info-1]][info[#info]] = v end,
+					get = function(info) return self.db.profile.Encounters[info[#info-2]][info[#info]]  end,
+					set = function(info, v) self.db.profile.Encounters[info[#info-2]][info[#info]] = v end,
 					args = {},
 				},
 			},
@@ -301,21 +301,30 @@ function DXE:AddEncounterOptions(data)
 	end
 	-- Set pointer to the correct encounter group
 	args = args[data.key].args
+	-- Version header
+	args.version = versionHeader
 	-- Add key to defaults
 	self.defaults.profile.Encounters[data.key] = {}
 	-- Pointer to defaults
 	local defaults = self.defaults.profile.Encounters[data.key]
-	-- Traverse alerts table
-	for _,info in pairs(data.alerts) do
-		-- Add var to defaults
-		defaults[info.var] = true
-		-- Version header
-		args.version = versionHeader
-		-- Add toggle options
-		args[info.var] = {
-			name = info.varname,
-			type = "toggle",
-			width = "full",
+	if data.alerts then
+		args.alerts = {
+			type = "group",
+			name = L["Alerts"],
+			inline = true,
+			order = 100,
+			args = {},
 		}
+		local alert_args = args.alerts.args
+		for _,info in pairs(data.alerts) do
+			-- Add var to defaults
+			defaults[info.var] = true
+			-- Add toggle options
+			alert_args[info.var] = {
+				name = info.varname,
+				type = "toggle",
+				width = "full",
+			}
+		end
 	end
 end

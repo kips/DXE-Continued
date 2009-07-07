@@ -114,6 +114,22 @@ local UT = setmetatable({},{
 	end,
 })
 
+-- Color name
+local class_to_color = {}
+for class,color in pairs(RAID_CLASS_COLORS) do
+	class_to_color[class] = ("|cff%02x%02x%02x"):format(color.r * 255, color.g * 255, color.b * 255)
+end
+
+
+local CN = setmetatable({}, {__index =
+	function(t, name)
+		local class = select(2,UnitClass(name))
+		if not class then return name end
+		t[name] = class_to_color[class]..name.."|r"
+		return t[name]
+	end,
+})
+
 do
 	local libs = {
 		ACD = ACD,
@@ -124,6 +140,7 @@ do
 		SN = SN,
 		NID = NID,
 		UT = UT,
+		CN = CN,
 	}
 	for k,lib in pairs(libs) do
 		DXE[k] = lib
@@ -663,7 +680,6 @@ function DXE:OnEnable()
 
 	-- Events
 	self:RegisterEvent("RAID_ROSTER_UPDATE")
-	self:RegisterEvent("PARTY_MEMBERS_CHANGED","RAID_ROSTER_UPDATE")
 	self:RegisterEvent("ZONE_CHANGED_NEW_AREA","UpdateTriggers")
 	self:RegisterEvent("PLAYER_ENTERING_WORLD")
 
@@ -1509,23 +1525,10 @@ do
 		dropdown:SetList(list)
 	end
 
-	local class_to_color = {}
-	for class,color in pairs(RAID_CLASS_COLORS) do
-		class_to_color[class] = ("|cff%02x%02x%02x"):format(color.r * 255, color.g * 255, color.b * 255)
-	end
-
-	local colorName = setmetatable({}, {__index =
-		function(t, name)
-			local class = select(2,UnitClass(name))
-			if not class then return name end
-			t[name] = class_to_color[class]..name.."|r"
-			return t[name]
-		end
-	})
 
 	local function colorCode(text)
 		if type(text) == "string" then
-			return colorName[text]
+			return CN[text]
 		elseif type(text) == "number" then
 			if text == NONE then
 				return GREY..L["None"].."|r"

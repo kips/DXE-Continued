@@ -64,6 +64,8 @@ local baseLineKeys = {
 	tracing = istable,
 	proximitycheck = istable,
 	raidicon = istable,
+	addarrow = istable,
+	removearrow = string,
 }
 
 local alertBaseKeys = {
@@ -154,24 +156,30 @@ local function validateReplaceFuncs(data,text,errlvl,...)
 	end
 end
 
-local function validateReplaces(data,text,errlvl,...)
-	errlvl=(errlvl or 0)+1
-
-	validateReplaceFuncs(data,text,errlvl,...)
-
-	for var in gmatch(text,"%b<>") do 
-		local key = match(var,"<(.+)>")
-		if not data.userdata[key] then
-			err(": replace var does not exist, got '"..var.."'",errlvl,...)
-		end
-	end
-
+local function validateReplaceNums(data,text,errlvl,...)
 	for var in gmatch(text,"%b##") do 
 		local key = tonumber(match(var,"#(%d+)#"))
 		if not key or key < 1 or key > 10 then
 			err(": replace num is invalid. it should be [1,10] - got '"..var.."'",errlvl,...)
 		end
 	end
+end
+
+local function validateReplaceVars(data,text,errlvl,...)
+	for var in gmatch(text,"%b<>") do 
+		local key = match(var,"<(.+)>")
+		if not data.userdata[key] then
+			err(": replace var does not exist, got '"..var.."'",errlvl,...)
+		end
+	end
+end
+
+local function validateReplaces(data,text,errlvl,...)
+	errlvl=(errlvl or 0)+1
+
+	validateReplaceFuncs(data,text,errlvl,...)
+	validateReplaceVars(data,text,errlvl,...)
+	validateReplaceNums(data,text,errlvl,...)
 end
 
 local function validateTracing(tbl,errlvl,...)
@@ -248,6 +256,21 @@ local function validateCommandLine(data,line,errlvl,...)
 		if not ProximityFuncs[range] then
 			err(": invalid range - got '"..range.."'",errlvl,type,...)
 		end
+	elseif type == "addarrow" then
+		validateIsArray(info,errlvl,"addarrow",...)
+		if #info ~= 5 then
+			err(": array is not size 5",errlvl,type,...)
+		end
+		local unit,persist,action,msg,spell = unpack(info)
+		validateVal(unit,isstring,errlvl,type,...)
+		validateVal(persist,isnumber,errlvl,type,...)
+		validateVal(action,isstring,errlvl,type,...)
+		validateVal(msg,isstring,errlvl,type,...)
+		validateVal(spell,isstring,errlvl,type,...)
+
+		if action ~= "TOWARD" and action ~= "AWAY" then
+			err(": invalid action, expected TOWARD or AWAY - got '"..action.."'",errlvl,type,...)
+		end
 	end
 end
 
@@ -283,7 +306,6 @@ local function validateAlert(data,info,errlvl,...)
 
 	for k,oktypes in pairs(alertBaseKeys) do
 		validateVal(info[k],oktypes,errlvl,k,...)
-		-- TODO: Check replaces
 		if info[k] then
 			-- check type
 			if k == "type" and not alertTypeValues[info[k]] then

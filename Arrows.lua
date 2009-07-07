@@ -16,8 +16,10 @@ local units = {}
 local name_to_unit = DXE.Roster.name_to_unit
 local ProximityFuncs = DXE:GetProximityFuncs()
 local util = DXE.util
+local CN = DXE.CN
 
 local GetPlayerMapPosition,GetPlayerFacing = GetPlayerMapPosition,GetPlayerFacing
+local UnitIsVisible = UnitIsVisible
 local PI,PI2 = math.pi,math.pi*2
 local floor,atan = math.floor,math.atan
 
@@ -64,9 +66,9 @@ local function SetColor(self)
 end
 
 local function GetAngle(self)
+	if not UnitIsVisible(self.unit) then self:Destroy() return end
 	local x_0,y_0 = GetPlayerMapPosition("player")
 	local x,y = GetPlayerMapPosition(self.unit)
-	if not x or not y then self:Destroy() return end
 	local dx,dy = x - x_0, y - y_0
 	if not dx or dy == 0 then dy = 10e-5 end -- Prevents NaN
 	local angle_axis = dy < 0 and PI + atan(dx/dy) or atan(dx/dy)
@@ -89,7 +91,9 @@ local function OnUpdate(self,elapsed)
 	if self.elapsed > self.persist then
 		self:Destroy()
 	else
-		self:SetAngle(self:GetAngle())
+		local angle = self:GetAngle()
+		if not angle then return end
+		self:SetAngle(angle)
 
 		if self.tcolor then
 			local perc = 1 - ((self.dt - self.elapsed) / TRANS_TIME)
@@ -109,7 +113,7 @@ local function OnUpdate(self,elapsed)
 end
 
 -- @param action a string == "TOWARD" or "AWAY"
-local function SetTarget(self,name,persist,action)
+local function SetTarget(self,name,persist,action,msg,spell)
 	UIFrameFadeRemoveFrame(self)
 	self.action = action
 	self.unit = name
@@ -119,12 +123,12 @@ local function SetTarget(self,name,persist,action)
 	local color = self:GetColor()
 	self.color = color
 	self.t:SetVertexColor(color.r,color.g,color.b)
-	self:SetAngle(self:GetAngle())
 	units[name] = true
-	self.label:SetText("Roots > "..name)
-	self.label2:SetText("KILL IT")
+	self.label:SetText(msg)
+	self.label2:SetText(spell .. " > " .. CN[name])
 	self:SetAlpha(1)
 	self:SetScript("OnUpdate",OnUpdate)
+	self:SetAngle(self:GetAngle() or 0)
 	self:Show()
 end
 
@@ -148,13 +152,15 @@ local function CreateArrow()
 	t:SetAllPoints(true)
 	arrow.t = t
 
-	local label = arrow:CreateFontString(nil,"ARTWORK","GameFontNormalSmall")
-	label:SetPoint("BOTTOM",arrow,"TOP")
+	local label = arrow:CreateFontString(nil,"ARTWORK")
+	label:SetFont(GameFontNormal:GetFont(),12,"THICKOUTLINE")
+	label:SetPoint("TOP",arrow,"BOTTOM")
 	arrow.label = label
 
-	local label2 = arrow:CreateFontString(nil,"ARTWORK","GameFontNormal")
-	label2:SetPoint("TOP",arrow,"BOTTOM")
-	label2:SetTextColor(1,1,1)
+	local label2 = arrow:CreateFontString(nil,"ARTWORK","GameFontNormalSmall")
+	label2:SetPoint("TOP",label,"BOTTOM")
+	label2:SetShadowOffset(1,-1)
+	label2:SetShadowColor(0,0,0)
 	arrow.label2 = label2
 
 	arrow.SetAngle = SetAngle
@@ -188,27 +194,29 @@ end
 -- API
 ---------------------------------------
 
-function Arrows:AddTarget(name,persist,action)
+-- addarrow = {unit,persist,"TOWARD" or "AWAY",msg,spell}
+-- removearrow = unit, usually #5#
+function Arrows:AddTarget(name,persist,action,msg,spell)
 	--@debug@
 	assert(type(name) == "string")
 	assert(type(persist) == "number")
 	assert(type(action) == "string")
+	assert(type(msg) == "string")
+	assert(type(spell) == "string")
 	--@end-debug@
 	if name_to_unit[name] then
 		for i,arrow in ipairs(frames) do
-			--if not units[name] and not arrow.unit then
-			if not arrow.unit then
-				arrow:SetTarget(name,persist,action)
+			if not units[name] and not arrow.unit and UnitIsVisible(name) then
+				arrow:SetTarget(name,persist,action,msg,spell)
 				break
 			end
-			--end
 		end
 	end
 end
 
-function Arrows:RemoveTarget(name)
+function Arrows:RemoveTarget(unit)
 	for i,arrow in ipairs(frames) do
-		if arrow.unit == name then
+		if arrow.unit == unit then
 			arrow:Destroy()
 			break
 		end

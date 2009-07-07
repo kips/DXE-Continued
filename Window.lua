@@ -96,7 +96,7 @@ function DXE:CreateWindow(name,width,height)
 	gradient:SetTexture(0,0,0.82)
 	gradient:SetGradient("HORIZONTAL",0,0,1,0,0,0)
 
-	local titleText = titleBar:CreateFontString()
+	local titleText = titleBar:CreateFontString(nil,"OVERLAY")
 	titleText:SetFont(GameFontNormal:GetFont(),8)
 	titleText:SetPoint("LEFT",titleBar,"LEFT",5,0)
 	titleText:SetText(name)

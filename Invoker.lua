@@ -491,10 +491,9 @@ local ProximityFuncs DXE:GetProximityFuncs()
 -- 				 It must be a key in ProximityFuncs. Validator ensures this.
 -- @return boolean 'true' if the player is in range of the target. 'false' otherwise.
 local function CheckProximity(target,range)
-	local uid = DXE:GetUnitID(target)
-	if not uid then return false end
-	local test = ProximityFuncs[range]
-	return test(uid)
+	local unit = DXE:GetUnitID(target)
+	if not unit then return false end
+	return ProximityFuncs[range](unit)
 end
 
 ---------------------------------------------
@@ -641,6 +640,18 @@ local CommandFuncs = {
 		Invoker:SetRaidIcon(name)
 		return true
 	end,
+
+	addarrow = function(info,...)
+		local unit,persist,action,msg,spell = unpack(info)
+		unit = ReplaceNums(unit,...)
+		Arrows:AddTarget(unit,persist,action,msg,spell)
+		return true
+	end,
+
+	removearrow = function(info,...)
+		Arrows:RemoveTarget(info)
+		return true
+	end,
 }
 
 ---------------------------------------------
@@ -732,12 +743,12 @@ end
 local AcquiredBundles = {}
 local UnitIsDead = UnitIsDead
 
-function Invoker:HW_TRACER_ACQUIRED(event,uid)
-	local name = UnitName(uid)
+function Invoker:HW_TRACER_ACQUIRED(event,unit)
+	local name = UnitName(unit)
 	--@debug@
 	debug("HW_TRACER_ACQUIRED","name: %s",name)
 	--@end-debug@
-	if AcquiredBundles[name] and not UnitIsDead(uid) then
+	if AcquiredBundles[name] and not UnitIsDead(unit) then
 		self:InvokeCommands(AcquiredBundles[name])
 	end
 end
