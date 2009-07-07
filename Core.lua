@@ -529,12 +529,22 @@ end
 local numOnline = 0
 local numMembers = 0
 local tmpOnline,tmpMembers
+local RosterHandle
 function DXE:RAID_ROSTER_UPDATE()
 	--@debug@
 	debug("RAID_ROSTER_UPDATE","Invoked")
 	--@end-debug@
 
 	tmpOnline,tmpMembers = 0,GetNumRaidMembers()
+
+	if not RosterHandle and tmpMembers > 0 then
+		-- Refresh roster tables every half minute to detect offline players
+		RosterHandle = self:ScheduleRepeatingTimer("RAID_ROSTER_UPDATE",30)
+	elseif tmpMembers == 0 then
+		self:CancelTimer(RosterHandle,true)
+		RosterHandle = nil
+	end
+
 	for name,t in pairs (Roster) do wipe(t) end
 	for i=1,tmpMembers do
 		local name, rank, _, _, _, _, _, online = GetRaidRosterInfo(i)
@@ -680,8 +690,7 @@ function DXE:OnEnable()
 
 	-- Events
 	self:RegisterEvent("RAID_ROSTER_UPDATE")
-	-- Refresh roster tables every half minute to detect offline players
-	self:ScheduleRepeatingTimer("RAID_ROSTER_UPDATE",30) 
+	self:RAID_ROSTER_UPDATE()
 	self:RegisterEvent("ZONE_CHANGED_NEW_AREA","UpdateTriggers")
 	self:RegisterEvent("PLAYER_ENTERING_WORLD")
 
@@ -698,6 +707,7 @@ function DXE:OnDisable()
 	self:SetActiveEncounter("default")
 	self.Pane:Hide()
 	self:DisableAllModules()
+	RosterHandle = nil
 end
 
 ---------------------------------------------

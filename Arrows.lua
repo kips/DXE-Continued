@@ -197,8 +197,6 @@ end
 -- API
 ---------------------------------------
 
--- addarrow = {unit,persist,"TOWARD" or "AWAY",msg,spell}
--- removearrow = unit, usually #5#
 function Arrows:AddTarget(unit,persist,action,msg,spell,sound)
 	--@debug@
 	assert(type(unit) == "string")
