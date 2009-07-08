@@ -313,9 +313,7 @@ function DXE:RegisterEncounter(data)
 	-- Add to queue if we're not loaded yet
 	if not Initialized then RegisterQueue[key] = data return end
 
-	--@debug@
-	self:ValidateData(data)
-	--@end-debug@
+	if debug then self:ValidateData(data) end
 
 	-- Upgrading
 	if RDB[key] and RDB[key] ~= data then
@@ -1689,12 +1687,13 @@ do
 			end)
 
 			dropdown = AceGUI:Create("Dropdown")
+			dropdown.frame:SetParent(content)
+			dropdown.frame:Show()
 			dropdown:SetPoint("TOPRIGHT",content,"TOPRIGHT")
 			dropdown:SetWidth(content:GetWidth()*2/3)
 			dropdown:SetCallback("OnValueChanged", dropdownChanged)
 			RefreshEncDropdown()
 			dropdown:SetValue(next(list))
-			dropdown.frame:SetParent(content)
 
 			heading = CreateFrame("Frame",nil,content)
 			heading:SetWidth(content:GetWidth())

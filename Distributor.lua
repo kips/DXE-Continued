@@ -306,8 +306,8 @@ function Distributor:OnCommReceived(prefix, msg, dist, sender)
 											 self:Respond(format("RESPONSE:%s:%s",key,"YES"),sender)
 							  end,
 				OnCancel = function() self:Respond(format("RESPONSE:%s:%s",key,"NO"),sender) end,
-				button1 = "Accept",
-				button2 = "Reject",
+				button1 = L["Accept"],
+				button2 = L["Reject"],
 				timeout = 25,
 				whileDead = 1,
 				hideOnEscape = 1,
@@ -346,7 +346,6 @@ function Distributor:CHAT_MSG_ADDON(_,prefix, msg, dist, sender)
 			self:ULCompleted(key)
 			return
 		end
-
 
 		-- Make sure the mark exists
 		if #mark == 0 then return end
