@@ -356,12 +356,12 @@ function Distributor:CHAT_MSG_ADDON(_,prefix, msg, dist, sender)
 			dl.received = dl.received + len(msg)
 			if mark == FIRST_MULTIPART then
 				dl.bar:SetStatus(L["Downloading"])
-				dl.bar:SetPerc("%d%%",0)
+				dl.bar:SetPerc(format("%d%%",0))
 				dl.bar:SetColor(Colors.ORANGE)
 			elseif mark == NEXT_MULTIPART or mark == LAST_MULTIPART then
 				local perc = dl.received/dl.length
 				dl.bar:SetValue(perc)
-				dl.bar:SetPerc("%d%%",perc*100)
+				dl.bar:SetPerc(format("%d%%",perc*100))
 			end	
 		end
 

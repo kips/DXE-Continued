@@ -27,7 +27,6 @@ do
 			crushertime = 14,
 			allowcrusher = 1,
 			phase = "1",
-			brainlinkpartner = "",
 		},
 		onstart = {
 			{
@@ -155,15 +154,6 @@ do
 				msg = L["MOVE AWAY"],
 				spell = L["Malady"],
 			},
-			brainlinkarrow = {
-				var = "brainlinkarrow",
-				varname = SN[63802],
-				unit = "<brainlinkpartner>",
-				persist = 29.9,
-				action = "TOWARD",
-				msg = L["CONVERGE"],
-				spell = SN[63802],
-			},
 		},
 		raidicons = {
 			maladymark = {
@@ -174,9 +164,6 @@ do
 				unit = "#5#",
 				icon = 8,
 			}
-		},
-		timers = {
-			startbrainarrow = {{{arrow = "brainlinkarrow"}}},
 		},
 		events = {
 			-- Lunatic Gaze
@@ -198,13 +185,8 @@ do
 				spellid = 63802,
 				execute = {
 					{
-						{expect = {"#4#","~=","&playerguid&"}},
-						{set = {brainlinkpartner = "#5#"}},
-					},
-					{
 						{expect = {"#4#","==","&playerguid&"}},
 						{alert = "brainlinkdur"},
-						{scheduletimer = {"startbrainarrow",0.1}},
 					},
 				},
 			},
