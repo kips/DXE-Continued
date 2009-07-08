@@ -148,7 +148,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
-				spellid = 64390,
+				spellid = {64390,62131},
 				execute = {
 					{
 						{alert = "chainlightningcd"},
