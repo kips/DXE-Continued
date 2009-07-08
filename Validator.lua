@@ -49,6 +49,7 @@ local baseKeys = {
 	events = opttable,
 	alerts = opttable,
 	arrows = opttable,
+	raidicons = opttable,
 	onactivate = opttable,
 	triggers = opttable,
 	category = optstring,
@@ -64,7 +65,7 @@ local baseLineKeys = {
 	resettimer = isboolean,
 	tracing = istable,
 	proximitycheck = istable,
-	raidicon = istable,
+	raidicon = isstring,
 	arrow = isstring,
 	removearrow = isstring,
 }
@@ -102,6 +103,20 @@ local arrowBaseKeys = {
 local arrowTypeValues = {
 	TOWARD = true,
 	AWAY = true,
+}
+
+local raidIconBaseKeys = {
+	var = isstring,
+	varname = isstring,
+	type = isstring,
+	persist = isnumber,
+	unit = isstring,
+	icon = isnumber,
+}
+
+local raidIconTypeValues = {
+	FRIENDLY = true,
+	--ENEMY = true,
 }
 
 
@@ -282,6 +297,10 @@ local function validateCommandLine(data,line,errlvl,...)
 		end
 	elseif type == "removearrow" then
 		validateReplaces(data,info,errlvl,type,...)
+	elseif type == "raidicon" then
+		if not data.raidicons or not data.raidicons[info] then
+			err(": starting a non-existent raid icon '"..info.."'",errlvl,type,...)
+		end
 	end
 end
 
@@ -356,7 +375,6 @@ local function validateArrow(data,info,errlvl,...)
 			-- check type
 			if k == "type" and not arrowTypeValues[info[k]] then
 				err(": expected AWAY or TOWARD - got '"..info[k].."'",errlvl,k,...)
-			-- check sounds
 			elseif k == "unit" then
 				validateReplaces(data,info[k],errlvl,k,...)
 			elseif k == "sound" and not Sounds[info[k]] then
@@ -369,6 +387,36 @@ end
 local function validateArrows(data,arrows,errlvl,...)
 	errlvl=(errlvl or 0)+1
 	for k,info in pairs(arrows) do
+		validateVal(k,isstring,errlvl,...)
+		validateArrow(data,info,errlvl,k,...)
+	end
+end
+
+local function validateRaidIcon(data,info,errlvl,...)
+	errlvl=(errlvl or 0)+1
+	for k in pairs(info) do
+		if not raidIconBaseKeys[k] then
+			err(": unknown key '"..k.."'",errlvl,tostring(k),...)
+		end
+	end
+	for k,oktypes in pairs(raidIconBaseKeys) do
+		validateVal(info[k],oktypes,errlvl,k,...)
+		if info[k] then
+			-- check type
+			if k == "type" and not raidIconTypeValues[info[k]] then
+				err(": expected FRIENDLY or ENEMY - got '"..info[k].."'",errlvl,k,...)
+			elseif k == "unit" then
+				validateReplaces(data,info[k],errlvl,k,...)
+			elseif k == "icon" and (info[k] > 8 or info[k] < 1)  then
+				err(": expected icon to be [1-8] - got '"..info[k].."'",errlvl,k,...)
+			end
+		end
+	end
+end
+
+local function validateRaidIcons(data,raidicons,errlvl,...)
+	errlvl=(errlvl or 0)+1
+	for k,info in pairs(raidicons) do
 		validateVal(k,isstring,errlvl,...)
 		validateArrow(data,info,errlvl,k,...)
 	end

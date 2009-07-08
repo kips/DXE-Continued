@@ -165,6 +165,16 @@ do
 				spell = SN[63802],
 			},
 		},
+		raidicons = {
+			maladymark = {
+				var = "maladymark",
+				varname = SN[63830],
+				type = "FRIENDLY",
+				persist = 4,
+				unit = "#5#",
+				icon = 8,
+			}
+		},
 		timers = {
 			startbrainarrow = {{{arrow = "brainlinkarrow"}}},
 		},
@@ -271,6 +281,7 @@ do
 						{proximitycheck = {"#5#",28}},
 						{alert = "maladywarn"},
 						{arrow = "maladyarrow"},
+						{raidicon = "maladymark"},
 					},
 				},
 			}, 

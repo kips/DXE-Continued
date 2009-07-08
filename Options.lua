@@ -279,7 +279,7 @@ function DXE:GetCategoryOptions(category)
 	}
 end
 
-local function AddOutputOptions(data,args,defaults,order,name,l_name)
+local function AddOutputOptions(data,args,defaults,order,name,l_name,dvalue)
 	if not data then return end
 	args[name] = {
 		type = "group",
@@ -290,7 +290,7 @@ local function AddOutputOptions(data,args,defaults,order,name,l_name)
 	}
 	local s_args = args[name].args
 	for _,info in pairs(data) do
-		defaults[info.var] = true
+		defaults[info.var] = dvalue
 		s_args[info.var] = {
 			name = info.varname,
 			type = "toggle",
@@ -327,6 +327,7 @@ function DXE:AddEncounterOptions(data)
 	self.defaults.profile.Encounters[data.key] = {}
 	-- Pointer to defaults
 	local defaults = self.defaults.profile.Encounters[data.key]
-	AddOutputOptions(data.alerts,args,defaults,100,"alerts",L["Alerts"])
-	AddOutputOptions(data.arrows,args,defaults,200,"arrows",L["Arrows"])
+	AddOutputOptions(data.alerts,args,defaults,100,"alerts",L["Alerts"],true)
+	AddOutputOptions(data.arrows,args,defaults,200,"arrows",L["Arrows"],true)
+	AddOutputOptions(data.raidicons,args,defaults,300,"raidicons",L["Raid Icons"],false)
 end

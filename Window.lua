@@ -68,13 +68,13 @@ function DXE:CreateWindow(name,width,height)
 	if Windows[name] then error("Window already exists") return end
 	local properName = name:gsub(" ","")
 
-	local window = CreateFrame("Frame","DXE_Window" .. properName,UIParent)
+	local window = CreateFrame("Frame","DXEWindow" .. properName,UIParent)
 	window:SetWidth(width)
 	window:SetHeight(height)
 	window:SetBackdrop(backdrop)
 	window:SetMovable(true)
 	window:SetClampedToScreen(true)
-	self:LoadPosition("DXE_Window" .. properName)
+	self:LoadPosition("DXEWindow" .. properName)
 
 	local border = CreateFrame("Frame",nil,window)
 	border:SetAllPoints(true)

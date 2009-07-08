@@ -18,8 +18,8 @@
 		tracing
 		proximitycheck
 		raidicon
-		
-		TODO: Sync start/stopping
+		arrow
+		removearrow
 ]]
 
 local DXE = DXE
@@ -68,6 +68,7 @@ DXE.Invoker = Invoker
 local HW = DXE.HW
 local Alerts = DXE.Alerts
 local Arrows = DXE.Arrows
+local RaidIcons = DXE.RaidIcons
 -- Hold event info
 local RegEvents,CombatEvents = {},{}
 
@@ -137,8 +138,10 @@ function Invoker:OnStop()
 	self:ResetUserData()
 	-- Quashes all alerts
 	Alerts:QuashAllAlerts()
-	-- Removes all arrows
+	-- Removes Arrows
 	Arrows:RemoveAll()
+	-- Remove Icons
+	RaidIcons:RemoveAll()
 	-- Remove Timers
 	self:RemoveAllTimers()
 	-- Remove Throttles
@@ -484,7 +487,7 @@ end
 -- Proximity Checking
 ---------------------------------------------
 
-local ProximityFuncs DXE:GetProximityFuncs() 
+local ProximityFuncs = DXE:GetProximityFuncs() 
 
 -- @param target Name/GUID of a unit
 -- @param range Number of yards to check to see if player is in range of target.
@@ -502,7 +505,7 @@ end
 
 local function StartArrow(name,...)
 	local info = CE.arrows[name]
-	if not info then return true end
+	if not info then return end
 	local unit = ReplaceTokens(info.unit,...)
 	Arrows:AddTarget(unit,info.persist,info.action,info.msg,info.spell,info.sound)
 end
@@ -523,6 +526,17 @@ end
     8 = White Skull 
 ]]
 
+local function SetRaidIcon(info,...)
+	local info = CE.arrows[name]
+	if not info then return end
+	if info.type == "FRIENDLY" then
+		local unit = ReplaceTokens(info.unit,...)
+		if not unit then return end
+		RaidIcons:MarkFriendly(unit,info.icon,info.persist)
+	end
+end
+
+--[[
 -- Checks both friendly and enemy unit ids
 function Invoker:FindUnitID(target)
 	--@debug@
@@ -576,7 +590,7 @@ function Invoker:RemoveRaidIcon(target)
 	-- Only one try to remove raid icon
 	SetRaidTarget(uid, 0)
 end
-
+]]
 ---------------------------------------------
 -- FUNCTIONS TABLE
 ---------------------------------------------
@@ -635,6 +649,7 @@ local CommandFuncs = {
 	end,
 
 	raidicon = function(info,...)
+		--[[
 		local icon,target,duration = info[1],info[2],info[3]
 		if not IsRaidLeader() then return true end
 		target = ReplaceNums(target,...)
@@ -649,6 +664,11 @@ local CommandFuncs = {
 		args[1],args[2],args[3] = icon,target,duration
 		Timers[name].args = args
 		Invoker:SetRaidIcon(name)
+		return true
+		]]
+		if DXE:IsPromoted() and EncDB[CE.raidicons[info].var] then
+			SetRaidIcon(info,...)
+		end
 		return true
 	end,
 

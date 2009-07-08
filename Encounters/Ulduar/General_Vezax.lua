@@ -140,6 +140,24 @@ do
 				spell = L["Mark"],
 			},
 		},
+		raidicons = {
+			crashmark = {
+				var = "crashmark",
+				varname = SN[62660],
+				type = "FRIENDLY",
+				persist = 5,
+				unit = "&tft_unitname&",
+				icon = 7,
+			},
+			facelessmark = {
+				var = "facelessmark",
+				varname = SN[63276],
+				type = "FRIENDLY",
+				persist = 10,
+				unit = "#5#",
+				icon = 8,
+			},
+		},
 		timers = {
 			shadowcrash = {
 				{
@@ -153,6 +171,7 @@ do
 					{set = {shadowcrashmessage = format("%s: %s! %s!",L["Crash"],"&tft_unitname&",L["CAREFUL"])}},
 					{alert = "shadowcrashwarn"},
 					{arrow = "crasharrow"},
+					{raidicon = "crashmark"},
 				},
 			},
 		},
@@ -229,6 +248,7 @@ do
 						{proximitycheck = {"#5#",18}},
 						{alert = "facelessproxwarn"},
 						{arrow = "facelessarrow"},
+						{raidicon = "facelessmark"},
 					},
 				},
 			},

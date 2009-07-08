@@ -731,7 +731,13 @@ function DXE:LoadPosition(name)
 	local pos = self.db.profile.Positions[name]
 	if not pos then
 		f:SetPoint("CENTER",UIParent,"CENTER",0,0)
-		self.db.profile.Positions[name] = {}
+		self.db.profile.Positions[name] = {
+			point = "CENTER",
+			relativeTo = "UIParent",
+			relativePoint = "CENTER",
+			xOfs = 0,
+			yOfs = 0,
+		}
 	else
 		f:SetPoint(pos.point,_G[pos.relativeTo] or UIParent,pos.relativePoint,pos.xOfs,pos.yOfs)
 	end
@@ -1423,7 +1429,13 @@ DXE.RVS = RVS
 local window
 
 function DXE:GetNumWithAddOn()
-	return util.tablesize(RVS)
+	local n = 0
+	for k,v in ipairs(RVS) do
+		if v.versions.addon then
+			n = n + 1
+		end
+	end
+	return n
 end
 
 function DXE:CleanVersions()

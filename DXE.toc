@@ -50,6 +50,7 @@ Options.lua
 Constants.lua
 Alerts.lua
 Arrows.lua
+Raid_Icons.lua
 Invoker.lua
 HOT.lua
 Config.lua
