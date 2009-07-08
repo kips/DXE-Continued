@@ -313,7 +313,9 @@ function DXE:RegisterEncounter(data)
 	-- Add to queue if we're not loaded yet
 	if not Initialized then RegisterQueue[key] = data return end
 
+	--@debug@
 	self:ValidateData(data)
+	--@end-debug@
 
 	-- Upgrading
 	if RDB[key] and RDB[key] ~= data then
@@ -618,7 +620,7 @@ end
 -- Replace default Print
 local print,format = print,string.format
 function DXE:Print(s)
-	print(format("|cff99ff33DXE|r: %s",s))
+	print(format("|cff99ff33DXE|r: %s",s)) -- 0.6, 1, 0.2
 end
 
 -- Initialization

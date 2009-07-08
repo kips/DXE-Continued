@@ -70,7 +70,12 @@ local e = 10e-5
 local function GetAngle(self)
 	if not UnitIsVisible(self.unit) then self:Destroy() return end
 	local x_0,y_0 = GetPlayerMapPosition("player")
-	local x,y = GetPlayerMapPosition(self.unit)
+	local x,y
+	if self.isFixed then
+		x,y = self.fixedX,self.fixedY
+	else
+		x,y = GetPlayerMapPosition(self.unit)
+	end
 	local dx,dy = x - x_0, y - y_0
 	if dy == 0 then dy = e end -- Prevents NaN
 	local angle_axis = dy < 0 and PI + atan(dx/dy) or atan(dx/dy)
@@ -86,6 +91,11 @@ local function SetAngle(self,angle)
 	local row = floor(cell / NUM_COLUMNS) * CELL_HEIGHT_PERC
 
 	self.t:SetTexCoord(col, col + CELL_WIDTH_PERC, row, row + CELL_HEIGHT_PERC)
+end
+
+local function SetFixed(self)
+	self.fixedX,self.fixedY = GetPlayerMapPosition(self.unit)
+	self.isFixed = true
 end
 
 local function OnUpdate(self,elapsed)
@@ -115,7 +125,7 @@ local function OnUpdate(self,elapsed)
 end
 
 -- @param action a string == "TOWARD" or "AWAY"
-local function SetTarget(self,unit,persist,action,msg,spell,sound)
+local function SetTarget(self,unit,persist,action,msg,spell,sound,fixed)
 	if sound then PlaySoundFile(Sounds[sound]) end
 	UIFrameFadeRemoveFrame(self)
 	self.action = action
@@ -130,6 +140,7 @@ local function SetTarget(self,unit,persist,action,msg,spell,sound)
 	self.label:SetText(msg)
 	self.label2:SetText(spell .. " > " .. CN[unit])
 	self:SetAlpha(1)
+	if fixed then self:SetFixed() end
 	self:SetScript("OnUpdate",OnUpdate)
 	self:SetAngle(self:GetAngle() or 0)
 	self:Show()
@@ -140,6 +151,9 @@ local function Destroy(self)
 	self.unit = nil
 	self.color = nil
 	self.tcolor = nil
+	self.isFixed = nil
+	self.fixedX = nil
+	self.fixedY = nil
 	self.fadeTable.fadeTimer = 0
 	UIFrameFade(self,self.fadeTable)
 	self:SetScript("OnUpdate",nil)
@@ -172,7 +186,8 @@ local function CreateArrow()
 	arrow.Destroy = Destroy
 	arrow.GetColor = GetColor
 	arrow.SetColor = SetColor
-	arrow.fadeTable = {mode = "OUT", timeToFade = 2, startAlpha = 1, endAlpha = 0, finishedFunc = function() arrow:Hide() end}
+	arrow.SetFixed = SetFixed
+	arrow.fadeTable = {mode = "OUT", timeToFade = 0.5, startAlpha = 1, endAlpha = 0, finishedFunc = function() arrow:Hide() end}
 
 	arrow:Hide()
 	return arrow
@@ -197,7 +212,7 @@ end
 -- API
 ---------------------------------------
 
-function Arrows:AddTarget(unit,persist,action,msg,spell,sound)
+function Arrows:AddTarget(unit,persist,action,msg,spell,sound,fixed)
 	--@debug@
 	assert(type(unit) == "string")
 	assert(type(persist) == "number")
@@ -208,7 +223,7 @@ function Arrows:AddTarget(unit,persist,action,msg,spell,sound)
 	if name_to_unit[unit] then
 		for i,arrow in ipairs(frames) do
 			if not units[unit] and not arrow.unit and UnitIsVisible(unit) then
-				arrow:SetTarget(unit,persist,action,msg,spell,sound)
+				arrow:SetTarget(unit,persist,action,msg,spell,sound,fixed)
 				break
 			end
 		end

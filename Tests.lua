@@ -27,3 +27,7 @@ end
 function DXE:FREYATEST2()
 	self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_REMOVED",nil,nil,nil,"","Efy",nil,62283)
 end
+
+function DXE:VEZAXTEST()
+	self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_CAST_SUCCESS",nil,nil,nil,"","Nokaru",nil,63276)
+end

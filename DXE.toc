@@ -55,7 +55,9 @@ Invoker.lua
 HOT.lua
 Config.lua
 Distributor.lua
+#@debug@
 Validator.lua
+#@end-debug@
 
 #@do-not-package@
 Encounters.xml

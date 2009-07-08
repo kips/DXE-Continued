@@ -129,6 +129,7 @@ do
 				action = "AWAY",
 				msg = L["MOVE AWAY"],
 				spell = L["Crash"],
+				fixed = true,
 			},
 			facelessarrow = {
 				var = "facelessarrow",
@@ -161,6 +162,9 @@ do
 		timers = {
 			shadowcrash = {
 				{
+					{raidicon = "crashmark"},
+				},
+				{
 					{expect = {"&tft_unitexists& &tft_isplayer&","==","1 1"}},
 					{set = {shadowcrashmessage = format("%s: %s! %s!",L["Crash"],L["YOU"],L["MOVE"])}},
 					{alert = "shadowcrashwarn"},
@@ -171,7 +175,6 @@ do
 					{set = {shadowcrashmessage = format("%s: %s! %s!",L["Crash"],"&tft_unitname&",L["CAREFUL"])}},
 					{alert = "shadowcrashwarn"},
 					{arrow = "crasharrow"},
-					{raidicon = "crashmark"},
 				},
 			},
 		},
@@ -239,6 +242,9 @@ do
 				spellid = 63276,
 				execute = {
 					{
+						{raidicon = "facelessmark"},
+					},
+					{
 						{expect = {"#4#","==","&playerguid&"}},
 						{alert = "facelessdurself"},
 					},
@@ -248,7 +254,6 @@ do
 						{proximitycheck = {"#5#",18}},
 						{alert = "facelessproxwarn"},
 						{arrow = "facelessarrow"},
-						{raidicon = "facelessmark"},
 					},
 				},
 			},

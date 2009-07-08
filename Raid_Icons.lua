@@ -6,7 +6,10 @@ local L = DXE.L
 local RaidIcons = DXE:NewModule("RaidIcons","AceTimer-3.0")
 DXE.RaidIcons = RaidIcons
 
+-- unit -> handle
 local units = {}
+-- <icon number> -> unit
+local used = {}
 
 function RaidIcons:MarkFriendly(unit,icon,persist)
 	if units[unit] then self:CancelTimer(units[unit],true) end
@@ -27,5 +30,6 @@ function RaidIcons:RemoveAll()
 	for unit,handle in pairs(units) do
 		self:CancelTimer(handle,true)
 		SetRaidTarget(unit,0)
+		units[unit] = nil
 	end
 end
