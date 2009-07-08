@@ -20,8 +20,6 @@ Libs\AceTimer-3.0\AceTimer-3.0.xml
 Libs\AceComm-3.0\AceComm-3.0.xml
 Libs\AceSerializer-3.0\AceSerializer-3.0.xml
 Libs\AceLocale-3.0\AceLocale-3.0.xml
-Libs\LibBabble-Boss-3.0\lib.xml
-Libs\LibBabble-Zone-3.0\lib.xml
 #@end-no-lib-strip@
 Libs\LibDataBroker-1.1\LibDataBroker-1.1.lua
 #@no-lib-strip@
@@ -33,10 +31,7 @@ Locales.lua
 
 # AceGUI Widgets
 Widgets\Timer.lua
-Widgets\Alert.lua
-Widgets\ProgressBar.lua
 Widgets\HealthWatcher.lua
-Widgets\LogLabel.lua
 
 # Main files
 Core.lua
