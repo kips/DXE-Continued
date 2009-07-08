@@ -26,6 +26,8 @@ local MAIN_PREFIX = "DXE_Distro"
 local TRANSFER_PREFIX = "DXE_DistroT"
 local UL_SUFFIX = "UL"
 local DL_SUFFIX = "DL"
+local DR_PTN = TRANSFER_PREFIX.."_([%w'%- ]+)"
+local CMA_PTN = TRANSFER_PREFIX.."_([%w'%- ]+)(.*)"
 
 ----------------------------------
 -- INITIALIZATION
@@ -337,13 +339,14 @@ end
 
 function Distributor:CHAT_MSG_ADDON(_,prefix, msg, dist, sender)
 	if find(prefix,TRANSFER_PREFIX) and (dist == "RAID" or dist == "WHISPER") and (next(Downloads) or next(Uploads)) then
-		local key, mark = match(prefix, TRANSFER_PREFIX.." _([%w'%- ]+)(.*)")
+		local key, mark = match(prefix, CMA_PTN)
 		if not key then return end
 		-- For WHISPER distributions
 		if msg == "COMPLETED" and Uploads[key] then
 			self:ULCompleted(key)
 			return
 		end
+
 
 		-- Make sure the mark exists
 		if #mark == 0 then return end
@@ -388,7 +391,7 @@ end
 
 function Distributor:DownloadReceived(prefix, msg, dist, sender)
 	self:UnregisterComm(prefix)
-	local key = match(prefix, TRANSFER_PREFIX.."_([%w'%- ]+)")
+	local key = match(prefix, DR_PTN)
 
 	local dl = Downloads[key]
 	if not dl then return end
@@ -449,7 +452,7 @@ function Distributor:LoadCompleted(key,ld,text,color,func)
 	bar:SetColor(color)
 	bar:SetValue(1)
 	self:FadeBar(bar)
-	self:ScheduleTimer(func,3,key)
+	self:ScheduleTimer(func,4,key)
 end
 
 function Distributor:RemoveDL(key)
