@@ -260,11 +260,13 @@ do
 				spellid = {63830,63881},
 				execute = {
 					{
+						{raidicon = "maladymark"},
+					},
+					{
 						{expect = {"#4#","~=","&playerguid&"}},
 						{proximitycheck = {"#5#",28}},
 						{alert = "maladywarn"},
 						{arrow = "maladyarrow"},
-						{raidicon = "maladymark"},
 					},
 				},
 			}, 
