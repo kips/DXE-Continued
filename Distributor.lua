@@ -13,8 +13,6 @@ local ipairs, pairs = ipairs, pairs
 local remove,wipe = table.remove,table.wipe
 local match,len,format,split,find = string.match,string.len,string.format,string.split,string.find
 
-local locale = GetLocale()
-
 -- Credits to Bazaar for this implementation
 
 ----------------------------------
@@ -199,7 +197,7 @@ function Distributor:Distribute(key, dist, target)
 	if util.tablesize(Uploads) == 4 then UploadQueue[key] = self:Serialize(key,dist,target) return end
 	local serialData = self:Serialize(data)
 	local length = len(serialData)
-	local message = format("UPDATE:%s:%d:%d:%s:%s",key,data.version,length,data.name,locale) -- ex. UPDATE:sartharion:150:800:Sartharion:enUS
+	local message = format("UPDATE:%s:%d:%d:%s:%s",key,data.version,length,data.name,GetLocale()) -- ex. UPDATE:sartharion:150:800:Sartharion:enUS
 
 	-- Create upload bar
 	local bar = self:GetProgressBar()
@@ -286,7 +284,7 @@ function Distributor:OnCommReceived(prefix, msg, dist, sender)
 
 		local data = DXE.EDB[key]
 		-- Version and locale check
-		if (data and data.version >= version) or rlocale ~= locale then
+		if (data and data.version >= version) or rlocale ~= GetLocale() then
 			self:Respond(format("RESPONSE:%s:%s",key,"NO"),sender)
 			return
 		end

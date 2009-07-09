@@ -142,7 +142,7 @@ local function SetTarget(self,unit,persist,action,msg,spell,sound,fixed)
 	self:SetAlpha(1)
 	if fixed then self:SetFixed() end
 	self:SetScript("OnUpdate",OnUpdate)
-	self:SetAngle(self:GetAngle() or 0)
+	self:SetAngle(self:GetAngle())
 	self:Show()
 end
 

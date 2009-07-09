@@ -344,8 +344,6 @@ function DXE:RegisterEncounter(data)
 	EDB[key] = data
 
 	self:UpdateTriggers()
-
-	self:UpdateVersionString() 
 end
 
 --- Remove an encounter previously added with RegisterEncounter.
@@ -358,9 +356,9 @@ function DXE:UnregisterEncounter(key)
 
 	self:RemoveEncounterOptions(EDB[key])
 
-	EDB[key] = nil
-
 	ACD:Close("DXE")
+
+	EDB[key] = nil
 
 	self:UpdateTriggers()
 end
@@ -420,6 +418,7 @@ end
 -- Start the current encounter
 function DXE:StartEncounter(...)
 	if self:IsRunning() then return end
+	self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED","UNIT_DIED")
 	self.callbacks:Fire("StartEncounter",...)
 	self:StartTimer()
 end
@@ -427,6 +426,7 @@ end
 -- Stop the current encounter
 function DXE:StopEncounter()
 	if not self:IsRunning() then return end
+	self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 	self.callbacks:Fire("StopEncounter")
 	self:StopTimer()
 end
@@ -1249,6 +1249,17 @@ end
 local HW = {}
 DXE.HW = HW
 
+function DXE:UNIT_DIED(_, _,eventtype, _, _, _, _, dstName)
+	if eventtype ~= "UNIT_DIED" then return end
+	for i,hw in ipairs(HW) do
+		if hw:GetName() == dstName then
+			hw:SetInfoBundle(hw:GetName(),L["DEAD"],0)
+			hw:Close()
+			break
+		end
+	end
+end
+
 -- Create health watchers
 -- Only four are needed currently. Too many health watchers clutters the screen.
 function DXE:CreateHealthWatchers()
@@ -1286,9 +1297,9 @@ function DXE:SetTracing(names)
 		-- Prevents overwriting
 		if HW[i]:GetName() ~= name then
 			HW[i]:SetInfoBundle(name,"",1,0,0,1)
-			HW[i]:Open(name)
 			HW[i].frame:Show()
 		end
+		HW[i]:Open(name)
 		n = n + 1
 	end
 	for i=n+1,4 do
@@ -1362,13 +1373,17 @@ end
 -- Credits to BigWigs for these functions
 ---------------------------------------------
 
-
--- TODO: Needs testing
+local dead
 function DXE:CheckForWipe()
 	--@debug@
 	debug("CheckForWipe","Invoked")
 	--@end-debug@
 	if (UnitHealth("player") > 0 or UnitIsGhost("player")) and not UnitAffectingCombat("player") then
+		if dead then
+			self:ScheduleTimer("CheckForWipe",3)
+			dead = nil
+			return
+		end
 		local key = self:Scan()
 		if not key then
 			self:StopEncounter()	
@@ -1376,6 +1391,7 @@ function DXE:CheckForWipe()
 		end
 		self:ScheduleTimer("CheckForWipe",2)
 	elseif UnitIsDead("player") then
+		dead = true
 		self:ScheduleTimer("CheckForWipe",2)
 	end
 end
@@ -1420,8 +1436,6 @@ end
 -- VERSION CHECKING
 ---------------------------------------------
 
--- Cached string of all versions in EDB
-local VersionString
 -- Roster versions
 local RVS = {}
 DXE.RVS = RVS
@@ -1466,18 +1480,17 @@ function DXE:OnCommRequestAddOnVersion()
 	self:BroadcastVersion("addon")
 end
 
-function DXE:UpdateVersionString()
+function DXE:GetVersionString()
 	local work = {}
 	work[1] = format("%s,%s","addon",self.version)
 	for key, data in self:IterateEDB() do
 		work[#work+1] = format("%s,%s",data.key,data.version)
 	end
-	VersionString = concat(work,":")
+	return concat(work,":")
 end
-DXE:ThrottleFunc("UpdateVersionString",1,true)
 
 function DXE:BroadcastAllVersions()
-	self:SendComm("AllVersionsBroadcast",VersionString)
+	self:SendComm("AllVersionsBroadcast",self:GetVersionString())
 end
 
 function DXE:OnCommAllVersionsBroadcast(event,commType,sender,versionString)

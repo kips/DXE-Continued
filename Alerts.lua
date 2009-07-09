@@ -61,7 +61,7 @@ end
 -- UPDATING
 ---------------------------------------
 
-local function onUpdate(self,elapsed)
+local function OnUpdate(self,elapsed)
 	local alert = next(Active)
 	if not alert then self:Hide() return end
 	local time = GetTime()
@@ -73,7 +73,7 @@ local function onUpdate(self,elapsed)
 end
 
 local UpdateFrame = CreateFrame("Frame",nil,UIParent)
-UpdateFrame:SetScript("OnUpdate",onUpdate)
+UpdateFrame:SetScript("OnUpdate",OnUpdate)
 UpdateFrame:Hide()
 
 ---------------------------------------
