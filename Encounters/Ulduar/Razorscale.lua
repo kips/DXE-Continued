@@ -112,7 +112,7 @@ do
 						{alert = "breathwarn"},
 					},
 					{
-						{expect = {"#1#","find",L["lands permanently!$"]}},
+						{expect = {"#1#","find",L["grounded permanently!$"]}},
 						{quash = "chaindur"},
 						{alert = "permlandwarn"},
 					},

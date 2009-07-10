@@ -616,7 +616,7 @@ function addon:SetupMinimapIcon()
 			tooltip:AddLine(L["|cffffff00Click|r to toggle the settings window"],1,1,1)
 		end,
 	})
-	if LDBIcon then LDBIcon:Register("DXE",self.launcher,self.db.global._Minimap) end
+	if LDBIcon then LDBIcon:Register("DXE",self.launcher,gbl._Minimap) end
 end
 
 -- Replace default Print
@@ -660,7 +660,7 @@ function addon:OnInitialize()
 	db.RegisterCallback(self, "OnProfileReset", "RefreshProfile")
 
 	--@debug@
-	debug = self:CreateDebugger("Core",self.db.global,debugDefaults)
+	debug = self:CreateDebugger("Core",gbl,debugDefaults)
 	--@end-debug@
 
 	-- Slash Commands
@@ -693,7 +693,10 @@ function addon:OnInitialize()
 
 	-- The rest that don't exist
 	for key,data in pairs(RDB) do
-		if not EDB[key] then
+		-- nil out old RDB data that uses data.name as the key
+		if key:find("[A-Z]") then
+			RDB[key] = nil
+		elseif not EDB[key] then
 			self:RegisterEncounter(data)
 		end
 	end
@@ -703,7 +706,7 @@ function addon:OnInitialize()
 	-- Minimap
 	self:SetupMinimapIcon()
 
-	self:SetEnabledState(self.db.global.Enabled)
+	self:SetEnabledState(gbl.Enabled)
 	self:Print(L["Type |cffffff00/dxe|r for slash commands"])
 end
 
@@ -742,21 +745,21 @@ end
 function addon:SavePosition(f)
 	local point, relativeTo, relativePoint, xOfs, yOfs = f:GetPoint()
 	local name = f:GetName()
-	self.db.profile.Positions[name].point = point
-	self.db.profile.Positions[name].relativeTo = relativeTo and relativeTo:GetName()
-	self.db.profile.Positions[name].relativePoint = relativePoint
-	self.db.profile.Positions[name].xOfs = xOfs
-	self.db.profile.Positions[name].yOfs = yOfs
+	pfl.Positions[name].point = point
+	pfl.Positions[name].relativeTo = relativeTo and relativeTo:GetName()
+	pfl.Positions[name].relativePoint = relativePoint
+	pfl.Positions[name].xOfs = xOfs
+	pfl.Positions[name].yOfs = yOfs
 end
 
 function addon:LoadPosition(name)
 	local f = _G[name]
 	if not f then return end
 	f:ClearAllPoints()
-	local pos = self.db.profile.Positions[name]
+	local pos = pfl.Positions[name]
 	if not pos then
 		f:SetPoint("CENTER",UIParent,"CENTER",0,0)
-		self.db.profile.Positions[name] = {
+		pfl.Positions[name] = {
 			point = "CENTER",
 			relativeTo = "UIParent",
 			relativePoint = "CENTER",
@@ -918,16 +921,16 @@ local backdrop = {
 }
 
 function addon:UpdatePaneScale()
-	local scale = self.db.global.PaneScale
+	local scale = gbl.PaneScale
 	self.Pane:SetScale(scale)
 	addon:SavePosition(self.Pane)
 end
 
 function addon:UpdatePaneVisibility()
-	if self.db.global.ShowPane then
+	if gbl.ShowPane then
 		local func = "Show"
-		func = self.db.global.PaneOnlyInRaid and (GetNumRaidMembers() > 0 and "Show" or "Hide") or func
-		func = self.db.global.PaneOnlyInInstance and (IsInInstance() and "Show" or "Hide") or func
+		func = gbl.PaneOnlyInRaid and (GetNumRaidMembers() > 0 and "Show" or "Hide") or func
+		func = gbl.PaneOnlyInInstance and (IsInInstance() and "Show" or "Hide") or func
 		self.Pane[func](self.Pane)
 	else
 		self.Pane:Hide()
@@ -1067,7 +1070,7 @@ do
 
 	function addon:UpdateLock()
 		self:UpdateLockedFrames()
-		if self.db.global.Locked then
+		if gbl.Locked then
 			self:SetLocked()
 		else
 			self:SetUnlocked()
@@ -1075,12 +1078,12 @@ do
 	end
 
 	function addon:ToggleLock()
-		self.db.global.Locked = not self.db.global.Locked
+		gbl.Locked = not gbl.Locked
 		self:UpdateLock()
 	end
 
 	function addon:UpdateLockedFrames(func)
-		func = func or (self.db.global.Locked and "Hide" or "Show")
+		func = func or (gbl.Locked and "Hide" or "Show")
 		for frame in pairs(LockableFrames) do frame[func](frame) end
 	end
 
@@ -1459,6 +1462,18 @@ function addon:CleanVersions()
 end
 
 ----- COMMS
+function addon:GetVersionString()
+	local work = {}
+	work[1] = format("%s,%s","addon",self.version)
+	for key, data in self:IterateEDB() do
+		work[#work+1] = format("%s,%s",data.key,data.version)
+	end
+	return concat(work,":")
+end
+
+function addon:BroadcastAllVersions()
+	self:SendComm("AllVersionsBroadcast",self:GetVersionString())
+end
 
 function addon:RequestAllVersions()
 	self:SendComm("RequestAllVersions")
@@ -1474,19 +1489,6 @@ end
 
 function addon:OnCommRequestAddOnVersion()
 	self:BroadcastVersion("addon")
-end
-
-function addon:GetVersionString()
-	local work = {}
-	work[1] = format("%s,%s","addon",self.version)
-	for key, data in self:IterateEDB() do
-		work[#work+1] = format("%s,%s",data.key,data.version)
-	end
-	return concat(work,":")
-end
-
-function addon:BroadcastAllVersions()
-	self:SendComm("AllVersionsBroadcast",self:GetVersionString())
 end
 
 function addon:OnCommAllVersionsBroadcast(event,commType,sender,versionString)
