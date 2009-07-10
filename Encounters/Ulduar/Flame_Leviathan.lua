@@ -40,8 +40,8 @@ do
 				color2 = "ORANGE",
 			},
 			pursuedurother = {
-				var = "pursuedur", 
-				varname = format(L["%s Duration"],SN[62374]),
+				var = "pursuedurother", 
+				varname = format(L["%s on others"],SN[62374]),
 				type = "centerpopup", 
 				text = format("%s: #5#",SN[62374]),
 				time = 30, 
@@ -50,8 +50,8 @@ do
 				color2 = "CYAN",
 			},
 			pursuedurself = {
-				var = "pursuedur", 
-				varname = format(L["%s Duration"],SN[62374]),
+				var = "pursuedurself", 
+				varname = format(L["%s on self"],SN[62374]),
 				type = "centerpopup", 
 				text = format("%s: %s!",SN[62374],L["YOU"]),
 				time = 30, 

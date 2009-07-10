@@ -1,0 +1,12 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+
+<Script file="Modules\Alerts.lua"/>
+<Script file="Modules\Arrows.lua"/>
+<Script file="Modules\Loader.lua"/>
+<Script file="Modules\Raid_Icons.lua"/>
+<Script file="Modules\Distributor.lua"/>
+<Script file="Modules\Invoker.lua"/>
+
+</Ui>
+

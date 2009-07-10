@@ -2,6 +2,7 @@ local DXE = DXE
 local version = tonumber(("$Rev$"):sub(7, -3))
 DXE.version = version > DXE.version and version or DXE.version
 
+local SM = DXE.SM
 local Constants = {}
 DXE.Constants = Constants
 
@@ -52,4 +53,31 @@ local Sounds = {
 	ALERT9 = "Interface\\AddOns\\DXE\\Sounds\\Long.mp3",
 }
 
+-- Taken from Omen Threat Meter
+SM:Register("sound", "Rubber Ducky", "Sound\\Doodad\\Goblin_Lottery_Open01.wav")
+SM:Register("sound", "Cartoon FX", "Sound\\Doodad\\Goblin_Lottery_Open03.wav")
+SM:Register("sound", "Explosion", "Sound\\Doodad\\Hellfire_Raid_FX_Explosion05.wav")
+SM:Register("sound", "Shing!", "Sound\\Doodad\\PortcullisActive_Closed.wav")
+SM:Register("sound", "Wham!", "Sound\\Doodad\\PVP_Lordaeron_Door_Open.wav")
+SM:Register("sound", "Simon Chime", "Sound\\Doodad\\SimonGame_LargeBlueTree.wav")
+SM:Register("sound", "War Drums", "Sound\\Event Sounds\\Event_wardrum_ogre.wav")
+SM:Register("sound", "Cheer", "Sound\\Event Sounds\\OgreEventCheerUnique.wav")
+SM:Register("sound", "Humm", "Sound\\Spells\\SimonGame_Visual_GameStart.wav")
+SM:Register("sound", "Short Circuit", "Sound\\Spells\\SimonGame_Visual_BadPress.wav")
+SM:Register("sound", "Fel Portal", "Sound\\Spells\\Sunwell_Fel_PortalStand.wav")
+SM:Register("sound", "Fel Nova", "Sound\\Spells\\SeepingGaseous_Fel_Nova.wav")
+SM:Register("sound", "You Will Die!", "Sound\\Creature\\CThun\\CThunYouWillDIe.wav")
+
+for name,file in pairs(Sounds) do
+	SM:Register("sound","DXE "..name,file)
+end
+
 Constants.Sounds = Sounds
+
+-------------------------
+-- FONTS
+-------------------------
+
+SM:Register("font", "Bastardus Sans", "Interface\\AddOns\\DXE\\Fonts\\BS.ttf")
+SM:Register("font", "Courier New", "Interface\\AddOns\\DXE\\Fonts\\CN.ttf")
+SM:Register("font", "Franklin Gothic Medium", "Interface\\AddOns\\DXE\\Fonts\\FGM.ttf")

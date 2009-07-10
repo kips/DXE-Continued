@@ -1,10 +1,10 @@
-local DXE = DXE
+local addon = DXE
 local version = tonumber(("$Rev$"):sub(7, -3))
-DXE.version = version > DXE.version and version or DXE.version
-local L = DXE.L
+addon.version = version > addon.version and version or addon.version
+local L = addon.L
 
-local Arrows = DXE:NewModule("Arrows")
-DXE.Arrows = Arrows
+local module = addon:NewModule("Arrows")
+addon.Arrows = module
 
 local frames = {}
 local units = {}
@@ -13,11 +13,11 @@ local units = {}
 -- CREATION
 ---------------------------------------
 
-local name_to_unit = DXE.Roster.name_to_unit
-local ProximityFuncs = DXE:GetProximityFuncs()
-local Sounds = DXE.Constants.Sounds
-local util = DXE.util
-local CN = DXE.CN
+local name_to_unit = addon.Roster.name_to_unit
+local ProximityFuncs = addon:GetProximityFuncs()
+local Sounds = addon.Constants.Sounds
+local util = addon.util
+local CN = addon.CN
 
 local GetPlayerMapPosition,GetPlayerFacing = GetPlayerMapPosition,GetPlayerFacing
 local UnitIsVisible = UnitIsVisible
@@ -126,7 +126,7 @@ end
 
 -- @param action a string == "TOWARD" or "AWAY"
 local function SetTarget(self,unit,persist,action,msg,spell,sound,fixed)
-	if sound then PlaySoundFile(Sounds[sound]) end
+	if sound then PlaySoundFile(SM:Fetch(sound)) end
 	UIFrameFadeRemoveFrame(self)
 	self.action = action
 	self.unit = unit
@@ -197,12 +197,12 @@ end
 -- INITIALIZATION
 ---------------------------------------
 
-function Arrows:OnInitialize()
+function module:OnInitialize()
 	for i=1,3 do 
 		local arrow = CreateArrow()
-		local anchor = DXE:CreateLockableFrame("ArrowsAnchor"..i,85,42,format("%s - %s",L["Arrows"],L["Anchor"].." "..i))
-		DXE:RegisterMoveSaving(anchor,"CENTER","UIParent","CENTER",0,-(25 + (i*65)))
-		DXE:LoadPosition("DXEArrowsAnchor"..i)
+		local anchor = addon:CreateLockableFrame("ArrowsAnchor"..i,85,42,format("%s - %s",L["Arrows"],L["Anchor"].." "..i))
+		addon:RegisterMoveSaving(anchor,"CENTER","UIParent","CENTER",0,-(25 + (i*65)))
+		addon:LoadPosition("DXEArrowsAnchor"..i)
 		arrow:SetPoint("CENTER",anchor,"CENTER")
 		frames[i] = arrow
 	end
@@ -212,7 +212,7 @@ end
 -- API
 ---------------------------------------
 
-function Arrows:AddTarget(unit,persist,action,msg,spell,sound,fixed)
+function module:AddTarget(unit,persist,action,msg,spell,sound,fixed)
 	--@debug@
 	assert(type(unit) == "string")
 	assert(type(persist) == "number")
@@ -220,9 +220,12 @@ function Arrows:AddTarget(unit,persist,action,msg,spell,sound,fixed)
 	assert(type(msg) == "string")
 	assert(type(spell) == "string")
 	--@end-debug@
-	if name_to_unit[unit] then
+	if UnitExists(unit) and UnitIsVisible(unit) then
+		local distinct = true
+		for k in pairs(units) do if UnitIsUnit(k,unit) then distinct = false break end end
+		if not distinct then return end
 		for i,arrow in ipairs(frames) do
-			if not units[unit] and not arrow.unit and UnitIsVisible(unit) then
+			if not arrow.unit then
 				arrow:SetTarget(unit,persist,action,msg,spell,sound,fixed)
 				break
 			end
@@ -230,16 +233,16 @@ function Arrows:AddTarget(unit,persist,action,msg,spell,sound,fixed)
 	end
 end
 
-function Arrows:RemoveTarget(unit)
+function module:RemoveTarget(unit)
 	for i,arrow in ipairs(frames) do
-		if arrow.unit == unit then
+		if UnitIsUnit(arrow.unit,unit) then
 			arrow:Destroy()
 			break
 		end
 	end
 end
 
-function Arrows:RemoveAll()
+function module:RemoveAll()
 	for i,arrow in ipairs(frames) do
 		if arrow.unit then
 			arrow:Destroy()

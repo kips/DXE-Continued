@@ -1,7 +1,7 @@
-local DXE = DXE
+local addon = DXE
 local version = tonumber(("$Rev$"):sub(7, -3))
-DXE.version = version > DXE.version and version or DXE.version
-local L = DXE.L
+addon.version = version > addon.version and version or addon.version
+local L = addon.L
 
 --[[
 	Metadata:
@@ -9,8 +9,8 @@ local L = DXE.L
 		X-DXE-Category: [STRING] - The category of the module. Only needed if X-DXE-Zone is a list.
 ]]
 
-local Loader = DXE:NewModule("Loader","AceEvent-3.0")
-DXE.Loader = Loader
+local module = addon:NewModule("Loader","AceEvent-3.0")
+addon.Loader = module
 local ZMS = {}
 
 local function AddZoneModule(name,zone,...)
@@ -21,7 +21,7 @@ local function AddZoneModule(name,zone,...)
 	AddZoneModule(name,...)
 end
 
-function Loader:OnInitialize()
+function module:OnInitialize()
 	for i=1, GetNumAddOns() do
 		local name,_,_,enabled,loadable = GetAddOnInfo(i)
 		if enabled and loadable and not IsAddOnLoaded(i) then
@@ -35,7 +35,7 @@ function Loader:OnInitialize()
 	end
 end
 
-function Loader:OnEnable()
+function module:OnEnable()
 	if next(ZMS) then
 		self:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 		self:RegisterEvent("ADDON_LOADED")
@@ -46,10 +46,10 @@ end
 local modules = {}
 local selected
 
-function Loader:AddToOptions(category,module)
-	if not DXE.options.args.LoaderSelect then
+function module:AddToOptions(category,module)
+	if not addon.options.args.LoaderSelect then
 		selected = module
-		DXE.options.args.LoaderSelect = {
+		addon.options.args.LoaderSelect = {
 			type = "select",
 			order = 200,
 			name = L["Module"],
@@ -57,7 +57,7 @@ function Loader:AddToOptions(category,module)
 			set = function(info,v) selected = v end,
 			values = modules,
 		}
-		DXE.options.args.Load = {
+		addon.options.args.Load = {
 			type = "execute",
 			name = "Load",
 			desc = L["Modules will automatically load when you enter the appropriate zone. Click if you want to force load the currently selected one."],
@@ -71,7 +71,7 @@ function Loader:AddToOptions(category,module)
 	modules[module] = L[category]
 end
 
-function Loader:CleanZoneModules(module)
+function module:CleanZoneModules(module)
 	for zone,list in pairs(ZMS) do
 		for addon in pairs(list) do
 			if addon == module then
@@ -84,9 +84,9 @@ function Loader:CleanZoneModules(module)
 	ZMS = next(ZMS) and ZMS
 end
 
-function Loader:ADDON_LOADED(_,module)
+function module:ADDON_LOADED(_,module)
 	if modules[module] then
-		DXE:Print(format(L["%s module loaded"],(L[module:match("DXE_(%w+)")] or module)))
+		addon:Print(format(L["%s module loaded"],(L[module:match("DXE_(%w+)")] or module)))
 		modules[module] = nil
 		selected = next(modules)
 		self:CleanZoneModules(module)
@@ -94,12 +94,12 @@ function Loader:ADDON_LOADED(_,module)
 	if not next(modules) then
 		modules = nil
 		self:UnregisterAllEvents()
-		DXE.options.args.LoaderSelect = nil
-		DXE.options.args.Load = nil
+		addon.options.args.LoaderSelect = nil
+		addon.options.args.Load = nil
 	end
 end
 
-function Loader:ZONE_CHANGED_NEW_AREA()
+function module:ZONE_CHANGED_NEW_AREA()
 	local zone = GetRealZoneText()
 	if ZMS[zone] then
 		for module in pairs(ZMS[zone]) do

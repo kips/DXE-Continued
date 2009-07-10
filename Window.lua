@@ -1,7 +1,7 @@
-local DXE = DXE
+local addon = DXE
 local version = tonumber(("$Rev$"):sub(7, -3))
-DXE.version = version > DXE.version and version or DXE.version
-local L = DXE.L
+addon.version = version > addon.version and version or addon.version
+local L = addon.L
 
 local backdrop = {
 	bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
@@ -15,7 +15,7 @@ local backdropBorder = {
 }
 
 local Windows = {}
-DXE.Windows = Windows
+addon.Windows = Windows
 
 local buttonSize = 12
 local titleHeight = 15
@@ -34,7 +34,7 @@ end
 
 local function onMouseUp(self)
 	self.window:StopMovingOrSizing()
-	DXE:SavePosition(self.window)
+	addon:SavePosition(self.window)
 end
 
 local function onLeave(self) self:GetNormalTexture():SetVertexColor(1,1,1) end
@@ -61,7 +61,7 @@ local function AddTitleButton(self,texture,onClick)
 	self.anchorButton = button
 end
 
-function DXE:CreateWindow(name,width,height)
+function addon:CreateWindow(name,width,height)
 	assert(type(name) == "string")
 	assert(type(width) == "number")
 	assert(type(height) == "number")

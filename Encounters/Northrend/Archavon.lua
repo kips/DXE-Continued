@@ -48,7 +48,7 @@ do
 				sound = "ALERT2",
 			},
 			shardswarnself = {
-				var = "shardswarn",
+				var = "shardswarnself",
 				varname = format(L["%s Cast"],SN[58695]),
 				type = "centerpopup",
 				time = 3,
@@ -58,8 +58,8 @@ do
 				sound = "ALERT3",
 			},
 			shardswarnother = {
-				var = "shardswarn",
-				varname = format(L["%s Warning"],SN[58695]),
+				var = "shardswarnother",
+				varname = format(L["%s Cast"],SN[58695]),
 				type = "centerpopup",
 				time = 3,
 				flashtime = 3,

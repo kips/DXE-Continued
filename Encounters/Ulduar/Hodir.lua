@@ -77,8 +77,8 @@ do
 				color2 = "YELLOW",
 			},
 			stormcloudwarnself = {
-				var = "stormcloudwarn",
-				varname = format(L["%s Warning"],SN[65133]),
+				var = "stormcloudwarnself",
+				varname = format(L["%s on self"],SN[65133]),
 				type = "simple",
 				text = format("%s: %s! %s!",SN[65133],L["YOU"],L["SPREAD IT"]),
 				time = 1.5,
@@ -86,8 +86,8 @@ do
 				sound = "ALERT4",
 			},
 			stormcloudwarnother = {
-				var = "stormcloudwarn",
-				varname = format(L["%s Warning"],SN[65133]),
+				var = "stormcloudwarnother",
+				varname = format(L["%s on others"],SN[65133]),
 				type = "simple",
 				text = format("%s: #5#",SN[65133]),
 				time = 1.5,

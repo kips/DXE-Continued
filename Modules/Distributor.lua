@@ -1,17 +1,19 @@
-local DXE = DXE
+local addon = DXE
 local version = tonumber(("$Rev$"):sub(7, -3))
-DXE.version = version > DXE.version and version or DXE.version
-local L = DXE.L
+addon.version = version > addon.version and version or addon.version
+local L = addon.L
 
-local util = DXE.util
-local Roster = DXE.Roster
+local util = addon.util
+local Roster = addon.Roster
 
-local AceGUI = DXE.AceGUI
-local Colors = DXE.Constants.Colors
+local AceGUI = addon.AceGUI
+local Colors = addon.Constants.Colors
 
 local ipairs, pairs = ipairs, pairs
 local remove,wipe = table.remove,table.wipe
 local match,len,format,split,find = string.match,string.len,string.format,string.split,string.find
+
+local gbl
 
 -- Credits to Bazaar for this implementation
 
@@ -31,19 +33,20 @@ local CMA_PTN = TRANSFER_PREFIX.."_([%w'%- ]+)(.*)"
 -- INITIALIZATION
 ----------------------------------
 
-local Distributor = DXE:NewModule("Distributor","AceEvent-3.0","AceTimer-3.0","AceComm-3.0","AceSerializer-3.0")
-DXE.Distributor = Distributor
+local module = addon:NewModule("Distributor","AceEvent-3.0","AceTimer-3.0","AceComm-3.0","AceSerializer-3.0")
+addon.Distributor = module
 local StackAnchor
 
-function Distributor:OnInitialize()
-	DXE:AddPluginOptions("distributor",self:GetOptions())
+function module:OnInitialize()
+	gbl = addon.db.global
+	addon:AddPluginOptions("distributor",self:GetOptions())
 
-	StackAnchor = DXE:CreateLockableFrame("DistributorStackAnchor",200,10,L["Download/Upload Anchor"])
-	DXE:RegisterMoveSaving(StackAnchor,"CENTER","UIParent","CENTER",0,300)
-	DXE:LoadPosition("DXEDistributorStackAnchor")
+	StackAnchor = addon:CreateLockableFrame("DistributorStackAnchor",200,10,L["Download/Upload Anchor"])
+	addon:RegisterMoveSaving(StackAnchor,"CENTER","UIParent","CENTER",0,300)
+	addon:LoadPosition("DXEDistributorStackAnchor")
 end
 
-function Distributor:OnEnable()
+function module:OnEnable()
 	self:RegisterComm(MAIN_PREFIX)
 	self:RegisterEvent("CHAT_MSG_ADDON")
 end
@@ -55,21 +58,21 @@ end
 
 local EncKeys,RaidNames = {},{}
 local ListSelect,PlayerSelect
-function Distributor:GetOptions()
+function module:GetOptions()
 	return {
 		dist_group = {
 			type = "group",
 			name = L["Distributor"],
 			order = 300,
-			get = function(info) return DXE.db.global.Distributor[info[#info]] end,
-			set = function(info,value) DXE.db.global.Distributor[info[#info]] = value end,
+			get = function(info) return gbl.Distributor[info[#info]] end,
+			set = function(info,value) gbl.Distributor[info[#info]] = value end,
 			args = {
 				AutoAccept = {
 					type = "toggle",
 					name = L["Auto accept"],
 					order = 50,
 				},
-				blank = DXE.genblank(75),
+				blank = addon.genblank(75),
 				ListSelect = {
 					type = "select",
 					order = 100,
@@ -78,8 +81,8 @@ function Distributor:GetOptions()
 					set = function(info,value) ListSelect = value end,
 					values = function()
 						wipe(EncKeys)
-						for k in DXE:IterateEDB() do
-							EncKeys[k] = DXE.EDB[k].name
+						for k in addon:IterateEDB() do
+							EncKeys[k] = addon.EDB[k].name
 						end
 						return EncKeys
 					end,
@@ -94,7 +97,7 @@ function Distributor:GetOptions()
 							type = "execute",
 							name = L["Send to raid"],
 							order = 100,
-							func = function() Distributor:Distribute(ListSelect) end,
+							func = function() module:Distribute(ListSelect) end,
 							disabled = function() return not ListSelect end,
 						},
 						--[[
@@ -105,7 +108,7 @@ function Distributor:GetOptions()
 							func = function() 
 										for key in pairs(DXE.EDB) do
 											if key ~= "default" then
-												Distributor:Distribute(name)
+												module:Distribute(name)
 											end
 										end
 									 end,
@@ -132,7 +135,7 @@ function Distributor:GetOptions()
 								wipe(RaidNames)
 								for _,unit in pairs(Roster.index_to_unit) do
 									local name = UnitName(unit)
-									if name ~= DXE.PNAME then
+									if name ~= addon.PNAME then
 										 RaidNames[name] = name
 									end
 								end
@@ -140,12 +143,12 @@ function Distributor:GetOptions()
 							end,
 							disabled = function() return GetNumRaidMembers() == 0 or not ListSelect end,
 						},
-						blank = DXE.genblank(200),
+						blank = addon.genblank(200),
 						DistributeToPlayer = {
 							type = "execute",
 							order = 300,
 							name = L["Send to player"],
-							func = function() Distributor:Distribute(ListSelect, "WHISPER", PlayerSelect) end,
+							func = function() module:Distribute(ListSelect, "WHISPER", PlayerSelect) end,
 							disabled = function() return not PlayerSelect end,
 						},
 						--[[
@@ -156,7 +159,7 @@ function Distributor:GetOptions()
 							func = function()
 										for key in pairs(DXE.EDB) do
 											if key ~= "default" then
-												Distributor:Distribute(name, "WHISPER", PlayerSelect)
+												module:Distribute(name, "WHISPER", PlayerSelect)
 											end
 										end
 									 end,
@@ -184,15 +187,15 @@ local Uploads = {}
 -- The queued uploads
 local UploadQueue = {}
 
-function Distributor:DispatchDistribute(info)
+function module:DispatchDistribute(info)
 	local success,key,dist,target = self:Deserialize(info)
 	if success then self:Distribute(key,dist,target) end
 end
 
 -- Used to start uploads
-function Distributor:Distribute(key, dist, target)
+function module:Distribute(key, dist, target)
 	dist = dist or "RAID"
-	local data = DXE:GetEncounterData(key)
+	local data = addon:GetEncounterData(key)
 	if not data or Uploads[key] or key == "default" or GetNumRaidMembers() == 0 then return end
 	if util.tablesize(Uploads) == 4 then UploadQueue[key] = self:Serialize(key,dist,target) return end
 	local serialData = self:Serialize(data)
@@ -204,7 +207,7 @@ function Distributor:Distribute(key, dist, target)
 	bar:SetStatus(L["Waiting"])
 	bar:SetText(data.name)
 	bar:SetColor(Colors.GREY)
-	local dest = (dist == "WHISPER") and 1 or DXE:GetNumWithAddOn()
+	local dest = (dist == "WHISPER") and 1 or addon:GetNumWithAddOn()
 
 	Uploads[key] = {
 		accepts = 0,
@@ -228,7 +231,7 @@ function Distributor:Distribute(key, dist, target)
 end
 
 -- Used when uploading
-function Distributor:StartUpload(key)
+function module:StartUpload(key)
 	local ul = Uploads[key]
 	if ul.started then return end
 	if ul.accepts == 0 then self:ULTimeout(key) return end
@@ -241,7 +244,7 @@ function Distributor:StartUpload(key)
 end
 
 -- Used when downloading
-function Distributor:StartReceiving(key,length,sender,dist,name)
+function module:StartReceiving(key,length,sender,dist,name)
 	local prefix = format("%s_%s",TRANSFER_PREFIX,key)
 	if Downloads[key] then self:RemoveDL(key) end
 
@@ -269,12 +272,12 @@ function Distributor:StartReceiving(key,length,sender,dist,name)
 	self:RegisterComm(prefix, "DownloadReceived")
 end
 
-function Distributor:Respond(msg,sender)
+function module:Respond(msg,sender)
 	self:SendCommMessage(MAIN_PREFIX, msg, "WHISPER",sender)
 end
 
-function Distributor:OnCommReceived(prefix, msg, dist, sender)
-	if sender == DXE.PNAME then return end
+function module:OnCommReceived(prefix, msg, dist, sender)
+	if sender == addon.PNAME then return end
 	local type,args = match(msg,"(%w+):(.+)")
 	-- Someone wants to send an encounter
 	if type == "UPDATE" then
@@ -282,14 +285,14 @@ function Distributor:OnCommReceived(prefix, msg, dist, sender)
 		length = tonumber(length)
 		version = tonumber(version)
 
-		local data = DXE.EDB[key]
+		local data = addon.EDB[key]
 		-- Version and locale check
 		if (data and data.version >= version) or rlocale ~= GetLocale() then
 			self:Respond(format("RESPONSE:%s:%s",key,"NO"),sender)
 			return
 		end
 
-		if DXE.db.global.Distributor.AutoAccept then
+		if gbl.Distributor.AutoAccept then
 			self:StartReceiving(key,length,sender,dist,name)
 			self:Respond(format("RESPONSE:%s:%s",key,"YES"),sender)
 			return
@@ -335,7 +338,7 @@ function Distributor:OnCommReceived(prefix, msg, dist, sender)
 	end
 end
 
-function Distributor:CHAT_MSG_ADDON(_,prefix, msg, dist, sender)
+function module:CHAT_MSG_ADDON(_,prefix, msg, dist, sender)
 	if find(prefix,TRANSFER_PREFIX) and (dist == "RAID" or dist == "WHISPER") and (next(Downloads) or next(Uploads)) then
 		local key, mark = match(prefix, CMA_PTN)
 		if not key then return end
@@ -365,7 +368,7 @@ function Distributor:CHAT_MSG_ADDON(_,prefix, msg, dist, sender)
 
 		-- Track uploads
 		local ul = Uploads[key]
-		if ul and sender == DXE.PNAME then
+		if ul and sender == addon.PNAME then
 			ul.sent = ul.sent + len(msg)
 			if mark == FIRST_MULTIPART then
 				ul.bar:SetPerc(0)
@@ -386,7 +389,7 @@ end
 -- COMPLETIONS
 ----------------------------------
 
-function Distributor:DownloadReceived(prefix, msg, dist, sender)
+function module:DownloadReceived(prefix, msg, dist, sender)
 	self:UnregisterComm(prefix)
 	local key = match(prefix, DR_PTN)
 
@@ -400,29 +403,29 @@ function Distributor:DownloadReceived(prefix, msg, dist, sender)
 
 	local success, data = self:Deserialize(msg)
 	-- Failed to deserialize
-	if not success then DXE:Print(format(L["Failed to load %s after downloading! Request another distribute from %s"],dl.name,dl.sender)) return end
+	if not success then addon:Print(format(L["Failed to load %s after downloading! Request another distribute from %s"],dl.name,dl.sender)) return end
 
-	DXE:UnregisterEncounter(key)
-	DXE:RegisterEncounter(data)
+	addon:UnregisterEncounter(key)
+	addon:RegisterEncounter(data)
 
-	DXE.RDB[key] = data
+	addon.RDB[key] = data
 
-	DXE:BroadcastVersion(key)
+	addon:BroadcastVersion(key)
 
 	self:DLCompleted(key,dl.sender,dl.name)
 end
 
-function Distributor:DLCompleted(key,sender,name)
-	DXE:Print(format(L["%s successfully updated from %s"],name,sender))
+function module:DLCompleted(key,sender,name)
+	addon:Print(format(L["%s successfully updated from %s"],name,sender))
 	self:LoadCompleted(key,Downloads[key],L["Completed"],Colors.GREEN,"RemoveDL")
 end
 
-function Distributor:DLTimeout(key)
-	DXE:Print(format(L["%s download updating timed out"],Downloads[key].name))
+function module:DLTimeout(key)
+	addon:Print(format(L["%s download updating timed out"],Downloads[key].name))
 	self:LoadCompleted(key,Downloads[key],L["Timed Out"],Colors.Red,"RemoveDL")
 end
 
-function Distributor:QueueNextUL()
+function module:QueueNextUL()
 	local qname,info = next(UploadQueue)
 	if qname then
 		UploadQueue[qname] = nil
@@ -430,19 +433,19 @@ function Distributor:QueueNextUL()
 	end
 end
 
-function Distributor:ULCompleted(key)
-	DXE:Print(format(L["%s successfully sent"],Uploads[key].name))
+function module:ULCompleted(key)
+	addon:Print(format(L["%s successfully sent"],Uploads[key].name))
 	self:LoadCompleted(key,Uploads[key],L["Completed"],Colors.GREEN,"RemoveUL")
 	self:QueueNextUL()
 end
 
-function Distributor:ULTimeout(key)
-	DXE:Print(format(L["%s upload timed out"],Uploads[key].name))
+function module:ULTimeout(key)
+	addon:Print(format(L["%s upload timed out"],Uploads[key].name))
 	self:LoadCompleted(key,Uploads[key],L["Timed Out"],Colors.RED,"RemoveUL")
 	self:QueueNextUL()
 end
 
-function Distributor:LoadCompleted(key,ld,text,color,func)
+function module:LoadCompleted(key,ld,text,color,func)
 	if not ld then return end
 	local bar = ld.bar
 	bar:SetStatus(text)
@@ -452,15 +455,15 @@ function Distributor:LoadCompleted(key,ld,text,color,func)
 	self:ScheduleTimer(func,4,key)
 end
 
-function Distributor:RemoveDL(key)
+function module:RemoveDL(key)
 	self:RemoveLoad(Downloads,key)
 end
 
-function Distributor:RemoveUL(key)
+function module:RemoveUL(key)
 	self:RemoveLoad(Uploads,key)
 end
 
-function Distributor:RemoveLoad(tbl,key)
+function module:RemoveLoad(tbl,key)
 	self:RemoveFromUpdating(key..UL_SUFFIX)
 	self:RemoveFromUpdating(key..DL_SUFFIX)
 	local ld = tbl[key]
@@ -471,7 +474,7 @@ function Distributor:RemoveLoad(tbl,key)
 	tbl[key] = nil
 end
 
-function Distributor:FadeBar(bar)
+function module:FadeBar(bar)
 	UIFrameFadeOut(bar.frame,4,bar.frame:GetAlpha(),0)
 end
 
@@ -480,14 +483,14 @@ end
 ----------------------------------
 local ProgressStack = {}
 
-function Distributor:GetProgressBar()
+function module:GetProgressBar()
 	local bar = AceGUI:Create("DXE_ProgressBar")
 	ProgressStack[#ProgressStack+1] = bar
 	self:LayoutBarStack()
 	return bar
 end
 
-function Distributor:RemoveProgressBar(bar)
+function module:RemoveProgressBar(bar)
 	for i,_alert in ipairs(ProgressStack) do
 		if _alert == bar then
 			remove(ProgressStack,i)
@@ -497,7 +500,7 @@ function Distributor:RemoveProgressBar(bar)
 	self:LayoutBarStack()
 end
 
-function Distributor:LayoutBarStack()
+function module:LayoutBarStack()
 	local anchor = StackAnchor
 	for i=1,#ProgressStack do
 		local bar = ProgressStack[i]
@@ -526,12 +529,12 @@ local function OnUpdate(self,elapsed)
 	if not next(UpdateStack) then self:SetScript("OnUpdate",nil) end
 end
 
-function Distributor:StartUpdating(key,bar)
+function module:StartUpdating(key,bar)
 	UpdateStack[key] = bar
 	frame:SetScript("OnUpdate",OnUpdate)
 end
 
-function Distributor:RemoveFromUpdating(key)
+function module:RemoveFromUpdating(key)
 	if not UpdateStack[key] then return end
 	UpdateStack[key] = nil
 	if not next(UpdateStack) then frame:SetScript("OnUpdate",nil) end

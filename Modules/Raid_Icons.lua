@@ -11,12 +11,18 @@ local units = {}
 -- <icon number> -> unit
 local used = {}
 
+-- If raid icon is in use, cancel timer
+-- Unit already has a raid icon. 
+-- 	Case 1: Icon was not set by DXE, save it to be replaced after the persist time
+-- 	Case 2: Icon was set by DXE, cancel timer
+
 function RaidIcons:MarkFriendly(unit,icon,persist)
 	if units[unit] then self:CancelTimer(units[unit],true) end
 	SetRaidTarget(unit,icon)
 	units[unit] = self:ScheduleTimer("RemoveIcon",persist,unit)
 end
 
+-- TODO: Implement
 function RaidIcons:MarkEnemy()
 
 end
@@ -33,3 +39,5 @@ function RaidIcons:RemoveAll()
 		units[unit] = nil
 	end
 end
+
+

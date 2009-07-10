@@ -22,10 +22,10 @@
 		removearrow
 ]]
 
-local DXE = DXE
+local addon = DXE
 local version = tonumber(("$Rev$"):sub(7, -3))
-DXE.version = version > DXE.version and version or DXE.version
-local L = DXE.L
+addon.version = version > addon.version and version or addon.version
+local L = addon.L
 
 local type,next,select = type,next,select
 local ipairs,pairs,unpack = ipairs,pairs,unpack
@@ -33,8 +33,8 @@ local tostring,tonumber = tostring,tonumber
 local match,gmatch,gsub,find = string.match,string.gmatch,string.gsub,string.find
 local wipe = table.wipe
 
-local UT,NID = DXE.UT,DXE.NID
-local EncDB,CE
+local UT,NID = addon.UT,addon.NID
+local EncDB,CE,alerts,raidicons,arrows
 local userdata = {}
 
 ---------------------------------------------
@@ -63,12 +63,12 @@ end
 -- INITIALIZATION
 ---------------------------------------------
 
-local Invoker = DXE:NewModule("Invoker","AceEvent-3.0","AceTimer-3.0")
-DXE.Invoker = Invoker
-local HW = DXE.HW
-local Alerts = DXE.Alerts
-local Arrows = DXE.Arrows
-local RaidIcons = DXE.RaidIcons
+local module = addon:NewModule("Invoker","AceEvent-3.0","AceTimer-3.0")
+addon.Invoker = module
+local HW = addon.HW
+local Alerts = addon.Alerts
+local Arrows = addon.Arrows
+local RaidIcons = addon.RaidIcons
 -- Hold event info
 local RegEvents,CombatEvents = {},{}
 
@@ -83,25 +83,24 @@ local debugDefaults = {
 	SetUserData = false,
 	Alerts = false,
 	REG_EVENT = false,
-	FindUnitID = false,
 	HW_TRACER_ACQUIRED = false,
 }
 
 --@end-debug@
 
-function Invoker:OnInitialize()
-	DXE.RegisterCallback(self,"SetActiveEncounter","OnSet")
-	DXE.RegisterCallback(self,"StartEncounter","OnStart")
-	DXE.RegisterCallback(self,"StopEncounter","OnStop")
+function module:OnInitialize()
+	addon.RegisterCallback(self,"SetActiveEncounter","OnSet")
+	addon.RegisterCallback(self,"StartEncounter","OnStart")
+	addon.RegisterCallback(self,"StopEncounter","OnStop")
 
 	--@debug@
-	self.db = DXE.db:RegisterNamespace("Invoker", {
+	self.db = addon.db:RegisterNamespace("Invoker", {
 		global = {
 			debug = debugDefaults
 		},
 	})
 
-	debug = DXE:CreateDebugger("Invoker",self.db.global,debugDefaults)
+	debug = addon:CreateDebugger("Invoker",self.db.global,debugDefaults)
 	--@end-debug@
 end
 
@@ -109,7 +108,7 @@ end
 -- CONTROLS
 ---------------------------------------------
 
-function Invoker:OnStart(_,...)
+function module:OnStart(_,...)
 	if CE.onstart then
 		self:InvokeCommands(CE.onstart,...)
 	end
@@ -119,7 +118,7 @@ function Invoker:OnStart(_,...)
 	for event in pairs(RegEvents) do
 		self:RegisterEvent(event,"REG_EVENT")
 	end
-	DXE:SetTracing(CE.onactivate.tracing)
+	addon:SetTracing(CE.onactivate.tracing)
 	-- Reset colors
 	for i,hw in ipairs(HW) do
 		if hw:IsOpen() and not hw.tracer:First() then
@@ -128,7 +127,7 @@ function Invoker:OnStart(_,...)
 	end
 end
 
-function Invoker:OnStop()
+function module:OnStop()
 	if not CE then return end
 	self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 	for event in pairs(RegEvents) do
@@ -204,7 +203,7 @@ do
 	end
 end
 
-function Invoker:GetConditions()
+function module:GetConditions()
 	return conditions
 end
 
@@ -224,8 +223,8 @@ end
 
 -- IMPORTANT - Return values should all be strings
 local RepFuncs = {
-	playerguid = function() return DXE.PGUID end,
-	playername = function() return DXE.PNAME end,
+	playerguid = function() return addon.PGUID end,
+	playername = function() return addon.PNAME end,
 	vehicleguid  = function() return UnitGUID("vehicle") or "" end,
 	difficulty = function() return tostring(GetCurrentDungeonDifficulty()) end,
 	-- First health watcher
@@ -254,7 +253,7 @@ do
 	end
 end
 
-function Invoker:GetRepFuncs()
+function module:GetRepFuncs()
 	return RepFuncs
 end
 
@@ -356,7 +355,7 @@ end
 -- USERDATA
 ---------------------------------------------
 
-function Invoker:ResetUserData()
+function module:ResetUserData()
 	wipe(userdata)
 	if not CE.userdata then return end
 	-- Copy defaults into userdata
@@ -410,23 +409,37 @@ end
 ---------------------------------------------
 local Throttles = {}
 
-function Invoker:RemoveThrottles()
+function module:RemoveThrottles()
 	wipe(Throttles)
 end
 
+--[[
+local key,var = info[#info-4],info[#info-2]
+	local info = EDB[key].alerts[var]
+	local stgs = pfl.Encounters[key][var]
+
+	if info.type == "dropdown" then
+		Alerts:Dropdown(info.var,info.varname,10,5,stgs.sound,stgs.color1,stgs.color2)
+	elseif info.type == "centerpopup" then
+		Alerts:CenterPopup(name,info.varname,10,5,stgs.sound,stgs.color1,stgs.color2)
+	elseif info.type == "simple" then
+		Alerts:Simple(info.varname,5,stgs.sound,stgs.color1)
+	end
+]]
+
 local GetTime = GetTime
-local function StartAlert(name,...)
-	local info = CE.alerts[name]
+local function StartAlert(id,stgs,...)
+	local info = alerts[id]
 	-- Sanity check
 	if not info then return true end
 	-- Throttling
 	if info.throttle then
 		-- Initialize to 0 if non-existant
-		Throttles[name] = Throttles[name] or 0
+		Throttles[id] = Throttles[id] or 0
 		-- Check throttle
 		local t = GetTime()
-		if Throttles[name] + info.throttle < t then
-			Throttles[name] = t
+		if Throttles[id] + info.throttle < t then
+			Throttles[id] = t
 		else
 			-- Failed throttle so exit out
 			return
@@ -440,17 +453,17 @@ local function StartAlert(name,...)
 		time = tonumber(ReplaceFuncs(ReplaceVars(time)))
 	end
 	--@debug@
-	debug("Alerts","name: %s text: %s time: %s flashtime: %s sound: %s color1: %s color2: %s",name,text,time,info.flashtime,info.sound,info.color1,info.color2)
+	debug("Alerts","id: %s text: %s time: %s flashtime: %s sound: %s color1: %s color2: %s",id,text,time,info.flashtime,stgs.sound,stgs.color1,stgs.color2)
 	--@end-debug@
 	-- Sanity check
 	if not time or time < 0 then return end
 	-- Pass in appropriate arguments
 	if info.type == "dropdown" then
-		Alerts:Dropdown(name,text,time,info.flashtime,info.sound,info.color1,info.color2)
+		Alerts:Dropdown(id,text,time,info.flashtime,stgs.sound,stgs.color1,stgs.color2)
 	elseif info.type == "centerpopup" then
-		Alerts:CenterPopup(name,text,time,info.flashtime,info.sound,info.color1,info.color2)
+		Alerts:CenterPopup(id,text,time,info.flashtime,stgs.sound,stgs.color1,stgs.color2)
 	elseif info.type == "simple" then
-		Alerts:Simple(text,time,info.sound,info.color1)
+		Alerts:Simple(text,time,stgs.sound,stgs.color1)
 	end
 end
 
@@ -461,14 +474,14 @@ local Timers = {}
 
 local function canceltimer(name)
 	if Timers[name] then
-		Invoker:CancelTimer(Timers[name].handle,true)
+		module:CancelTimer(Timers[name].handle,true)
 		Timers[name].args = del(Timers[name].args)
 		Timers[name] = del(Timers[name])
 	end
 	return true
 end
 
-function Invoker:RemoveAllTimers()
+function module:RemoveAllTimers()
 	for name in pairs(Timers) do
 		canceltimer(name)
 	end
@@ -476,7 +489,7 @@ function Invoker:RemoveAllTimers()
 	self:CancelAllTimers()
 end
 
-function Invoker:FireTimer(name)
+function module:FireTimer(name)
 	if CE.timers[name] then
 		-- Don't wipe Timers[name], it could be rescheduled
 		self:InvokeCommands(CE.timers[name],unpack(Timers[name].args))
@@ -487,14 +500,14 @@ end
 -- Proximity Checking
 ---------------------------------------------
 
-local ProximityFuncs = DXE:GetProximityFuncs() 
+local ProximityFuncs = addon:GetProximityFuncs() 
 
 -- @param target Name/GUID of a unit
 -- @param range Number of yards to check to see if player is in range of target.
 -- 				 It must be a key in ProximityFuncs. Validator ensures this.
 -- @return boolean 'true' if the player is in range of the target. 'false' otherwise.
 local function CheckProximity(target,range)
-	local unit = DXE:GetUnitID(target)
+	local unit = addon:GetUnitID(target)
 	if not unit then return false end
 	return ProximityFuncs[range](unit)
 end
@@ -503,11 +516,13 @@ end
 -- Arrows
 ---------------------------------------------
 
-local function StartArrow(name,...)
-	local info = CE.arrows[name]
+local function StartArrow(name,stgs,...)
+	local info = arrows[name]
 	if not info then return end
 	local unit = ReplaceTokens(info.unit,...)
-	Arrows:AddTarget(unit,info.persist,info.action,info.msg,info.spell,info.sound,info.fixed)
+	unit = addon:GetUnitID(unit)
+	if not UnitExists(unit or "") then return end
+	Arrows:AddTarget(unit,info.persist,info.action,info.msg,info.spell,stgs.sound,info.fixed)
 end
 
 ---------------------------------------------
@@ -526,13 +541,14 @@ end
     8 = White Skull 
 ]]
 
-local function SetRaidIcon(name,...)
-	local info = CE.raidicons[name]
+local function SetRaidIcon(name,stgs,...)
+	local info = raidicons[name]
 	if not info then return end
 	if info.type == "FRIENDLY" then
 		local unit = ReplaceTokens(info.unit,...)
-		if not unit then return end
-		RaidIcons:MarkFriendly(unit,info.icon,info.persist)
+		unit = addon:GetUnitID(unit)
+		if not UnitExists(unit or "") then return end
+		RaidIcons:MarkFriendly(unit,stgs.icon,info.persist)
 	end
 end
 
@@ -557,7 +573,8 @@ local CommandFuncs = {
 	end,
 
 	alert = function(info,...)
-		if EncDB[CE.alerts[info].var] then StartAlert(info,...) end
+		local stgs = EncDB[alerts[info].var]
+		if stgs.enabled then StartAlert(info,stgs,...) end
 		return true
 	end,
 
@@ -566,7 +583,7 @@ local CommandFuncs = {
 		-- Rescheduled Timers are overwritten
 		canceltimer(name)
 		Timers[name] = new()
-		Timers[name].handle = Invoker:ScheduleTimer("FireTimer",time,name)
+		Timers[name].handle = module:ScheduleTimer("FireTimer",time,name)
 		local args = new()
 		-- Only need the first 7 (up to spellID)
 		args[1],args[2],args[3],args[4],args[5],args[6],args[7] = ...
@@ -577,12 +594,12 @@ local CommandFuncs = {
 	canceltimer = canceltimer,
 
 	resettimer = function(info,...) 
-		DXE:ResetTimer() 
+		addon:ResetTimer() 
 		return true
 	end,
 
 	tracing = function(info,...)
-		DXE:SetTracing(info)
+		addon:SetTracing(info)
 		return true
 	end,
 
@@ -594,14 +611,16 @@ local CommandFuncs = {
 	end,
 
 	raidicon = function(info,...)
-		if DXE:IsPromoted() and EncDB[CE.raidicons[info].var] then
-			SetRaidIcon(info,...)
+		local stgs = EncDB[raidicons[info].var].enabled
+		if addon:IsPromoted() and stgs.enabled then
+			SetRaidIcon(info,stgs,...)
 		end
 		return true
 	end,
 
 	arrow = function(info,...)
-		if EncDB[CE.arrows[info].var] then StartArrow(info,...) end
+		local stgs = EncDB[arrows[info].var]
+		if stgs.enabled then StartArrow(info,stgs,...) end
 		return true
 	end,
 
@@ -618,7 +637,7 @@ local CommandFuncs = {
 
 -- @param bundle Command bundles
 -- @param ... arguments passed with the event
-function Invoker:InvokeCommands(bundle,...)
+function module:InvokeCommands(bundle,...)
 	for _,list in ipairs(bundle) do
 		for _,line in ipairs(list) do
 			local type,info = next(line)
@@ -635,7 +654,7 @@ end
 ---------------------------------------------
 
 --event, timestamp, eventtype, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, spellID, spellName,...
-function Invoker:COMBAT_EVENT(event,timestamp,eventtype,...)
+function module:COMBAT_EVENT(event,timestamp,eventtype,...)
 	if not CombatEvents[eventtype] then return end
 	local spellID = select(7,...)
 	local bundle = CombatEvents[eventtype]["*"] or CombatEvents[eventtype][spellID]
@@ -644,7 +663,7 @@ function Invoker:COMBAT_EVENT(event,timestamp,eventtype,...)
 	end
 end
 
-function Invoker:REG_EVENT(event,...)
+function module:REG_EVENT(event,...)
 	--@debug@
 	debug("REG_EVENT",event,...)
 	--@end-debug@
@@ -658,7 +677,7 @@ local REG_ALIASES = {
 	WHISPER = "CHAT_MSG_RAID_BOSS_WHISPER",
 }
 
-function Invoker:AddEventData()
+function module:AddEventData()
 	if not CE.events then return end
 	-- Iterate over events table
 	for _,info in ipairs(CE.events) do
@@ -685,7 +704,7 @@ function Invoker:AddEventData()
 	end
 end
 
-function Invoker:WipeEvents()
+function module:WipeEvents()
 	wipe(RegEvents)
 	for k,v in pairs(CombatEvents) do
 		if type(v) == "table" then del(v) end
@@ -701,7 +720,7 @@ end
 local AcquiredBundles = {}
 local UnitIsDead = UnitIsDead
 
-function Invoker:HW_TRACER_ACQUIRED(event,unit)
+function module:HW_TRACER_ACQUIRED(event,unit)
 	local name = UnitName(unit)
 	--@debug@
 	debug("HW_TRACER_ACQUIRED","name: %s",name)
@@ -712,7 +731,7 @@ function Invoker:HW_TRACER_ACQUIRED(event,unit)
 end
 
 -- Each entry in 
-function Invoker:SetOnAcquired()
+function module:SetOnAcquired()
 	wipe(AcquiredBundles)
 	local onacquired = CE.onacquired
 	if not onacquired then return end
@@ -721,18 +740,21 @@ function Invoker:SetOnAcquired()
 	end
 end
 
-DXE.RegisterCallback(Invoker,"HW_TRACER_ACQUIRED")
+addon.RegisterCallback(module,"HW_TRACER_ACQUIRED")
 
 ---------------------------------------------
 -- API
 ---------------------------------------------
 
-function Invoker:OnSet(_,data)
+function module:OnSet(_,data)
 	assert(type(data) == "table","Expected 'data' table as argument #1 in OnSet. Got '"..tostring(data).."'")
-	-- Set data upvalue
+	-- Set upvalues
 	CE = data
-	-- Set db upvalue
-	EncDB = DXE.db.profile.Encounters[CE.key]
+	arrows = CE.arrows
+	raidicons = CE.raidicons
+	alerts = CE.alerts
+	-- Set db upvalues
+	EncDB = addon.db.profile.Encounters[CE.key]
 	-- Wipe events
 	self:WipeEvents()
 	-- Register events

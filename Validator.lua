@@ -3,21 +3,21 @@
 -- Based off AceConfig's validation
 ---------------------------------------------
 
-local DXE = DXE
+local addon = DXE
 local version = tonumber(("$Rev$"):sub(7, -3))
-DXE.version = version > DXE.version and version or DXE.version
+addon.version = version > addon.version and version or addon.version
 
 local ipairs,pairs = ipairs,pairs
 local gmatch,match = string.gmatch,string.match
 local assert,type,select = assert,type,select
 local select,concat,wipe = select,table.concat,wipe
 
-local Sounds = DXE.Constants.Sounds
-local Colors = DXE.Constants.Colors
-local conditions = DXE.Invoker:GetConditions()
-local RepFuncs = DXE.Invoker:GetRepFuncs()
-local ProximityFuncs = DXE:GetProximityFuncs()
-local util = DXE.util
+local Sounds = addon.Constants.Sounds
+local Colors = addon.Constants.Colors
+local conditions = addon.Invoker:GetConditions()
+local RepFuncs = addon.Invoker:GetRepFuncs()
+local ProximityFuncs = addon:GetProximityFuncs()
+local util = addon.util
 
 local isstring = {["string"] = true, _ = "string"}
 local isstringtable = {["string"] = true, ["table"] = true, _ = "string or table"}
@@ -530,7 +530,7 @@ local function validate(data,errlvl,...)
 	end
 end
 
-function DXE:ValidateData(data)
+function addon:ValidateData(data)
 	errlvl=(errlvl or 0)+1
 	local name = data.name or data.key or "Data"
 	validate(data,errlvl,name)

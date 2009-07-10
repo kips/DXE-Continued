@@ -2,13 +2,13 @@
 -- DEBUGGING
 -----------------------------------------
 
-local DXE = _G.DXE
+local addon = DXE
 
 local _G,find,format,select,gsub = _G,string.find,string.format,select,string.gsub
 local GetChatWindowInfo = GetChatWindowInfo
 local LEFTOFVAR, RIGHTOFVAR = "|cff00ff00<|r|cffeda55f", "|r|cff00ff00>|r "
 
-function DXE:AddDebugOptions(name,global)
+function addon:AddDebugOptions(name,global)
 	local tbl = {
 		type = "group",
 		name = name,
@@ -85,7 +85,7 @@ local function CreateDebugFunction(name,global,outputWindow)
 	end
 end
 
-function DXE:CreateDebugger(name,global,defaults,windowName)
+function addon:CreateDebugger(name,global,defaults,windowName)
 	-- Remove leftover variables in globals
 	for k in pairs(global.debug) do
 		if defaults[k] == nil then

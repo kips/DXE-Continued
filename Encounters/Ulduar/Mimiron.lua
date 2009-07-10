@@ -163,9 +163,9 @@ do
 				sound = "ALERT2",
 			},
 			shockblastwarn = {
-				type = "centerpopup",
 				var = "shockblastwarn",
 				varname = format(L["%s Cast"],SN[63631]),
+				type = "centerpopup",
 				text = format(L["%s Cast"],SN[63631]),
 				time = 4,
 				color1 = "MAGENTA",

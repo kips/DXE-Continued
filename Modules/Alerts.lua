@@ -1,19 +1,20 @@
-local DXE = DXE
+local addon = DXE
 local version = tonumber(("$Rev$"):sub(7, -3))
-DXE.version = version > DXE.version and version or DXE.version
-local L = DXE.L
+addon.version = version > addon.version and version or addon.version
+local L = addon.L
 
 local UIParent = UIParent
-local AceGUI = DXE.AceGUI
-local AceTimer = DXE.AceTimer
+local SM = addon.SM
+local AceGUI = addon.AceGUI
+local AceTimer = addon.AceTimer
 local format = string.format
-local Colors,Sounds = DXE.Constants.Colors,DXE.Constants.Sounds
+local Colors,Sounds = addon.Constants.Colors,addon.Constants.Sounds
 
 local GetTime,PlaySoundFile,ipairs,pairs,next,remove = 
 		GetTime,PlaySoundFile,ipairs,pairs,next,tremove
 
 local scale
-local util = DXE.util
+local util = addon.util
 
 local animationTime = 0.3
 local fadeTime = 2
@@ -22,8 +23,8 @@ local fadeTime = 2
 -- INITIALIZATION
 ---------------------------------------
 
-local Alerts = DXE:NewModule("Alerts","AceTimer-3.0")
-DXE.Alerts = Alerts
+local module = addon:NewModule("Alerts","AceTimer-3.0")
+addon.Alerts = module
 local Active = {}
 local TopAlertStack = {}
 local CenterAlertStack = {}
@@ -31,29 +32,29 @@ local AlertPool = {}
 
 local TopStackAnchor,CenterStackAnchor
 
-function Alerts:OnInitialize()
+function module:OnInitialize()
 	-- Top stack anchor
-	TopStackAnchor = DXE:CreateLockableFrame("AlertsTopStackAnchor",245,10,format("%s - %s",L["Alerts"],L["Top Anchor"]))
-	DXE:RegisterMoveSaving(TopStackAnchor,"TOP","UIParent","TOP",0,-16)
-	DXE:LoadPosition("DXEAlertsTopStackAnchor")
+	TopStackAnchor = addon:CreateLockableFrame("AlertsTopStackAnchor",245,10,format("%s - %s",L["Alerts"],L["Top Anchor"]))
+	addon:RegisterMoveSaving(TopStackAnchor,"TOP","UIParent","TOP",0,-16)
+	addon:LoadPosition("DXEAlertsTopStackAnchor")
 
 	-- Bottom stack anchor
-	CenterStackAnchor = DXE:CreateLockableFrame("AlertsCenterStackAnchor",245,10,format("%s - %s",L["Alerts"],L["Center Anchor"]))
-	DXE:RegisterMoveSaving(CenterStackAnchor,"CENTER","UIParent","CENTER",0,100)
-	DXE:LoadPosition("DXEAlertsCenterStackAnchor")
+	CenterStackAnchor = addon:CreateLockableFrame("AlertsCenterStackAnchor",245,10,format("%s - %s",L["Alerts"],L["Center Anchor"]))
+	addon:RegisterMoveSaving(CenterStackAnchor,"CENTER","UIParent","CENTER",0,100)
+	addon:LoadPosition("DXEAlertsCenterStackAnchor")
 
-	scale = DXE.db.global.AlertsScale
+	scale = addon.db.global.AlertsScale
 end
 
-function Alerts:AlertsScaleChanged()
-	scale = DXE.db.global.AlertsScale
+function module:AlertsScaleChanged()
+	scale = addon.db.global.AlertsScale
 	for alert in pairs(Active) do
 		alert:SetScale(scale)
 	end
 end
-DXE.RegisterCallback(Alerts,"AlertsScaleChanged")
+addon.RegisterCallback(module,"AlertsScaleChanged")
 
-function Alerts:OnDisable()
+function module:OnDisable()
 	self:QuashAllAlerts()
 end
 
@@ -313,19 +314,19 @@ end
 ---------------------------------------
 
 local function GetMedia(sound,c1,c2)
-	return Sounds[sound],Colors[c1],Colors[c2]
+	return SM:Fetch("sound",sound),Colors[c1],Colors[c2]
 end
 
 ---------------------------------------
 -- API
 ---------------------------------------
 
-function Alerts:QuashAllAlerts()
+function module:QuashAllAlerts()
 	for alert in pairs(Active) do alert:Destroy() end
 end
 
 local find = string.find
-function Alerts:QuashAlertsByPattern(pattern)
+function module:QuashAlertsByPattern(pattern)
 	for alert in pairs(Active) do
 		if alert.data.id and find(alert.data.id,pattern) then
 			alert:Destroy()
@@ -333,7 +334,7 @@ function Alerts:QuashAlertsByPattern(pattern)
 	end
 end
 
-function Alerts:GetAlertTimeleft(id)
+function module:GetAlertTimeleft(id)
 	for alert in pairs(Active) do
 		if alert.data.id == id then
 			return alert.data.timeleft
@@ -346,7 +347,7 @@ end
 -- This alert counts down a timer at the top of the screen
 -- When a "Lead Time" is achieved, it drops to the center, announces a message, and plays a sound effect
 -- When it expires, it fades off the screen
-function Alerts:Dropdown(id, text, totalTime, flashTime, sound, c1, c2)
+function module:Dropdown(id, text, totalTime, flashTime, sound, c1, c2)
 	local soundFile,c1Data,c2Data = GetMedia(sound,c1,c2)
 	local alert = GetAlert()
 	alert:SetID(id)
@@ -369,7 +370,7 @@ end
 
 -- Center popup countdown alert
 -- This alert plays a sound right away, then displays a (short) countdown midscreen.
-function Alerts:CenterPopup(id, text, totalTime, flashTime, sound, c1, c2)
+function module:CenterPopup(id, text, totalTime, flashTime, sound, c1, c2)
 	local soundFile,c1Data,c2Data = GetMedia(sound,c1,c2)
 	local alert = GetAlert()
 	alert:SetID(id)
@@ -385,7 +386,7 @@ function Alerts:CenterPopup(id, text, totalTime, flashTime, sound, c1, c2)
 end
 
 -- Center popup, simple text
-function Alerts:Simple(text, totalTime, sound, c1)
+function module:Simple(text, totalTime, sound, c1)
 	local soundFile,c1Data = GetMedia(sound,c1)
 	local alert = GetAlert()
 	if c1Data then 
@@ -405,9 +406,9 @@ end
 -- ALERT TEST
 ---------------------------------------------
 
-function DXE:AlertTest()
-	Alerts:CenterPopup("AlertTest1", "Decimating. Life Tap Now!", 10, 5, "ALERT1", "DCYAN")
-	Alerts:Dropdown("AlertTest2", "Big City Opening", 20, 5, "ALERT2", "BLUE")
-	Alerts:Simple("Gay",3,"ALERT3","RED")
+function addon:AlertsTest()
+	module:CenterPopup("AlertTest1", "Decimating. Life Tap Now!", 10, 5, "DXE ALERT1", "DCYAN")
+	module:Dropdown("AlertTest2", "Biger City Opening", 20, 5, "DXE ALERT2", "BLUE")
+	module:Simple("Gay",3,"DXE ALERT3","RED")
 end
 

@@ -42,14 +42,14 @@ local defaults = {
 -- INITIALIZATION
 ---------------------------------------------
 
-local DXE = LibStub("AceAddon-3.0"):NewAddon("DXE","AceEvent-3.0","AceTimer-3.0","AceConsole-3.0","AceComm-3.0","AceSerializer-3.0")
-_G.DXE = DXE
-DXE.version = tonumber(("$Rev$"):sub(7, -3))
-DXE:SetDefaultModuleState(false)
-DXE.callbacks = LibStub("CallbackHandler-1.0"):New(DXE)
-DXE.defaults = defaults
+local addon = LibStub("AceAddon-3.0"):NewAddon("DXE","AceEvent-3.0","AceTimer-3.0","AceConsole-3.0","AceComm-3.0","AceSerializer-3.0")
+_G.DXE = addon
+addon.version = tonumber(("$Rev$"):sub(7, -3))
+addon:SetDefaultModuleState(false)
+addon.callbacks = LibStub("CallbackHandler-1.0"):New(addon)
+addon.defaults = defaults
 
-function DXE:RefreshDefaults()
+function addon:RefreshDefaults()
 	self.db:RegisterDefaults(defaults)
 end
 
@@ -65,6 +65,8 @@ local UnitName,UnitGUID,UnitIsEnemy,UnitClass,UnitAffectingCombat,UnitHealth,Uni
 		UnitName,UnitGUID,UnitIsEnemy,UnitClass,UnitAffectingCombat,UnitHealth,UnitIsFriend,UnitIsDead
 local band = bit.band
 
+local db,gbl,pfl
+
 ---------------------------------------------
 -- LIBS
 ---------------------------------------------
@@ -74,6 +76,7 @@ local AC = LibStub("AceConfig-3.0")
 local AceGUI = LibStub("AceGUI-3.0")
 local AceTimer = LibStub("AceTimer-3.0")
 local L = LibStub("AceLocale-3.0"):GetLocale("DXE")
+local SM = LibStub("LibSharedMedia-3.0")
 
 -- Localized spell names
 local SN = setmetatable({},{
@@ -122,11 +125,11 @@ end
 
 
 local CN = setmetatable({}, {__index =
-	function(t, name)
-		local class = select(2,UnitClass(name))
-		if not class then return name end
-		t[name] = class_to_color[class]..name.."|r"
-		return t[name]
+	function(t, unit)
+		local class = select(2,UnitClass(unit))
+		if not class then return unit end
+		t[unit] = class_to_color[class]..unit.."|r"
+		return t[unit]
 	end,
 })
 
@@ -141,9 +144,10 @@ do
 		NID = NID,
 		UT = UT,
 		CN = CN,
+		SM = SM,
 	}
 	for k,lib in pairs(libs) do
-		DXE[k] = lib
+		addon[k] = lib
 	end
 end
 
@@ -153,7 +157,7 @@ end
 local ipairs,pairs = ipairs,pairs
 
 local util = {}
-DXE.util = util
+addon.util = util
 
 local function tablesize(t)
 	local n = 0
@@ -185,13 +189,13 @@ util.blend = blend
 -- MODULES
 ---------------------------------------------
 
-function DXE:EnableAllModules()
+function addon:EnableAllModules()
 	for name in self:IterateModules() do
 		self:EnableModule(name)
 	end
 end
 
-function DXE:DisableAllModules()
+function addon:DisableAllModules()
 	for name in self:IterateModules() do
 		self:DisableModule(name)
 	end
@@ -238,7 +242,7 @@ do
 		[28] = function(unit) return CheckInteractDistance(unit,4) end,
 	}
 
-	function DXE:GetProximityFuncs()
+	function addon:GetProximityFuncs()
 		return ProximityFuncs
 	end
 end
@@ -260,10 +264,10 @@ end
 do
 	-- Error margin added to ScheduleTimer to ensure it fires after the throttling period
 	local _epsilon = 0.2
-	-- @_postcall A boolean determining whether or not the function is called 
-	--            after the end of the throttle period if called during it. If this
-	--			     is set to true the function should not be passing in arguments
-	--            because they will be lost
+	-- @param _postcall A boolean determining whether or not the function is called 
+	-- 		           after the end of the throttle period if called during it. If this
+	--					     is set to true the function should not be passing in arguments
+	--         		     because they will be lost
 	local function ThrottleFunc(_obj,_func,_time,_postcall)
 		assert(type(_func) == "string","Expected _func to be a string")
 		assert(type(_obj) == "table","Expected _obj to be a table")
@@ -288,7 +292,7 @@ do
 		end
 	end
 
-	DXE.ThrottleFunc = ThrottleFunc
+	addon.ThrottleFunc = ThrottleFunc
 end
 
 ---------------------------------------------
@@ -296,7 +300,7 @@ end
 -- Credits to RDX
 ---------------------------------------------
 local EDB = {}
-DXE.EDB = EDB
+addon.EDB = EDB
 -- Current encounter data
 local CE 
 -- Received database
@@ -304,7 +308,7 @@ local RDB
 
 local RegisterQueue = {}
 local Initialized = false
-function DXE:RegisterEncounter(data)
+function addon:RegisterEncounter(data)
 	local key = data.key
 
 	-- Convert version
@@ -348,7 +352,7 @@ end
 
 --- Remove an encounter previously added with RegisterEncounter.
 -- There's no need to update the version string because we always register after an unregister
-function DXE:UnregisterEncounter(key)
+function addon:UnregisterEncounter(key)
 	if key == "default" or not EDB[key] then return end
 
 	-- Swap to default if we're trying to unregister the current encounter
@@ -363,25 +367,25 @@ function DXE:UnregisterEncounter(key)
 	self:UpdateTriggers()
 end
 
-function DXE:GetEncounterData(key)
+function addon:GetEncounterData(key)
 	return EDB[key]
 end
 
-function DXE:SetEncounterData(key,data)
+function addon:SetEncounterData(key,data)
 	EDB[key] = data
 end
 
 --- Get the name of the currently-active encounter
-function DXE:GetActiveEncounter()
+function addon:GetActiveEncounter()
 	return CE and CE.key or "default"
 end
 
-function DXE:SetCombat(flag,event,func)
+function addon:SetCombat(flag,event,func)
 	if flag then self:RegisterEvent(event,func) end
 end
 
 --- Change the currently-active encounter.
-function DXE:SetActiveEncounter(key)
+function addon:SetActiveEncounter(key)
 	assert(type(key) == "string","String expected in SetActiveEncounter")
 	-- Check the new encounter
 	if not EDB[key] then return end
@@ -416,7 +420,7 @@ function DXE:SetActiveEncounter(key)
 end
 
 -- Start the current encounter
-function DXE:StartEncounter(...)
+function addon:StartEncounter(...)
 	if self:IsRunning() then return end
 	self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED","UNIT_DIED")
 	self.callbacks:Fire("StartEncounter",...)
@@ -424,7 +428,7 @@ function DXE:StartEncounter(...)
 end
 
 -- Stop the current encounter
-function DXE:StopEncounter()
+function addon:StopEncounter()
 	if not self:IsRunning() then return end
 	self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 	self.callbacks:Fire("StopEncounter")
@@ -438,7 +442,7 @@ do
 		else return k,v end
 	end
 
-	function DXE:IterateEDB()
+	function addon:IterateEDB()
 		return iter,EDB
 	end
 end
@@ -466,7 +470,7 @@ do
 		-- Get zone name
 		local zone = GetRealZoneText()
 		local hasName,hasYell = false,false
-		for key, data in DXE:IterateEDB() do
+		for key, data in addon:IterateEDB() do
 			if data.zone == zone then
 				if data.triggers then
 					local scan = data.triggers.scan
@@ -486,7 +490,7 @@ do
 	end
 
 	local ScanHandle
-	function DXE:UpdateTriggers()
+	function addon:UpdateTriggers()
 		-- Clear trigger tables
 		wipe(NameTriggers)
 		wipe(YellTriggers)
@@ -498,7 +502,7 @@ do
 		if scan then ScanHandle = self:ScheduleRepeatingTimer("ScanUpdate",2) end
 		if yell then self:RegisterEvent("CHAT_MSG_MONSTER_YELL") end
 	end
-	DXE:ThrottleFunc("UpdateTriggers",1,true)
+	addon:ThrottleFunc("UpdateTriggers",1,true)
 end
 
 
@@ -507,7 +511,7 @@ end
 ---------------------------------------------
 
 local Roster = {}
-DXE.Roster = Roster
+addon.Roster = Roster
 
 local refreshFuncs = {
 	name_to_unit = function(t,i,id) 
@@ -530,7 +534,7 @@ local numOnline = 0
 local numMembers = 0
 local tmpOnline,tmpMembers
 local RosterHandle
-function DXE:RAID_ROSTER_UPDATE()
+function addon:RAID_ROSTER_UPDATE()
 	--@debug@
 	debug("RAID_ROSTER_UPDATE","Invoked")
 	--@end-debug@
@@ -578,7 +582,7 @@ function DXE:RAID_ROSTER_UPDATE()
 	numOnline = tmpOnline
 end
 
-function DXE:IsPromoted()
+function addon:IsPromoted()
 	return IsRaidLeader() or IsRaidOfficer()
 end
 
@@ -586,7 +590,7 @@ end
 -- GENERIC EVENTS
 ---------------------------------------------
 
-function DXE:PLAYER_ENTERING_WORLD()
+function addon:PLAYER_ENTERING_WORLD()
 	self.PGUID = self.PGUID or UnitGUID("player")
 	self.PNAME = self.PNAME or UnitName("player")
 	self:UpdatePaneVisibility()
@@ -598,7 +602,7 @@ end
 ---------------------------------------------
 local LDBIcon = LibStub("LibDBIcon-1.0",true)
 
-function DXE:SetupMinimapIcon()
+function addon:SetupMinimapIcon()
 	local LDB = LibStub("LibDataBroker-1.1")
 	self.launcher = LDB:NewDataObject("DXE", 
 	{
@@ -617,22 +621,43 @@ end
 
 -- Replace default Print
 local print,format = print,string.format
-function DXE:Print(s)
+function addon:Print(s)
 	print(format("|cff99ff33DXE|r: %s",s)) -- 0.6, 1, 0.2
 end
 
+do
+	local funcs = {}
+	function addon:AddToRefreshProfile(func)
+		assert(type(func) == "function")
+		funcs[#funcs+1] = func
+	end
+
+	function addon:RefreshProfile()
+		pfl = db.profile
+		for k,func in ipairs(funcs) do
+			func(pfl)
+		end
+	end
+end
+
 -- Initialization
-function DXE:OnInitialize()
+function addon:OnInitialize()
 	Initialized = true
 
 	-- Database
 	self.db = LibStub("AceDB-3.0"):New("DXEDB",self.defaults)
-
+	db = self.db
+	gbl = db.global
+	pfl = db.profile
+	self:SetOptionsPointers()
 
 	-- Options
 	self.options = self:GetOptions()
 	AC:RegisterOptionsTable("DXE", self.options)
-	ACD:SetDefaultSize("DXE", 730,550)
+	ACD:SetDefaultSize("DXE", 890,550)
+	db.RegisterCallback(self, "OnProfileChanged", "RefreshProfile")
+	db.RegisterCallback(self, "OnProfileCopied", "RefreshProfile")
+	db.RegisterCallback(self, "OnProfileReset", "RefreshProfile")
 
 	--@debug@
 	debug = self:CreateDebugger("Core",self.db.global,debugDefaults)
@@ -682,7 +707,7 @@ function DXE:OnInitialize()
 	self:Print(L["Type |cffffff00/dxe|r for slash commands"])
 end
 
-function DXE:OnEnable()
+function addon:OnEnable()
 	self:UpdateTriggers()
 	self:UpdateLock()
 	self:UpdatePaneScale()
@@ -701,7 +726,7 @@ function DXE:OnEnable()
 	self:RequestAddOnVersions()
 end
 
-function DXE:OnDisable()
+function addon:OnDisable()
 	self:UpdateLockedFrames("Hide")
 	self:StopEncounter()
 	self:SetActiveEncounter("default")
@@ -714,7 +739,7 @@ end
 -- POSITIONING
 ---------------------------------------------
 
-function DXE:SavePosition(f)
+function addon:SavePosition(f)
 	local point, relativeTo, relativePoint, xOfs, yOfs = f:GetPoint()
 	local name = f:GetName()
 	self.db.profile.Positions[name].point = point
@@ -724,7 +749,7 @@ function DXE:SavePosition(f)
 	self.db.profile.Positions[name].yOfs = yOfs
 end
 
-function DXE:LoadPosition(name)
+function addon:LoadPosition(name)
 	local f = _G[name]
 	if not f then return end
 	f:ClearAllPoints()
@@ -756,11 +781,11 @@ do
 
 	local function stopMoving(self)
 		self:StopMovingOrSizing()
-		DXE:SavePosition(self)
+		addon:SavePosition(self)
 	end
 
 	-- Registers saving positions in database
-	function DXE:RegisterMoveSaving(frame,point,relativeTo,relativePoint,xOfs,yOfs,withShift)
+	function addon:RegisterMoveSaving(frame,point,relativeTo,relativePoint,xOfs,yOfs,withShift)
 		assert(type(frame) == "table","expected 'frame' to be a table")
 		assert(frame.IsObjectType and frame:IsObjectType("Region"),"'frame' is not a blizzard frame")
 		if withShift then
@@ -785,7 +810,7 @@ end
 -- TRIGGERING
 ---------------------------------------------
 
-function DXE:CHAT_MSG_MONSTER_YELL(_,msg,...)
+function addon:CHAT_MSG_MONSTER_YELL(_,msg,...)
 	--@debug@
 	debug("CHAT_MSG_MONSTER_YELL",msg,...)
 	--@end-debug@
@@ -800,11 +825,11 @@ end
 
 local FriendlyExceptions = {}
 
-function DXE:AddFriendlyException(name)
+function addon:AddFriendlyException(name)
 	FriendlyExceptions[name] = true
 end
 
-function DXE:Scan()
+function addon:Scan()
 	for i,unit in pairs(Roster.index_to_unit) do
 		local target = rIDtarget[i]
 		local name = UnitName(target)
@@ -819,7 +844,7 @@ function DXE:Scan()
 	return nil
 end
 
-function DXE:ScanUpdate()
+function addon:ScanUpdate()
 	local key = self:Scan()
 	if key then self:SetActiveEncounter(key) end
 end
@@ -828,37 +853,7 @@ end
 -- UNIT UTILITY
 ---------------------------------------------
 
--- For scanning bosses
-
--- @return uid The unit id of the name. UnitName(raid<number>target)
--- Can pass in other functions (such as UnitGUID) to compare a
--- different unit attribute
-function DXE:UnitID(name, unitattributefunc)
-	unitattributefunc = unitattributefunc or UnitName
-	if not name then return end
-	for i,unit in pairs(Roster.index_to_unit) do
-		local uid = rIDtarget[i]
-		local _name = unitattributefunc(uid)
-		if _name == name then
-			return uid
-		end
-	end
-	return nil
-end
-
--- @return name Finds the unit id of the name and returns the name of the unid id's target
-function DXE:TargetName(name)
-	local uid = self:UnitID(name)
-	if not uid then return nil end
-	local nextid = uid.."target"
-	if UnitExists(nextid) then
-		return UnitName(nextid)
-	else
-		return nil
-	end
-end
-
-function DXE:GetUnitID(target)
+function addon:GetUnitID(target)
 	if find(target,"0x%x+") then 
 		return Roster.guid_to_unit[target]
 	else 
@@ -898,7 +893,7 @@ do
 		GameTooltip:Hide()
 	end
 
-	function DXE:AddTooltipText(obj,title,text)
+	function addon:AddTooltipText(obj,title,text)
 		obj._ttTitle = title
 		obj._ttText = text
 		obj:SetScript("OnEnter",onEnter)
@@ -911,7 +906,7 @@ end
 ---------------------------------------------
 
 
-function DXE:ToggleConfig()
+function addon:ToggleConfig()
 	ACD[ACD.OpenFrames.DXE and "Close" or "Open"](ACD,"DXE")
 end
 
@@ -922,13 +917,13 @@ local backdrop = {
 	insets = {left = 2, right = 2, top = 2, bottom = 2}
 }
 
-function DXE:UpdatePaneScale()
+function addon:UpdatePaneScale()
 	local scale = self.db.global.PaneScale
 	self.Pane:SetScale(scale)
-	DXE:SavePosition(self.Pane)
+	addon:SavePosition(self.Pane)
 end
 
-function DXE:UpdatePaneVisibility()
+function addon:UpdatePaneVisibility()
 	if self.db.global.ShowPane then
 		local func = "Show"
 		func = self.db.global.PaneOnlyInRaid and (GetNumRaidMembers() > 0 and "Show" or "Hide") or func
@@ -947,7 +942,7 @@ do
 	-- @param highlight The highlight texture for the button
 	-- @param onclick The function of the OnClick script
 	-- @param anchor SetPoints the control LEFT, anchor, RIGHT
-	function DXE:AddPaneButton(normal,highlight,onClick,name,text)
+	function addon:AddPaneButton(normal,highlight,onClick,name,text)
 		local control = CreateFrame("Button",nil,self.Pane)
 		control:SetWidth(size)
 		control:SetHeight(size)
@@ -963,7 +958,7 @@ do
 end
 
 -- Idea based off RDX's Pane
-function DXE:CreatePane()
+function addon:CreatePane()
 	if self.Pane then self.Pane:Show() return end
 	local Pane = CreateFrame("Frame","DXEPane",UIParent)
 	Pane:Hide()
@@ -978,7 +973,7 @@ function DXE:CreatePane()
 	self:RegisterMoveSaving(Pane,"CENTER","UIParent","CENTER",nil,nil,true)
 	self:LoadPosition("DXEPane")
 	self:AddTooltipText(Pane,"Pane",L["|cffffff00Shift + Click|r to move"])
-	local function onUpdate() DXE:LayoutHealthWatchers() end
+	local function onUpdate() addon:LayoutHealthWatchers() end
 	Pane:HookScript("OnMouseDown",function(self) self:SetScript("OnUpdate",onUpdate) end)
 	Pane:HookScript("OnMouseUp",function(self) self:SetScript("OnUpdate",nil) end)
   	self.Pane = Pane
@@ -1040,7 +1035,7 @@ end
 
 do
 	local LockableFrames = {}
-	function DXE:RegisterForLocking(frame)
+	function addon:RegisterForLocking(frame)
 		assert(type(frame) == "table","expected 'frame' to be a table")
 		assert(frame.IsObjectType and frame:IsObjectType("Region"),"'frame' is not a blizzard frame")
 		LockableFrames[frame] = true
@@ -1048,7 +1043,7 @@ do
 	end
 
 	local backdrop = {bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background"}
-	function DXE:CreateLockableFrame(name,width,height,text)
+	function addon:CreateLockableFrame(name,width,height,text)
 		assert(type(name) == "string","expected 'name' to be a string")
 		assert(type(width) == "number" and width > 0,"expected 'width' to be a number > 0")
 		assert(type(height) == "number" and height > 0,"expected 'height' to be a number > 0")
@@ -1070,7 +1065,7 @@ do
 		return frame
 	end
 
-	function DXE:UpdateLock()
+	function addon:UpdateLock()
 		self:UpdateLockedFrames()
 		if self.db.global.Locked then
 			self:SetLocked()
@@ -1079,22 +1074,22 @@ do
 		end
 	end
 
-	function DXE:ToggleLock()
+	function addon:ToggleLock()
 		self.db.global.Locked = not self.db.global.Locked
 		self:UpdateLock()
 	end
 
-	function DXE:UpdateLockedFrames(func)
+	function addon:UpdateLockedFrames(func)
 		func = func or (self.db.global.Locked and "Hide" or "Show")
 		for frame in pairs(LockableFrames) do frame[func](frame) end
 	end
 
-	function DXE:SetLocked()
+	function addon:SetLocked()
 		self.Pane.lock:SetNormalTexture("Interface\\Addons\\DXE\\Textures\\Pane\\Locked")
 		self.Pane.lock:SetHighlightTexture("Interface\\Addons\\DXE\\Textures\\Pane\\Locked")
 	end
 
-	function DXE:SetUnlocked()
+	function addon:SetUnlocked()
 		self.Pane.lock:SetNormalTexture("Interface\\Addons\\DXE\\Textures\\Pane\\Unlocked")
 		self.Pane.lock:SetHighlightTexture("Interface\\Addons\\DXE\\Textures\\Pane\\Unlocked")
 	end
@@ -1108,7 +1103,7 @@ do
 	local function closeall() CloseDropDownMenus(1) end
 
 	local function onClick(self)
-		DXE:SetActiveEncounter(self.value)
+		addon:SetActiveEncounter(self.value)
 		CloseDropDownMenus()
 	end
 
@@ -1139,7 +1134,7 @@ do
 			info.owner = self
 			UIDropDownMenu_AddButton(info,1)
 
-			for key,data in DXE:IterateEDB() do
+			for key,data in addon:IterateEDB() do
 				work[data.category or data.zone] = true
 			end
 			for cat in pairs(work) do
@@ -1167,7 +1162,7 @@ do
 		elseif level == 2 then
 			local cat = UIDROPDOWNMENU_MENU_VALUE
 
-			for key,data in DXE:IterateEDB() do
+			for key,data in addon:IterateEDB() do
 				if (data.category or data.zone) == cat then
 					list[#list+1] = data.name
 					work[data.name] = key
@@ -1188,7 +1183,7 @@ do
 		end
 	end
 
-	function DXE:CreateSelector()
+	function addon:CreateSelector()
 		local selector = CreateFrame("Frame", "DXE_Selector", UIParent, "UIDropDownMenuTemplate") 
 		UIDropDownMenu_Initialize(selector, Initialize, "MENU")
 		UIDropDownMenu_SetSelectedValue(selector,"default")
@@ -1204,17 +1199,17 @@ do
 
 	--- Returns the encounter start time based off GetTime()
 	-- @return number >= 0
-	function DXE:GetElapsedTime()
+	function addon:GetElapsedTime()
 		return elapsedTime
 	end
 
 	--- Returns whether or not the timer is running
 	-- @return A boolean
-	function DXE:IsRunning()
+	function addon:IsRunning()
 		return isRunning
 	end
 
-	function DXE:SetRunning(val)
+	function addon:SetRunning(val)
 		isRunning = val
 	end
 
@@ -1224,20 +1219,20 @@ do
 	end
 
 	--- Starts the Pane timer
-	function DXE:StartTimer()
+	function addon:StartTimer()
 		elapsedTime = 0
 		self.Pane.timer.frame:SetScript("OnUpdate",onUpdate)
 		self:SetRunning(true)
 	end
 
 	--- Stops the Pane timer
-	function DXE:StopTimer()
+	function addon:StopTimer()
 		self.Pane.timer.frame:SetScript("OnUpdate",nil)
 		self:SetRunning(false)
 	end
 
 	--- Resets the Pane timer
-	function DXE:ResetTimer()
+	function addon:ResetTimer()
 		elapsedTime = 0
 		self.Pane.timer:SetTime(0)
 	end
@@ -1247,9 +1242,9 @@ end
 -- HEALTH WATCHERS
 ---------------------------------------------
 local HW = {}
-DXE.HW = HW
+addon.HW = HW
 
-function DXE:UNIT_DIED(_, _,eventtype, _, _, _, _, dstName)
+function addon:UNIT_DIED(_, _,eventtype, _, _, _, _, dstName)
 	if eventtype ~= "UNIT_DIED" then return end
 	for i,hw in ipairs(HW) do
 		if hw:GetName() == dstName then
@@ -1262,27 +1257,27 @@ end
 
 -- Create health watchers
 -- Only four are needed currently. Too many health watchers clutters the screen.
-function DXE:CreateHealthWatchers()
+function addon:CreateHealthWatchers()
 	if HW[1] then return end
 	for i=1,4 do HW[i] = AceGUI:Create("DXE_HealthWatcher") end
 
 	-- Only the main one sends updates
-	HW[1]:SetCallback("HW_TRACER_UPDATE",function(self,event,uid) DXE:TRACER_UPDATE(uid) end)
+	HW[1]:SetCallback("HW_TRACER_UPDATE",function(self,event,uid) addon:TRACER_UPDATE(uid) end)
 	HW[1]:EnableUpdates()
 
 	-- OnAcquired
-	local onacquire = function(self,event,uid) DXE.callbacks:Fire("HW_TRACER_ACQUIRED",uid) end
+	local onacquire = function(self,event,uid) addon.callbacks:Fire("HW_TRACER_ACQUIRED",uid) end
 	for i,hw in ipairs(HW) do 
 		hw:SetCallback("HW_TRACER_ACQUIRED",onacquire) 
 		hw.frame:SetParent(self.Pane)
 	end
 end
 
-function DXE:CloseAllHW()
+function addon:CloseAllHW()
 	for i=1,4 do HW[i]:Close(); HW[i].frame:Hide() end
 end
 
-function DXE:ShowFirstHW()
+function addon:ShowFirstHW()
 	if not HW[1]:IsShown() then
 		HW[1]:SetInfoBundle(CE.title,"",1,0,0,1)
 		HW[1].frame:Show()
@@ -1290,7 +1285,7 @@ function DXE:ShowFirstHW()
 end
 
 -- Names should be validated to be an array of size 4
-function DXE:SetTracing(names)
+function addon:SetTracing(names)
 	if not names then return end
 	local n = 0
 	for i,name in ipairs(names) do
@@ -1309,7 +1304,7 @@ function DXE:SetTracing(names)
 	self:LayoutHealthWatchers()
 end
 
-function DXE:LayoutHealthWatchers()
+function addon:LayoutHealthWatchers()
 	local midY = (GetScreenHeight()/2)*UIParent:GetEffectiveScale()
 	local x,y = self.Pane:GetCenter()
 	local s = self.Pane:GetEffectiveScale()
@@ -1338,7 +1333,7 @@ do
 	local throttle = 5
 	-- The last time the encounter was auto started + throttle time
 	local last = 0
-	function DXE:TRACER_UPDATE(uid)
+	function addon:TRACER_UPDATE(uid)
 		local time,running = GetTime(),self:IsRunning()
 		if self:IsAutoStart() and not running and UnitIsFriend(targetof[uid],"player") then
 			self:StartEncounter()
@@ -1351,19 +1346,19 @@ end
 
 do
 	local AutoStart,AutoStop
-	function DXE:SetAutoStart(val)
+	function addon:SetAutoStart(val)
 		AutoStart = not not val
 	end
 
-	function DXE:SetAutoStop(val)
+	function addon:SetAutoStop(val)
 		AutoStop = not not val
 	end
 
-	function DXE:IsAutoStart()
+	function addon:IsAutoStart()
 		return AutoStart
 	end
 
-	function DXE:IsAutoStop()
+	function addon:IsAutoStop()
 		return AutoStop
 	end
 end
@@ -1374,11 +1369,12 @@ end
 ---------------------------------------------
 
 local dead
-function DXE:CheckForWipe()
+function addon:CheckForWipe()
 	--@debug@
 	debug("CheckForWipe","Invoked")
 	--@end-debug@
 	if (UnitHealth("player") > 0 or UnitIsGhost("player")) and not UnitAffectingCombat("player") then
+		-- TODO: If this doesn't work then scan for the raid for units in combat and visible
 		if dead then
 			self:ScheduleTimer("CheckForWipe",3)
 			dead = nil
@@ -1396,7 +1392,7 @@ function DXE:CheckForWipe()
 	end
 end
 
-function DXE:CheckForEngage()
+function addon:CheckForEngage()
 	--@debug@
 	debug("CheckForEngage","Invoked")
 	--@end-debug@
@@ -1412,17 +1408,17 @@ end
 -- COMMS
 ---------------------------------------------
 
-function DXE:SendComm(commType,...)
+function addon:SendComm(commType,...)
 	assert(type(commType) == "string","Expected commType to be a string")
 	self:SendCommMessage("DXE", self:Serialize(commType,...), "RAID")
 end
 
-function DXE:OnCommReceived(prefix, msg, dist, sender)
+function addon:OnCommReceived(prefix, msg, dist, sender)
 	if dist ~= "RAID" or sender == self.PNAME then return end
 	self:DispatchComm(sender, self:Deserialize(msg))
 end
 
-function DXE:DispatchComm(sender,success,commType,...)
+function addon:DispatchComm(sender,success,commType,...)
 	if success then
 		local callback = "OnComm"..commType
 		if self[callback] and type(self[callback]) == "function" then
@@ -1438,11 +1434,11 @@ end
 
 -- Roster versions
 local RVS = {}
-DXE.RVS = RVS
+addon.RVS = RVS
 
 local window
 
-function DXE:GetNumWithAddOn()
+function addon:GetNumWithAddOn()
 	local n = 0
 	for k,v in ipairs(RVS) do
 		if v.versions.addon then
@@ -1452,7 +1448,7 @@ function DXE:GetNumWithAddOn()
 	return n
 end
 
-function DXE:CleanVersions()
+function addon:CleanVersions()
 	local n,i = #RVS,1
 	while i <= n do
 		local v = RVS[i]
@@ -1464,23 +1460,23 @@ end
 
 ----- COMMS
 
-function DXE:RequestAllVersions()
+function addon:RequestAllVersions()
 	self:SendComm("RequestAllVersions")
 end
 
-function DXE:OnCommRequestAllVersions()
+function addon:OnCommRequestAllVersions()
 	self:BroadcastAllVersions()
 end
 
-function DXE:RequestAddOnVersions()
+function addon:RequestAddOnVersions()
 	self:SendComm("RequestAddOnVersion")
 end
 
-function DXE:OnCommRequestAddOnVersion()
+function addon:OnCommRequestAddOnVersion()
 	self:BroadcastVersion("addon")
 end
 
-function DXE:GetVersionString()
+function addon:GetVersionString()
 	local work = {}
 	work[1] = format("%s,%s","addon",self.version)
 	for key, data in self:IterateEDB() do
@@ -1489,11 +1485,11 @@ function DXE:GetVersionString()
 	return concat(work,":")
 end
 
-function DXE:BroadcastAllVersions()
+function addon:BroadcastAllVersions()
 	self:SendComm("AllVersionsBroadcast",self:GetVersionString())
 end
 
-function DXE:OnCommAllVersionsBroadcast(event,commType,sender,versionString)
+function addon:OnCommAllVersionsBroadcast(event,commType,sender,versionString)
 	local k = search(RVS,sender,1)
 	if not k then 
 		k = #RVS+1
@@ -1509,12 +1505,12 @@ function DXE:OnCommAllVersionsBroadcast(event,commType,sender,versionString)
 	self:RefreshVersionList()
 end
 
-function DXE:BroadcastVersion(key)
+function addon:BroadcastVersion(key)
 	if not EDB[key] and key ~= "addon" then return end
 	self:SendComm("VersionBroadcast",key,key == "addon" and self.version or EDB[key].version)
 end
 
-function DXE:OnCommVersionBroadcast(event,commType,sender,key,version)
+function addon:OnCommVersionBroadcast(event,commType,sender,key,version)
 	local k = search(RVS,sender,1)
 	if not k then
 		k = #RVS+1
@@ -1551,12 +1547,12 @@ do
 	local function dropdownChanged(widget,event,v)
 		value = v
 		SetHeaderText(list[v],EDB[v].version)
-		DXE:RefreshVersionList()
+		addon:RefreshVersionList()
 	end
 
 	local function RefreshEncDropdown()
 		wipe(list)
-		for key,data in DXE:IterateEDB() do
+		for key,data in addon:IterateEDB() do
 			list[key] = data.name
 		end
 		dropdown:SetList(list)
@@ -1570,7 +1566,7 @@ do
 			if text == NONE then
 				return GREY..L["None"].."|r"
 			else
-				local v = value == "addon" and DXE.version or EDB[value].version
+				local v = value == "addon" and addon.version or EDB[value].version
 				if v > text then
 					return RED..text.."|r"
 				elseif v < text then
@@ -1585,8 +1581,9 @@ do
 	local function UpdateScroll()
 		local n = #RVS
 		FauxScrollFrame_Update(scrollFrame, n, NUM_ROWS, ROW_HEIGHT, nil, nil, nil, nil, nil, nil, true)
+		local offset = FauxScrollFrame_GetOffset(scrollFrame)
 		for i = 1, NUM_ROWS do
-			local j = i + FauxScrollFrame_GetOffset(scrollFrame)
+			local j = i + offset
 			if j <= n then
 				for k, header in ipairs(headers) do
 					local text = colorCode(RVS[j][k])
@@ -1651,7 +1648,7 @@ do
 		return header
 	end
 
-	function DXE:RefreshVersionList()
+	function addon:RefreshVersionList()
 		if window and window:IsShown() then
 			for k,v in ipairs(RVS) do
 				v[2] = v.versions[value] or NONE
@@ -1667,7 +1664,7 @@ do
 		end
 	end
 
-	function DXE:VersionCheck()
+	function addon:VersionCheck()
 		self:RequestAllVersions()
 		if window and not window:IsShown() then
 			window:Show()

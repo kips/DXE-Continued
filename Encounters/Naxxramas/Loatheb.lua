@@ -40,8 +40,8 @@ do
 				color1 = "MAGENTA", 
 			},
 			openheals = {
-				var = "necroaura", 
-				varname = format(L["%s Duration"],SN[55593]),
+				var = "openheals", 
+				varname = format(L["%s Duration"],SN[37455]),
 				type = "centerpopup", 
 				text = L["Open Healing"], 
 				time = 3, 
