@@ -21,6 +21,15 @@ for line in io.lines() do
 	files[#files+1] = line
 end
 os.execute(fmt("rm %s",tempFile))
+io.close()
+
+os.execute(fmt("ls ../Modules | grep 'lua' > %s",tempFile))
+io.input(tempFile)
+for line in io.lines() do
+	files[#files+1] = "Modules/"..line
+end
+os.execute(fmt("rm %s",tempFile))
+io.close()
 
 local function addsep()
 	file:write(separator,"\n")
