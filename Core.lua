@@ -1473,7 +1473,7 @@ function addon:CleanVersions()
 	self:RefreshVersionList()
 end
 
------ COMMS
+-- Version string
 local VersionString
 function addon:UpdateVersionString()
 	local work = {}
@@ -1486,10 +1486,6 @@ end
 addon:ThrottleFunc("UpdateVersionString",1,true)
 
 -- All versions
-function addon:BroadcastAllVersions()
-	self:SendRaidComm("AllVersionsBroadcast",VersionString)
-end
-addon:ThrottleFunc("BroadcastAllVersions",5,true)
 
 function addon:RequestAllVersions()
 	self:SendRaidComm("RequestAllVersions")
@@ -1500,14 +1496,10 @@ function addon:OnCommRequestAllVersions()
 	self:BroadcastAllVersions()
 end
 
--- Single versions
-function addon:RequestAddOnVersions()
-	self:SendRaidComm("RequestAddOnVersion")
+function addon:BroadcastAllVersions()
+	self:SendRaidComm("AllVersionsBroadcast",VersionString)
 end
-
-function addon:OnCommRequestAddOnVersion()
-	self:BroadcastVersion("addon")
-end
+addon:ThrottleFunc("BroadcastAllVersions",5,true)
 
 function addon:OnCommAllVersionsBroadcast(event,commType,sender,versionString)
 	local k = search(RVS,sender,1)
@@ -1523,6 +1515,26 @@ function addon:OnCommAllVersionsBroadcast(event,commType,sender,versionString)
 	end
 
 	self:RefreshVersionList()
+end
+
+-- Single versions
+function addon:RequestVersions(key)
+	if not EDB[key] then return end
+	self:SendRaidComm("RequestVersions",key)
+end
+addon:ThrottleFunc("RequestVersions",1,true)
+
+function addon:OnCommRequestVersions(event,commType,sender,key)
+	if not EDB[key] then return end
+	self:SendWhisperComm(sender,"VersionBroadcast",key,EDB[key].version)
+end
+
+function addon:RequestAddOnVersions()
+	self:SendRaidComm("RequestAddOnVersion")
+end
+
+function addon:OnCommRequestAddOnVersion()
+	self:BroadcastVersion("addon")
 end
 
 function addon:BroadcastVersion(key)
@@ -1568,6 +1580,7 @@ do
 		value = v
 		SetHeaderText(list[v],EDB[v].version)
 		addon:RefreshVersionList()
+		addon:RequestVersions(value)
 	end
 
 	local function RefreshEncDropdown()
@@ -1685,7 +1698,7 @@ do
 	end
 
 	function addon:VersionCheck()
-		self:RequestAllVersions()
+		if value ~= "addon" then self:RequestVersions(value) end
 		if window and not window:IsShown() then
 			window:Show()
 			RefreshEncDropdown()
@@ -1712,6 +1725,7 @@ do
 					if not dropdown.value then return end
 					SetHeaderText(list[dropdown.value],EDB[dropdown.value].version)
 					value = dropdown.value
+					self:RequestVersions(value)
 				end
 				self:RefreshVersionList() 
 			end)

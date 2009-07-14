@@ -411,7 +411,7 @@ function module:DownloadReceived(prefix, msg, dist, sender)
 
 	addon.RDB[key] = data
 
-	addon:BroadcastVersion(key)
+	addon:SendWhisperComm(dl.sender,"VersionBroadcast",key,data.version)
 
 	self:DLCompleted(key,dl.sender,dl.name)
 end
