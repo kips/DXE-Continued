@@ -13,9 +13,9 @@ do
 		},
 		onactivate = {
 			tracing = {L_NothThePlaguebringer,},
-			autostart = true,
-			autostop = true,
-			leavecombat = true,
+			tracerstart = true,
+			tracerstop = true,
+			combatstop = true,
 		},
 		userdata = { 
 			roomtime = {90,110,180,loop=false},
@@ -30,7 +30,6 @@ do
 		},
 		alerts = {
 			blinkcd = {
-				var = "blinkcd", 
 				varname = format(L["%s Cooldown"],SN[29208]),
 				type = "dropdown", 
 				text = format(L["%s Cooldown"],SN[29208]),
@@ -40,25 +39,24 @@ do
 				color1 = "MAGENTA", 
 			},
 			teleportbalc = {
-				var = "teleportbalc", 
 				varname = L["Teleport to Balcony"], 
 				type = "dropdown", 
 				text = L["Teleport to Balcony"], 
 				time = "<roomtime>", 
 				flashtime = 5, 
+				color1 = "RED",
 				sound = "ALERT2", 
 			},
 			teleportroom = {
-				var = "teleportroom", 
 				varname = L["Teleport to Room"], 
 				type = "dropdown", 
 				text = L["Teleport to Room"], 
 				time = "<balconytime>", 
 				flashtime = 5, 
+				color1 = "RED",
 				sound = "ALERT2", 
 			},
 			cursewarn = {
-				var = "cursewarn", 
 				varname = format(L["%s Warning"],L["Curse"]),
 				type = "simple", 
 				text = format(L["%s Casted"],L["Curse"]).."!",

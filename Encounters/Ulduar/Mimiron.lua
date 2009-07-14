@@ -20,7 +20,7 @@ do
 		},
 		onactivate = {
 			tracing = {L["Leviathan Mk II"]},
-			leavecombat = true,
+			combatstop = true,
 		},
 		userdata = {
 			plasmablasttime = {14,30,loop = false},
@@ -86,7 +86,6 @@ do
 		alerts = {
 			flamesuppressantwarn = {
 				type = "centerpopup",
-				var = "flamesuppressantwarn",
 				varname = format(L["%s Cast"],SN[64570]),
 				text = format(L["%s Cast"],SN[64570]),
 				time = 2,
@@ -95,7 +94,6 @@ do
 			},
 			flamesuppressantcd = {
 				type = "dropdown",
-				var = "flamesuppressantcd",
 				varname = format(L["%s Cooldown"],SN[64570]),
 				text = format(L["%s Cooldown"],SN[64570]),
 				time = 60,
@@ -104,7 +102,6 @@ do
 			},
 			frostbombwarn = {
 				type = "centerpopup",
-				var = "frostbombwarn",
 				varname = format(L["%s Cast"],SN[64623]),
 				text = format(L["%s Cast"],SN[64623]),
 				time = 2,
@@ -113,7 +110,6 @@ do
 			},
 			frostbombexplodes = {
 				type = "centerpopup",
-				var = "frostbombexplodes",
 				varname = format(L["%s Timer"],SN[64623]),
 				text = format(L["%s Explodes"],SN[64623]).."!",
 				time = 12,
@@ -124,7 +120,6 @@ do
 			},
 			flamecd = {
 				type = "dropdown",
-				var = "flamecd",
 				varname = format(L["%s Timer"],SN[15643]),
 				text = format(L["Next %s Spawn"],SN[15643]),
 				time = "<flametime>",
@@ -136,7 +131,6 @@ do
 			-- Leviathan MKII
 			plasmablastwarn = { 
 				type = "centerpopup",
-				var = "plasmablastwarn",
 				varname = format(L["%s Cast"],SN[62997]),
 				text = format(L["%s Cast"],SN[62997]),
 				time = 3,
@@ -145,7 +139,6 @@ do
 			},
 			plasmablastdur = { 
 				type = "centerpopup",
-				var = "plasmablastdur",
 				varname = format(L["%s Duration"],SN[62997]),
 				text = format(L["%s Duration"],SN[62997]),
 				time = 6,
@@ -153,7 +146,6 @@ do
 			},
 			plasmablastcd = {
 				type = "dropdown",
-				var = "plasmablastcd",
 				varname = format(L["%s Cooldown"],SN[62997]),
 				text = format(L["%s Cooldown"],SN[62997]),
 				time = "<plasmablasttime>",
@@ -163,7 +155,6 @@ do
 				sound = "ALERT2",
 			},
 			shockblastwarn = {
-				var = "shockblastwarn",
 				varname = format(L["%s Cast"],SN[63631]),
 				type = "centerpopup",
 				text = format(L["%s Cast"],SN[63631]),
@@ -174,7 +165,6 @@ do
 			--- VX-001
 			laserbarragedur = {
 				type = "centerpopup",
-				var = "laserbarragedur",
 				varname = format(L["%s Duration"],L["Laser Barrage"]),
 				text = format(L["%s Duration"],L["Laser Barrage"]),
 				time = 10,
@@ -182,7 +172,6 @@ do
 				sound = "ALERT6",
 			},
 			laserbarragecd = {
-				var = "laserbarragecd",
 				varname = format(L["%s Cooldown"],L["Laser Barrage"]),
 				type = "dropdown",
 				text = format(L["%s Cooldown"],L["Laser Barrage"]),
@@ -193,7 +182,6 @@ do
 				sound = "ALERT3",
 			},
 			shockblastcd = {
-				var = "shockblastcd",
 				varname = format(L["%s Cooldown"],SN[63631]),
 				type = "dropdown",
 				text = format(L["Next %s"],SN[63631]),
@@ -204,7 +192,6 @@ do
 				sound = "ALERT3",
 			},
 			spinupwarn = {
-				var = "spinupwarn",
 				varname = format(L["%s Cast"],L["Spinning Up"]),
 				type = "centerpopup",
 				text = L["Spinning Up"].."!",
@@ -214,7 +201,6 @@ do
 				sound = "ALERT4",
 			},
 			weakeneddur = {
-				var = "weakeneddur",
 				varname = format(L["%s Duration"],L["Weakened"]),
 				type = "centerpopup",
 				text = L["Weakened"],
@@ -226,32 +212,31 @@ do
 			},
 			--- Phase Changes
 			onetotwo = {
-				var = "onetotwo",
 				varname = format(L["%s Timer"],L["Phase Two"]),
 				type = "dropdown",
 				text = format(L["%s Begins"],L["Phase Two"]),
 				time = 40,
 				flashtime = 10,
+				color1 = "RED",
 			},
 			twotothree = {
-				var = "twotothree",
 				varname = format(L["%s Timer"],L["Phase Three"]),
 				type = "dropdown",
 				text = format(L["%s Begins"],L["Phase Three"]),
 				time = 25,
 				flashtime = 10,
+				color1 = "RED",
 			},
 			threetofour = {
-				var = "threetofour",
 				varname = format(L["%s Timer"],L["Phase Four"]),
 				type = "dropdown",
 				text = format(L["%s Begins"],L["Phase Four"]),
 				time = 25,
 				flashtime = 10,
+				color1 = "RED",
 			},
 			-- Hard Mode
 			hardmodetimer = {
-				var = "hardmodetimer",
 				varname = format(L["%s Timer"],L["Hard Mode"]),
 				type = "dropdown",
 				text = L["Raid Wipe"],
@@ -261,7 +246,6 @@ do
 			},
 			-- Bomb bot
 			bombbotwarn = {
-				var = "bombbotwarn",
 				varname = format(L["%s Spawns"],L["Bomb Bot"]),
 				type = "simple",
 				text = format(L["%s Spawned"],L["Bomb Bot"]).."!",

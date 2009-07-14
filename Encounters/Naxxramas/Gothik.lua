@@ -14,7 +14,7 @@ do
 		},
 		onactivate = {
 			tracing = {L_GothikTheHarvester},
-			leavecombat = true,
+			combatstop = true,
 		},
 		userdata = {},
 		onstart = {
@@ -24,12 +24,12 @@ do
 		},
 		alerts = {
 			gothikcomesdown = {
-				var = "gothikcomesdown", 
 				varname = format(L["%s Arrival"],L_GothikTheHarvester),
 				type = "dropdown",
 				text = L["Arrival"],
 				time = 270,
 				flashtime = 5, 
+				color1 = "RED",
 				sound = "ALERT1", 
 			},
 		},

@@ -3,20 +3,15 @@ local version = tonumber(("$Rev$"):sub(7, -3))
 addon.version = version > addon.version and version or addon.version
 local L = addon.L
 
-local util = addon.util
-local Roster = addon.Roster
-
-local AceGUI = addon.AceGUI
 local Colors = addon.Constants.Colors
 
 local ipairs, pairs = ipairs, pairs
 local remove,wipe = table.remove,table.wipe
 local match,len,format,split,find = string.match,string.len,string.format,string.split,string.find
 
-local gbl
+local db,pfl
 
 -- Credits to Bazaar for this implementation
-
 ----------------------------------
 -- CONSTANTS
 ----------------------------------
@@ -37,144 +32,150 @@ local module = addon:NewModule("Distributor","AceEvent-3.0","AceTimer-3.0","AceC
 addon.Distributor = module
 local StackAnchor
 
-function module:OnInitialize()
-	gbl = addon.db.global
-	addon:AddPluginOptions("distributor",self:GetOptions())
+function module:RefreshProfile()
+	pfl = self.db.profile
+end
 
+function module:InitializeOptions(area)
+	local list,names = {},{}
+	local listSelect,playerSelect
+	area.dist_group = {
+		type = "group",
+		name = L["Distributor"],
+		order = 300,
+		get = function(info) return pfl[info[#info]] end,
+		set = function(info,v) pfl[info[#info]] = v end,
+		args = {
+			AutoAccept = {
+				type = "toggle",
+				name = L["Auto accept"],
+				order = 50,
+			},
+			blank = addon.genblank(75),
+			listSelect = {
+				type = "select",
+				order = 100,
+				name = L["Select an encounter"],
+				get = function() return listSelect end,
+				set = function(info,value) listSelect = value end,
+				values = function()
+					wipe(list)
+					for k in addon:IterateEDB() do
+						list[k] = addon.EDB[k].name
+					end
+					return list
+				end,
+			},
+			send_raid_group = {
+				type = "group",
+				name = L["Raid Distributing"],
+				order = 120,
+				inline = true,
+				args = {
+					DistributeToRaid = {
+						type = "execute",
+						name = L["Send to raid"],
+						order = 100,
+						func = function() module:Distribute(listSelect) end,
+						disabled = function() return not listSelect end,
+					},
+					--[[
+					DistributeAllToRaid = {
+						type = "execute",
+						name = "Send all to raid",
+						order = 200,
+						func = function() 
+									for key in pairs(DXE.EDB) do
+										if key ~= "default" then
+											module:Distribute(name)
+										end
+									end
+								 end,
+						confirm = true,
+						confirmText = "Are you sure you want to do this?",
+					},
+					]]
+				},
+			},
+			send_player_group = {
+				type = "group",
+				name = L["Player Distributing"],
+				order = 200,
+				inline = true,
+				disabled = function() return not listSelect end,
+				args = {
+					playerSelect = {
+						type = "select",
+						order = 100,
+						name = L["Select a player"],
+						get = function() return playerSelect end,
+						set = function(info,value) playerSelect = value end,
+						values = function()
+							wipe(names)
+							for name in pairs(addon.Roster.name_to_unit) do
+								if name ~= addon.PNAME then
+									 names[name] = name
+								end
+							end
+							return names
+						end,
+						disabled = function() return GetNumRaidMembers() == 0 or not listSelect end,
+					},
+					blank = addon.genblank(200),
+					DistributeToPlayer = {
+						type = "execute",
+						order = 300,
+						name = L["Send to player"],
+						func = function() module:Distribute(listSelect, "WHISPER", playerSelect) end,
+						disabled = function() return not playerSelect end,
+					},
+					--[[
+					DistributeAllToPlayer = {
+						type = "execute",
+						order = 400,
+						name = "Send all to player",
+						func = function()
+									for key in pairs(DXE.EDB) do
+										if key ~= "default" then
+											module:Distribute(name, "WHISPER", playerSelect)
+										end
+									end
+								 end,
+						disabled = function() return not playerSelect end,
+						confirm = true,
+						confirmText = "Are you sure you want to do this?",
+					},
+					]]
+				},
+			},
+		},
+	}
+end
+
+function module:OnInitialize()
 	StackAnchor = addon:CreateLockableFrame("DistributorStackAnchor",200,10,L["Download/Upload Anchor"])
 	addon:RegisterMoveSaving(StackAnchor,"CENTER","UIParent","CENTER",0,300)
 	addon:LoadPosition("DXEDistributorStackAnchor")
+
+	self.db = addon.db:RegisterNamespace("Distributor", {
+		profile = {
+			AutoAccept = true,
+		},
+	})
+	db = self.db
+	pfl = db.profile
+
+	db.RegisterCallback(self, "OnProfileChanged", "RefreshProfile")
+	db.RegisterCallback(self, "OnProfileCopied", "RefreshProfile")
+	db.RegisterCallback(self, "OnProfileReset", "RefreshProfile")
+
+	addon:AddModuleOptionInitializer(module,"InitializeOptions")
 end
 
 function module:OnEnable()
 	self:RegisterComm(MAIN_PREFIX)
 	self:RegisterEvent("CHAT_MSG_ADDON")
 end
-
-----------------------------------
--- OPTIONS
-----------------------------------
-
-
-local EncKeys,RaidNames = {},{}
-local ListSelect,PlayerSelect
-function module:GetOptions()
-	return {
-		dist_group = {
-			type = "group",
-			name = L["Distributor"],
-			order = 300,
-			get = function(info) return gbl.Distributor[info[#info]] end,
-			set = function(info,value) gbl.Distributor[info[#info]] = value end,
-			args = {
-				AutoAccept = {
-					type = "toggle",
-					name = L["Auto accept"],
-					order = 50,
-				},
-				blank = addon.genblank(75),
-				ListSelect = {
-					type = "select",
-					order = 100,
-					name = L["Select an encounter"],
-					get = function() return ListSelect end,
-					set = function(info,value) ListSelect = value end,
-					values = function()
-						wipe(EncKeys)
-						for k in addon:IterateEDB() do
-							EncKeys[k] = addon.EDB[k].name
-						end
-						return EncKeys
-					end,
-				},
-				send_raid_group = {
-					type = "group",
-					name = L["Raid Distributing"],
-					order = 120,
-					inline = true,
-					args = {
-						DistributeToRaid = {
-							type = "execute",
-							name = L["Send to raid"],
-							order = 100,
-							func = function() module:Distribute(ListSelect) end,
-							disabled = function() return not ListSelect end,
-						},
-						--[[
-						DistributeAllToRaid = {
-							type = "execute",
-							name = "Send all to raid",
-							order = 200,
-							func = function() 
-										for key in pairs(DXE.EDB) do
-											if key ~= "default" then
-												module:Distribute(name)
-											end
-										end
-									 end,
-							confirm = true,
-							confirmText = "Are you sure you want to do this?",
-						},
-						]]
-					},
-				},
-				send_player_group = {
-					type = "group",
-					name = L["Player Distributing"],
-					order = 200,
-					inline = true,
-					disabled = function() return not ListSelect end,
-					args = {
-						PlayerSelect = {
-							type = "select",
-							order = 100,
-							name = L["Select a player"],
-							get = function() return PlayerSelect end,
-							set = function(info,value) PlayerSelect = value end,
-							values = function()
-								wipe(RaidNames)
-								for _,unit in pairs(Roster.index_to_unit) do
-									local name = UnitName(unit)
-									if name ~= addon.PNAME then
-										 RaidNames[name] = name
-									end
-								end
-								return RaidNames
-							end,
-							disabled = function() return GetNumRaidMembers() == 0 or not ListSelect end,
-						},
-						blank = addon.genblank(200),
-						DistributeToPlayer = {
-							type = "execute",
-							order = 300,
-							name = L["Send to player"],
-							func = function() module:Distribute(ListSelect, "WHISPER", PlayerSelect) end,
-							disabled = function() return not PlayerSelect end,
-						},
-						--[[
-						DistributeAllToPlayer = {
-							type = "execute",
-							order = 400,
-							name = "Send all to player",
-							func = function()
-										for key in pairs(DXE.EDB) do
-											if key ~= "default" then
-												module:Distribute(name, "WHISPER", PlayerSelect)
-											end
-										end
-									 end,
-							disabled = function() return not PlayerSelect end,
-							confirm = true,
-							confirmText = "Are you sure you want to do this?",
-						},
-						]]
-					},
-				},
-			},
-		}
-	}
-end
-
 
 ----------------------------------
 -- MAIN
@@ -197,7 +198,7 @@ function module:Distribute(key, dist, target)
 	dist = dist or "RAID"
 	local data = addon:GetEncounterData(key)
 	if not data or Uploads[key] or key == "default" or GetNumRaidMembers() == 0 then return end
-	if util.tablesize(Uploads) == 4 then UploadQueue[key] = self:Serialize(key,dist,target) return end
+	if addon.util.tablesize(Uploads) == 4 then UploadQueue[key] = self:Serialize(key,dist,target) return end
 	local serialData = self:Serialize(data)
 	local length = len(serialData)
 	local message = format("UPDATE:%s:%d:%d:%s:%s",key,data.version,length,data.name,GetLocale()) -- ex. UPDATE:sartharion:150:800:Sartharion:enUS
@@ -292,7 +293,7 @@ function module:OnCommReceived(prefix, msg, dist, sender)
 			return
 		end
 
-		if gbl.Distributor.AutoAccept then
+		if pfl.AutoAccept then
 			self:StartReceiving(key,length,sender,dist,name)
 			self:Respond(format("RESPONSE:%s:%s",key,"YES"),sender)
 			return
@@ -470,7 +471,7 @@ function module:RemoveLoad(tbl,key)
 	if not ld then return end
 	self:CancelTimer(ld.timer,true)
 	self:RemoveProgressBar(ld.bar)
-	AceGUI:Release(ld.bar)
+	addon.AceGUI:Release(ld.bar)
 	tbl[key] = nil
 end
 
@@ -484,7 +485,7 @@ end
 local ProgressStack = {}
 
 function module:GetProgressBar()
-	local bar = AceGUI:Create("DXE_ProgressBar")
+	local bar = addon.AceGUI:Create("DXE_ProgressBar")
 	ProgressStack[#ProgressStack+1] = bar
 	self:LayoutBarStack()
 	return bar
@@ -666,9 +667,9 @@ do
 		self.frame = frame
 		frame.obj = self
 
-		AceGUI:RegisterAsWidget(self)
+		addon.AceGUI:RegisterAsWidget(self)
 		return self
 	end
 
-	AceGUI:RegisterWidgetType(WidgetType,Constructor,WidgetVersion)
+	addon.AceGUI:RegisterWidgetType(WidgetType,Constructor,WidgetVersion)
 end

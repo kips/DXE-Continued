@@ -11,13 +11,12 @@ do
 		},
 		onactivate = {
 			tracing = {L["Flame Leviathan"],},
-			leavecombat = true,
+			combatstop = true,
 		},
 		userdata = {},
 		onstart = {},
 		alerts = {
 			overloaddur = {
-				var = "overloaddur", 
 				varname = format(L["%s Duration"],SN[62475]),
 				type = "centerpopup", 
 				text = SN[62475].."!",
@@ -29,7 +28,6 @@ do
 				throttle = 5,
 			},
 			flameventdur = {
-				var = "flameventdur", 
 				varname = format(L["%s Duration"],SN[62396]),
 				type = "centerpopup", 
 				text = SN[62396].."!",
@@ -40,7 +38,6 @@ do
 				color2 = "ORANGE",
 			},
 			pursuedurother = {
-				var = "pursuedurother", 
 				varname = format(L["%s on others"],SN[62374]),
 				type = "centerpopup", 
 				text = format("%s: #5#",SN[62374]),
@@ -50,7 +47,6 @@ do
 				color2 = "CYAN",
 			},
 			pursuedurself = {
-				var = "pursuedurself", 
 				varname = format(L["%s on self"],SN[62374]),
 				type = "centerpopup", 
 				text = format("%s: %s!",SN[62374],L["YOU"]),

@@ -11,14 +11,13 @@ do
 		},
 		onactivate = {
 			tracing = {L["Thane Korth'azz"],L["Baron Rivendare"],L["Lady Blaumeux"],L["Sir Zeliek"]},
-			autostart = true,
-			leavecombat = true,
+			tracerstart = true,
+			combatstop = true,
 		},
 		userdata = {},
 		onstart = {},
 		alerts = {
 			voidzonecd = {
-				var = "voidzonecd",
 				varname = format(L["%s Cooldown"],SN[28863]),
 				type = "dropdown",
 				text = format(L["%s Cooldown"],SN[28863]),
@@ -26,7 +25,6 @@ do
 				color1 = "MAGENTA",
 			},
 			meteorcd = {
-				var = "meteorcd",
 				varname = format(L["%s Cooldown"],SN[28884]),
 				type = "dropdown",
 				text = format(L["%s Cooldown"],SN[28884]),
@@ -34,7 +32,6 @@ do
 				color1 = "RED",
 			},
 			wrathcd = {
-				var = "wrathcd",
 				varname = format(L["%s Cooldown"],SN[28883]),
 				type = "dropdown",
 				text = format(L["%s Cooldown"],SN[28883]),

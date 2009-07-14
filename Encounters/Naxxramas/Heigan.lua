@@ -13,9 +13,9 @@ do
 		},
 		onactivate = {
 			tracing = {L_HeiganTheUnclean,},
-			autostart = true,
-			autostop = true,
-			leavecombat = true,
+			tracerstart = true,
+			tracerstop = true,
+			combatstop = true,
 		},
 		userdata = {},
 		onstart = {
@@ -25,7 +25,6 @@ do
 		},
 		alerts = {
 			dancebegins = {
-				var = "dancebegins", 
 				varname = format(L["%s Begins"],L["Dance"]),
 				type = "dropdown", 
 				text = format(L["%s Begins"],L["Dance"]),
@@ -35,7 +34,6 @@ do
 				color1 = "MAGENTA", 
 			},
 			danceends = {
-				var = "danceends", 
 				varname = format(L["%s Ends"],L["Dance"]),
 				type = "dropdown", 
 				text = format(L["%s Ends"],L["Dance"]),

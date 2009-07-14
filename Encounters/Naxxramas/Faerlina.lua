@@ -11,9 +11,9 @@ do
 		},
 		onactivate = {
 			tracing = {L["Grand Widow Faerlina"]},
-			autostart = true,
-			autostop = true,
-			leavecombat = true,
+			tracerstart = true,
+			tracerstop = true,
+			combatstop = true,
 		},
 		userdata = { 
 			enraged = "false",
@@ -25,7 +25,6 @@ do
 		},
 		alerts = {
 			enragecd = {
-				var = "enragecd", 
 				varname = L["Enrage"],
 				type = "dropdown", 
 				text = L["Enrage"],
@@ -35,7 +34,6 @@ do
 				color1 = "RED", 
 			},
 			enragewarn = {
-				var = "enragewarn", 
 				varname = format(L["%s Warning"],L["Enrage"]),
 				type = "simple", 
 				text = format("%s!",L["Enraged"]), 
@@ -43,7 +41,6 @@ do
 				sound = "ALERT2", 
 			},
 			rainwarn = {
-				var = "rainwarn", 
 				varname = format(L["%s Warning"],SN[39024]),
 				type = "simple", 
 				text = format("%s! %s!",SN[39024],L["MOVE"]),
@@ -51,13 +48,13 @@ do
 				sound = "ALERT3", 
 			},
 			silencedur = {
-				var = "silencedur", 
 				varname = format(L["%s Duration"],SN[15487]),
 				type = "dropdown", 
 				text = format(L["%s Duration"],SN[15487]),
 				time = 30, 
 				flashtime = 5, 
 				sound = "ALERT4", 
+				color1 = "ORANGE",
 			},
 		},
 		events = {

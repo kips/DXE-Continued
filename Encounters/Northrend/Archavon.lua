@@ -11,9 +11,9 @@ do
 		},
 		onactivate = {
 			tracing = {L["Archavon the Stone Watcher"]},
-			autostart = true,
-			autostop = true,
-			leavecombat = true,
+			tracerstart = true,
+			tracerstop = true,
+			combatstop = true,
 		},
 		userdata = {},
 		onstart = {
@@ -24,15 +24,14 @@ do
 		},
 		alerts = {
 			enragecd = {
-				var = "enragecd",
 				varname = L["Enrage"],
 				type = "dropdown",
 				text = L["Enrage"],
 				time = 300,
 				flashtime = 5,
+				color1 = "RED",
 			},
 			chargewarn = {
-				var = "chargewarn",
 				varname = format(L["%s Warning"],SN[100]),
 				type = "simple",
 				text = format("%s: #5#",SN[100]),
@@ -40,7 +39,6 @@ do
 				sound = "ALERT2",
 			},
 			cloudwarn = {
-				var = "cloudwarn",
 				varname = format(L["%s Warning"],SN[58965]),
 				type = "simple",
 				text = format("%s: %s! %s!",SN[58965],L["YOU"],L["MOVE"]),
@@ -48,7 +46,6 @@ do
 				sound = "ALERT2",
 			},
 			shardswarnself = {
-				var = "shardswarnself",
 				varname = format(L["%s Cast"],SN[58695]),
 				type = "centerpopup",
 				time = 3,
@@ -58,17 +55,15 @@ do
 				sound = "ALERT3",
 			},
 			shardswarnother = {
-				var = "shardswarnother",
 				varname = format(L["%s Cast"],SN[58695]),
 				type = "centerpopup",
 				time = 3,
 				flashtime = 3,
-				color2 = "YELLOW",
+				color1 = "YELLOW",
 				sound = "ALERT3",
 				text = format("%s: &tft_unitname&",SN[58695]),
 			},
 			stompcd = {
-				var = "stompcd",
 				varname = format(L["%s Cooldown"],SN[58663]),
 				type = "dropdown",
 				text = format(L["Next %s"],SN[58663]),

@@ -20,7 +20,7 @@ do
 		},
 		onactivate = {
 			tracing = {L["Kel'Thuzad"]},
-			leavecombat = true,
+			combatstop = true,
 		},
 		userdata = {},
 		onstart = {
@@ -30,7 +30,6 @@ do
 		},
 		alerts = {
 			fissurewarn = {
-				var = "fissurewarn", 
 				varname = format(L["%s Warning"],SN[27810]),
 				type = "simple", 
 				text = format(L["%s Spawned"],SN[27810]),
@@ -39,7 +38,6 @@ do
 				color1 = "BLACK",
 			},
 			frostblastwarn = {
-				var = "frostblastwarn", 
 				varname = format(L["%s Warning"],SN[27808]),
 				type = "simple", 
 				text = format(L["%s Casted"],SN[27808]),
@@ -49,7 +47,6 @@ do
 				color1 = "BLUE",
 			},
 			detonatewarn = {
-				var = "detonatewarn", 
 				varname = format(L["%s Warning"],SN[29870]),
 				type = "centerpopup", 
 				text = format("%s: %s!",SN[29870],L["YOU"]),
@@ -58,15 +55,14 @@ do
 				color1 = "WHITE", 
 			},
 			ktarrives = {
-				var = "ktarrives", 
 				varname = format(L["%s Arrival"],L_KelThuzad),
 				type = "dropdown", 
 				text = format(L["%s Arrives"],L_KelThuzad),
 				time = 225, 
+				color1 = "RED",
 				flashtime = 5, 
 			},
 			guardianswarn = {
-				var = "guardianswarn", 
 				varname = format(L["%s Spawns"],SN[4070]),
 				type = "centerpopup", 
 				text = format(L["%s Spawns"],SN[4070]),

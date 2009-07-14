@@ -13,8 +13,8 @@ do
 			yell = L["^The time for practice is over!"],
 		},
 		onactivate = {
-			autostop = true,
-			leavecombat = true,
+			tracerstop = true,
+			combatstop = true,
 			tracing = {L_InstructorRazuvious,},
 		},
 		userdata = {},
@@ -25,7 +25,6 @@ do
 		},
 		alerts = {
 			shoutcd = {
-				var = "shoutcd", 
 				varname = format(L["%s Cooldown"],SN[55543]),
 				type = "dropdown", 
 				text = format(L["Next %s"],SN[55543]),
@@ -35,7 +34,6 @@ do
 				color1 = "MAGENTA", 
 			},
 			tauntdur = {
-				var = "tauntdur", 
 				varname = format(L["%s Duration"],SN[355]),
 				type = "dropdown", 
 				text = format(L["%s Duration"],SN[355]),
@@ -45,7 +43,6 @@ do
 				color1 = "BLUE", 
 			},
 			shieldwalldur = {
-				var = "shieldwalldur", 
 				varname = format(L["%s Duration"],SN[871]),
 				type = "dropdown", 
 				text = format(L["%s Duration"],SN[871]),

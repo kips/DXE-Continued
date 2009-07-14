@@ -208,6 +208,10 @@ function module:OnInitialize()
 	end
 end
 
+function module:OnDisable()
+	self:RemoveAll()
+end
+
 ---------------------------------------
 -- API
 ---------------------------------------

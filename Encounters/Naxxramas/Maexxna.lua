@@ -13,9 +13,9 @@ do
 		},
 		onactivate = {
 			tracing = {L_Maexxna,},
-			autostart = true,
-			autostop = true,
-			leavecombat = true,
+			tracerstart = true,
+			tracerstop = true,
+			combatstop = true,
 		},
 		userdata = {},
 		onstart = {
@@ -26,7 +26,6 @@ do
 		},
 		alerts = {
 			spraycd = {
-				var = "spraycd", 
 				varname = format(L["%s Cooldown"],SN[29484]),
 				type = "dropdown", 
 				text = format(L["Next %s"],SN[29484]),
@@ -36,7 +35,6 @@ do
 				color1 = "YELLOW", 
 			},
 			spidercd = {
-				var = "spidercd", 
 				varname = format(L["%s Cooldown"],L["Spider"]),
 				type = "dropdown", 
 				text = format(L["%s Spawns"],L["Spider"]),
@@ -46,7 +44,6 @@ do
 				color1 = "ORANGE", 
 			},
 			enragewarn = {
-				var = "enragewarn", 
 				varname = format(L["%s Warning"],L["Enrage"]),
 				type = "simple", 
 				text = format("%s!",L["Enraged"]),

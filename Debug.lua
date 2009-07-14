@@ -8,6 +8,15 @@ local _G,find,format,select,gsub = _G,string.find,string.format,select,string.gs
 local GetChatWindowInfo = GetChatWindowInfo
 local LEFTOFVAR, RIGHTOFVAR = "|cff00ff00<|r|cffeda55f", "|r|cff00ff00>|r "
 
+local OptionsToAdd = {}
+
+function addon:UnrollOptions(args)
+	for name,global in pairs(OptionsToAdd) do
+		self:AddDebugOptions(name,global)
+	end
+	OptionsToAdd = nil
+end
+
 function addon:AddDebugOptions(name,global)
 	local tbl = {
 		type = "group",
@@ -35,7 +44,8 @@ end
 local rep = string.rep
 local formatStrings = setmetatable({},{
 	__index = function(t,k)
-		local s = rep("%s ",k)
+		local s = rep("%s !",k)
+		s = s:sub(1,#s-1)
 		t[k] = s
 		return s
 	end,
@@ -92,7 +102,11 @@ function addon:CreateDebugger(name,global,defaults,windowName)
 			global.debug[k] = nil
 		end
 	end
-
-	self:AddDebugOptions(name,global)
+	if addon.options then
+		self:AddDebugOptions(name,global)
+	else
+		addon:AddOptionArgsItems(self,"UnrollOptions")
+		OptionsToAdd[name] = global
+	end
 	return CreateDebugFunction(name,global,windowName)
 end

@@ -10,9 +10,9 @@ do
 		},
 		onactivate = {
 			tracing = {L["General Vezax"],},
-			autostart = true,
-			autostop = true,
-			leavecombat = true,
+			tracerstart = true,
+			tracerstop = true,
+			combatstop = true,
 		},
 		userdata = {
 			shadowcrashmessage = "",
@@ -27,7 +27,6 @@ do
 		},
 		alerts = {
 			enragecd = {
-				var = "enragecd",
 				varname = L["Enrage"],
 				type = "dropdown",
 				text = L["Enrage"],
@@ -38,7 +37,6 @@ do
 				color2 = "BROWN",
 			},
 			searingflamewarn = {
-				var = "searingflamewarn",
 				varname = format(L["%s Cast"],SN[62661]),
 				type = "centerpopup",
 				text = format(L["%s Cast"],SN[62661]),
@@ -47,7 +45,6 @@ do
 				sound = "ALERT1",
 			},
 			darknesswarn = {
-				var = "darknesswarn",
 				varname = format(L["%s Cast"],SN[62662]),
 				type = "centerpopup",
 				text = format(L["%s Cast"],SN[62662]),
@@ -56,18 +53,16 @@ do
 				sound = "ALERT1",
 			},
 			darknessdur = {
-				var = "darknessdur",
 				varname = format(L["%s Duration"],SN[62662]),
 				type = "centerpopup",
 				text = format(L["%s Duration"],SN[62662]),
 				time = 10,
 				flashtime = 10,
 				color1 = "VIOLET",
-				color2 = "AQUA",
+				color2 = "CYAN",
 				sound = "ALERT2",
 			},
 			animuswarn = {
-				var = "animuswarn",
 				varname = format(L["%s Spawn"],L["Saronite Animus"]),
 				type = "simple",
 				text = format(L["%s Spawned"],L["Saronite Animus"]).."!",
@@ -75,7 +70,6 @@ do
 				sound = "ALERT3",
 			},
 			vaporcd = {
-				var = "vaporcd",
 				varname = format(L["%s Cooldown"],L["Saronite Vapor"]),
 				type = "dropdown",
 				text = format(L["Next %s"],L["Saronite Vapor"]).." <saronitecount>",
@@ -84,7 +78,6 @@ do
 				color1 = "GREEN",
 			},
 			shadowcrashwarn = {
-				var = "shadowcrashwarn",
 				varname = format(L["%s Warning"],SN[62660]),
 				type = "simple",
 				text = "<shadowcrashmessage>",
@@ -93,7 +86,6 @@ do
 				sound = "ALERT4",
 			},
 			facelessdurself = {
-				var = "facelessdurself",
 				varname = format(L["%s on self"],SN[63276]),
 				type = "centerpopup",
 				time = 10,
@@ -103,7 +95,6 @@ do
 				color1 = "RED",
 			},
 			facelessdurothers = {
-				var = "facelessdurothers",
 				varname = format(L["%s on others"],SN[63276]),
 				type = "centerpopup",
 				text = format("%s: #5#",L["Mark"]),
@@ -111,7 +102,6 @@ do
 				color1 = "RED",
 			},
 			facelessproxwarn = {
-				var = "facelessproxwarn",
 				varname = format(L["%s Proximity Warning"],SN[63276]),
 				type = "simple",
 				text = format("%s: #5#! %s",L["Mark"],L["YOU ARE CLOSE"]).."!",
@@ -122,7 +112,6 @@ do
 		},
 		arrows = {
 			crasharrow = {
-				var = "crasharrow",
 				varname = SN[62660],
 				unit = "&tft_unitname&",
 				persist = 5,
@@ -132,7 +121,6 @@ do
 				fixed = true,
 			},
 			facelessarrow = {
-				var = "facelessarrow",
 				varname = SN[63276],
 				unit = "#5#",
 				persist = 10,
@@ -143,7 +131,6 @@ do
 		},
 		raidicons = {
 			crashmark = {
-				var = "crashmark",
 				varname = SN[62660],
 				type = "FRIENDLY",
 				persist = 5,
@@ -151,7 +138,6 @@ do
 				icon = 7,
 			},
 			facelessmark = {
-				var = "facelessmark",
 				varname = SN[63276],
 				type = "FRIENDLY",
 				persist = 10,

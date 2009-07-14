@@ -10,8 +10,8 @@ do
 		},
 		onactivate = {
 			tracing = {L["Steelbreaker"], L["Runemaster Molgeim"], L["Stormcaller Brundir"],},
-			autostart = true,
-			leavecombat = true,
+			tracerstart = true,
+			combatstop = true,
 		},
 		userdata = {
 			overwhelmtime = 30,
@@ -26,15 +26,14 @@ do
 		},
 		alerts = {
 			enragecd = {
-				var = "enragecd",
 				varname = L["Enrage"],
 				type = "dropdown",
 				text = L["Enrage"],
 				time = 600,
 				flashtime = 5,
+				color1 = "RED",
 			},
 			fusionpunchcast = {
-				var = "fushionpunchcast",
 				varname = format(L["%s Cast"],SN[61903]),
 				type = "centerpopup",
 				text = format(L["%s Cast"],SN[61903]),
@@ -43,7 +42,6 @@ do
 				sound = "ALERT5",
 			},
 			fusionpunchcd = {
-				var = "fushionpunchcd",
 				varname = format(L["%s Cooldown"],SN[61903]),
 				type = "dropdown",
 				text = format(L["%s Cooldown"],SN[61903]),
@@ -53,7 +51,6 @@ do
 				color2 = "GREY",
 			},
 			runeofsummoningwarn = {
-				var = "runeofsummoningwarn",
 				varname = format(L["%s Warning"],SN[62273]),
 				type = "simple",
 				text = format(L["%s Casted"],SN[62273]).."!",
@@ -62,7 +59,6 @@ do
 				time = 1.5,
 			},
 			runeofdeathwarn = {
-				var = "runeofdeathwarn",
 				varname = format(L["%s on self"],SN[62269]),
 				type = "simple",
 				text = format("%s: %s!",SN[62269],L["YOU"]),
@@ -70,7 +66,6 @@ do
 				sound = "ALERT3",
 			},
 			runeofpowerwarn = {
-				var = "runeofpowerwarn",
 				varname = format(L["%s Cast"],SN[61973]),
 				type = "centerpopup",
 				text = format(L["%s Cast"],SN[61973]),
@@ -79,7 +74,6 @@ do
 				time = 1.5,
 			},
 			overloadwarn = {
-				var = "overloadwarn",
 				varname = format(L["%s Cast"],SN[61869]),
 				type = "centerpopup",
 				text = format("%s! %s!",SN[61869],L["MOVE AWAY"]),
@@ -89,7 +83,6 @@ do
 				color1 = "PURPLE",
 			},
 			overloadcd = {
-				var = "overloadcd",
 				varname = format(L["%s Cooldown"],SN[61869]),
 				type = "dropdown",
 				text = format(L["%s Cooldown"],SN[61869]),
@@ -100,7 +93,6 @@ do
 				color2 = "PURPLE",
 			},
 			tendrilsdur = {
-				var = "tendrilscd", 
 				varname = format(L["%s Duration"],SN[61887]),
 				type = "centerpopup", 
 				text = format(L["%s Duration"],SN[61887]),
@@ -108,16 +100,13 @@ do
 				color1 = "BLUE", 
 			},
 			tendrilswarnself = {
-				var = "tendrilswarn",
 				varname = format(L["%s Target"],SN[61887]),
 				type = "simple",
-				text = format("%s: %s! %s!",SN[61887],L["YOU"],L["RUN"]),
+				text = format("%s: <previoustarget>",SN[61887]),
+				color1 = "YELLOW",
 				time = 1.5,
-				color1 = "DCYAN",
-				sound = "ALERT5",
 			},
 			tendrilswarnother = {
-				var = "tendrilswarn",
 				varname = format(L["%s Target"],SN[61887]),
 				type = "simple",
 				text = format("%s: <previoustarget>",SN[61887]),
@@ -125,7 +114,6 @@ do
 				time = 1.5,
 			},
 			whirlwarn = {
-				var = "whirlwarn",
 				varname = format(L["%s Cast"],SN[61915]),
 				type = "centerpopup",
 				time = 5,
@@ -136,7 +124,6 @@ do
 				sound = "ALERT7",
 			},
 			overwhelmdurself = {
-				var = "overwhelmdurself",
 				varname = format(L["%s on self"],L["Overwhelm"]),
 				type = "centerpopup",
 				text = format("%s: %s!",L["Overwhelm"],L["YOU"]),
@@ -147,7 +134,6 @@ do
 				sound = "ALERT6",
 			},
 			overwhelmdurother = {
-				var = "overwhelmdurother",
 				varname = format(L["%s on others"],L["Overwhelm"]),
 				type = "centerpopup",
 				text = format("%s: #5#",L["Overwhelm"]),

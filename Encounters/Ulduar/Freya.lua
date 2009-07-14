@@ -18,9 +18,9 @@ do
 		},
 		onactivate = {
 			tracing = {L["Freya"]},
-			autostart = true,
-			autostop = true,
-			leavecombat = true,
+			tracerstart = true,
+			tracerstop = true,
+			combatstop = true,
 		},
 		userdata = {
 			spawntime = {10,60,loop=false}
@@ -33,7 +33,6 @@ do
 		},
 		alerts = {
 			spawncd = {
-				var = "spawncd",
 				varname = format(L["%s Timer"],SN[62678]),
 				text = SN[62678],
 				type = "dropdown",
@@ -42,7 +41,6 @@ do
 				color1 = "MAGENTA",
 			},
 			giftwarn = {
-				var = "giftwarn",
 				varname = format(L["%s Warning"],L["Eonar's Gift"]),
 				type = "simple",
 				text = format(L["%s Spawned"],L["Eonar's Gift"]).."!",
@@ -51,7 +49,6 @@ do
 				color1 = "VIOLET",
 			},
 			attunedwarn = {
-				var = "attunedwarn",
 				type = "simple",
 				varname = format(L["%s Removal"],SN[62519]),
 				text = format(L["%s Removed"],SN[62519]).."!",
@@ -59,7 +56,6 @@ do
 				sound = "ALERT9",
 			},
 			naturesfuryself = {
-				var = "naturesfuryself",
 				varname = format(L["%s on self"],SN[62589]),
 				text = format("%s: %s! %s!",L["Fury"],L["YOU"],L["MOVE NOW"]),
 				type = "centerpopup",
@@ -70,7 +66,6 @@ do
 				sound = "ALERT1",
 			},
 			naturesfuryproximitywarn = {
-				var = "naturesfuryproximitywarn",
 				varname = format(L["%s Proximity Warning"],SN[62589]),
 				text = format("%s: #5#! %s!",L["Fury"],L["MOVE AWAY"]),
 				type = "simple",
@@ -79,7 +74,6 @@ do
 				sound = "ALERT1",
 			},
 			gripwarn = {
-				var = "gripwarn",
 				varname = format(L["%s Warning"],SN[62532]),
 				type = "simple",
 				text = format("%s: %s! %s!",SN[56689],L["YOU"],L["TAKE COVER"]),
@@ -89,7 +83,6 @@ do
 				sound = "ALERT6",
 			},
 			enragecd = {
-				var = "enragecd",
 				varname = L["Enrage"],
 				type = "dropdown",
 				text = L["Enrage"],
@@ -98,7 +91,6 @@ do
 				color1 = "RED",
 			},
 			groundtremorwarn = {
-				var = "groundtremorwarn",
 				varname = format(L["%s Cast"],SN[62437]),
 				type = "centerpopup",
 				text = format(L["%s Cast"],SN[62437]),
@@ -109,7 +101,6 @@ do
 				sound = "ALERT5",
 			},
 			groundtremorcd = {
-				var = "groundtremorcd",
 				varname = format(L["%s Cooldown"],SN[62437]),
 				type = "dropdown",
 				text = format(L["%s Cooldown"],SN[62437]),
@@ -120,7 +111,6 @@ do
 				sound = "ALERT7",
 			},
 			unstablewarnself = {
-				var = "unstablewarnself",
 				varname = format(L["%s on self"],SN[62217]),
 				type = "simple",
 				text = format("%s: %s! %s!",SN[36514],L["YOU"],L["MOVE"]),
@@ -132,7 +122,6 @@ do
 		},
 		arrows = {
 			rootarrow = {
-				var = "rootarrow",
 				varname = SN[62283],
 				unit = "#5#",
 				persist = 20,

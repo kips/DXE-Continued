@@ -13,9 +13,9 @@ do
 		},
 		onactivate = {
 			tracing = {L_Grobbulus,},
-			autostart = true,
-			autostop = true,
-			leavecombat = true,
+			tracerstart = true,
+			tracerstop = true,
+			combatstop = true,
 		},
 		userdata = {},
 		onstart = {
@@ -25,15 +25,14 @@ do
 		},
 		alerts = {
 			enragecd = {
-				var = "enragecd",
 				varname = format(L["%s Cooldown"],L["Enrage"]),
 				type = "dropdown",
 				text = L["Enrage"],
 				time = 360,
 				flashtime = 5,
+				color1 = "RED",
 			},
 			injectionwarnself = {
-				var = "injectionwarnself",
 				varname = format(L["%s on self"],L["Injection"]),
 				type = "centerpopup",
 				text = format("%s: %s! %s!",L["Injection"],L["YOU"],L["MOVE"]),
@@ -44,7 +43,6 @@ do
 				color2 = "MAGENTA",
 			},
 			injectionwarnother = {
-				var = "injectionwarnother",
 				varname = format(L["%s on others"],L["Injection"]),
 				type = "centerpopup",
 				text = format("%s: #5#",L["Injection"]),
@@ -52,7 +50,6 @@ do
 				color1 = "ORANGE",
 			},
 			cloudcd = {
-				var = "cloudcd",
 				varname = format(L["%s Cooldown"],SN[28240]),
 				type = "dropdown",
 				text = format(L["Next %s"],SN[28240]),

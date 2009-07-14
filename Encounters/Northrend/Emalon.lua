@@ -11,9 +11,9 @@ do
 		},
 		onactivate = {
 			tracing = {L["Emalon the Storm Watcher"],},
-			autostart = true,
-			autostop = true,
-			leavecombat = true,
+			tracerstart = true,
+			tracerstop = true,
+			combatstop = true,
 		},
 		userdata = {},
 		onstart = {
@@ -23,7 +23,6 @@ do
 		},
 		alerts = {
 			novacd = {
-				var = "novacd",
 				varname = format(L["%s Cooldown"],SN[64216]),
 				type = "dropdown",
 				time = 25,
@@ -34,7 +33,6 @@ do
 				sound = "ALERT1",
 			},
 			novawarn = {
-				var = "novawarn",
 				varname = format(L["%s Cast"],SN[64216]),
 				type = "centerpopup",
 				time = 5,
@@ -45,7 +43,6 @@ do
 				sound = "ALERT5",
 			},
 			overchargecd = {
-				var = "overchargecd",
 				varname = format(L["%s Cooldown"],SN[64218]),
 				type = "dropdown",
 				time = 45,
@@ -56,7 +53,6 @@ do
 				sound = "ALERT2",
 			},
 			overchargedblastdur = {
-				var = "overchargedblastdur",
 				varname = format(L["%s Timer"],SN[64219]),
 				type = "centerpopup",
 				time = 20,

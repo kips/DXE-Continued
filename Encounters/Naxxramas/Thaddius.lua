@@ -15,9 +15,9 @@ do
 		},
 		onactivate = {
 			tracing = {L_Thaddius,L["Stalagg"],L["Feugen"]},
-			autostart = true,
-			autostop = true,
-			leavecombat = true,
+			tracerstart = true,
+			tracerstop = true,
+			combatstop = true,
 		},
 		userdata = { 
 			dead = 0,
@@ -41,16 +41,15 @@ do
 		},
 		alerts = {
 			enragecd = {
-				var = "enragecd", 
 				varname = L["Enrage"],
 				type = "dropdown", 
 				text = L["Enrage"],
 				time = 360, 
 				flashtime = 5, 
 				sound = "ALERT2", 
+				color1 = "RED",
 			},
 			tankthrowcd = {
-				var = "tankthrowcd", 
 				varname = format(L["%s Cooldown"],L["Tank Throw"]),
 				type = "dropdown", 
 				text = format(L["Next %s"],L["Tank Throw"]),
@@ -60,7 +59,6 @@ do
 				color1 = "MAGENTA", 
 			},
 			polarityshiftwarn = {
-				var = "polarityshiftwarn", 
 				varname = format(L["%s Cast"],SN[28089]),
 				type = "centerpopup", 
 				text = format(L["%s Cast"],SN[28089]),

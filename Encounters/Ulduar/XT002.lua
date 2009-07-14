@@ -11,9 +11,9 @@ do
 		},
 		onactivate = {
 			tracing = {L["XT-002 Deconstructor"],},
-			autostart = true,
-			autostop = true,
-			leavecombat = true,
+			tracerstart = true,
+			tracerstop = true,
+			combatstop = true,
 		},
 		userdata = {
 			heartbroken = "0",
@@ -25,7 +25,6 @@ do
 		},
 		alerts = {
 			enragecd = {
-				var = "enragecd",
 				varname = L["Enrage"],
 				type = "dropdown",
 				text = L["Enrage"],
@@ -36,7 +35,6 @@ do
 				color2 = "RED",
 			},
 			gravitywarnself = {
-				var = "gravitywarnself",
 				varname = format(L["%s on self"],SN[63024]),
 				type = "centerpopup",
 				text = format("%s: %s! %s!",SN[63024],L["YOU"],L["MOVE"]),
@@ -47,7 +45,6 @@ do
 				color2 = "PINK",
 			},
 			gravitywarnother = {
-				var = "gravitywarnother",
 				varname = format(L["%s on others"],SN[63024]),
 				type = "centerpopup",
 				text = format("%s: #5#",SN[63024]),
@@ -55,7 +52,6 @@ do
 				color1 = "GREEN",
 			},
 			lightwarnself = {
-				var = "lightwarnself",
 				varname = format(L["%s on self"],SN[63018]),
 				type = "centerpopup",
 				text = format("%s: %s! %s!",SN[63018],L["YOU"],L["MOVE"]),
@@ -66,7 +62,6 @@ do
 				color2 = "MAGENTA",
 			},
 			lightwarnother = {
-				var = "lightwarnother",
 				varname = format(L["%s on others"],SN[63018]),
 				type = "centerpopup",
 				text = format("%s: #5#",SN[63018]),
@@ -74,7 +69,6 @@ do
 				color1 = "CYAN",
 			},
 			tympanicwarn = {
-				var = "tympanicwarn",
 				varname = format(L["%s Cast"],SN[62776]),
 				type = "centerpopup",
 				text = format(L["%s Cast"],L["Tantrum"]),
@@ -85,7 +79,6 @@ do
 				sound = "ALERT2",
 			},
 			tympaniccd = {
-				var = "tympaniccd",
 				varname = format(L["%s Cooldown"],SN[62776]),
 				type = "dropdown",
 				text = format(L["%s Cooldown"],L["Tantrum"]),
@@ -96,7 +89,6 @@ do
 				sound = "ALERT6",
 			},
 			exposedwarn = {
-				var = "exposedwarn",
 				varname = format(L["%s Warning"],L["Heart"]),
 				type = "centerpopup",
 				text = format(L["%s Exposed"],L["Heart"]).."!",
@@ -107,7 +99,6 @@ do
 				color2 = "RED",
 			},
 			hardmodealert = {
-				var = "hardmodealert",
 				varname = format(L["%s Activation"],L["Hard Mode"]),
 				type = "simple",
 				text = format(L["%s Activated"],L["Hard Mode"]).."!",

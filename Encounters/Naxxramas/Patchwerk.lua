@@ -13,9 +13,9 @@ do
 		},
 		onactivate = {
 			tracing = {L_Patchwerk,},
-			autostart = true,
-			autostop = true,
-			leavecombat = true,
+			tracerstart = true,
+			tracerstop = true,
+			combatstop = true,
 		},
 		userdata = {},
 		onstart = {
@@ -25,7 +25,6 @@ do
 		},
 		alerts = {
 			enragecd = {
-				var = "enragecd", 
 				varname = L["Enrage"],
 				type = "dropdown", 
 				text = L["Enrage"],
@@ -35,7 +34,6 @@ do
 				color1 = "RED",
 			},
 			enragewarn = {
-				var = "enragewarn", 
 				varname = format(L["%s Warning"],L["Enrage"]),
 				type = "simple", 
 				text = L["Enraged"].."!",

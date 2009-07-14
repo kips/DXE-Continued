@@ -10,9 +10,9 @@ do
 		},
 		onactivate = {
 			tracing = {L["Kologarn"],L["Right Arm"],L["Left Arm"]},
-			autostart = true,
-			autostop = true,
-			leavecombat = true,
+			tracerstart = true,
+			tracerstop = true,
+			combatstop = true,
 		},
 		onstart = {
 			{
@@ -22,7 +22,6 @@ do
 		},
 		alerts = {
 			stonegripwarnothers = {
-				var = "stonegripothers",
 				varname = format(L["%s on others"],SN[64290]),
 				type = "simple",
 				text = format("%s: #5#",SN[64290]),
@@ -31,7 +30,6 @@ do
 				sound = "ALERT2",
 			},
 			armsweepcd = {
-				var = "armsweepcd",
 				varname = format(L["%s Cooldown"],SN[63766]),
 				type = "dropdown",
 				text = format(L["%s Cooldown"],SN[63766]),
@@ -41,7 +39,6 @@ do
 				sound = "ALERT3",
 			},
 			shockwavecd = {
-				var = "shockwavecd",
 				varname = format(L["%s Cooldown"],SN[63783]),
 				type = "dropdown",
 				text = format(L["Next %s"],SN[63783]),
@@ -52,7 +49,6 @@ do
 				sound = "ALERT4",
 			},
 			leftarmcd = {
-				var = "leftarmcd",
 				varname = format(L["%s Respawn"],L["Left Arm"]),
 				type = "dropdown",
 				text = format(L["%s Respawns"],L["Left Arm"]),
@@ -60,7 +56,6 @@ do
 				color1 = "CYAN",
 			},
 			rightarmcd = {
-				var = "rightarmcd",
 				varname = format(L["%s Respawn"],L["Right Arm"]),
 				type = "dropdown",
 				text = format(L["%s Respawns"],L["Right Arm"]),

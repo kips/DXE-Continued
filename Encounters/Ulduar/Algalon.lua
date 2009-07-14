@@ -10,9 +10,9 @@ do
 		},
 		onactivate = {
 			tracing = {L["Algalon the Observer"],},
-         autostart = true,
-         autostop = true,
-			leavecombat = true,
+         tracerstart = true,
+         tracerstop = true,
+			combatstop = true,
 		},
 		userdata = {
 			cosmicsmashtime = 25,
@@ -27,7 +27,6 @@ do
 		},
 		alerts = {
 			enragecd = {
-				var = "enragecd",
 				varname = L["Enrage"],
 				type = "dropdown",
 				text = L["Enrage"],
@@ -38,7 +37,6 @@ do
 				color2 = "GREY",
 			},
 			bigbangwarn = {
-				var = "bigbangwarn",
 				varname = format(L["%s Cast"],SN[64443]),
 				type = "centerpopup",
 				text = format(L["%s Cast"],SN[64443]),
@@ -49,7 +47,6 @@ do
 				color2 = "BROWN",
 			},
 			bigbangcd = {
-				var = "bigbangcd",
 				varname = format(L["%s Cooldown"],SN[64443]),
 				type = "dropdown",
 				text = format(L["Next %s"],SN[64443]),
@@ -60,7 +57,6 @@ do
 				color2 = "BLUE",
 			},
 			cosmicsmashwarn = {
-				var = "cosmicsmashwarn",
 				varname = format(L["%s ETA"],SN[62301]),
 				type = "centerpopup",
 				text = format(L["%s Hits"],SN[62301]),
@@ -71,7 +67,6 @@ do
 				color2 = "RED",
 			},
 			cosmicsmashcd = {
-				var = "cosmicsmashcd",
 				varname = format(L["%s Cooldown"],SN[62301]),
 				type = "dropdown",
 				text = format(L["Next %s"],SN[62301]),
@@ -82,7 +77,6 @@ do
 				color2 = "GREEN",
 			},
 			punchcd = {
-				var = "punchcd",
 				varname = format(L["%s Cooldown"],SN[64412]),
 				type = "dropdown",
 				text = format(L["Next %s"],SN[64412]),

@@ -19,7 +19,7 @@ do
 		},
 		onactivate = {
 			tracing = {L["Runic Colossus"],L["Ancient Rune Giant"]},
-			leavecombat = true,
+			combatstop = true,
 		},
 		userdata = {
 			chargecount = 1,
@@ -40,7 +40,6 @@ do
 		},
 		alerts = {
 			enrage2cd = {
-				var = "enrage2cd", 
 				varname = L["Enrage"], 
 				type = "dropdown", 
 				text = L["Enrage"], 
@@ -50,16 +49,15 @@ do
 				color1 = "RED",
 			},
 			hardmodecd = {
-				var = "hardmodecd", 
 				varname = format(L["%s Timeleft"],L["Hard Mode"]),
 				type = "dropdown", 
 				text = format(L["%s Ends"],L["Hard Mode"]),
 				time = 180, 
 				flashtime = 5, 
+				color1 = "RED",
 				sound = "ALERT1", 
 			},
 			hardmodeactivation = {
-				var = "hardmodeactivation", 
 				varname = format(L["%s Warning"],L["Hard Mode"]),
 				type = "simple", 
 				text = format(L["%s Activated"],L["Hard Mode"]),
@@ -67,7 +65,6 @@ do
 				sound = "ALERT1", 
 			},
 			chargecd = {
-				var = "chargecd", 
 				varname = format(L["%s Cooldown"],SN[62279]),
 				type = "dropdown", 
 				text = format(L["Next %s"],SN[62279]).." <chargecount>",
@@ -77,7 +74,6 @@ do
 				color1 = "VIOLET",
 			},
 			chainlightningcd = {
-				var = "chainlightningcd",
 				varname = format(L["%s Cooldown"],SN[62131]),
 				type = "dropdown",
 				text = format(L["%s Cooldown"],SN[62131]),
@@ -88,7 +84,6 @@ do
 				color2 = "ORANGE",
 			},
 			frostnovacast = {
-				var = "frostnovacast",
 				varname = format(L["%s Cast"],SN[122]),
 				type = "centerpopup",
 				text = format(L["%s Cast"],SN[122]),
@@ -99,7 +94,6 @@ do
 				color2 = "BLUE",
 			},
 			strikecd = {
-				var = "strikecd",
 				varname = format(L["%s Cooldown"],SN[62130]),
 				type = "dropdown",
 				text = format(L["%s Cooldown"],SN[62130]),

@@ -8,18 +8,18 @@
 	A command bundle is an array of command lists
 
 	Valid commands are:
-		expect
-		quash
-		set
-		alert
-		scheduletimer
-		canceltimer
-		resettimer
-		tracing
-		proximitycheck
-		raidicon
-		arrow
-		removearrow
+		expect 				= {"<token or value> ... <token_n or value_n>","<condition>","<token' or value'> ... <token_n' or value_n'>"}
+		quash 				= "<alert>"
+		set 					= {<var> = <token or value>, ..., <var_n> = <token_n or value_n> }
+		alert 				= "<alert>"
+		scheduletimer	   = {"<timer>",<token or number>}
+		canceltimer 		= "<timer>"
+		resettimer 			= [BOOLEAN]
+		tracing 				= {<name>,...,<name_n>}
+		proximitycheck 	= {"<token>",[10,11,18, or 28]}
+		raidicon 			= "<raidicon>"
+		arrow 				= "<arrow>"
+		removearrow 		= "<token>"
 ]]
 
 local addon = DXE
@@ -47,10 +47,10 @@ local new = function()
 	local t = next(cache)
 	if t then 
 		cache[t] = nil
+		return t
 	else
-		t = {} 
+		return {} 
 	end
-	return t
 end
 
 local del = function(t)
@@ -413,20 +413,6 @@ function module:RemoveThrottles()
 	wipe(Throttles)
 end
 
---[[
-local key,var = info[#info-4],info[#info-2]
-	local info = EDB[key].alerts[var]
-	local stgs = pfl.Encounters[key][var]
-
-	if info.type == "dropdown" then
-		Alerts:Dropdown(info.var,info.varname,10,5,stgs.sound,stgs.color1,stgs.color2)
-	elseif info.type == "centerpopup" then
-		Alerts:CenterPopup(name,info.varname,10,5,stgs.sound,stgs.color1,stgs.color2)
-	elseif info.type == "simple" then
-		Alerts:Simple(info.varname,5,stgs.sound,stgs.color1)
-	end
-]]
-
 local GetTime = GetTime
 local function StartAlert(id,stgs,...)
 	local info = alerts[id]
@@ -573,7 +559,7 @@ local CommandFuncs = {
 	end,
 
 	alert = function(info,...)
-		local stgs = EncDB[alerts[info].var]
+		local stgs = EncDB[info]
 		if stgs.enabled then StartAlert(info,stgs,...) end
 		return true
 	end,
@@ -611,7 +597,7 @@ local CommandFuncs = {
 	end,
 
 	raidicon = function(info,...)
-		local stgs = EncDB[raidicons[info].var].enabled
+		local stgs = EncDB[info].enabled
 		if addon:IsPromoted() and stgs.enabled then
 			SetRaidIcon(info,stgs,...)
 		end
@@ -619,7 +605,7 @@ local CommandFuncs = {
 	end,
 
 	arrow = function(info,...)
-		local stgs = EncDB[arrows[info].var]
+		local stgs = EncDB[info]
 		if stgs.enabled then StartArrow(info,stgs,...) end
 		return true
 	end,

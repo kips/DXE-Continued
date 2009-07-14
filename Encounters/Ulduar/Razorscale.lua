@@ -16,7 +16,7 @@ do
 		},
 		onactivate = {
 			tracing = {L["Razorscale"],},
-			leavecombat = true,
+			combatstop = true,
 		},
 		onstart = {
 			{
@@ -26,7 +26,6 @@ do
 		userdata = {},
 		alerts = {
 			enragecd = {
-				var = "enragecd",
 				varname = L["Enrage"],
 				type = "dropdown",
 				text = L["Enrage"],
@@ -37,7 +36,6 @@ do
 				sound = "ALERT6",
 			},
 			devourwarnself = {
-				var = "devourwarnself",
 				varname = format(L["%s on self"],SN[63014]),
 				type = "simple",
 				text = format(L["Move Out of %s"],SN[63014]).."!",
@@ -46,7 +44,6 @@ do
 				sound = "ALERT1",
 			},
 			breathwarn = {
-				var = "breathwarn",
 				varname = format(L["%s Cast"],SN[63317]),
 				type = "centerpopup",
 				text = format(L["%s Cast"],SN[63317]),
@@ -57,7 +54,6 @@ do
 				sound = "ALERT2",
 			},
 			chaindur = {
-				var = "chaindur",
 				varname = format(L["%s Duration"],L["Chain"]),
 				type = "centerpopup",
 				text = format(L["%s Duration"],L["Chain"]),
@@ -66,7 +62,6 @@ do
 				sound = "ALERT3",
 			},
 			permlandwarn = {
-				var = "permlandwarn",
 				varname = format(L["%s Warning"],L["Permanent Landing"]),
 				type = "simple",
 				text = format(L["%s Permanently Landed"],SN["Razorscale"]).."!",

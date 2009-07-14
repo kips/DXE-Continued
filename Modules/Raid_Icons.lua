@@ -1,10 +1,14 @@
-local DXE = DXE
+local addon = DXE
 local version = tonumber(("$Rev$"):sub(7, -3))
-DXE.version = version > DXE.version and version or DXE.version
-local L = DXE.L
+addon.version = version > addon.version and version or addon.version
+local L = addon.L
 
-local RaidIcons = DXE:NewModule("RaidIcons","AceTimer-3.0")
-DXE.RaidIcons = RaidIcons
+local module = addon:NewModule("RaidIcons","AceTimer-3.0")
+addon.RaidIcons = module
+
+function module:OnDisable()
+	self:RemoveAll()
+end
 
 -- unit -> handle
 local units = {}
@@ -13,26 +17,26 @@ local used = {}
 
 -- If raid icon is in use, cancel timer
 -- Unit already has a raid icon. 
--- 	Case 1: Icon was not set by DXE, save it to be replaced after the persist time
--- 	Case 2: Icon was set by DXE, cancel timer
+-- 	Case 1: Icon was not set by addon, save it to be replaced after the persist time
+-- 	Case 2: Icon was set by addon, cancel timer
 
-function RaidIcons:MarkFriendly(unit,icon,persist)
+function module:MarkFriendly(unit,icon,persist)
 	if units[unit] then self:CancelTimer(units[unit],true) end
 	SetRaidTarget(unit,icon)
 	units[unit] = self:ScheduleTimer("RemoveIcon",persist,unit)
 end
 
 -- TODO: Implement
-function RaidIcons:MarkEnemy()
+function module:MarkEnemy()
 
 end
 
-function RaidIcons:RemoveIcon(unit)
+function module:RemoveIcon(unit)
 	SetRaidTarget(unit,0)
 	units[unit] = nil
 end
 
-function RaidIcons:RemoveAll()
+function module:RemoveAll()
 	for unit,handle in pairs(units) do
 		self:CancelTimer(handle,true)
 		SetRaidTarget(unit,0)

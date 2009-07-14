@@ -5,25 +5,24 @@ local L = addon.L
 
 local UIParent = UIParent
 local SM = addon.SM
-local AceGUI = addon.AceGUI
-local AceTimer = addon.AceTimer
 local format = string.format
 local Colors,Sounds = addon.Constants.Colors,addon.Constants.Sounds
 
 local GetTime,PlaySoundFile,ipairs,pairs,next,remove = 
 		GetTime,PlaySoundFile,ipairs,pairs,next,tremove
 
-local scale
 local util = addon.util
 
 local animationTime = 0.3
 local fadeTime = 2
 
+local db,pfl
+
 ---------------------------------------
 -- INITIALIZATION
 ---------------------------------------
 
-local module = addon:NewModule("Alerts","AceTimer-3.0")
+local module = addon:NewModule("Alerts")
 addon.Alerts = module
 local Active = {}
 local TopAlertStack = {}
@@ -31,6 +30,44 @@ local CenterAlertStack = {}
 local AlertPool = {}
 
 local TopStackAnchor,CenterStackAnchor
+
+function module:RefreshProfile()
+	pfl = db.profile
+	self:RefreshScale()
+end
+
+function module:RefreshScale()
+	for alert in pairs(Active) do
+		alert:SetScale(pfl.Scale)
+	end
+end
+
+function module:InitializeOptions(area)
+	area.alerts_group = {
+		type = "group",
+		name = L["Alerts"],
+		order = 200,
+		handler = self,
+		get = function(info) return pfl[info[#info]] end,
+		args = {
+			AlertsTest = {
+				type = "execute",
+				name = L["Alerts Test"],
+				order = 100,
+				func = "AlertsTest",
+			},
+			Scale = {
+				order = 200,
+				type = "range",
+				name = L["Alerts scale"],
+				min = 0.5,
+				max = 1.5,
+				step = 0.1,
+				set = function(info,v) pfl.Scale = v; self:RefreshScale() end,
+			},
+		},
+	}
+end
 
 function module:OnInitialize()
 	-- Top stack anchor
@@ -43,16 +80,20 @@ function module:OnInitialize()
 	addon:RegisterMoveSaving(CenterStackAnchor,"CENTER","UIParent","CENTER",0,100)
 	addon:LoadPosition("DXEAlertsCenterStackAnchor")
 
-	scale = addon.db.global.AlertsScale
-end
+	self.db = addon.db:RegisterNamespace("Alerts", {
+		profile = {
+			Scale = 1,
+		},
+	})
+	db = self.db
+	pfl = db.profile
 
-function module:AlertsScaleChanged()
-	scale = addon.db.global.AlertsScale
-	for alert in pairs(Active) do
-		alert:SetScale(scale)
-	end
+	db.RegisterCallback(self, "OnProfileChanged", "RefreshProfile")
+	db.RegisterCallback(self, "OnProfileCopied", "RefreshProfile")
+	db.RegisterCallback(self, "OnProfileReset", "RefreshProfile")
+
+	addon:AddModuleOptionInitializer(module,"InitializeOptions")
 end
-addon.RegisterCallback(module,"AlertsScaleChanged")
 
 function module:OnDisable()
 	self:QuashAllAlerts()
@@ -81,17 +122,15 @@ UpdateFrame:Hide()
 -- PROTOTYPE
 ---------------------------------------
 
-local Prototype = {}
+local prototype = {}
 
-function Prototype:SetColor(c1,c2)
-	if c1 then
-		self.data.c1 = c1
-		self.bar:SetStatusBarColor(c1.r,c1.g,c1.b)
-	end
-	if c2 then self.data.c2 = c2 end
+function prototype:SetColor(c1,c2)
+	self.data.c1 = c1
+	self.bar:SetStatusBarColor(c1.r,c1.g,c1.b)
+	self.data.c2 = c2 or c1
 end
 
-function Prototype:Destroy()
+function prototype:Destroy()
 	self:Hide()
 	self:ClearAllPoints()
 	self:RemoveFromStacks()
@@ -115,7 +154,7 @@ do
 		return v1 > v2
 	end
 
-	function Prototype:LayoutAlertStack(stack,anchor)
+	function prototype:LayoutAlertStack(stack,anchor)
 		sort(stack, SortFunc)
 		for _,alert in ipairs(stack) do
 			alert:ClearAllPoints()
@@ -125,13 +164,13 @@ do
 	end
 end
 
-function Prototype:AnchorToTop()
+function prototype:AnchorToTop()
 	self:RemoveFromStacks()
 	TopAlertStack[#TopAlertStack+1] = self
 	self:LayoutAlertStack(TopAlertStack, TopStackAnchor)
 end
 
-function Prototype:AnchorToCenter()
+function prototype:AnchorToCenter()
 	if self.data.sound then PlaySoundFile(self.data.sound) end
 	self:RemoveFromStacks()
 	CenterAlertStack[#CenterAlertStack+1] = self
@@ -153,7 +192,7 @@ do
 		self:SetPoint("TOP",UIParent,"BOTTOMLEFT",x,y)
 	end
 
-	function Prototype:TranslateToCenter()
+	function prototype:TranslateToCenter()
 		self:RemoveFromStacks()
 		local worldscale,escale = UIParent:GetEffectiveScale(),self:GetEffectiveScale()
 		local fx,fy = self:GetCenter()
@@ -171,7 +210,7 @@ do
 	end
 end
 
-function Prototype:RemoveFromStack(stack)
+function prototype:RemoveFromStack(stack)
 	for i,alert in ipairs(stack) do
 		if alert == self then 
 			remove(stack,i) 
@@ -180,7 +219,7 @@ function Prototype:RemoveFromStack(stack)
 	end
 end
 
-function Prototype:RemoveFromStacks()
+function prototype:RemoveFromStacks()
 	self:RemoveFromStack(TopAlertStack)
 	self:RemoveFromStack(CenterAlertStack)
 end
@@ -217,7 +256,7 @@ do
 		end
 	end
 
-	function Prototype:Countdown(totalTime, flashTime)
+	function prototype:Countdown(totalTime, flashTime)
 		local endTime = GetTime() + totalTime
 		self.data.endTime,self.data.totalTime = endTime, totalTime
 		if flashTime and self.data.c1 ~= self.data.c2 then
@@ -229,28 +268,28 @@ do
 	end
 end
 
-function Prototype:RemoveCountdownFunc()
+function prototype:RemoveCountdownFunc()
 	self.countFunc = nil
 end
 
 local UIFrameFadeOut = UIFrameFadeOut
-function Prototype:Fade()
+function prototype:Fade()
 	UIFrameFadeOut(self,fadeTime,self:GetAlpha(),0)
 end
 
-function Prototype:SetID(id)
+function prototype:SetID(id)
 	self.data.id = id
 end
 
-function Prototype:SetTimeleft(timeleft)
+function prototype:SetTimeleft(timeleft)
 	self.data.timeleft = timeleft
 end
 
-function Prototype:SetSound(sound)
+function prototype:SetSound(sound)
 	self.data.sound = sound
 end
 
-function Prototype:SetText(text)
+function prototype:SetText(text)
 	self.text:SetText(text)
 end
 
@@ -285,13 +324,13 @@ local function CreateAlert()
 	text:SetPoint("TOPLEFT",self,"TOPLEFT",5,-5)
 	self.text = text
 
-	self.timer = AceGUI:Create("DXE_Timer")
+	self.timer = addon.AceGUI:Create("DXE_Timer")
 	self.timer:SetPoint("LEFT",self.text,"RIGHT")
 	self.timer.frame:SetFrameLevel(self:GetFrameLevel()+1)
 	self.timer.frame:SetParent(self)
 
-	AceTimer:Embed(self)
-	for k,v in pairs(Prototype) do self[k] = v end
+	addon.AceTimer:Embed(self)
+	for k,v in pairs(prototype) do self[k] = v end
 
 	return self
 end
@@ -304,8 +343,7 @@ local function GetAlert()
 	UpdateFrame:Show()
 	alert:Show()
 	alert:SetAlpha(0.6)
-	alert:SetScale(scale)
-	alert:SetColor(Colors.RED,Colors.WHITE)
+	alert:SetScale(pfl.Scale)
 	return alert
 end
 
@@ -406,9 +444,9 @@ end
 -- ALERT TEST
 ---------------------------------------------
 
-function addon:AlertsTest()
-	module:CenterPopup("AlertTest1", "Decimating. Life Tap Now!", 10, 5, "DXE ALERT1", "DCYAN")
-	module:Dropdown("AlertTest2", "Biger City Opening", 20, 5, "DXE ALERT2", "BLUE")
-	module:Simple("Gay",3,"DXE ALERT3","RED")
+function module:AlertsTest()
+	self:CenterPopup("AlertTest1", "Decimating. Life Tap Now!", 10, 5, "DXE ALERT1", "DCYAN")
+	self:Dropdown("AlertTest2", "Biger City Opening", 20, 5, "DXE ALERT2", "BLUE")
+	self:Simple("Gay",3,"DXE ALERT3","RED")
 end
 

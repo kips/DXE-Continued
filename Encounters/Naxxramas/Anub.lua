@@ -13,9 +13,9 @@ do
 		},
 		onactivate = {
 			tracing = {L_AnubRekhan},
-			autostart = true,
-			autostop = true,
-			leavecombat = true,
+			tracerstart = true,
+			tracerstop = true,
+			combatstop = true,
 		},
 		userdata = { 
 			swarmcd = {90, 85, loop=false},
@@ -31,8 +31,6 @@ do
 		},
 		alerts = {
 			locustswarmcd = {
-				var = "locustswarmcd", 
-				-- Locust Swarm Cooldown
 				varname = format(L["%s Cooldown"],SN[28785]),
 				type = "dropdown", 
 				text = format(L["%s Cooldown"],SN[28785]), 
@@ -42,7 +40,6 @@ do
 				color1 = "GREEN", 
 			},
 			locustswarmcast = {
-				var = "locustswarmcast", 
 				varname = format(L["%s Cast"],SN[28785]), 
 				type = "centerpopup", 
 				text = format(L["%s Cast"],SN[28785]), 
@@ -51,7 +48,6 @@ do
 				color1 = "GREY", 
 			},
 			locustswarmgain = {
-				var = "locustswarmgain", 
 				varname = format(L["%s Duration"],SN[28785]), 
 				type = "centerpopup", 
 				text = format(L["%s Duration"],SN[28785]), 

@@ -11,9 +11,9 @@ do
 		},
 		onactivate = {
 			tracing = {L_Gluth},
-			autostart = true,
-			autostop = true,
-			leavecombat = true,
+			tracerstart = true,
+			tracerstop = true,
+			combatstop = true,
 		},
 		userdata = {},
 		onstart = {
@@ -23,7 +23,6 @@ do
 		},
 		alerts = {
 			decimatecd = {
-				var = "decimatecd",
 				varname = format(L["%s Cooldown"],SN[28374]),
 				type = "dropdown",
 				text = format(L["%s Cooldown"],SN[28374]),
@@ -34,7 +33,6 @@ do
 				throttle = 5,
 			},
 			enragewarn = {
-				var = "enragewarn", 
 				varname = format(L["%s Warning"],L["Enrage"]),
 				type = "simple", 
 				text = format("%s!",L["Enraged"]),

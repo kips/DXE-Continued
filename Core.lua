@@ -7,7 +7,7 @@ local debug
 
 local debugDefaults = {
 	CheckForEngage = false,
-	CheckForWipe = false,
+	CombatStop = false,
 	CHAT_MSG_MONSTER_YELL = false,
 	RAID_ROSTER_UPDATE = false,
 }
@@ -17,10 +17,6 @@ local defaults = {
 	global = {
 		Enabled = true,
 		Locked = true,
-		Distributor = {
-			AutoAccept = true,
-		},
-		AlertsScale = 1,
 		PaneScale = 1, 
 		ShowPane = true,
 		PaneOnlyInRaid = false,
@@ -58,7 +54,7 @@ end
 ---------------------------------------------
 
 local wipe,concat,remove = table.wipe,table.concat,table.remove
-local match,find,gmatch,sub = string.match,string.find,string.gmatch,string.sub
+local match,find,gmatch,sub,split,join = string.match,string.find,string.gmatch,string.sub,string.split,string.join
 local _G,select,tostring,type,assert,tonumber = _G,select,tostring,type,assert,tonumber
 local GetTime,GetNumRaidMembers,GetRaidRosterInfo = GetTime,GetNumRaidMembers,GetRaidRosterInfo
 local UnitName,UnitGUID,UnitIsEnemy,UnitClass,UnitAffectingCombat,UnitHealth,UnitIsFriend,UnitIsDead = 
@@ -181,9 +177,16 @@ local function blend(c1, c2, factor)
 	return r,g,b
 end
 
+local function safecall(func,...)
+	local success,err = pcall(func,...)
+	if not success then geterrorhandler()(err) end
+	return success
+end
+
 util.tablesize = tablesize
 util.search = search
 util.blend = blend
+util.safecall = safecall
 
 ---------------------------------------------
 -- MODULES
@@ -317,7 +320,10 @@ function addon:RegisterEncounter(data)
 	-- Add to queue if we're not loaded yet
 	if not Initialized then RegisterQueue[key] = data return end
 
-	if debug then self:ValidateData(data) end
+	--@debug@
+	local success = safecall(self.ValidateData,self,data)
+	if not success then return end
+	--@end-debug@
 
 	-- Upgrading
 	if RDB[key] and RDB[key] ~= data then
@@ -341,6 +347,7 @@ function addon:RegisterEncounter(data)
 
 	-- Only encounters with field key have options
 	if key ~= "default" then
+		self:AddEncounterDefaults(data)
 		self:AddEncounterOptions(data)
 		self:RefreshDefaults()
 	end
@@ -348,6 +355,7 @@ function addon:RegisterEncounter(data)
 	EDB[key] = data
 
 	self:UpdateTriggers()
+	self:UpdateVersionString()
 end
 
 --- Remove an encounter previously added with RegisterEncounter.
@@ -365,6 +373,7 @@ function addon:UnregisterEncounter(key)
 	EDB[key] = nil
 
 	self:UpdateTriggers()
+	self:UpdateVersionString()
 end
 
 function addon:GetEncounterData(key)
@@ -391,27 +400,25 @@ function addon:SetActiveEncounter(key)
 	if not EDB[key] then return end
 	-- Already set to this encounter
 	if CE and CE.key == key then return end
-	-- Update CE upvalue
+
 	CE = EDB[key]
-	-- Autos
-	self:SetAutoStart(false)
-	self:SetAutoStop(false)
-	-- Stop the existing encounter
+
+	self:SetTracerStart(false)
+	self:SetTracerStop(false)
+
 	self:StopEncounter() 
-	-- Unregister regen events
+
 	self:UnregisterEvent("PLAYER_REGEN_ENABLED")
-	self:UnregisterEvent("PLAYER_REGEN_DISABLED")
-	-- Set folder value
+
 	self.Pane.SetFolderValue(key)
-	-- Set pane updating and starting/stopping
+
 	self:CloseAllHW()
 	if CE.onactivate then
 		local oa = CE.onactivate
-		self:SetAutoStart(oa.autostart)
-		self:SetAutoStop(oa.autostop)
+		self:SetTracerStart(oa.tracerstart)
+		self:SetTracerStop(oa.tracerstop)
 		self:SetTracing(oa.tracing)
-		self:SetCombat(oa.leavecombat,"PLAYER_REGEN_ENABLED","CheckForWipe")
-		self:SetCombat(oa.entercombat,"PLAYER_REGEN_DISABLED","CheckForEngage")
+		self:SetCombat(oa.combatstop,"PLAYER_REGEN_ENABLED","CombatStop")
 	end
 	-- For the empty encounter
 	if key == "default" then self:ShowFirstHW() end
@@ -448,10 +455,12 @@ do
 end
 
 ---------------------------------------------
--- TRIGGER BUILDING
+-- TRIGGERING
 ---------------------------------------------
-local NameTriggers = {} -- Activation names. Source: data.triggers.scan
-local YellTriggers = {} -- Yell activations. Source: data.triggers.yell
+
+local TRGS_NAME = {} -- Activation names. Source: data.triggers.scan
+local TRGS_NPCID = {} -- NPC ids activations. Source: data.triggers.scan
+local TRGS_YELL = {} -- Yell activations. Source: data.triggers.yell
 
 do
 	local function add_data(tbl,info,key)
@@ -475,12 +484,12 @@ do
 				if data.triggers then
 					local scan = data.triggers.scan
 					if scan then 
-						add_data(NameTriggers,scan,key)
+						add_data(TRGS_NAME,scan,key)
 						hasName = true
 					end
 					local yell = data.triggers.yell
 					if yell then 
-						add_data(YellTriggers,yell,key) 
+						add_data(TRGS_YELL,yell,key) 
 						hasYell = true
 					end
 				end
@@ -492,8 +501,8 @@ do
 	local ScanHandle
 	function addon:UpdateTriggers()
 		-- Clear trigger tables
-		wipe(NameTriggers)
-		wipe(YellTriggers)
+		wipe(TRGS_NAME)
+		wipe(TRGS_YELL)
 		self:UnregisterEvent("CHAT_MSG_MONSTER_YELL")
 		self:CancelTimer(ScanHandle,true)
 		-- Build trigger lists
@@ -505,6 +514,46 @@ do
 	addon:ThrottleFunc("UpdateTriggers",1,true)
 end
 
+function addon:CHAT_MSG_MONSTER_YELL(_,msg,...)
+	--@debug@
+	debug("CHAT_MSG_MONSTER_YELL",msg,...)
+	--@end-debug@
+	for fragment,key in pairs(TRGS_YELL) do
+		if find(msg,fragment) then
+			self:SetActiveEncounter(key)
+			self:StopEncounter()
+			self:StartEncounter(msg)
+		end
+	end
+end
+
+local FriendlyExceptions = {}
+function addon:AddFriendlyException(name)
+	FriendlyExceptions[name] = true
+end
+
+function addon:Scan()
+	for i,unit in pairs(Roster.index_to_unit) do
+		local target = rIDtarget[i]
+		local name = UnitName(target)
+		-- local guid = UnitGUID(target)
+		-- local npcid,unittype = NID[guid],UT[guid]
+		-- NPCIDTriggers[npcid]
+		if UnitExists(target) and 
+			TRGS_NAME[name] and 
+			not UnitIsDead(target)
+			and (UnitIsEnemy("player",target) or FriendlyExceptions[name]) then
+			-- Return name
+			return TRGS_NAME[name]
+		end
+	end
+	return nil
+end
+
+function addon:ScanUpdate()
+	local key = self:Scan()
+	if key then self:SetActiveEncounter(key) end
+end
 
 ---------------------------------------------
 -- ROSTER
@@ -637,6 +686,8 @@ do
 		for k,func in ipairs(funcs) do
 			func(pfl)
 		end
+		
+		self:LoadAllPositions()
 	end
 end
 
@@ -647,14 +698,10 @@ function addon:OnInitialize()
 	-- Database
 	self.db = LibStub("AceDB-3.0"):New("DXEDB",self.defaults)
 	db = self.db
-	gbl = db.global
-	pfl = db.profile
-	self:SetOptionsPointers()
+	gbl,pfl = db.global,db.profile
+	self:SetDBPointers()
 
 	-- Options
-	self.options = self:GetOptions()
-	AC:RegisterOptionsTable("DXE", self.options)
-	ACD:SetDefaultSize("DXE", 890,550)
 	db.RegisterCallback(self, "OnProfileChanged", "RefreshProfile")
 	db.RegisterCallback(self, "OnProfileCopied", "RefreshProfile")
 	db.RegisterCallback(self, "OnProfileReset", "RefreshProfile")
@@ -742,6 +789,8 @@ end
 -- POSITIONING
 ---------------------------------------------
 
+local frameNames = {}
+
 function addon:SavePosition(f)
 	local point, relativeTo, relativePoint, xOfs, yOfs = f:GetPoint()
 	local name = f:GetName()
@@ -752,9 +801,17 @@ function addon:SavePosition(f)
 	pfl.Positions[name].yOfs = yOfs
 end
 
+-- Used after the profile is changed
+function addon:LoadAllPositions()
+	for name in pairs(frameNames) do
+		self:LoadPosition(name)
+	end
+end
+
 function addon:LoadPosition(name)
 	local f = _G[name]
 	if not f then return end
+	frameNames[name] = true
 	f:ClearAllPoints()
 	local pos = pfl.Positions[name]
 	if not pos then
@@ -807,49 +864,6 @@ do
 		defaults.profile.Positions[frame:GetName()] = pos
 		self:RefreshDefaults()
 	end
-end
-
----------------------------------------------
--- TRIGGERING
----------------------------------------------
-
-function addon:CHAT_MSG_MONSTER_YELL(_,msg,...)
-	--@debug@
-	debug("CHAT_MSG_MONSTER_YELL",msg,...)
-	--@end-debug@
-	for fragment,key in pairs(YellTriggers) do
-		if find(msg,fragment) then
-			self:SetActiveEncounter(key)
-			self:StopEncounter()
-			self:StartEncounter(msg)
-		end
-	end
-end
-
-local FriendlyExceptions = {}
-
-function addon:AddFriendlyException(name)
-	FriendlyExceptions[name] = true
-end
-
-function addon:Scan()
-	for i,unit in pairs(Roster.index_to_unit) do
-		local target = rIDtarget[i]
-		local name = UnitName(target)
-		if UnitExists(target) and 
-			NameTriggers[name] and 
-			not UnitIsDead(target) 
-			and (UnitIsEnemy("player",target) or FriendlyExceptions[name]) then
-			-- Return name
-			return NameTriggers[name]
-		end
-	end
-	return nil
-end
-
-function addon:ScanUpdate()
-	local key = self:Scan()
-	if key then self:SetActiveEncounter(key) end
 end
 
 ---------------------------------------------
@@ -910,7 +924,8 @@ end
 
 
 function addon:ToggleConfig()
-	ACD[ACD.OpenFrames.DXE and "Close" or "Open"](ACD,"DXE")
+	if not self.options then self:InitializeOptions() end
+	ACD[ACD.OpenFrames.DXE and "Close" or "Open"](ACD,"DXE") 
 end
 
 local backdrop = {
@@ -1338,10 +1353,10 @@ do
 	local last = 0
 	function addon:TRACER_UPDATE(uid)
 		local time,running = GetTime(),self:IsRunning()
-		if self:IsAutoStart() and not running and UnitIsFriend(targetof[uid],"player") then
+		if self:IsTracerStart() and not running and UnitIsFriend(targetof[uid],"player") then
 			self:StartEncounter()
 			last = time + throttle
-		elseif (UnitIsDead(uid) or not UnitAffectingCombat(uid)) and self:IsAutoStop() and running and last < time then
+		elseif (UnitIsDead(uid) or not UnitAffectingCombat(uid)) and self:IsTracerStop() and running and last < time then
 			self:StopEncounter()
 		end
 	end
@@ -1349,37 +1364,36 @@ end
 
 do
 	local AutoStart,AutoStop
-	function addon:SetAutoStart(val)
+	function addon:SetTracerStart(val)
 		AutoStart = not not val
 	end
 
-	function addon:SetAutoStop(val)
+	function addon:SetTracerStop(val)
 		AutoStop = not not val
 	end
 
-	function addon:IsAutoStart()
+	function addon:IsTracerStart()
 		return AutoStart
 	end
 
-	function addon:IsAutoStop()
+	function addon:IsTracerStop()
 		return AutoStop
 	end
 end
 
 ---------------------------------------------
 -- REGEN START/STOPPING
--- Credits to BigWigs for these functions
 ---------------------------------------------
 
 local dead
-function addon:CheckForWipe()
+function addon:CombatStop()
 	--@debug@
-	debug("CheckForWipe","Invoked")
+	debug("CombatStop","Invoked")
 	--@end-debug@
 	if (UnitHealth("player") > 0 or UnitIsGhost("player")) and not UnitAffectingCombat("player") then
-		-- TODO: If this doesn't work then scan for the raid for units in combat and visible
+		-- If this doesn't work then scan for the raid for units in combat
 		if dead then
-			self:ScheduleTimer("CheckForWipe",3)
+			self:ScheduleTimer("CombatStop",3)
 			dead = nil
 			return
 		end
@@ -1388,22 +1402,10 @@ function addon:CheckForWipe()
 			self:StopEncounter()	
 			return
 		end
-		self:ScheduleTimer("CheckForWipe",2)
+		self:ScheduleTimer("CombatStop",2)
 	elseif UnitIsDead("player") then
 		dead = true
-		self:ScheduleTimer("CheckForWipe",2)
-	end
-end
-
-function addon:CheckForEngage()
-	--@debug@
-	debug("CheckForEngage","Invoked")
-	--@end-debug@
-	local key = self:Scan()
-	if key then
-		self:StartEncounter()
-	elseif UnitAffectingCombat("player") then
-		self:ScheduleTimer("CheckForEngage",2) 
+		self:ScheduleTimer("CombatStop",2)
 	end
 end
 
@@ -1411,13 +1413,23 @@ end
 -- COMMS
 ---------------------------------------------
 
-function addon:SendComm(commType,...)
-	assert(type(commType) == "string","Expected commType to be a string")
-	self:SendCommMessage("DXE", self:Serialize(commType,...), "RAID")
+function addon:SendWhisperComm(target,commType,...)
+	--@debug@
+	assert(type(target) == "string")
+	assert(type(commType) == "string")
+	--@end-debug@
+	self:SendCommMessage("DXE",self:Serialize(commType,...),"WHISPER",target)
+end
+
+function addon:SendRaidComm(commType,...)
+	--@debug@
+	assert(type(commType) == "string")
+	--@end-debug@
+	self:SendCommMessage("DXE",self:Serialize(commType,...),"RAID")
 end
 
 function addon:OnCommReceived(prefix, msg, dist, sender)
-	if dist ~= "RAID" or sender == self.PNAME then return end
+	if (dist ~= "RAID" and dist ~= "WHISPER") or sender == self.PNAME then return end
 	self:DispatchComm(sender, self:Deserialize(msg))
 end
 
@@ -1462,29 +1474,35 @@ function addon:CleanVersions()
 end
 
 ----- COMMS
-function addon:GetVersionString()
+local VersionString
+function addon:UpdateVersionString()
 	local work = {}
 	work[1] = format("%s,%s","addon",self.version)
 	for key, data in self:IterateEDB() do
 		work[#work+1] = format("%s,%s",data.key,data.version)
 	end
-	return concat(work,":")
+	VersionString = concat(work,":")
 end
+addon:ThrottleFunc("UpdateVersionString",1,true)
 
+-- All versions
 function addon:BroadcastAllVersions()
-	self:SendComm("AllVersionsBroadcast",self:GetVersionString())
+	self:SendRaidComm("AllVersionsBroadcast",VersionString)
 end
+addon:ThrottleFunc("BroadcastAllVersions",5,true)
 
 function addon:RequestAllVersions()
-	self:SendComm("RequestAllVersions")
+	self:SendRaidComm("RequestAllVersions")
 end
+addon:ThrottleFunc("RequestAllVersions",5,true)
 
 function addon:OnCommRequestAllVersions()
 	self:BroadcastAllVersions()
 end
 
+-- Single versions
 function addon:RequestAddOnVersions()
-	self:SendComm("RequestAddOnVersion")
+	self:SendRaidComm("RequestAddOnVersion")
 end
 
 function addon:OnCommRequestAddOnVersion()
@@ -1509,7 +1527,7 @@ end
 
 function addon:BroadcastVersion(key)
 	if not EDB[key] and key ~= "addon" then return end
-	self:SendComm("VersionBroadcast",key,key == "addon" and self.version or EDB[key].version)
+	self:SendRaidComm("VersionBroadcast",key,key == "addon" and self.version or EDB[key].version)
 end
 
 function addon:OnCommVersionBroadcast(event,commType,sender,key,version)
@@ -1606,7 +1624,7 @@ do
 	local function SortColumn(column)
 		local header = headers[column]
 		sortIndex = column
-		if sortDir then
+		if not header.sortDir then
 			table.sort(RVS, sortAsc)
 		else
 			table.sort(RVS, sortDesc)
@@ -1625,7 +1643,7 @@ do
 
 	local function CreateHeader(content,column)
 		local header = CreateFrame("Button", nil, content)
-		header:SetScript("OnClick",function() sortDir = not sortDir; SortColumn(column) end)
+		header:SetScript("OnClick",function() header.sortDir = not header.sortDir; SortColumn(column) end)
 		header:SetHeight(20)
 		local title = header:CreateFontString(nil,"OVERLAY")
 		title:SetPoint("LEFT",header,"LEFT",10,0)

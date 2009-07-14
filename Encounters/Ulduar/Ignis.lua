@@ -11,9 +11,9 @@ do
 		},
 		onactivate = {
 			tracing = {L["Ignis the Furnace Master"],},
-			autostart = true,
-			autostop = true,
-			leavecombat = true,
+			tracerstart = true,
+			tracerstop = true,
+			combatstop = true,
 		},
 		userdata = {
 			flamejetstime = {24,22.3,loop = false},
@@ -27,7 +27,6 @@ do
 		},
 		alerts = {
 			flamejetswarn = {
-				var = "flamejetswarn",
 				varname = format(L["%s Cast"],SN[62680]),
 				type = "centerpopup",
 				text = format(L["%s Cast"],SN[62680]),
@@ -36,7 +35,6 @@ do
 				sound = "ALERT3",
 			},
 			flamejetscd = {
-				var = "flamejetscd",
 				varname = format(L["%s Cooldown"],SN[62680]),
 				type = "dropdown",
 				time = "<flamejetstime>",
@@ -47,7 +45,6 @@ do
 				sound = "ALERT1",
 			},
 			scorchwarnself = {
-				var = "scorchwarnself",
 				varname = format(L["%s on self"],SN[62546]),
 				type = "simple",
 				text = format("%s: %s!",SN[62546],L["YOU"]),
@@ -56,7 +53,6 @@ do
 				sound = "ALERT5",
 			},
 			scorchcd = {
-				var = "scorchcd",
 				varname = format(L["%s Cooldown"],SN[62546]),
 				text = format(L["Next %s"],SN[62546]),
 				type = "dropdown",
@@ -67,7 +63,6 @@ do
 				sound = "ALERT2",
 			},
 			slagpotdur = {
-				var = "slagpotdur",
 				varname = format(L["%s Duration"],SN[62717]),
 				type = "centerpopup",
 				text = "<slagpotmessage>",
@@ -76,7 +71,6 @@ do
 				sound = "ALERT4",
 			},
 			hardmodeends = {
-				var = "hardmodeends",
 				varname = format("%s Timer",L["Hard Mode"]),
 				type = "dropdown",
 				text = format("%s Ends",L["Hard Mode"]),

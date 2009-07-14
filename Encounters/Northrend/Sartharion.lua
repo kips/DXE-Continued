@@ -17,9 +17,9 @@ do
 		},
 		onactivate = {
 			tracing = {L_Sartharion},
-			autostart = true,
-			autostop = true,
-			leavecombat = true,
+			tracerstart = true,
+			tracerstop = true,
+			combatstop = true,
 		},
 		userdata = {
 			tenebronarrived = 0,
@@ -69,7 +69,6 @@ do
 		},
 		alerts = {
 			lavawallcd = {
-				var = "lavawallcd", 
 				varname = format(L["%s Cooldown"],L["Lava Wall"]),
 				type = "dropdown", 
 				text = format(L["%s Cooldown"],L["Lava Wall"]),
@@ -79,7 +78,6 @@ do
 				color1 = "ORANGE", 
 			},
 			lavawallwarn = {
-				var = "lavawallwarn", 
 				varname = format(L["%s Cast"],L["Lava Wall"]),
 				type = "centerpopup", 
 				text = format(L["Incoming %s"],L["Lava Wall"]).."!",
@@ -89,7 +87,6 @@ do
 				color2 = "ORANGE",
 			},
 			shadowfissurewarn = {
-				var = "shadowfissurewarn", 
 				varname = format(L["%s Warning"],SN[59127]),
 				type = "simple", 
 				text = format(L["%s Spawned"],SN[59127]).."!",
@@ -98,7 +95,6 @@ do
 				time = 1.5, 
 			},
 			flamebreathwarn = {
-				var = "flamebreathwarn",
 				varname = format(L["%s Cast"],SN[56908]),
 				type = "centerpopup",
 				text = format(L["%s Cast"],SN[56908]),
@@ -108,7 +104,6 @@ do
 			},
 			shadronarrives = {
 				type = "dropdown",
-				var = "sharonarrives",
 				varname = format(L["%s Arrival"],L_Shadron),
 				text = format(L["%s Arrives"],L_Shadron),
 				time = 80,
@@ -116,7 +111,6 @@ do
 			},
 			tenebronarrives = {
 				type = "dropdown",
-				var = "tenebronarrives",
 				varname = format(L["%s Arrival"],L_Tenebron),
 				text = format(L["%s Arrives"],L_Tenebron),
 				time = 30,
@@ -124,7 +118,6 @@ do
 			},
 			vesperonarrives = {
 				type = "dropdown",
-				var = "vesperonarrives",
 				varname = format(L["%s Arrival"],L_Vesperon),
 				text = format(L["%s Arrives"],L_Vesperon),
 				time = 120,

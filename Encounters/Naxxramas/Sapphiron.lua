@@ -12,9 +12,9 @@ do
 			scan = L_Sapphiron, 
 		},
 		onactivate = {
-			autostart = true,
-			autostop = true,
-			leavecombat = true,
+			tracerstart = true,
+			tracerstop = true,
+			combatstop = true,
 			tracing = {L_Sapphiron},
 		},
 		userdata = {},
@@ -25,7 +25,6 @@ do
 		},
 		alerts = {
 			enragecd = {
-				var = "enragecd",
 				varname = L["Enrage"],
 				type = "dropdown",
 				text = L["Enrage"],
@@ -35,7 +34,6 @@ do
 				color2 = "RED",
 			},
 			lifedraincd = {
-				var = "lifedraincd", 
 				varname = format(L["%s Cooldown"],SN[28542]),
 				type = "dropdown", 
 				text = format(L["Next %s"],SN[28542]),
@@ -45,7 +43,6 @@ do
 				color1 = "MAGENTA", 
 			},
 			airphasedur = {
-				var = "airphasedur", 
 				varname = format(L["%s Duration"],L["Air Phase"]),
 				type = "centerpopup", 
 				text = format(L["%s Duration"],L["Air Phase"]), 
@@ -55,7 +52,6 @@ do
 				color1 = "YELLOW", 
 			},
 			deepbreathwarn = {
-				var = "deepbreathwarn", 
 				varname = format(L["%s Warning"],L["Deep Breath"]),
 				type = "centerpopup", 
 				text = format("%s! %s!",L["Deep Breath"],L["HIDE"]),

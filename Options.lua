@@ -3,12 +3,32 @@ local version = tonumber(("$Rev$"):sub(7, -3))
 addon.version = version > addon.version and version or addon.version
 local L = addon.L
 
-local EDB = addon.EDB
-local Alerts = addon.Alerts
-local SM = addon.SM
-local Constants = addon.Constants
+local wipe = table.wipe
+
 local db,pfl,gbl
-local util = addon.util
+
+local EDB = addon.EDB
+
+local DEFAULT_WIDTH = 890
+local DEFAULT_HEIGHT = 550
+
+-- Usage: t[<module>] = <func>
+-- func is passed a table the module can add option groups to
+local OptionInitializers = {}
+
+-- Usage: t[<module>] = <func>
+-- func is passed a table the module can add option items to options.args
+local OptionArgs = {}
+
+-- Usage: t[<key>] = true
+-- List of encounters by key that haven't had their options added
+local QueuedEncs = {}
+
+-- Upvalue pointer for options.plugins.encounters.enc_group.args
+local encsArgs
+
+-- Encounter config handler
+local ConfigHandler = {}
 
 -----------------------------------------
 -- MAIN
@@ -19,12 +39,11 @@ local function RefreshProfile(newPfl)
 end
 addon:AddToRefreshProfile(RefreshProfile)
 
-function addon:SetOptionsPointers()
+function addon:SetDBPointers()
 	db = self.db
 	gbl = self.db.global
 	pfl = self.db.profile
 end
-
 
 addon.genblank = function(order)
 	return {
@@ -34,48 +53,69 @@ addon.genblank = function(order)
 	}
 end
 
-local enc_group_args
-local EncHandler = {}
+-- Should be done in OnInitialize
+function addon:AddOptionArgsItems(module,func)
+	assert(type(module) == "table")
+	assert(type(func) == "string")
+	assert(type(module[func]) == "function")
+	OptionArgs[module] = func
+end
 
-function addon:GetOptions()
-	local options = {
-		type = "group",
-		name = "DXE",
-		handler = self,
-		disabled = function() return not gbl.Enabled end,
-		args = {
-			dxe_header = {
-				type = "header",
-				name = format("%s - %s",L["Deus Vox Encounters"],L["Version"])..format(" |cff99ff33%d|r",self.version),
-				order = 1,
-				width = "full",
-			},
-			Enabled = {
-				type = "toggle",
-				order = 100,
-				name = L["Enabled"],
-				get = "IsEnabled",
-				width = "half",
-				set = function(info,val) gbl.Enabled = val
-						if val then self:Enable()
-						else self:Disable() end
-				end,
-				disabled = function() return false end,
+function addon:RemoveOptionArgsItems(module)
+	assert(type(module) == "table")
+	local func = OptionsArgs[module]
+	if func then module[func] = nil end
+	OptionsArgs[module] = nil
+end
+
+-- Should be done in OnInitializer
+function addon:AddModuleOptionInitializer(module,func)
+	assert(type(module) == "table")
+	assert(type(func) == "string")
+	assert(type(module[func]) == "function")
+	OptionInitializers[module] = func
+end
+
+function addon:InitializeOptions()
+	local options = {}
+	self.options = options
+	options.type = "group"
+	options.name = "DXE"
+	options.handler = self
+	options.disabled = function() return not gbl.Enabled end
+	options.args = {
+		dxe_header = {
+			type = "header",
+			name = format("%s - %s",L["Deus Vox Encounters"],L["Version"])..format(" |cff99ff33%d|r",self.version),
+			order = 1,
+			width = "full",
+		},
+		Enabled = {
+			type = "toggle",
+			order = 100,
+			name = L["Enabled"],
+			get = "IsEnabled",
+			width = "half",
+			set = function(info,val) gbl.Enabled = val
+					if val then self:Enable()
+					else self:Disable() end
+			end,
+			disabled = function() return false end,
+		},
+	}
+	options.plugins = {
+		encounters = {
+			encs_group = {
+				type = "group",
+				name = L["Encounters"],
+				order = 200,
+				childGroups = "tab",
+				handler = ConfigHandler,
+				args = {},
 			},
 		},
-		plugins = {
-			encounters = {
-				encs_group = {
-					type = "group",
-					name = L["Encounters"],
-					order = 200,
-					childGroups = "tab",
-					handler = EncHandler,
-					args = {},
-				},
-			},
-		}
 	}
+
 	local options_args = options.args
 	-------ADDITIONAL ROOT OPTIONS
 	if LibStub("LibDBIcon-1.0",true) then
@@ -149,29 +189,6 @@ function addon:GetOptions()
 					},
 				},
 			},
-			alerts_group = {
-				type = "group",
-				name = L["Alerts"],
-				order = 200,
-				inline = true,
-				args = {
-					AlertsTest = {
-						type = "execute",
-						name = L["Alerts Test"],
-						order = 100,
-						func = "AlertsTest",
-					},
-					AlertsScale = {
-						order = 200,
-						type = "range",
-						name = L["Alerts scale"],
-						min = 0.5,
-						max = 1.5,
-						step = 0.1,
-						set = function(info,v) gbl.AlertsScale = v; self.callbacks:Fire("AlertsScaleChanged") end,
-					},
-				},
-			},
 		},
 	}
 	options_args.general = general
@@ -214,9 +231,31 @@ function addon:GetOptions()
 	options_args.debug = debug
 	--@end-debug@
 
-	enc_group_args = options.plugins.encounters.encs_group.args
+	encsArgs = options.plugins.encounters.encs_group.args
 
-	return options
+	for module,func in pairs(OptionArgs) do
+		module[func](module,options.args)
+		module[func] = nil
+	end
+	OptionArgs = nil
+	
+	for module,func in pairs(OptionInitializers) do
+		local name = module:GetName():lower()
+		local area = {}
+		options.plugins[name] = area
+		module[func](module,area)
+		module[func] = nil
+	end
+	OptionInitializers = nil
+	self.InitializeOptions = nil
+
+	for key in pairs(QueuedEncs) do addon:AddEncounterOptions(EDB[key]); QueuedEncs[key] = nil end
+
+	options.args.profile = LibStub("AceDBOptions-3.0"):GetOptionsTable(db)
+	options.args.profile.order = -10
+
+	addon.AC:RegisterOptionsTable("DXE", options)
+	addon.ACD:SetDefaultSize("DXE", DEFAULT_WIDTH, DEFAULT_HEIGHT)
 end
 
 function addon:GetSlashOptions()
@@ -253,20 +292,16 @@ function addon:GetSlashOptions()
 	}
 end
 
-function addon:AddPluginOptions(name,tbl)
-	self.options.plugins[name] = tbl
-end
-
 -----------------------------------------
 -- ENCOUNTER OPTIONS
 -----------------------------------------
 
-local Controls = {
+local Items = {
 	VersionHeader = {
 		type = "header",
 		name = function(info) 
 			local version = EDB[info[#info-1]].version or "|cff808080"..L["Unknown"].."|r"
-			return L["Version"]..": |cff99ff33"..tostring(version).."|r"
+			return L["Version"]..": |cff99ff33"..version.."|r"
 		end,
 		order = 1,
 		width = "full",
@@ -279,23 +314,22 @@ local Controls = {
 		set = function(info,v) pfl.Encounters[info[#info-3]][info[#info-1]].enabled = v end,
 		get = function(info) return pfl.Encounters[info[#info-3]][info[#info-1]].enabled end,
 	},
-
 	Output = {
 		alerts = {
 			color1 = {
 				type = "select",
 				name = L["Main Color"],
 				order = 100,
-				values = "GetColors",
+				values = "GetColor1",
 			},
 			color2 = {
 				type = "select",
 				name = L["Flash Color"],
 				order = 200,
-				values = "GetColors",
+				values = "GetColor2",
 				disabled = function(info) 
-					local oInfo = pfl.Encounters[info[#info-4]][info[#info-2]]
-					return (not oInfo.enabled) or (oInfo.color2 == false)
+					local key,var = info[3],info[5]
+					return (not pfl.Encounters[key][var].enabled) or (EDB[key].alerts[var].type == "simple")
 				end,
 			},
 			sound = {
@@ -341,54 +375,77 @@ local Controls = {
 	}
 }
 
-function EncHandler:GetSounds()
-	self.sounds = self.sounds or {}
-	wipe(self.sounds)
-	for _, name in pairs(SM:List("sound")) do self.sounds[name] = name end
-	return self.sounds
-end
 
-function EncHandler:GetColors()
-	if not self.colors then
-		self.colors = {}
-		for name,color in pairs(Constants.Colors) do
-			self.colors[name] = ("|cff%02x%02x%02x"):format(color.r*255,color.g*255,color.b*255)..L[name].."|r"
+do
+	-- Output item methods
+
+	local info_n = 7
+	local info_n_MINUS_4 = info_n - 4
+	local info_n_MINUS_2 = info_n - 2
+
+	local colors1 = {}
+	local colors1simple = {}
+	local colors2 = {}
+	for k,c in pairs(addon.Constants.Colors) do
+		local hex = ("|cff%02x%02x%02x%s|r"):format(c.r*255,c.g*255,c.b*255,L[k])
+		colors1[k] = hex
+		colors1simple[k] = hex
+		colors2[k] = hex
+	end
+	colors1simple["Clear"] = L["Clear"]
+	colors2["Off"] = OFF
+
+	function ConfigHandler:GetSounds()
+		self.sounds = self.sounds or {}
+		wipe(self.sounds)
+		for _, name in pairs(addon.SM:List("sound")) do self.sounds[name] = name end
+		return self.sounds
+	end
+
+	function ConfigHandler:GetColor1(info)
+		local key,var = info[3],info[5]
+		if EDB[key].alerts[var].type == "simple" then
+			return colors1simple
+		else
+			return colors1
 		end
 	end
-	return self.colors
-end
 
-function EncHandler:DisableSettings(info)
-	return not pfl.Encounters[info[#info-4]][info[#info-2]].enabled
-end
+	function ConfigHandler:GetColor2()
+		return colors2
+	end
 
-function EncHandler:GetOutput(info)
-	return pfl.Encounters[info[#info-4]][info[#info-2]][info[#info]]
-end
+	function ConfigHandler:DisableSettings(info)
+		return not pfl.Encounters[info[info_n_MINUS_4]][info[info_n_MINUS_2]].enabled
+	end
 
-function EncHandler:SetOutput(info,v)
-	pfl.Encounters[info[#info-4]][info[#info-2]][info[#info]] = v
-end
+	function ConfigHandler:GetOutput(info)
+		return pfl.Encounters[info[info_n_MINUS_4]][info[info_n_MINUS_2]][info[info_n]]
+	end
 
-function EncHandler:TestAlert(info)
-	local key,var = info[#info-4],info[#info-2]
-	local info = EDB[key].alerts[var]
-	local stgs = pfl.Encounters[key][var]
+	function ConfigHandler:SetOutput(info,v)
+		pfl.Encounters[info[info_n_MINUS_4]][info[info_n_MINUS_2]][info[info_n]] = v
+	end
 
-	if info.type == "dropdown" then
-		Alerts:Dropdown(info.var,info.varname,10,5,stgs.sound,stgs.color1,stgs.color2)
-	elseif info.type == "centerpopup" then
-		Alerts:CenterPopup(name,info.varname,10,5,stgs.sound,stgs.color1,stgs.color2)
-	elseif info.type == "simple" then
-		Alerts:Simple(info.varname,5,stgs.sound,stgs.color1)
+	function ConfigHandler:TestAlert(info)
+		local key,var = info[info_n_MINUS_4],info[info_n_MINUS_2]
+		local info = EDB[key].alerts[var]
+		local stgs = pfl.Encounters[key][var]
+
+		if info.type == "dropdown" then
+			addon.Alerts:Dropdown(info.var,info.varname,10,5,stgs.sound,stgs.color1,stgs.color2)
+		elseif info.type == "centerpopup" then
+			addon.Alerts:CenterPopup(name,info.varname,10,5,stgs.sound,stgs.color1,stgs.color2)
+		elseif info.type == "simple" then
+			addon.Alerts:Simple(info.varname,5,stgs.sound,stgs.color1)
+		end
 	end
 end
-
 
 local SignificantKeys = {
 	alerts = {
-		color1 = "RED",
-		color2 = false,
+		color1 = "Clear",
+		color2 = "Off",
 		sound = "None",
 	},
 	raidicons = {
@@ -405,133 +462,143 @@ local Filters = {
 	end
 }
 
---[[
-	Path
-		category - A category or zone
-		key      - Data key
-		output   - raidicons, arrows, alerts..etc.
-		var      - Variable stored in pfl.Encounters[key][var]
-		control  - color1, color2, sound, icon..etc.
-
-		[category][key][output][var].settings[control]
-]]
-
--- @param name [STRING] raidicons, arrows, alerts...etc.
-local function AddOutputOptions(key,data,args,defaults,order,name,l_name,dvalue)
-	if not data then return end
-	args[name] = {
-		type = "group",
-		name = l_name,
-		order = order,
-		childGroups = "select",
-		arg = key,
-		args = {},
-	}
-	args = args[name].args
-	for _,info in pairs(data) do
-		local ovalue
-		-- Upgrading from <= r244
-		if pfl.Encounters[key] and type(pfl.Encounters[key][info.var]) == "boolean" then
-			pfl.Encounters[key][info.var] = nil
-			ovalue = true
-		end
-
-		defaults[info.var] = {}
-		if ovalue then
-			-- The only reason it'd be stored if it was opposite of the default value
-			defaults[info.var].enabled = not dvalue
-		else
-			defaults[info.var].enabled = dvalue
-		end
-
-		-- Add setting defaults
-		for var,varDefault in pairs(SignificantKeys[name]) do
-			-- Sounds need to be modified
-			if Filters[var] then
-				defaults[info.var][var] = info[var] and Filters[var](info[var]) or varDefault
-			else
-				defaults[info.var][var] = info[var] or varDefault
-			end
-		end
-
-		args[info.var] = {
-			name = info.varname,
-			type = "group",
-			width = "full",
-			args = {},
-		}
-
-		-- Reach info.var by info[#info-1]
-		-- Reach data.key by info[#info-3]
-		local o_args = args[info.var].args
-		o_args.enabled = Controls.EnabledToggle
-		if Controls.Output[name] then
-			o_args.settings = {
-				type = "group",
-				name = L["Settings"],
-				order = 1,
-				inline = true,
-				disabled = "DisableSettings",
-				get = "GetOutput",
-				set = "SetOutput",
-				args = {}
-			}
-			-- Reach info.var by info[#info-2]
-			--       data.key by info[#info-4]
-			local w_args = o_args.settings.args
-			for k,control in pairs(Controls.Output[name]) do
-				w_args[k] = control
-			end
-		end
-	end
-end
-
 
 local function formatkey(str)
 	return str:gsub(" ",""):lower()
 end
 
+local outputInfos = {
+	alerts = { L = L["Alerts"], order = 100, defaultEnabled = true },
+	raidicons = { L = L["Raid Icons"], order = 200, defaultEnabled = false},
+	arrows = { L = L["Arrows"], order = 300, defaultEnabled = true },
+}
+
 function addon:AddEncounterOptions(data)
-	-- Pointer to args
-	local args = enc_group_args
-	-- Add a zone group if it doesn't exist. category supersedes zone
-	local catkey = data.category and formatkey(data.category) or formatkey(data.zone)
-	args[catkey] = args[catkey] or {type = "group", name = data.category or data.zone, args = {} }
-	-- Update args pointer
-	args = args[catkey].args
-	-- Exists, delete args
-	if args[data.key] then
-		args[data.key].args = {}
+	if self.options then
+		QueuedEncs[data.key] = nil
+		-- Pointer to args
+		local args = encsArgs
+		-- Add a zone group if it doesn't exist. category supersedes zone
+		local catkey = data.category and formatkey(data.category) or formatkey(data.zone)
+		encsArgs[catkey] = encsArgs[catkey] or {type = "group", name = data.category or data.zone, args = {}}
+		-- Update args pointer
+		local catArgs = args[catkey].args
+		-- Exists, delete args
+		if catArgs[data.key] then
+			catArgs[data.key].args = {}
+		else
+			-- Add the encounter group
+			catArgs[data.key] = {
+				type = "group",
+				--name = data.name,
+				name = data.name,
+				childGroups = "tab",
+				args = {},
+			}
+		end
+		-- Set pointer to the correct encounter group
+		local encArgs = catArgs[data.key].args
+		-- Version header
+		encArgs.version = Items.VersionHeader
+
+		-- TODO: Find some way to make less tables
+
+		-- Add output options
+		for outputType,outputInfo in pairs(outputInfos) do
+			local outputData = data[outputType]
+			if outputData then
+				encArgs[outputType] = {
+					type = "group",
+					name = outputInfo.L,
+					order = order,
+					childGroups = "select",
+					args = {},
+				}
+				local outputArgs = encArgs[outputType].args
+				for var,info in pairs(outputData) do
+					outputArgs[var] = {
+						name = info.varname,
+						type = "group",
+						width = "full",
+						args = {},
+					}
+
+					local itemArgs = outputArgs[var].args
+					itemArgs.enabled = Items.EnabledToggle
+					if Items.Output[outputType] then
+						-- Items.SettingsGroup
+						itemArgs.settings = {
+							type = "group",
+							name = L["Settings"],
+							order = 1,
+							inline = true,
+							disabled = "DisableSettings",
+							get = "GetOutput",
+							set = "SetOutput",
+							args = {}
+						}
+
+						local settingsArgs = itemArgs.settings.args
+						for k,item in pairs(Items.Output[outputType]) do
+							settingsArgs[k] = item
+						end
+					end
+				end
+			end
+		end
 	else
-	-- Add the encounter group
-		args[data.key] = {
-			type = "group",
-			name = data.name,
-			childGroups = "tab",
-			args = {},
-		}
+		QueuedEncs[data.key] = true
 	end
-	-- Set pointer to the correct encounter group
-	args = args[data.key].args
-	-- Version header
-	args.version = Controls.VersionHeader
-	-- Add key to defaults
-	self.defaults.profile.Encounters[data.key] = {}
-	-- Pointer to defaults
-	local defaults = self.defaults.profile.Encounters[data.key]
-	AddOutputOptions(data.key,data.alerts,args,defaults,100,"alerts",L["Alerts"],true)
-	AddOutputOptions(data.key,data.arrows,args,defaults,200,"arrows",L["Arrows"],true)
-	AddOutputOptions(data.key,data.raidicons,args,defaults,300,"raidicons",L["Raid Icons"],false)
 end
 
 
 -- Only used with UnregisterEncounter
 function addon:RemoveEncounterOptions(data)
-	local catkey = data.category and formatkey(data.category) or formatkey(data.zone)
-	enc_group_args[catkey].args[data.key] = nil
-	-- Remove category if there are no more encounters in it
-	if not next(enc_group_args[catkey].args) then
-		enc_group_args[catkey] = nil
+	if self.options then
+		local catkey = data.category and formatkey(data.category) or formatkey(data.zone)
+		encsArgs[catkey].args[data.key] = nil
+		-- Remove category if there are no more encounters in it
+		if not next(encsArgs[catkey].args) then
+			encsArgs[catkey] = nil
+		end
 	end
+	QueuedEncs[data.key] = nil
 end
 
+function addon:AddEncounterDefaults(data)
+	local defaults = {}
+	self.defaults.profile.Encounters[data.key] = defaults
+	
+	for outputType,outputInfo in pairs(outputInfos) do
+		local outputData = data[outputType]
+		if outputData then
+			for var,info in pairs(outputData) do
+				defaults[var] = {}
+				-- Upgrading from <= r244
+				-------
+				local isOpposite
+				if pfl.Encounters[key] and type(pfl.Encounters[key][var]) == "boolean" then
+					pfl.Encounters[key][var] = nil
+					isOpposite = true
+				end
+
+				if isOpposite then
+					-- The only reason it'd be stored if it was opposite of the default value
+					defaults[var].enabled = not outputInfo.defaultEnabled
+				else
+					defaults[var].enabled = outputInfo.defaultEnabled
+				end
+				-------
+
+				-- Add setting defaults
+				for k,varDefault in pairs(SignificantKeys[outputType]) do
+					if Filters[k] then
+						defaults[var][k] = info[k] and Filters[k](info[k]) or varDefault
+					else
+						defaults[var][k] = info[k] or varDefault
+					end
+				end
+			end
+		end
+	end
+end

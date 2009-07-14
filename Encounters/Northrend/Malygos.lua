@@ -11,9 +11,9 @@ do
 		},
 		onactivate = {
 			tracing = {L["Malygos"]},
-			autostart = true,
-			autostop = true,
-			leavecombat = true,
+			tracerstart = true,
+			tracerstop = true,
+			combatstop = true,
 		},
 		userdata = { 
 			phase = 1,
@@ -26,7 +26,6 @@ do
 		},
 		alerts = {
 			vortexcd = {
-				var = "vortexcd", 
 				varname = format(L["%s Cooldown"],SN[56105]),
 				type = "dropdown", 
 				text = format(L["%s Cooldown"],SN[56105]),
@@ -36,7 +35,6 @@ do
 				color1 = "BLUE", 
 			},
 			staticfieldwarn = {
-				var = "staticfieldwarn", 
 				varname = format(L["%s Warning"],SN[57430]),
 				type = "simple", 
 				text = format("%s! %s!",format(L["%s Casted"],SN[57430]),L["MOVE"]),
@@ -45,7 +43,6 @@ do
 				color1 = "YELLOW",
 			},
 			surgewarn = { 
-				var = "surgewarn", 
 				varname = format(L["%s on self"],L["Surge"]),
 				type = "centerpopup", 
 				text = format("%s: %s! %s!",L["Surge"],L["YOU"],L["CAREFUL"]),
@@ -56,8 +53,7 @@ do
 				color1 = "MAGENTA",
 			},
 			presurgewarn = { 
-				var = "surgewarn", 
-				varname = format(L["%s on self"],L["Surge"]), 
+				varname = format(L["%s Warning"],L["Surge"]), 
 				type = "simple", 
 				text = format("%s: %s! %s!",L["Surge"],L["YOU"],L["SOON"]),
 				time = 1.5, 
@@ -65,7 +61,6 @@ do
 				color1 = "TURQUOISE",
 			},
 			deepbreath = {
-				var = "deepbreath", 
 				varname = format(L["%s Cooldown"],L["Deep Breath"]), 
 				type = "dropdown", 
 				text = format(L["Next %s"],L["Deep Breath"]),
@@ -75,7 +70,6 @@ do
 				color1 = "ORANGE", 
 			},
 			vortexdur = {
-				var = "vortexdur", 
 				varname = format(L["%s Duration"],SN[56105]),
 				type = "centerpopup", 
 				text = format(L["%s Duration"],SN[56105]),
@@ -84,7 +78,6 @@ do
 				color1 = "BLUE", 
 			},
 			powerspark = {
-				var = "powerspark", 
 				varname = format(L["%s Spawns"],L["Power Spark"]),
 				type = "dropdown", 
 				text = format(L["Next %s"],L["Power Spark"]),

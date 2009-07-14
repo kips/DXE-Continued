@@ -19,7 +19,7 @@ do
 		},
 		onactivate = {
 			tracing = {"Sara"},
-			leavecombat = true,
+			combatstop = true,
 		},
 		userdata = {
 			portaltime = {73,90,loop = false},
@@ -35,7 +35,6 @@ do
 		},
 		alerts = {
 			lunaticgazewarn = {
-				var = "lunaticgazewarn",
 				varname = format(L["%s Cast"],SN[64163]),
 				type = "centerpopup",
 				text = format("%s! %s!",SN[64163],L["LOOK AWAY"]),
@@ -44,7 +43,6 @@ do
 				sound = "ALERT1",
 			},
 			lunaticgazecd = {
-				var = "lunaticgazecd",
 				varname = format(L["%s Cooldown"],SN[64163]),
 				type = "dropdown",
 				text = format(L["%s Cooldown"],SN[64163]),
@@ -55,7 +53,6 @@ do
 				sound = "ALERT2",
 			},
 			brainlinkdur = {
-				var = "brainlinkdur",
 				varname = format(L["%s on self"],SN[63802]),
 				type = "centerpopup",
 				text = format("%s: %s!",SN[63802],L["YOU"]),
@@ -65,7 +62,6 @@ do
 				sound = "ALERT3",
 			},
 			enragecd = {
-				var = "enragecd",
 				varname = L["Enrage"],
 				type = "dropdown",
 				text = L["Enrage"],
@@ -74,7 +70,6 @@ do
 				color1 = "RED",
 			},
 			portalcd = {
-				var = "portalcd",
 				varname = format(L["%s Cooldown"],L["Portals"]),
 				type = "dropdown",
 				text = "<portaltext>",
@@ -85,7 +80,6 @@ do
 				color2 = "MAGENTA",
 			},
 			weakeneddur = {
-				var = "weakeneddur",
 				varname = format(L["%s Duration"],L["Weakened"]),
 				type = "centerpopup",
 				text = L["Weakened"].."!",
@@ -94,7 +88,6 @@ do
 				color1 = "ORANGE",
 			},
 			inducewarn = {
-				var = "inducewarn",
 				varname = format(L["%s Cast"],SN[64059]),
 				type = "dropdown",
 				text = format(L["%s Cast"],SN[64059]),
@@ -105,7 +98,6 @@ do
 				sound = "ALERT6",
 			},
 			squeezewarn = {
-				var = "squeezewarn",
 				varname = format(L["%s on others"],SN[64126]),
 				type = "simple",
 				text = format("%s: #5#",SN[64126]),
@@ -114,7 +106,6 @@ do
 				sound = "ALERT7",
 			},
 			maladywarn = {
-				var = "maladywarn",
 				varname = format(L["%s Warning"],SN[63830]),
 				type = "simple",
 				text = format("%s: #5#! %s",L["Malady"],L["MOVE AWAY"]),
@@ -123,7 +114,6 @@ do
 				color1 = "GREEN",
 			},
 			empoweringshadowscd = {
-				var = "empoweringshadowscd",
 				varname = format(L["%s Timer"],SN[64486]),
 				type = "dropdown",
 				text = format(L["Next %s"],SN[64486]),
@@ -134,7 +124,6 @@ do
 				color2 = "RED",
 			},
 			crushertentaclespawn = {
-				var = "crushertentaclespawn",
 				varname = format(L["%s Spawns"],L["Crusher Tentacle"]),
 				type = "dropdown",
 				text = format(L["%s Spawns"],L["Crusher Tentacle"]).."!",
@@ -146,7 +135,6 @@ do
 		},
 		arrows = {
 			maladyarrow = {
-				var = "maladyarrow",
 				varname = SN[63830],
 				unit = "#5#",
 				persist = 4,
@@ -157,7 +145,6 @@ do
 		},
 		raidicons = {
 			maladymark = {
-				var = "maladymark",
 				varname = SN[63830],
 				type = "FRIENDLY",
 				persist = 4,

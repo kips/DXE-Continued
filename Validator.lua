@@ -71,7 +71,6 @@ local baseLineKeys = {
 }
 
 local alertBaseKeys = {
-	var = isstring,
 	varname = isstring,
 	type = isstring,
 	text = isstring,
@@ -90,7 +89,6 @@ local alertTypeValues = {
 }
 
 local arrowBaseKeys = {
-	var = isstring,
 	varname = isstring,
 	msg = isstring,
 	persist = isnumber,
@@ -107,7 +105,6 @@ local arrowTypeValues = {
 }
 
 local raidIconBaseKeys = {
-	var = isstring,
 	varname = isstring,
 	type = isstring,
 	persist = isnumber,
@@ -127,10 +124,9 @@ local baseTables = {
 		yell = optstringtable,
 	},
 	onactivate = {
-		autostart = optboolean,
-		autostop = optboolean,
-		entercombat = optboolean,
-		leavecombat = optboolean,
+		tracerstart = optboolean,
+		tracerstop = optboolean,
+		combatstop = optboolean,
 		tracing = opttable,
 	},
 }
@@ -352,6 +348,11 @@ local function validateAlert(data,info,errlvl,...)
 				validateReplaces(data,info[k],errlvl,k,...)
 			end
 		end
+	end
+
+	-- color1 is not optional for centerpopups and dropdowns
+	if (info.type == "centerpopup" or info.type == "dropdown") and type(info.color1) ~= "string" then
+		err(": requires color1 to be set",errlvl,...)
 	end
 end
 

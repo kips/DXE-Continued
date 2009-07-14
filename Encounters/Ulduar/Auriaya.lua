@@ -16,9 +16,9 @@ do
 		},
 		onactivate = {
 			tracing = {L["Auriaya"],L["Feral Defender"]},
-			autostart = true,
-			autostop = true,
-			leavecombat = true,
+			tracerstart = true,
+			tracerstop = true,
+			combatstop = true,
 		},
 		userdata = {
 			livecount = 8,
@@ -35,10 +35,9 @@ do
 		},
 		alerts = {
 			screechcd = {
-				type = "dropdown",
-				var = "screechcd",
 				varname = format(L["%s Cooldown"],SN[64386]),
 				text = format(L["%s Cooldown"],SN[64386]),
+				type = "dropdown",
 				time = "<screechtime>",
 				flashtime = 5,
 				color1 = "PURPLE",
@@ -46,16 +45,14 @@ do
 				sound = "ALERT1",
 			},
 			sentinelwarn = {
-				type = "simple",
-				var = "sentinelwarn",
 				varname = format(L["%s Warning"],SN[64389]),
+				type = "simple",
 				text = format(L["%s Casted"],SN[64389]).."!",
 				time = 1.5,
 				color1 = "BLUE",
 				sound = "ALERT2",
 			},
 			sonicscreechwarn = {
-				var = "sonicscreechwarn",
 				varname = format(L["%s Cast"],SN[64422]),
 				type = "centerpopup",
 				text = format(L["%s Cast"],SN[64422]),
@@ -65,7 +62,6 @@ do
 				sound = "ALERT3",
 			},
 			sonicscreechcd = {
-				var = "sonicscreechcd",
 				varname = format(L["%s Cooldown"],SN[64422]),
 				type = "dropdown",
 				text = format(L["%s Cooldown"],SN[64422]),
@@ -76,7 +72,6 @@ do
 				sound = "ALERT4",
 			},
 			guardianswarmcd = {
-				var = "guardianswarmcd",
 				varname = format(L["%s Cooldown"],SN[64396]),
 				type = "dropdown",
 				text = format(L["%s Cooldown"],SN[64396]),
@@ -87,7 +82,6 @@ do
 				sound = "ALERT5",
 			},
 			guardianswarmwarn = {
-				var = "guardianswarmwarn",
 				varname = format(L["%s Warning"],SN[64396]),
 				type = "simple",
 				text = format("%s: <guardianswarmtext>",SN[64396]),
@@ -96,7 +90,6 @@ do
 				sound = "ALERT8",
 			},
 			feraldefenderspawn = {
-				var = "feraldefenderspawn",
 				varname = format(L["%s Spawn"],L["Feral Defender"]),
 				text = format(L["%s Spawn"],L["Feral Defender"]),
 				type = "dropdown",
@@ -107,7 +100,6 @@ do
 				sound = "ALERT8",
 			},
 			enragecd = {
-				var = "enragecd",
 				varname = L["Enrage"],
 				type = "dropdown",
 				text = L["Enrage"],

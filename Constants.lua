@@ -11,7 +11,6 @@ DXE.Constants = Constants
 -------------------------
 
 local Colors = {
-	AQUA =			{r=0,		g=1,		b=1},
 	BLACK = 			{r=0,  	g=0,		b=0},
 	BLUE = 			{r=0,  	g=0, 		b=1},
 	BROWN = 			{r=.65,  g=.165,  b=.165},
@@ -40,7 +39,6 @@ Constants.Colors = Colors
 --[[
 Grabbed by Localizer
 
-L["AQUA"]
 L["BLACK"]
 L["BLUE"]
 L["BROWN"]
@@ -63,6 +61,7 @@ L["TURQUOISE"]
 L["VIOLET"]
 L["WHITE"]
 L["YELLOW"]
+
 ]]
 
 -------------------------

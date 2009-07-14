@@ -10,9 +10,9 @@ do
 		},
 		onactivate = {
 			tracing = {L["Hodir"],},
-			autostart = true,
-			autostop = true,
-			leavecombat = true,
+			tracerstart = true,
+			tracerstop = true,
+			combatstop = true,
 		},
 		userdata = {},
 		onstart = {
@@ -24,7 +24,6 @@ do
 		},
 		alerts = {
 			flashfreezewarn = {
-				var = "flashfreezewarn", 
 				varname = format(L["%s Cast"],SN[61968]),
 				type = "centerpopup", 
 				text = format("%s! %s!",SN[61968],L["MOVE"]),
@@ -35,7 +34,6 @@ do
 				color2 = "GREEN",
 			},
 			flashfreezecd = {
-				var = "flashfreezecd", 
 				varname = format(L["%s Cooldown"],SN[61968]),
 				type = "dropdown", 
 				text = format(L["%s Cooldown"],SN[61968]),
@@ -46,7 +44,6 @@ do
 				color2 = "TURQUOISE",
 			},
 			enragecd = {
-				var = "enragecd",
 				varname = L["Enrage"],
 				type = "dropdown",
 				text = L["Enrage"],
@@ -55,7 +52,6 @@ do
 				color1 = "RED",
 			},
 			frozenblowdur = {
-				var = "frozenblowdur", 
 				varname = format(L["%s Duration"],SN[63512]),
 				type = "centerpopup", 
 				text = format(L["%s Duration"],SN[63512]),
@@ -66,7 +62,6 @@ do
 				color2 = "MAGENTA",
 			},
 			hardmodeends = {
-				var = "hardmodeends",
 				varname = format(L["%s Timer"],L["Hard Mode"]),
 				type = "dropdown",
 				text = format(L["%s Ends"],L["Hard Mode"]),
@@ -77,7 +72,6 @@ do
 				color2 = "YELLOW",
 			},
 			stormcloudwarnself = {
-				var = "stormcloudwarnself",
 				varname = format(L["%s on self"],SN[65133]),
 				type = "simple",
 				text = format("%s: %s! %s!",SN[65133],L["YOU"],L["SPREAD IT"]),
@@ -86,7 +80,6 @@ do
 				sound = "ALERT4",
 			},
 			stormcloudwarnother = {
-				var = "stormcloudwarnother",
 				varname = format(L["%s on others"],SN[65133]),
 				type = "simple",
 				text = format("%s: #5#",SN[65133]),

@@ -13,9 +13,9 @@ do
 		},
 		onactivate = {
 			tracing = {L_Loatheb,},
-			autostart = true,
-			autostop = true,
-			leavecombat = true,
+			tracerstart = true,
+			tracerstop = true,
+			combatstop = true,
 		},
 		userdata = { 
 			sporecount = 1,
@@ -30,7 +30,6 @@ do
 		},
 		alerts = {
 			necroaura = {
-				var = "necroaura", 
 				varname = format(L["%s Duration"],SN[55593]),
 				type = "dropdown", 
 				text = format(L["%s Fades"],SN[55593]),
@@ -40,7 +39,6 @@ do
 				color1 = "MAGENTA", 
 			},
 			openheals = {
-				var = "openheals", 
 				varname = format(L["%s Duration"],SN[37455]),
 				type = "centerpopup", 
 				text = L["Open Healing"], 
@@ -50,7 +48,6 @@ do
 				
 			},
 			sporespawn = {
-				var = "sporespawn", 
 				varname = format(L["%s Timer"],SN[29234]),
 				type = "dropdown", 
 				text = format("%s: <sporecount>",SN[29234]),
