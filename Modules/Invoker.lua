@@ -532,8 +532,6 @@ local function SetRaidIcon(name,stgs,...)
 	if not info then return end
 	if info.type == "FRIENDLY" then
 		local unit = ReplaceTokens(info.unit,...)
-		unit = addon:GetUnitID(unit)
-		if not UnitExists(unit or "") then return end
 		RaidIcons:MarkFriendly(unit,stgs.icon,info.persist)
 	end
 end

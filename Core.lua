@@ -124,7 +124,8 @@ local CN = setmetatable({}, {__index =
 	function(t, unit)
 		local class = select(2,UnitClass(unit))
 		if not class then return unit end
-		t[unit] = class_to_color[class]..unit.."|r"
+		local name = UnitName(unit)
+		t[unit] = class_to_color[class]..name.."|r"
 		return t[unit]
 	end,
 })

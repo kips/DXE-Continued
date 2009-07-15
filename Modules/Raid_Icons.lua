@@ -32,6 +32,7 @@ function module:MarkEnemy()
 end
 
 function module:RemoveIcon(unit)
+	-- TODO: Use UnitIsUnit
 	SetRaidTarget(unit,0)
 	units[unit] = nil
 end

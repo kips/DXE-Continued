@@ -226,9 +226,9 @@ function module:AddTarget(unit,persist,action,msg,spell,sound,fixed)
 	assert(type(spell) == "string")
 	--@end-debug@
 	if UnitExists(unit) and UnitIsVisible(unit) then
-		local distinct = true
-		for k in pairs(units) do if UnitIsUnit(k,unit) then distinct = false break end end
-		if not distinct then return end
+		-- Distinction test
+		for k in pairs(units) do if UnitIsUnit(k,unit) then return end end
+
 		for i,arrow in ipairs(frames) do
 			if not arrow.unit then
 				arrow:SetTarget(unit,persist,action,msg,spell,sound,fixed)
