@@ -1163,8 +1163,8 @@ do
 
 			table.sort(list)
 
-			info = UIDropDownMenu_CreateInfo()
 			for _,cat in ipairs(list) do
+				info = UIDropDownMenu_CreateInfo()
 				info.text = cat
 				info.value = cat
 				info.hasArrow = true
