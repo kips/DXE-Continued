@@ -1265,13 +1265,13 @@ end
 ---------------------------------------------
 local HW = {}
 addon.HW = HW
+local DEAD = DEAD:upper()
 
 function addon:UNIT_DIED(_, _,eventtype, _, _, _, _, dstName)
 	if eventtype ~= "UNIT_DIED" then return end
 	for i,hw in ipairs(HW) do
 		if hw:GetName() == dstName then
-			hw:SetInfoBundle(hw:GetName(),L["DEAD"],0)
-			hw:Close()
+			hw:SetInfoBundle(dstName,DEAD,0)
 			break
 		end
 	end
@@ -1314,9 +1314,9 @@ function addon:SetTracing(names)
 		-- Prevents overwriting
 		if HW[i]:GetName() ~= name then
 			HW[i]:SetInfoBundle(name,"",1,0,0,1)
+			HW[i]:Open(name)
 			HW[i].frame:Show()
 		end
-		HW[i]:Open(name)
 		n = n + 1
 	end
 	for i=n+1,4 do

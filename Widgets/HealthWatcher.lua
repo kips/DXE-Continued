@@ -10,6 +10,7 @@ local UnitHealth,UnitHealthMax=UnitHealth,UnitHealthMax
 local UnitIsFriend,UnitIsDead=UnitIsFriend,UnitIsDead
 local UnitName = UnitName
 local format = string.format
+local DEAD = DEAD:upper()
 
 do
 	local WidgetType = "DXE_HealthWatcher"
@@ -43,10 +44,15 @@ do
 	end
 
 	local function TRACER_UPDATE(self)
-		local uid = self.tracer:First()
-		local h, hm = UnitHealth(uid), UnitHealthMax(uid) 
-		local fh = h/hm
-		self:SetInfoBundle(UnitName(uid), format("%0.0f%%", fh*100), fh)
+		local unit = self.tracer:First()
+		local name = UnitName(unit)
+		if UnitIsDead(unit) then
+			self:SetInfoBundle(name, DEAD, 0)
+		else
+			local h, hm = UnitHealth(unit), UnitHealthMax(unit) 
+			local perc = h/hm
+			self:SetInfoBundle(name, format("%0.0f%%", perc*100), perc)
+		end
 		if self.userdata.updates then
 			self:Fire("HW_TRACER_UPDATE",self.tracer:First())
 		end

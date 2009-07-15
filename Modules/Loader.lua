@@ -31,9 +31,8 @@ function module:OnInitialize()
 			local zonedata = GetAddOnMetadata(i,"X-DXE-Zone")
 			if zonedata then
 				local catdata = GetAddOnMetadata(i,"X-DXE-Category")
-				local category = catadata or zonedata
 				addon:AddOptionArgsItems(self,"AddOptionItems")
-				modules[name] = L[category]
+				modules[name] = L[catdata or zonedata]
 				AddZoneModule(name,strsplit(",",zonedata))
 			end
 		end
