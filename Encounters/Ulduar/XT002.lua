@@ -89,7 +89,7 @@ do
 				sound = "ALERT6",
 			},
 			exposedwarn = {
-				varname = format(L["%s Warning"],L["Heart"]),
+				varname = format(L["%s Timer"],L["Heart"]),
 				type = "centerpopup",
 				text = format(L["%s Exposed"],L["Heart"]).."!",
 				time = 30,

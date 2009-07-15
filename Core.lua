@@ -454,6 +454,88 @@ do
 	end
 end
 
+
+---------------------------------------------
+-- ROSTER
+---------------------------------------------
+
+local Roster = {}
+addon.Roster = Roster
+
+local refreshFuncs = {
+	name_to_unit = function(t,i,id) 
+		t[UnitName(id)] = id
+	end,
+	guid_to_unit = function(t,i,id) 
+		t[UnitGUID(id)] = id
+	end,
+	-- Remember to iterate using pairs
+	index_to_unit = function(t,i,id) 
+		t[i] = id
+	end,
+}
+
+for k in pairs(refreshFuncs) do 
+	Roster[k] = {}
+end
+
+local numOnline = 0
+local numMembers = 0
+local tmpOnline,tmpMembers
+local RosterHandle
+function addon:RAID_ROSTER_UPDATE()
+	--@debug@
+	debug("RAID_ROSTER_UPDATE","Invoked")
+	--@end-debug@
+
+	tmpOnline,tmpMembers = 0,GetNumRaidMembers()
+
+	if not RosterHandle and tmpMembers > 0 then
+		-- Refresh roster tables every half minute to detect offline players
+		RosterHandle = self:ScheduleRepeatingTimer("RAID_ROSTER_UPDATE",30)
+	elseif tmpMembers == 0 then
+		self:CancelTimer(RosterHandle,true)
+		RosterHandle = nil
+	end
+
+	for name,t in pairs (Roster) do wipe(t) end
+	for i=1,tmpMembers do
+		local name, rank, _, _, _, _, _, online = GetRaidRosterInfo(i)
+		local unit = rID[i]
+		if online then
+			tmpOnline = tmpOnline + 1
+			for k,t in pairs(Roster) do
+				refreshFuncs[k](t,i,unit)
+			end
+		end
+	end
+
+	--- Number of raid member differences
+
+	if tmpMembers ~= numMembers then
+		self:UpdatePaneVisibility()
+	end
+
+	numMembers = tmpMembers
+
+	--- Number of ONLINE raid member differences
+
+	if tmpOnline > numOnline then
+		self:BroadcastVersion("addon")
+	end
+
+	if tmpOnline < numOnline then
+		self:CleanVersions()
+	end
+
+	numOnline = tmpOnline
+end
+
+function addon:IsPromoted()
+	return IsRaidLeader() or IsRaidOfficer()
+end
+
+
 ---------------------------------------------
 -- TRIGGERING
 ---------------------------------------------
@@ -553,86 +635,6 @@ end
 function addon:ScanUpdate()
 	local key = self:Scan()
 	if key then self:SetActiveEncounter(key) end
-end
-
----------------------------------------------
--- ROSTER
----------------------------------------------
-
-local Roster = {}
-addon.Roster = Roster
-
-local refreshFuncs = {
-	name_to_unit = function(t,i,id) 
-		t[UnitName(id)] = id
-	end,
-	guid_to_unit = function(t,i,id) 
-		t[UnitGUID(id)] = id
-	end,
-	-- Remember to iterate using pairs
-	index_to_unit = function(t,i,id) 
-		t[i] = id
-	end,
-}
-
-for k in pairs(refreshFuncs) do 
-	Roster[k] = {}
-end
-
-local numOnline = 0
-local numMembers = 0
-local tmpOnline,tmpMembers
-local RosterHandle
-function addon:RAID_ROSTER_UPDATE()
-	--@debug@
-	debug("RAID_ROSTER_UPDATE","Invoked")
-	--@end-debug@
-
-	tmpOnline,tmpMembers = 0,GetNumRaidMembers()
-
-	if not RosterHandle and tmpMembers > 0 then
-		-- Refresh roster tables every half minute to detect offline players
-		RosterHandle = self:ScheduleRepeatingTimer("RAID_ROSTER_UPDATE",30)
-	elseif tmpMembers == 0 then
-		self:CancelTimer(RosterHandle,true)
-		RosterHandle = nil
-	end
-
-	for name,t in pairs (Roster) do wipe(t) end
-	for i=1,tmpMembers do
-		local name, rank, _, _, _, _, _, online = GetRaidRosterInfo(i)
-		local unit = rID[i]
-		if online then
-			tmpOnline = tmpOnline + 1
-			for k,t in pairs(Roster) do
-				refreshFuncs[k](t,i,unit)
-			end
-		end
-	end
-
-	--- Number of raid member differences
-
-	if tmpMembers ~= numMembers then
-		self:UpdatePaneVisibility()
-	end
-
-	numMembers = tmpMembers
-
-	--- Number of ONLINE raid member differences
-
-	if tmpOnline > numOnline then
-		self:BroadcastVersion("addon")
-	end
-
-	if tmpOnline < numOnline then
-		self:CleanVersions()
-	end
-
-	numOnline = tmpOnline
-end
-
-function addon:IsPromoted()
-	return IsRaidLeader() or IsRaidOfficer()
 end
 
 ---------------------------------------------

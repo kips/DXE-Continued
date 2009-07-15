@@ -132,6 +132,22 @@ do
 				color1 = "DCYAN",
 				color2 = "INDIGO",
 			},
+			deafeningcd = {
+				varname = format(L["%s Cooldown"],SN[64189]),
+				type = "dropdown",
+				text = format(L["Next %s"],SN[64189]),
+				time = 60,
+				flashtime = 5,
+				color1 = "BROWN",
+			},
+			deafeningcast = {
+				varname = format(L["%s Cast"],SN[64189]),
+				type = "centerpopup",
+				text = format(L["%s Cast"],SN[64189]),
+				time = 2.3,
+				color1 = "GREEN",
+				sound = "ALERT5",
+			},
 		},
 		arrows = {
 			maladyarrow = {
@@ -292,6 +308,19 @@ do
 						{set = {crushertime = 50}},
 						{quash = "crushertentaclespawn"},
 						{alert = "crushertentaclespawn"},
+					},
+				},
+			},
+			-- Deafening Roar
+			{
+				type = "combatevent",
+				eventtype = "SPELL_CAST_START",
+				spellid = 64189,
+				execute = {
+					{
+						{quash = "deafeningcd"},
+						{alert = "deafeningcast"},
+						{alert = "deafeningcd"},
 					},
 				},
 			},

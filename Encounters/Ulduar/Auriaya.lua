@@ -41,7 +41,13 @@ do
 				time = "<screechtime>",
 				flashtime = 5,
 				color1 = "PURPLE",
-				color2 = "VIOLET",
+			},
+			screechwarn = {
+				varname = format(L["%s Cast"],SN[64386]),
+				text = format(L["%s Cast"],SN[64386]),
+				type = "centerpopup",
+				time = 2,
+				color1 = "BROWN",
 				sound = "ALERT1",
 			},
 			sentinelwarn = {
@@ -118,6 +124,7 @@ do
 				execute = {
 					{
 						{alert = "screechcd"},
+						{alert = "screechwarn"},
 					}	
 				},
 			},
