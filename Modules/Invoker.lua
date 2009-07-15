@@ -508,6 +508,9 @@ local function StartArrow(name,stgs,...)
 	local unit = ReplaceTokens(info.unit,...)
 	unit = addon:GetUnitID(unit)
 	if not UnitExists(unit or "") then return end
+	--@debug@
+	print(unit)
+	--@end-debug@
 	Arrows:AddTarget(unit,info.persist,info.action,info.msg,info.spell,stgs.sound,info.fixed)
 end
 

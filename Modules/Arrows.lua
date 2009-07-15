@@ -2,6 +2,7 @@ local addon = DXE
 local version = tonumber(("$Rev$"):sub(7, -3))
 addon.version = version > addon.version and version or addon.version
 local L = addon.L
+local SM = addon.SM
 
 local module = addon:NewModule("Arrows")
 addon.Arrows = module
@@ -239,7 +240,7 @@ end
 
 function module:RemoveTarget(unit)
 	for i,arrow in ipairs(frames) do
-		if UnitIsUnit(arrow.unit,unit) then
+		if arrow.unit and UnitIsUnit(arrow.unit,unit) then
 			arrow:Destroy()
 			break
 		end

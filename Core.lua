@@ -1191,8 +1191,8 @@ do
 
 			table.sort(list)
 
-			info = UIDropDownMenu_CreateInfo()
 			for _,name in ipairs(list) do
+				info = UIDropDownMenu_CreateInfo()
 				info.hasArrow = false
 				info.text = name
 				info.owner = self

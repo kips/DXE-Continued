@@ -64,7 +64,7 @@ do
 			permlandwarn = {
 				varname = format(L["%s Warning"],L["Permanent Landing"]),
 				type = "simple",
-				text = format(L["%s Permanently Landed"],SN["Razorscale"]).."!",
+				text = format(L["%s Permanently Landed"],L["Razorscale"]).."!",
 				time = 1.5,
 				sound = "ALERT4",
 			},
