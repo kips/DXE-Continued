@@ -127,7 +127,7 @@ end
 
 -- @param action a string == "TOWARD" or "AWAY"
 local function SetTarget(self,unit,persist,action,msg,spell,sound,fixed)
-	if sound then PlaySoundFile(SM:Fetch(sound)) end
+	if sound then PlaySoundFile(SM:Fetch("sound",sound)) end
 	UIFrameFadeRemoveFrame(self)
 	self.action = action
 	self.unit = unit

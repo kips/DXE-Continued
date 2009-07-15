@@ -176,7 +176,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellid = 64193,
+				spellid = {64193,65737},
 				execute = {
 					{
 						{quash = "exposedwarn"},

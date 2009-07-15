@@ -1120,6 +1120,7 @@ end
 ---------------------------------------------
 
 do
+	local UIDropDownMenu_CreateInfo = UIDropDownMenu_CreateInfo
 	local function closeall() CloseDropDownMenus(1) end
 
 	local function onClick(self)
