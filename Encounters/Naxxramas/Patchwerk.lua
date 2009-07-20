@@ -1,18 +1,16 @@
 do
 	local L,SN = DXE.L,DXE.SN
 
-	local L_Patchwerk = L["Patchwerk"]
-
 	local data = {
 		version = "$Rev$",
 		key = "patchwerk", 
 		zone = L["Naxxramas"], 
-		name = L_Patchwerk, 
+		name = L["Patchwerk"], 
 		triggers = {
-			scan = L_Patchwerk, 
+			scan = 16028, 
 		},
 		onactivate = {
-			tracing = {L_Patchwerk,},
+			tracing = {16028},
 			tracerstart = true,
 			tracerstop = true,
 			combatstop = true,

@@ -6,10 +6,10 @@ do
 		zone = L["Ulduar"], 
 		name = L["General Vezax"], 
 		triggers = {
-			scan = {L["General Vezax"],L["Saronite Animus"]}, 
+			scan = {33271,33524}, -- Vezax, Animus
 		},
 		onactivate = {
-			tracing = {L["General Vezax"],},
+			tracing = {33271}, -- Vezax
 			tracerstart = true,
 			tracerstop = true,
 			combatstop = true,
@@ -84,6 +84,7 @@ do
 				time = 1.5,
 				color1 = "BLACK",
 				sound = "ALERT4",
+				flashscreen = true,
 			},
 			facelessdurself = {
 				varname = format(L["%s on self"],SN[63276]),
@@ -93,6 +94,7 @@ do
 				text = format("%s: %s!",L["Mark"],L["YOU"]),
 				sound = "ALERT5",
 				color1 = "RED",
+				flashscreen = true,
 			},
 			facelessdurothers = {
 				varname = format(L["%s on others"],SN[63276]),
@@ -182,7 +184,7 @@ do
 				eventtype = "SPELL_INTERRUPT",
 				execute = {
 					{
-						{expect = {"#5#","==",L["General Vezax"]}},
+						{expect = {"&npcid|#4#&","==","33271"}},
 						{quash = "searingflamewarn"},
 					},
 				},
@@ -257,7 +259,7 @@ do
 					{
 						{expect = {"#1#","find",L["A saronite barrier appears around"]}},
 						{alert = "animuswarn"},
-						{tracing = {L["General Vezax"],L["Saronite Animus"]}},
+						{tracing = {33271,33524}},
 					},
 				},
 			},
@@ -267,8 +269,8 @@ do
 				eventtype = "UNIT_DIED",
 				execute = {
 					{
-						{expect = {"#5#","==",L["Saronite Animus"]}},
-						{tracing = {L["General Vezax"]}},
+						{expect = {"&npcid|#4#&","==","33524"}},
+						{tracing = {33271}},
 					},
 				},
 			},

@@ -30,13 +30,24 @@ do
 		self.tracer:TrackUnitName(name)
 	end
 
-	local function SetInfoBundle(self,title,health,perc,r,g,b)
+	local function TrackNPCID(self,npcid)
+		self.tracer:TrackNPCID(npcid)
+	end
+
+	local function SetInfoBundle(self,health,perc,r,g,b)
 		self.bar:SetValue(perc)
 		self.bar:SetStatusBarColor(r or (perc > 0.5 and ((1.0 - perc) * 2) or 1.0),
 											g or (perc > 0.5 and 1 or (perc * 2)),
 											b or 0.0)
-		self.title:SetText(title)
 		self.health:SetText(health)
+	end
+
+	local function SetTitle(self,text)
+		self.title:SetText(text)
+	end
+
+	local function IsTitleSet(self)
+		return self.title:GetText() ~= "..."
 	end
 
 	local function TRACER_ACQUIRED(self)
@@ -45,13 +56,12 @@ do
 
 	local function TRACER_UPDATE(self)
 		local unit = self.tracer:First()
-		local name = UnitName(unit)
 		if UnitIsDead(unit) then
-			self:SetInfoBundle(name, DEAD, 0)
+			self:SetInfoBundle(DEAD, 0)
 		else
 			local h, hm = UnitHealth(unit), UnitHealthMax(unit) 
 			local perc = h/hm
-			self:SetInfoBundle(name, format("%0.0f%%", perc*100), perc)
+			self:SetInfoBundle(format("%0.0f%%", perc*100), perc)
 		end
 		if self.userdata.updates then
 			self:Fire("HW_TRACER_UPDATE",self.tracer:First())
@@ -66,19 +76,21 @@ do
 		return self.tracer:IsOpen()
 	end
 
-	local function Open(self,name)
-		assert(name,"Missing 'name' paramater - got '"..tostring(name).."'")
-		self.tracer:TrackUnitName(name)
+	local function Open(self)
 		self.tracer:Open()
 	end
 
 	local function Close(self)
 		self.tracer:Close()
-		self.tracer.name = nil
+		self.title:SetText("")
 	end
 
 	local function GetName(self)
 		return self.tracer.name
+	end
+
+	local function GetNPCID(self)
+		return self.tracer.npcid
 	end
 
 	local function EnableUpdates(self)
@@ -128,6 +140,7 @@ do
 		title:SetHeight(1)
 		title:SetPoint("LEFT",bar,"LEFT",2,0)
 		title:SetJustifyH("LEFT")
+		title:SetText("...")
 		self.title = title
 
 		-- Add health text
@@ -150,6 +163,7 @@ do
 		self.OnAcquire = OnAcquire
 		self.OnRelease = OnRelease
 		self.TrackUnitName = TrackUnitName
+		self.TrackNPCID = TrackNPCID
 		self.SetInfoBundle = SetInfoBundle
 		self.EnableUpdates = EnableUpdates
 		self.OnWidthSet = OnWidthSet
@@ -157,6 +171,9 @@ do
 		self.Open = Open
 		self.Close = Close
 		self.GetName = GetName
+		self.GetNPCID = GetNPCID
+		self.SetTitle = SetTitle
+		self.IsTitleSet = IsTitleSet
 		
 		self.frame = frame
 		frame.obj = self

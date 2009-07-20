@@ -7,10 +7,10 @@ do
 		zone = L["Naxxramas"], 
 		name = L["Grand Widow Faerlina"],
 		triggers = {
-			scan = L["Grand Widow Faerlina"],
+			scan = 15953, -- Grand Widow Faerlina
 		},
 		onactivate = {
-			tracing = {L["Grand Widow Faerlina"]},
+			tracing = {15953}, -- Grand Widow Faerlina
 			tracerstart = true,
 			tracerstop = true,
 			combatstop = true,
@@ -46,6 +46,7 @@ do
 				text = format("%s! %s!",SN[39024],L["MOVE"]),
 				time = 1.5, 
 				sound = "ALERT3", 
+				flashscreen = true,
 			},
 			silencedur = {
 				varname = format(L["%s Duration"],SN[15487]),
@@ -65,7 +66,7 @@ do
 				spellid = {28732,54097}, 
 				execute = {
 					{
-						{expect = {"#5#","==",L["Grand Widow Faerlina"]}},
+						{expect = {"&npcid|#4#&","==","15953"}}, -- Grand Widow Faerlina
 						{expect = {"$enraged$","==","true"}},
 						{set = {enraged = "false"}}, 
 						{alert = "enragecd"}, 
@@ -93,7 +94,7 @@ do
 				spellid = 54100,
 				execute = {
 					{
-						{expect = {"#5#","==",L["Grand Widow Faerlina"]}},
+						{expect = {"&npcid|#4#&","==","15953"}}, -- Grand Widow Faerlina
 						{quash = "enragecd"},
 						{set = {enraged = "true"}}, 
 						{alert = "enragewarn"},

@@ -1,5 +1,5 @@
 local addon = DXE
-local version = tonumber(("$Rev$"):sub(7, -3))
+local version = tonumber(("$Rev$"):match("%d+"))
 addon.version = version > addon.version and version or addon.version
 local L = addon.L
 
@@ -46,8 +46,10 @@ local function onEnter(self) self:GetNormalTexture():SetVertexColor(0,1,0) end
 ---------------------------------------
 
 local function AddTitleButton(self,texture,onClick)
+	--@debug@
 	assert(type(texture) == "string")
 	assert(type(onClick) == "function")
+	--@end-debug@
 
 	local button = CreateFrame("Button",nil,self)
 	button:SetWidth(buttonSize)
@@ -62,9 +64,11 @@ local function AddTitleButton(self,texture,onClick)
 end
 
 function addon:CreateWindow(name,width,height)
+	--@debug@
 	assert(type(name) == "string")
 	assert(type(width) == "number")
 	assert(type(height) == "number")
+	--@end-debug@
 	if Windows[name] then error("Window already exists") return end
 	local properName = name:gsub(" ","")
 

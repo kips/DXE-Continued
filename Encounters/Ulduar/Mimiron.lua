@@ -9,17 +9,17 @@ do
 		triggers = {
 			yell = {L["^We haven't much time, friends"],L["^Self%-destruct sequence initiated"]},
 			scan = {
-				L["Leviathan Mk II"],
-				L["Mimiron"],
-				L["VX-001"],
-				L["Aerial Command Unit"],
-				L["Bomb Bot"],
-				L["Assault Bot"],
-				L["Emergency Fire Bot"],
+				33432, -- Leviathan MK II
+				33350, -- Mimiron
+				33651, -- VX-001
+				33670, -- Aerial Command Unit
+				33836, -- Bomb Bot
+				34057, -- Assault Bot
+				34147, -- Emergency Fire Bot
 			},
 		},
 		onactivate = {
-			tracing = {L["Leviathan Mk II"]},
+			tracing = {33432}, -- Leviathan Mk II
 			combatstop = true,
 		},
 		userdata = {
@@ -117,6 +117,7 @@ do
 				sound = "ALERT9",
 				color1 = "BLUE",
 				color2 = "WHITE",
+				flashscreen = true,
 			},
 			flamecd = {
 				type = "dropdown",
@@ -199,6 +200,7 @@ do
 				color1 = "WHITE",
 				color2 = "RED",
 				sound = "ALERT4",
+				flashscreen = true,
 			},
 			weakeneddur = {
 				varname = format(L["%s Duration"],L["Weakened"]),
@@ -268,14 +270,14 @@ do
 						{canceltimer = "startblastcd"},
 						{canceltimer = "startplasmablastdur"},
 						{scheduletimer = {"startbarragecd",40}},
-						{tracing = {L["VX-001"]}},
+						{tracing = {33651}}, -- VX-001
 						{alert = "onetotwo"},
 					},
 					-- Transition from Phase 2 to Phase 3
 					{
 						{expect = {"#1#","find",L["^Thank you, friends!"]}},
 						{set = {phase = "3"}},
-						{tracing = {L["Aerial Command Unit"]}},
+						{tracing = {33670}}, -- Aerial Command Unit
 						{quash = "laserbarragecd"},
 						{quash = "laserbarragedur"},
 						{quash = "spinupwarn"},
@@ -290,7 +292,7 @@ do
 						{quash = "weakeneddur"},
 						{set = {phase = "4"}},
 						{set = {flametime = 18}},
-						{tracing = {L["Leviathan Mk II"],L["VX-001"],L["Aerial Command Unit"]}},
+						{tracing = {33432,33651,33670}}, -- Leviathan Mk II, VX-001, Aerial Command Unit
 						{scheduletimer = {"startbarragecd",14}},
 						{scheduletimer = {"startblastcd",25}},
 						{alert = "threetofour"},

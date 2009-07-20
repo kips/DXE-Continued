@@ -1,21 +1,22 @@
 do
 	local L,SN = DXE.L,DXE.SN
 
-	local L_InstructorRazuvious = L["Instructor Razuvious"]
-
 	local data = {
 		version = "$Rev$",
 		key = "instructorrazuvious", 
 		zone = L["Naxxramas"], 
-		name = L_InstructorRazuvious, 
+		name = L["Instructor Razuvious"], 
 		triggers = {
-			scan = {L_InstructorRazuvious,L["Death Knight Understudy"]}, 
+			scan = {
+				16061, -- Razuvious
+				16803,
+			}, 
 			yell = L["^The time for practice is over!"],
 		},
 		onactivate = {
 			tracerstop = true,
 			combatstop = true,
-			tracing = {L_InstructorRazuvious,},
+			tracing = {16061}, -- Razuvious
 		},
 		userdata = {},
 		onstart = {

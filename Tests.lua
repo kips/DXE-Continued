@@ -33,3 +33,8 @@ end
 function addon:VEZAXTEST()
 	self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_CAST_SUCCESS",nil,nil,nil,"","Nokaru",nil,63276)
 end
+
+function addon:KOLOGARNTEST()
+	self.Invoker:COMBAT_EVENT(nil,nil,"UNIT_DIED",nil,nil,nil,"0xF5300080A6000000")
+end
+

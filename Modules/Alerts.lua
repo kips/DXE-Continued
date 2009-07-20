@@ -1,11 +1,12 @@
 local addon = DXE
-local version = tonumber(("$Rev$"):sub(7, -3))
+local version = tonumber(("$Rev$"):match("%d+"))
 addon.version = version > addon.version and version or addon.version
 local L = addon.L
 
 local UIParent = UIParent
 local SM = addon.SM
 local format = string.format
+local wipe = table.wipe
 local Colors,Sounds = addon.Constants.Colors,addon.Constants.Sounds
 
 local GetTime,PlaySoundFile,ipairs,pairs,next,remove = 
@@ -33,37 +34,107 @@ local TopStackAnchor,CenterStackAnchor
 
 function module:RefreshProfile()
 	pfl = db.profile
-	self:RefreshScale()
+	self:RefreshAlerts()
 end
 
-function module:RefreshScale()
+function module:RefreshAlerts()
 	for alert in pairs(Active) do
 		alert:SetScale(pfl.Scale)
+		alert.bar:SetStatusBarTexture(SM:Fetch("statusbar",pfl.BarTexture))
 	end
 end
 
 function module:InitializeOptions(area)
+	local ConfigHandler = {}
+	function ConfigHandler:GetBarTextures()
+		self.bartextures = self.bartextures or {}
+		wipe(self.bartextures)
+		for _, name in pairs(SM:List("statusbar")) do self.bartextures[name] = name end
+		return self.bartextures
+	end
+
 	area.alerts_group = {
 		type = "group",
 		name = L["Alerts"],
 		order = 200,
 		handler = self,
 		get = function(info) return pfl[info[#info]] end,
+		set = function(info,v) pfl[info[#info]] = v end,
 		args = {
-			AlertsTest = {
-				type = "execute",
-				name = L["Alerts Test"],
+			bars_group = {
+				type = "group",
+				name = L["Bars"],
 				order = 100,
-				func = "AlertsTest",
+				inline = true,
+				args = {
+					AlertsTest = {
+						type = "execute",
+						name = L["Test Bars"],
+						order = 100,
+						func = "AlertsTest",
+					},
+					Scale = {
+						order = 200,
+						type = "range",
+						name = L["Bar Scale"],
+						min = 0.5,
+						max = 1.5,
+						step = 0.1,
+						set = function(info,v) pfl.Scale = v; self:RefreshAlerts() end,
+					},
+					BarTexture = {
+						order = 300,
+						type = "select",
+						name = L["Bar Texture"],
+						handler = ConfigHandler,
+						values = "GetBarTextures",
+						set = function(info,v) pfl.BarTexture = v; self:RefreshAlerts() end,
+						dialogControl = "LSM30_Statusbar",
+					},
+				},
 			},
-			Scale = {
+			flash_group = {
+				type = "group",
+				name = L["Screen Flash"],
 				order = 200,
-				type = "range",
-				name = L["Alerts scale"],
-				min = 0.5,
-				max = 1.5,
-				step = 0.1,
-				set = function(info,v) pfl.Scale = v; self:RefreshScale() end,
+				inline = true,
+				args = {
+					flash_desc = {
+						type = "description",
+						name = L["The color of the flash becomes the main color of the alert. Colors for each alert are set in the Encounters section. If the color is set to 'Clear' it defaults to black"],
+						order = 1,
+					},
+					FlashTest = {
+						type = "execute",
+						name = L["Test Flash"],
+						order = 100,
+						func = "FlashTest",
+					},
+					FlashAlpha = {
+						type = "range",
+						name = L["Flash Alpha"],
+						order = 200,
+						min = 0.1,
+						max = 1,
+						step = 0.05,
+					},
+					FlashDuration = {
+						type = "range",
+						name = L["Duration"],
+						order = 300,
+						min = 0.2,
+						max = 3,
+						step = 0.05,
+					},
+					FlashOscillations = {
+						type = "range",
+						name = L["Oscillations"],
+						order = 400,
+						min = 1,
+						max = 10,
+						step = 1,
+					},
+				},
 			},
 		},
 	}
@@ -71,18 +142,22 @@ end
 
 function module:OnInitialize()
 	-- Top stack anchor
-	TopStackAnchor = addon:CreateLockableFrame("AlertsTopStackAnchor",245,10,format("%s - %s",L["Alerts"],L["Top Anchor"]))
+	TopStackAnchor = addon:CreateLockableFrame("AlertsTopStackAnchor",245,10,format("%s - %s",L["Alerts"],L["Bar Top Anchor"]))
 	addon:RegisterMoveSaving(TopStackAnchor,"TOP","UIParent","TOP",0,-16)
 	addon:LoadPosition("DXEAlertsTopStackAnchor")
 
 	-- Bottom stack anchor
-	CenterStackAnchor = addon:CreateLockableFrame("AlertsCenterStackAnchor",245,10,format("%s - %s",L["Alerts"],L["Center Anchor"]))
+	CenterStackAnchor = addon:CreateLockableFrame("AlertsCenterStackAnchor",245,10,format("%s - %s",L["Alerts"],L["Bar Center Anchor"]))
 	addon:RegisterMoveSaving(CenterStackAnchor,"CENTER","UIParent","CENTER",0,100)
 	addon:LoadPosition("DXEAlertsCenterStackAnchor")
 
 	self.db = addon.db:RegisterNamespace("Alerts", {
 		profile = {
+			BarTexture = "Blizzard",
 			Scale = 1,
+			FlashAlpha = 0.6,
+			FlashDuration = 0.8,
+			FlashOscillations = 2,
 		},
 	})
 	db = self.db
@@ -97,6 +172,42 @@ end
 
 function module:OnDisable()
 	self:QuashAllAlerts()
+end
+
+---------------------------------------------
+-- SCREEN FLASH
+---------------------------------------------
+
+do
+	local FLASH_DURATION, PERIOD,AMP,MULT
+
+	local flash = CreateFrame("Frame","DXEAlertsFlash",UIParent)
+	flash:SetFrameStrata("BACKGROUND")
+	flash:SetBackdrop({bgFile = "Interface\\Tooltips\\UI-Tooltip-Background"})
+	flash:SetAllPoints(true)
+	flash:Hide()
+	
+	local elapsed
+	local function OnUpdate(self,delta)
+		elapsed = elapsed + delta
+		if elapsed > FLASH_DURATION then self:Hide() end
+		local p = elapsed % PERIOD
+		if p > AMP then p = PERIOD - p end
+		self:SetAlpha(p * MULT)
+	end
+
+	flash:SetScript("OnUpdate",OnUpdate)
+
+	function module:FlashScreen(c) 
+		c = c or Colors.BLACK
+		elapsed = 0
+		FLASH_DURATION = pfl.FlashDuration
+		PERIOD = FLASH_DURATION / pfl.FlashOscillations
+		AMP = PERIOD / 2
+		MULT = 1 / AMP
+		flash:SetBackdropColor(c.r,c.g,c.b,pfl.FlashAlpha)
+		flash:Show()
+	end
 end
 
 ---------------------------------------
@@ -184,6 +295,9 @@ do
 		if perc > 1 or perc < 0 then 
 			self.animFunc = nil
 			self:AnchorToCenter()
+			if self.data.flashscreen then
+				module:FlashScreen(self.data.c1)
+			end
 			return 
 		end
 		local x = data.fx + ((data.tox - data.fx) * perc)
@@ -289,6 +403,10 @@ function prototype:SetSound(sound)
 	self.data.sound = sound
 end
 
+function prototype:SetFlashScreen(flashscreen)
+	self.data.flashscreen = flashscreen
+end
+
 function prototype:SetText(text)
 	self.text:SetText(text)
 end
@@ -305,7 +423,7 @@ local function CreateAlert()
 	self.data = {}
 
 	local bar = CreateFrame("StatusBar",nil,self)
-	bar:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
+	--bar:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
 	bar:SetPoint("TOPLEFT",2,-2)
 	bar:SetPoint("BOTTOMRIGHT",-2,2)
 	bar:SetMinMaxValues(0,1) 
@@ -344,6 +462,7 @@ local function GetAlert()
 	alert:Show()
 	alert:SetAlpha(0.6)
 	alert:SetScale(pfl.Scale)
+	alert.bar:SetStatusBarTexture(SM:Fetch("statusbar",pfl.BarTexture))
 	return alert
 end
 
@@ -385,12 +504,13 @@ end
 -- This alert counts down a timer at the top of the screen
 -- When a "Lead Time" is achieved, it drops to the center, announces a message, and plays a sound effect
 -- When it expires, it fades off the screen
-function module:Dropdown(id, text, totalTime, flashTime, sound, c1, c2)
+function module:Dropdown(id, text, totalTime, flashTime, sound, c1, c2, flashscreen)
 	local soundFile,c1Data,c2Data = GetMedia(sound,c1,c2)
 	local alert = GetAlert()
 	alert:SetID(id)
 	alert:SetTimeleft(totalTime)
 	alert:SetText(text) 
+	alert:SetFlashScreen(flashscreen)
 	alert:SetColor(c1Data,c2Data)
 	alert:SetSound(soundFile)
 	alert:Countdown(totalTime,flashTime)
@@ -408,7 +528,7 @@ end
 
 -- Center popup countdown alert
 -- This alert plays a sound right away, then displays a (short) countdown midscreen.
-function module:CenterPopup(id, text, totalTime, flashTime, sound, c1, c2)
+function module:CenterPopup(id, text, totalTime, flashTime, sound, c1, c2, flashscreen)
 	local soundFile,c1Data,c2Data = GetMedia(sound,c1,c2)
 	local alert = GetAlert()
 	alert:SetID(id)
@@ -420,11 +540,12 @@ function module:CenterPopup(id, text, totalTime, flashTime, sound, c1, c2)
 	alert:AnchorToCenter()
 	alert:ScheduleTimer("Fade",totalTime)
 	alert:ScheduleTimer("Destroy",totalTime+fadeTime)
+	if flashscreen then self:FlashScreen(c1Data) end
 	return alert
 end
 
 -- Center popup, simple text
-function module:Simple(text, totalTime, sound, c1)
+function module:Simple(text, totalTime, sound, c1, flashscreen)
 	local soundFile,c1Data = GetMedia(sound,c1)
 	local alert = GetAlert()
 	if c1Data then 
@@ -437,16 +558,27 @@ function module:Simple(text, totalTime, sound, c1)
 	alert:AnchorToCenter()
 	alert:ScheduleTimer("Fade",totalTime)
 	alert:ScheduleTimer("Destroy",totalTime+fadeTime)
+	if flashscreen then self:FlashScreen(c1Data) end
 	return alert
 end
 
 ---------------------------------------------
--- ALERT TEST
+-- ALERT TESTS
 ---------------------------------------------
 
 function module:AlertsTest()
 	self:CenterPopup("AlertTest1", "Decimating. Life Tap Now!", 10, 5, "DXE ALERT1", "DCYAN")
-	self:Dropdown("AlertTest2", "Biger City Opening", 20, 5, "DXE ALERT2", "BLUE")
-	self:Simple("Gay",3,"DXE ALERT3","RED")
+	self:Dropdown("AlertTest2", "Bigger City Opening", 20, 5, "DXE ALERT2", "BLUE")
+	self:Simple("Just Kill It!",3,"DXE ALERT3","RED")
 end
 
+local lookup
+function module:FlashTest()
+	if not lookup then
+		lookup = {}
+		for k,v in pairs(Colors) do lookup[#lookup+1] = k end
+	end
+	local i = math.random(1,#lookup)
+	local c = Colors[lookup[i]]
+	self:FlashScreen(c)
+end

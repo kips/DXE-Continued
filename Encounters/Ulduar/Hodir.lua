@@ -6,10 +6,10 @@ do
 		zone = L["Ulduar"], 
 		name = L["Hodir"], 
 		triggers = {
-			scan = L["Hodir"], 
+			scan = 32845, -- Hodir
 		},
 		onactivate = {
-			tracing = {L["Hodir"],},
+			tracing = {32845}, -- Hodir
 			tracerstart = true,
 			tracerstop = true,
 			combatstop = true,
@@ -32,6 +32,7 @@ do
 				sound = "ALERT1", 
 				color1 = "BLUE",
 				color2 = "GREEN",
+				flashscreen = true,
 			},
 			flashfreezecd = {
 				varname = format(L["%s Cooldown"],SN[61968]),
@@ -78,6 +79,7 @@ do
 				time = 1.5,
 				color1 = "ORANGE",
 				sound = "ALERT4",
+				flashscreen = true,
 			},
 			stormcloudwarnother = {
 				varname = format(L["%s on others"],SN[65133]),

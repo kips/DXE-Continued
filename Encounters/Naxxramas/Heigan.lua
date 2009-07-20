@@ -1,18 +1,16 @@
 do
 	local L,SN = DXE.L,DXE.SN
 
-	local L_HeiganTheUnclean = L["Heigan the Unclean"]
-
 	local data = {
 		version = "$Rev$",
 		key = "heigantheunclean", 
 		zone = L["Naxxramas"], 
-		name = L_HeiganTheUnclean, 
+		name = L["Heigan the Unclean"], 
 		triggers = {
-			scan = L_HeiganTheUnclean, 
+			scan = 15936, -- Heigan the Unclean
 		},
 		onactivate = {
-			tracing = {L_HeiganTheUnclean,},
+			tracing = {15936},
 			tracerstart = true,
 			tracerstop = true,
 			combatstop = true,

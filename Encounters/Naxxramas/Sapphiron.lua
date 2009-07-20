@@ -1,21 +1,19 @@
 do
 	local L,SN = DXE.L,DXE.SN
 
-	local L_Sapphiron = L["Sapphiron"]
-
 	local data = {
 		version = "$Rev$",
 		key = "sapphiron", 
 		zone = L["Naxxramas"], 
-		name = L_Sapphiron, 
+		name = L["Sapphiron"], 
 		triggers = {
-			scan = L_Sapphiron, 
+			scan = 15989, -- Sapphiron
 		},
 		onactivate = {
 			tracerstart = true,
 			tracerstop = true,
 			combatstop = true,
-			tracing = {L_Sapphiron},
+			tracing = {15989}, -- Sapphiron
 		},
 		userdata = {},
 		onstart = {
@@ -58,7 +56,8 @@ do
 				time = 10, 
 				flashtime = 6.5, 
 				sound = "ALERT1", 
-				color1 = "BLUE", 
+				color1 = "BLUE",
+				flashscreen = true,
 			},
 		},
 		events = {

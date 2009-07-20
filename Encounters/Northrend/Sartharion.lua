@@ -13,10 +13,15 @@ do
 		category = L["Northrend"],
 		name = L_Sartharion, 
 		triggers = {
-			scan = L_Sartharion, 
+			scan = {
+				28860, -- Sartharion
+				30452, -- Tenebron
+				30451, -- Shadron
+				30449, -- Vesperon
+			},
 		},
 		onactivate = {
-			tracing = {L_Sartharion},
+			tracing = {28860}, -- Sartharion
 			tracerstart = true,
 			tracerstop = true,
 			combatstop = true,
@@ -39,31 +44,31 @@ do
 				-- Tenebron, Shadron, Vesperon
 				{
 					{expect = {"<tenebronarrived> <shadronarrived> <vesperonarrived>","==","0 0 1"}},
-					{tracing = {L_Sartharion,L_Vesperon}},
+					{tracing = {28860,30449}}, -- Sartharion, Vesperon
 				},
 				{
 					{expect = {"<tenebronarrived> <shadronarrived> <vesperonarrived>","==","0 1 0"}},
-					{tracing = {L_Sartharion,L_Shadron}},
+					{tracing = {28860,30451}}, -- Sartharion, Shadron
 				},
 				{
 					{expect = {"<tenebronarrived> <shadronarrived> <vesperonarrived>","==","0 1 1"}},
-					{tracing = {L_Sartharion,L_Shadron,L_Vesperon}},
+					{tracing = {28860,30451,30449}}, -- Sartharion, Shadron, Vesperon
 				},
 				{
 					{expect = {"<tenebronarrived> <shadronarrived> <vesperonarrived>","==","1 0 0"}},
-					{tracing = {L_Sartharion,L_Tenebron}},
+					{tracing = {28860,30452}}, -- Sartharion, Tenebron
 				},
 				{
 					{expect = {"<tenebronarrived> <shadronarrived> <vesperonarrived>","==","1 0 1"}},
-					{tracing = {L_Sartharion,L_Tenebron,L_Vesperon}},
+					{tracing = {28860,30452,30449}}, -- Sartharion, Tenebron, Vesperon
 				},
 				{
 					{expect = {"<tenebronarrived> <shadronarrived> <vesperonarrived>","==","1 1 0"}},
-					{tracing = {L_Sartharion,L_Tenebron,L_Shadron}},
+					{tracing = {28860,30452,30451}}, -- Sartharion, Tenebron, Shadron
 				},
 				{
 					{expect = {"<tenebronarrived> <shadronarrived> <vesperonarrived>","==","1 1 1"}},
-					{tracing = {L_Sartharion,L_Tenebron,L_Shadron,L_Vesperon}},
+					{tracing = {28860,30452,30451,30449}}, -- Sartharion, Tenebron, Shadron, Vesperon
 				},
 			},
 		},
@@ -85,6 +90,7 @@ do
 				sound = "ALERT1", 
 				color1 = "RED", 
 				color2 = "ORANGE",
+				flashscreen = true,
 			},
 			shadowfissurewarn = {
 				varname = format(L["%s Warning"],SN[59127]),

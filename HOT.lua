@@ -10,65 +10,78 @@
 ]]
 
 local addon = DXE
-local version = tonumber(("$Rev$"):sub(7, -3))
+local version = tonumber(("$Rev$"):match("%d+"))
 addon.version = version > addon.version and version or addon.version
+local AceTimer = addon.AceTimer
 local Roster = addon.Roster
+local NID = addon.NID
 
 -- Local accessors
 local wipe = table.wipe
-local ipairs = ipairs
-local UnitIsUnit,UnitName = UnitIsUnit,UnitName
+local pairs = pairs
+local UnitIsUnit,UnitName,UnitGUID,UnitExists = 
+		UnitIsUnit,UnitName,UnitGUID,UnitExists
 
 -- Perf: default delay between traces.
-local TraceDelay = 0.2
+local traceDelay = 0.2
 
-local AceTimer = LibStub("AceTimer-3.0")
 ----------------------------------
 -- INITIALIZATION
 ----------------------------------
 
-local HOT,Prototype = {},{}
+local HOT,prototype = {},{}
 addon.HOT = HOT
 
 ----------------------------------
 -- CORE
 ----------------------------------
 
--- Unit test
-local function testname(self,proto_uid)
-	local uid = proto_uid.."target"
-	if UnitName(uid) == self.name then 
+local rIDtarget = {}
+for i=1,40 do rIDtarget["raid"..i] = "raid"..i.."target" end
+
+-- GUID NPC test
+local function testguid(self,proto_uid)
+	local uid = rIDtarget[proto_uid]
+	local guid = UnitGUID(uid)
+	if NID[guid] == self.npcid then
 		return proto_uid,uid
-	else
-		return nil
 	end
 end
 
--- Focus test
-local function testfocus(self)
-	if not UnitExists("focus") then return nil end
+local function testguid_focus(self)
+	if not UnitExists("focus") then return end
+	local guid = UnitGUID("focus")
+	if NID[guid] == self.npcid then
+		return "focus","focus"
+	end
+end
+
+-- Name tests
+local function testname(self,proto_uid)
+	local uid = rIDtarget[proto_uid]
+	if UnitName(uid) == self.name then
+		return proto_uid,uid
+	end
+end
+
+local function testname_focus(self)
+	if not UnitExists("focus") then return end
 	if UnitName("focus") == self.name then 
 		return "focus","focus"
-	else
-		return nil
 	end
 end
 
-local mt = {__index = Prototype}
-
 function HOT:New()
-	local tracer = {}
-	setmetatable(tracer, mt)
-	AceTimer:Embed(tracer)
+	local tracer = AceTimer:Embed({})
+	for k,v in pairs(prototype) do tracer[k] = v end
 	
 	-- State
-	tracer.test = testname -- The test
-	tracer.distinct = true -- Show only distinct mobs matching the filter, or all mobs?
-	tracer.n = 0 -- The number of acquired traces
-	tracer.lostTime = 0 -- The time the signal was last lost
-	tracer.proto_uids = {} -- The uids of all units that tripped the trace
-	tracer.uids = {} -- The uids of all the target units
-	tracer.events = {} -- Callbacks
+	tracer.distinct = true 	-- Show only distinct mobs matching the filter, or all mobs?
+	tracer.n = 0 				-- The number of acquired traces
+	tracer.lostTime = 0 		-- The time the signal was last lost
+	tracer.proto_uids = {} 	-- The uids of all units that tripped the trace
+	tracer.uids = {} 			-- The uids of all the target units
+	tracer.callbacks = {} 	-- Callbacks
 
 	return tracer
 end
@@ -77,21 +90,22 @@ end
 -- PROTOTYPE
 ----------------------------------
 
-function Prototype:SetCallback(obj,name)
-	self.events[name] = function() obj[name](obj) end
+function prototype:SetCallback(obj,name)
+	self.callbacks[name] = function() obj[name](obj) end
 end
 
-function Prototype:Fire(name)
-	if self.events[name] then
-		self.events[name]()
+function prototype:Fire(name)
+	if self.callbacks[name] then
+		self.callbacks[name]()
 	end
 end
 
-function Prototype:Execute()
+function prototype:Execute()
 	local uids = self.uids
 	local proto_uids = self.proto_uids
 	local distinct = self.distinct
 	local test = self.test
+	local test_focus = self.test_focus
 	wipe(uids) 
 	wipe(proto_uids)
 
@@ -102,14 +116,13 @@ function Prototype:Execute()
 	local testedfocus = false
 
 	-- Scan
-	-- Roster only contains units that exist
 	for _,unit in pairs(Roster.index_to_unit) do
 		-- Get unit and test it
 		proto_uid = unit
 		proto_uid, uid = test(self,proto_uid)
 
 		if not proto_uid and not testedfocus then
-			proto_uid, uid = testfocus(self)
+			proto_uid, uid = test_focus(self)
 			testedfocus = true
 		end
 		
@@ -131,7 +144,7 @@ function Prototype:Execute()
 		end
 	end
 
-	-- Postprocessing: Fire events
+	-- Postprocessing: Fire callbacks
 	if(ix > 0) then
 		if(self.n == 0) then
 			self.n = ix
@@ -152,43 +165,60 @@ end
 -- PROTOTYPE API
 ----------------------------------
 
-function Prototype:TrackUnitName(name)
+function prototype:TrackUnitName(name)
 	self.name = name
+	self.test = testname
+	self.test_focus = testname_focus
 end
 
-function Prototype:IsOpen()
+function prototype:TrackNPCID(npcid)
+	--@debug@
+	assert(type(npcid) == "number")
+	--@end-debug@
+	self.npcid = npcid
+	self.test = testguid
+	self.test_focus = testguid_focus
+end
+
+function prototype:IsOpen()
 	return self.handle
 end
 
-function Prototype:Open()
+function prototype:Open()
 	if self.handle then return end
-	assert(self.name or self.names,"Requires TrackUnitName or TrackUnitNames to be set")
-	self.handle = self:ScheduleRepeatingTimer("Execute", TraceDelay)
+	--@debug@
+	assert(self.name or self.npcid)
+	--@end-debug@
+	self.handle = self:ScheduleRepeatingTimer("Execute", traceDelay)
 end
 
-function Prototype:Close()
+function prototype:Close()
+	if not self.handle then return end
 	self.name = nil
+	self.npcid = nil
+	self.test = nil
+	self.test_focus = nil
 	self:CancelTimer(self.handle,true)
 	self.handle = nil
+	self.n = 0
 end
 
-function Prototype:ProtoUIDs() 
+function prototype:ProtoUIDs() 
 	return self.proto_uids 
 end
 
-function Prototype:UIDs() 
+function prototype:UIDs() 
 	return self.uids 
 end
 
-function Prototype:NumMatches() 
+function prototype:NumMatches() 
 	return self.n 
 end
 
-function Prototype:First() 
+function prototype:First() 
 	return self.uids[1] 
 end
 
-function Prototype:FirstProto() 
+function prototype:FirstProto() 
 	return self.proto_uids[1] 
 end
-

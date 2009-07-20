@@ -9,10 +9,10 @@ do
 		zone = L["Naxxramas"], 
 		name = L_AnubRekhan, 
 		triggers = {
-			scan = L_AnubRekhan, 
+			scan = 15956, -- Anub'Rekhan
 		},
 		onactivate = {
-			tracing = {L_AnubRekhan},
+			tracing = {15956}, -- Anub'Rekhan
 			tracerstart = true,
 			tracerstop = true,
 			combatstop = true,
@@ -64,7 +64,7 @@ do
 				spellid = {28785,54021}, 
 				execute = {
 					{
-						{expect = {"#5#","==",L_AnubRekhan}},
+						{expect = {"&npcid|#4#&","==","15956"}}, -- Anub'Rekhan
 						{alert = "locustswarmgain"},
 						{quash = "locustswarmcd"},
 						{alert = "locustswarmcd"}, 

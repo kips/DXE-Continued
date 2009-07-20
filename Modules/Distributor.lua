@@ -1,5 +1,5 @@
 local addon = DXE
-local version = tonumber(("$Rev$"):sub(7, -3))
+local version = tonumber(("$Rev$"):match("%d+"))
 addon.version = version > addon.version and version or addon.version
 local L = addon.L
 
@@ -17,8 +17,8 @@ local db,pfl
 ----------------------------------
 
 local FIRST_MULTIPART, NEXT_MULTIPART, LAST_MULTIPART = "\001", "\002", "\003"
-local MAIN_PREFIX = "DXE_Distro"
-local TRANSFER_PREFIX = "DXE_DistroT"
+local MAIN_PREFIX = "DXE_Distri"
+local TRANSFER_PREFIX = "DXE_DistriT"
 local UL_SUFFIX = "UL"
 local DL_SUFFIX = "DL"
 local DR_PTN = TRANSFER_PREFIX.."_([%w'%- ]+)"

@@ -1,5 +1,5 @@
 local DXE = DXE
-local version = tonumber(("$Rev$"):sub(7, -3))
+local version = tonumber(("$Rev$"):match("%d+"))
 DXE.version = version > DXE.version and version or DXE.version
 
 local SM = DXE.SM
@@ -94,10 +94,9 @@ SM:Register("sound", "Short Circuit", "Sound\\Spells\\SimonGame_Visual_BadPress.
 SM:Register("sound", "Fel Portal", "Sound\\Spells\\Sunwell_Fel_PortalStand.wav")
 SM:Register("sound", "Fel Nova", "Sound\\Spells\\SeepingGaseous_Fel_Nova.wav")
 SM:Register("sound", "You Will Die!", "Sound\\Creature\\CThun\\CThunYouWillDIe.wav")
+SM:Register("sound", "PvP Flag Taken", "Sound\\Spells\\PVPFlagTaken.wav")
 
-for name,file in pairs(Sounds) do
-	SM:Register("sound","DXE "..name,file)
-end
+for name,file in pairs(Sounds) do SM:Register("sound","DXE "..name,file) end
 
 Constants.Sounds = Sounds
 

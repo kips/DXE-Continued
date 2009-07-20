@@ -6,10 +6,14 @@ do
 		zone = "Ulduar", 
 		name = L["Kologarn"], 
 		triggers = {
-			scan = L["Kologarn"], 
+			scan = 32930, -- Kologarn
 		},
 		onactivate = {
-			tracing = {L["Kologarn"],L["Right Arm"],L["Left Arm"]},
+			tracing = {
+				32930, -- Kologarn
+				32934, -- Right Arm
+				32933, -- Left Arm
+			},
 			tracerstart = true,
 			tracerstop = true,
 			combatstop = true,
@@ -107,11 +111,11 @@ do
 				eventtype = "UNIT_DIED",
 				execute = {
 					{
-						{expect = {"#5#","==",L["Right Arm"]}},
+						{expect = {"&npcid|#4#&","==","32934"}}, -- Right Arm
 						{alert = "rightarmcd"},
 					},
 					{
-						{expect = {"#5#","==",L["Left Arm"]}},
+						{expect = {"&npcid|#4#&","==","32933"}}, -- Left Arm
 						{quash = "shockwavecd"},
 						{alert = "leftarmcd"},
 					},

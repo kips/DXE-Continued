@@ -3,19 +3,19 @@ do
 	local data = {
 		version = "$Rev$",
 		key = "razorscale", 
-		zone = "Ulduar", 
-		name = "Razorscale", 
+		zone = L["Ulduar"], 
+		name = L["Razorscale"], 
 		triggers = {
 			scan = {
-				L["Razorscale"],
-				L["Dark Rune Guardian"],
-				L["Dark Rune Sentinel"],
-				L["Dark Rune Watcher"],
+				33186, -- Razorscale
+				33388, -- Dark Rune Guardian
+				33846, -- Dark Rune Sentinel
+				33453, -- Dark Rune Watcher
 			}, 
 			yell = L["^Be on the lookout! Mole machines"],
 		},
 		onactivate = {
-			tracing = {L["Razorscale"],},
+			tracing = {33186}, -- Razorscale
 			combatstop = true,
 		},
 		onstart = {
@@ -42,6 +42,7 @@ do
 				time = 1.5,
 				color1 = "RED",
 				sound = "ALERT1",
+				flashscreen = true,
 			},
 			breathwarn = {
 				varname = format(L["%s Cast"],SN[63317]),

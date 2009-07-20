@@ -7,10 +7,10 @@ do
 		zone = L["Ulduar"], 
 		name = L["XT-002 Deconstructor"], 
 		triggers = {
-			scan = L["XT-002 Deconstructor"], 
+			scan = {33293,33329}, -- XT-002 Deconstructor, Heart of the Deconstructor
 		},
 		onactivate = {
-			tracing = {L["XT-002 Deconstructor"],},
+			tracing = {33293}, -- XT-002 Deconstructor
 			tracerstart = true,
 			tracerstop = true,
 			combatstop = true,
@@ -43,6 +43,7 @@ do
 				sound = "ALERT1",
 				color1 = "GREEN",
 				color2 = "PINK",
+				flashscreen = true,
 			},
 			gravitywarnother = {
 				varname = format(L["%s on others"],SN[63024]),
@@ -60,6 +61,7 @@ do
 				sound = "ALERT3",
 				color1 = "CYAN",
 				color2 = "MAGENTA",
+				flashscreen = true,
 			},
 			lightwarnother = {
 				varname = format(L["%s on others"],SN[63018]),
@@ -109,7 +111,7 @@ do
 		timers = {
 			heartunexposed = {
 				{
-					{tracing = {L["XT-002 Deconstructor"]}},
+					{tracing = {33293}},
 				},
 			},
 		},
@@ -168,7 +170,7 @@ do
 					{
 						{alert = "exposedwarn"},
 						{scheduletimer = {"heartunexposed", 30}},
-						{tracing = {L["XT-002 Deconstructor"],L["Heart of the Deconstructor"]}},
+						{tracing = {33293,33329}}, -- XT-002, Heart of the Deconstructor
 					},
 				},
 			},
@@ -181,7 +183,7 @@ do
 					{
 						{quash = "exposedwarn"},
 						{canceltimer = "heartunexposed"},
-						{tracing = {L["XT-002 Deconstructor"]}},
+						{tracing = {33293}},
 						{alert = "hardmodealert"},
 						{set = {heartbroken = "1"}},
 					},

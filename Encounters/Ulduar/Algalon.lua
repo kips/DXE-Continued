@@ -6,10 +6,10 @@ do
 		zone = L["Ulduar"], 
 		name = L["Algalon the Observer"], 
 		triggers = {
-			scan = L["Algalon the Observer"],
+			scan = 32871, -- Algalon
 		},
 		onactivate = {
-			tracing = {L["Algalon the Observer"],},
+			tracing = {32871}, -- Algalon
          tracerstart = true,
          tracerstop = true,
 			combatstop = true,
@@ -45,6 +45,7 @@ do
 				sound = "ALERT5",
 				color1 = "ORANGE",
 				color2 = "BROWN",
+				flashscreen = true,
 			},
 			bigbangcd = {
 				varname = format(L["%s Cooldown"],SN[64443]),
@@ -125,5 +126,4 @@ do
 		}
 	}
 	DXE:RegisterEncounter(data)
-	DXE:AddFriendlyException(L["Algalon the Observer"])
 end

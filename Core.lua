@@ -24,8 +24,11 @@ local defaults = {
 		PaneScale = 1,
 		ShowMinimap = true,
 		_Minimap = {},
+
+		-- NPC id -> Localized name
+		L_NPC = {},
 		--@debug@
-		debug = debugDefaults
+		debug = debugDefaults,
 		--@end-debug@
 	},
 	profile = {
@@ -40,14 +43,11 @@ local defaults = {
 
 local addon = LibStub("AceAddon-3.0"):NewAddon("DXE","AceEvent-3.0","AceTimer-3.0","AceConsole-3.0","AceComm-3.0","AceSerializer-3.0")
 _G.DXE = addon
-addon.version = tonumber(("$Rev$"):sub(7, -3))
+addon.version = tonumber(("$Rev$"):match("%d+"))
 addon:SetDefaultModuleState(false)
 addon.callbacks = LibStub("CallbackHandler-1.0"):New(addon)
 addon.defaults = defaults
 
-function addon:RefreshDefaults()
-	self.db:RegisterDefaults(defaults)
-end
 
 ---------------------------------------------
 -- UPVALUES
@@ -55,11 +55,10 @@ end
 
 local wipe,concat,remove = table.wipe,table.concat,table.remove
 local match,find,gmatch,sub,split,join = string.match,string.find,string.gmatch,string.sub,string.split,string.join
-local _G,select,tostring,type,assert,tonumber = _G,select,tostring,type,assert,tonumber
+local _G,select,tostring,type,tonumber = _G,select,tostring,type,tonumber
 local GetTime,GetNumRaidMembers,GetRaidRosterInfo = GetTime,GetNumRaidMembers,GetRaidRosterInfo
 local UnitName,UnitGUID,UnitIsEnemy,UnitClass,UnitAffectingCombat,UnitHealth,UnitIsFriend,UnitIsDead = 
 		UnitName,UnitGUID,UnitIsEnemy,UnitClass,UnitAffectingCombat,UnitHealth,UnitIsFriend,UnitIsDead
-local band = bit.band
 
 local db,gbl,pfl
 
@@ -85,31 +84,19 @@ local SN = setmetatable({},{
 	end,
 })
 
---- GUIDS
-local GUID_LENGTH = 18
-local UT_MASK = 0x00F
-
 -- NPC IDs
+local GUID_LENGTH = 18
+local UT_NPC = 3
+local UT_VEHICLE = 5
+
 local NID = setmetatable({},{
 	__index = function(t,guid)
-		if type(guid) ~= "string" or #guid ~= GUID_LENGTH or not guid:find("%xx%x+") then
-			error("Invalid guid passed into NID") 
-		end
-		local npcid = tonumber(sub(guid,9,12),16)
+		if type(guid) ~= "string" or #guid ~= GUID_LENGTH or not guid:find("%xx%x+") then return end
+		local ut = tonumber(sub(guid,5,5),16) % 8
+		local isNPC = ut == UT_NPC or ut == UT_VEHICLE
+		local npcid = isNPC and tonumber(sub(guid,9,12),16)
 		t[guid] = npcid
 		return npcid
-	end,
-})
-
--- Unit Types
-local UT = setmetatable({},{
-	__index = function(t,guid)
-		if type(guid) ~= "string" or #guid ~= GUID_LENGTH or not guid:find("%xx%x+") then 
-			error("Invalid guid passed into UT") 
-		end
-		local unitType = band(tonumber(sub(guid,3,5),16),UT_MASK)
-		t[guid] = unitType
-		return unitType
 	end,
 })
 
@@ -119,14 +106,13 @@ for class,color in pairs(RAID_CLASS_COLORS) do
 	class_to_color[class] = ("|cff%02x%02x%02x"):format(color.r * 255, color.g * 255, color.b * 255)
 end
 
-
 local CN = setmetatable({}, {__index =
 	function(t, unit)
 		local class = select(2,UnitClass(unit))
 		if not class then return unit end
 		local name = UnitName(unit)
-		t[unit] = class_to_color[class]..name.."|r"
-		return t[unit]
+		t[name] = class_to_color[class]..name.."|r"
+		return t[name]
 	end,
 })
 
@@ -139,7 +125,6 @@ do
 		L = L,
 		SN = SN,
 		NID = NID,
-		UT = UT,
 		CN = CN,
 		SM = SM,
 	}
@@ -273,12 +258,14 @@ do
 	--					     is set to true the function should not be passing in arguments
 	--         		     because they will be lost
 	local function ThrottleFunc(_obj,_func,_time,_postcall)
+		--@debug@
 		assert(type(_func) == "string","Expected _func to be a string")
 		assert(type(_obj) == "table","Expected _obj to be a table")
 		assert(type(_obj[_func]) == "function","Expected _obj[func] to be a function")
 		assert(type(_time) == "number","Expected _time to be a number")
 		assert(type(_postcall) == "boolean","Expected _postcall to be a boolean")
 		assert(AceTimer.embeds[_obj],"Expected obj to be AceTimer embedded")
+		--@end-debug@
 		local _old_func = _obj[_func]
 		local _last,_handle = GetTime() - _time
 		_obj[_func] = function(self,...)
@@ -316,7 +303,7 @@ function addon:RegisterEncounter(data)
 	local key = data.key
 
 	-- Convert version
-	data.version = type(data.version) == "string" and tonumber(data.version:sub(7, -3)) or data.version
+	data.version = type(data.version) == "string" and tonumber(data.version:match("%d+")) or data.version
 
 	-- Add to queue if we're not loaded yet
 	if not Initialized then RegisterQueue[key] = data return end
@@ -396,7 +383,9 @@ end
 
 --- Change the currently-active encounter.
 function addon:SetActiveEncounter(key)
+	--@debug@
 	assert(type(key) == "string","String expected in SetActiveEncounter")
+	--@end-debug@
 	-- Check the new encounter
 	if not EDB[key] then return end
 	-- Already set to this encounter
@@ -541,50 +530,48 @@ end
 -- TRIGGERING
 ---------------------------------------------
 
-local TRGS_NAME = {} -- Activation names. Source: data.triggers.scan
 local TRGS_NPCID = {} -- NPC ids activations. Source: data.triggers.scan
 local TRGS_YELL = {} -- Yell activations. Source: data.triggers.yell
 
 do
 	local function add_data(tbl,info,key)
 		if type(info) == "table" then
-			-- Info contains names
-			for _,name in ipairs(info) do
-				tbl[name] = key
+			-- Info contains ids
+			for _,id in ipairs(info) do
+				tbl[id] = key
 			end
 		else
-			-- Info is name
+			-- Info is the id
 			tbl[info] = key
 		end
 	end
 
 	local function BuildTriggerLists()
-		-- Get zone name
 		local zone = GetRealZoneText()
-		local hasName,hasYell = false,false
+		local scanFlag,yellFlag = false,false
 		for key, data in addon:IterateEDB() do
 			if data.zone == zone then
 				if data.triggers then
 					local scan = data.triggers.scan
 					if scan then 
-						add_data(TRGS_NAME,scan,key)
-						hasName = true
+						add_data(TRGS_NPCID,scan,key)
+						scanFlag = true
 					end
 					local yell = data.triggers.yell
 					if yell then 
 						add_data(TRGS_YELL,yell,key) 
-						hasYell = true
+						yellFlag = true
 					end
 				end
 			end
 		end
-		return hasName,hasYell
+		return scanFlag,yellFlag
 	end
 
 	local ScanHandle
 	function addon:UpdateTriggers()
 		-- Clear trigger tables
-		wipe(TRGS_NAME)
+		wipe(TRGS_NPCID)
 		wipe(TRGS_YELL)
 		self:UnregisterEvent("CHAT_MSG_MONSTER_YELL")
 		self:CancelTimer(ScanHandle,true)
@@ -610,24 +597,15 @@ function addon:CHAT_MSG_MONSTER_YELL(_,msg,...)
 	end
 end
 
-local FriendlyExceptions = {}
-function addon:AddFriendlyException(name)
-	FriendlyExceptions[name] = true
-end
-
 function addon:Scan()
 	for i,unit in pairs(Roster.index_to_unit) do
 		local target = rIDtarget[i]
-		local name = UnitName(target)
-		-- local guid = UnitGUID(target)
-		-- local npcid,unittype = NID[guid],UT[guid]
-		-- NPCIDTriggers[npcid]
-		if UnitExists(target) and 
-			TRGS_NAME[name] and 
-			not UnitIsDead(target)
-			and (UnitIsEnemy("player",target) or FriendlyExceptions[name]) then
-			-- Return name
-			return TRGS_NAME[name]
+		local guid = UnitGUID(target)
+		if guid then
+			local npcid = NID[guid]
+			if TRGS_NPCID[npcid] and not UnitIsDead(target) then
+				return TRGS_NPCID[npcid]
+			end
 		end
 	end
 	return nil
@@ -652,7 +630,6 @@ end
 ---------------------------------------------
 -- MAIN
 ---------------------------------------------
-local LDBIcon = LibStub("LibDBIcon-1.0",true)
 
 function addon:SetupMinimapIcon()
 	local LDB = LibStub("LibDataBroker-1.1")
@@ -668,6 +645,7 @@ function addon:SetupMinimapIcon()
 			tooltip:AddLine(L["|cffffff00Click|r to toggle the settings window"],1,1,1)
 		end,
 	})
+	local LDBIcon = LibStub("LibDBIcon-1.0",true)
 	if LDBIcon then LDBIcon:Register("DXE",self.launcher,gbl._Minimap) end
 end
 
@@ -680,7 +658,9 @@ end
 do
 	local funcs = {}
 	function addon:AddToRefreshProfile(func)
+		--@debug@
 		assert(type(func) == "function")
+		--@end-debug@
 		funcs[#funcs+1] = func
 	end
 
@@ -788,6 +768,10 @@ function addon:OnDisable()
 	RosterHandle = nil
 end
 
+function addon:RefreshDefaults()
+	self.db:RegisterDefaults(defaults)
+end
+
 ---------------------------------------------
 -- POSITIONING
 ---------------------------------------------
@@ -849,8 +833,10 @@ do
 
 	-- Registers saving positions in database
 	function addon:RegisterMoveSaving(frame,point,relativeTo,relativePoint,xOfs,yOfs,withShift)
+		--@debug@
 		assert(type(frame) == "table","expected 'frame' to be a table")
 		assert(frame.IsObjectType and frame:IsObjectType("Region"),"'frame' is not a blizzard frame")
+		--@end-debug@
 		if withShift then
 			frame:SetScript("OnMouseDown",startMovingShift)
 		else
@@ -1057,18 +1043,22 @@ end
 do
 	local LockableFrames = {}
 	function addon:RegisterForLocking(frame)
+		--@debug@
 		assert(type(frame) == "table","expected 'frame' to be a table")
 		assert(frame.IsObjectType and frame:IsObjectType("Region"),"'frame' is not a blizzard frame")
+		--@end-debug@
 		LockableFrames[frame] = true
 		self:UpdateLockedFrames()
 	end
 
 	local backdrop = {bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background"}
 	function addon:CreateLockableFrame(name,width,height,text)
+		--@debug@
 		assert(type(name) == "string","expected 'name' to be a string")
 		assert(type(width) == "number" and width > 0,"expected 'width' to be a number > 0")
 		assert(type(height) == "number" and height > 0,"expected 'height' to be a number > 0")
 		assert(type(text) == "string","expected 'text' to be a string")
+		--@end-debug@
 		local frame = CreateFrame("Frame","DXE"..name,UIParent)
 		--frame:SetClampedToScreen(true)
 		frame:EnableMouse(true)
@@ -1267,17 +1257,16 @@ local HW = {}
 addon.HW = HW
 local DEAD = DEAD:upper()
 
-function addon:UNIT_DIED(_, _,eventtype, _, _, _, _, dstName)
+function addon:UNIT_DIED(_, _,eventtype, _, _, _, dstGUID)
 	if eventtype ~= "UNIT_DIED" then return end
 	for i,hw in ipairs(HW) do
-		if hw:GetName() == dstName then
-			hw:SetInfoBundle(dstName,DEAD,0)
+		if hw:IsOpen() and hw:GetNPCID() == NID[dstGUID] then
+			hw:SetInfoBundle(DEAD,0)
 			break
 		end
 	end
 end
 
--- Create health watchers
 -- Only four are needed currently. Too many health watchers clutters the screen.
 function addon:CreateHealthWatchers()
 	if HW[1] then return end
@@ -1288,9 +1277,18 @@ function addon:CreateHealthWatchers()
 	HW[1]:EnableUpdates()
 
 	-- OnAcquired
-	local onacquire = function(self,event,uid) addon.callbacks:Fire("HW_TRACER_ACQUIRED",uid) end
-	for i,hw in ipairs(HW) do 
-		hw:SetCallback("HW_TRACER_ACQUIRED",onacquire) 
+	local onacquired = function(self,event,uid) 
+		local npcid = self:GetNPCID()
+		if not self:IsTitleSet() then
+			-- Should only enter once
+			local name = UnitName(uid)
+			gbl.L_NPC[npcid] = name
+			self:SetTitle(name)
+		end
+		addon.callbacks:Fire("HW_TRACER_ACQUIRED",uid,npcid) 
+	end
+	for i,hw in ipairs(HW) do
+		hw:SetCallback("HW_TRACER_ACQUIRED",onacquired) 
 		hw.frame:SetParent(self.Pane)
 	end
 end
@@ -1301,20 +1299,22 @@ end
 
 function addon:ShowFirstHW()
 	if not HW[1]:IsShown() then
-		HW[1]:SetInfoBundle(CE.title,"",1,0,0,1)
+		HW[1]:SetInfoBundle("",1,0,0,1)
+		HW[1]:SetTitle(CE.title)
 		HW[1].frame:Show()
 	end
 end
 
--- Names should be validated to be an array of size 4
-function addon:SetTracing(names)
-	if not names then return end
+function addon:SetTracing(npcids)
+	if not npcids then return end
 	local n = 0
-	for i,name in ipairs(names) do
+	for i,npcid in ipairs(npcids) do
 		-- Prevents overwriting
-		if HW[i]:GetName() ~= name then
-			HW[i]:SetInfoBundle(name,"",1,0,0,1)
-			HW[i]:Open(name)
+		if HW[i]:GetNPCID() ~= npcid then
+			HW[i]:SetTitle(gbl.L_NPC[npcid] or "...")
+			HW[i]:SetInfoBundle("",1,0,0,1)
+			HW[i]:TrackNPCID(npcid)
+			HW[i]:Open()
 			HW[i].frame:Show()
 		end
 		n = n + 1
@@ -1709,8 +1709,10 @@ do
 			self:RefreshVersionList()
 		elseif not window then
 			window = self:CreateWindow("Version Check",220,295)--175,220)
+			--@debug@
 			window:AddTitleButton("Interface\\Addons\\DXE\\Textures\\Window\\Sync.tga",
 											function() self:RequestAllVersions() end)
+			--@end-debug@
 			local content = window.content
 			local addonButton = CreateFrame("Button", nil, content, "UIPanelButtonTemplate")
 			addonButton:SetWidth(content:GetWidth()/3)

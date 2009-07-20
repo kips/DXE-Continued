@@ -1,18 +1,16 @@
 do
 	local L,SN = DXE.L,DXE.SN
 
-	local L_Maexxna = L["Maexxna"]
-
 	local data = {
 		version = "$Rev$",
 		key = "maexxna", 
 		zone = L["Naxxramas"], 
-		name = L_Maexxna, 
+		name = L["Maexxna"], 
 		triggers = {
-			scan = L_Maexxna, 
+			scan = 15952, -- Maexxna
 		},
 		onactivate = {
-			tracing = {L_Maexxna,},
+			tracing = {15952}, -- Maexxna
 			tracerstart = true,
 			tracerstop = true,
 			combatstop = true,
@@ -59,7 +57,6 @@ do
 				spellid = {29484,54125}, 
 				execute = {
 					{
-						
 						{alert = "spraycd"}, 
 						{alert = "spidercd"},
 					},

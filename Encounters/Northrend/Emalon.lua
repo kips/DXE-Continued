@@ -7,10 +7,14 @@ do
 		category = L["Northrend"],
 		name = L["Emalon the Storm Watcher"], 
 		triggers = {
-			scan = {L["Emalon the Storm Watcher"],L["Tempest Minion"]}, 
+			scan = {
+				33993, -- Emalon
+				33998, -- Tempest Minion
+				34049, -- Tempest Minion
+			}, 
 		},
 		onactivate = {
-			tracing = {L["Emalon the Storm Watcher"],},
+			tracing = {33993},
 			tracerstart = true,
 			tracerstop = true,
 			combatstop = true,

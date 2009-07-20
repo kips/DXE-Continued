@@ -1,18 +1,20 @@
 do
 	local L,SN = DXE.L,DXE.SN
 
-	local L_NothThePlaguebringer = L["Noth the Plaguebringer"]
-
 	local data = {
 		version = "$Rev$",
 		key = "noththeplaguebringer", 
 		zone = L["Naxxramas"], 
-		name = L_NothThePlaguebringer, 
+		name = L["Noth the Plaguebringer"], 
 		triggers = {
-			scan = {L_NothThePlaguebringer,L["Plagued Champion"],L["Plagued Guardian"]}, 
+			scan = {
+				15954, -- Noth
+				16983, -- Plagued Champion
+				16981, -- Plagued Guardian
+			}, 
 		},
 		onactivate = {
-			tracing = {L_NothThePlaguebringer,},
+			tracing = {15954}, -- Noth
 			tracerstart = true,
 			tracerstop = true,
 			combatstop = true,

@@ -8,16 +8,16 @@ do
 		name = L["Freya"], 
 		triggers = {
 			scan = {
-				L["Freya"], 
-				L["Snaplasher"],
-				L["Storm Lasher"],
-				L["Ancient Water Spirit"],
-				L["Ancient Conservator"],
-				L["Detonating Lasher"],
+				32906, -- Freya
+				32916, -- Snaplasher
+				32919, -- Storm Lasher
+				33202, -- Ancient Water Spirit
+				33203, -- Ancient Conservator
+				32918, -- Detonating Lasher
 			}
 		},
 		onactivate = {
-			tracing = {L["Freya"]},
+			tracing = {32906}, -- Freya
 			tracerstart = true,
 			tracerstop = true,
 			combatstop = true,
@@ -64,13 +64,14 @@ do
 				color1 = "BLUE",
 				color2 = "WHITE",
 				sound = "ALERT1",
+				flashscreen = true,
 			},
 			naturesfuryproximitywarn = {
 				varname = format(L["%s Proximity Warning"],SN[62589]),
 				text = format("%s: #5#! %s!",L["Fury"],L["MOVE AWAY"]),
 				type = "simple",
 				time = 2,
-				color1 = "YELLOW",
+				color1 = "BLACK",
 				sound = "ALERT1",
 			},
 			gripwarn = {
@@ -99,6 +100,7 @@ do
 				color1 = "BROWN",
 				color2 = "ORANGE",
 				sound = "ALERT5",
+				flashscreen = true,
 			},
 			groundtremorcd = {
 				varname = format(L["%s Cooldown"],SN[62437]),
@@ -116,8 +118,9 @@ do
 				text = format("%s: %s! %s!",SN[36514],L["YOU"],L["MOVE"]),
 				time = 2,
 				throttle = 3,
-				color1 = "BLACK",
+				color1 = "YELLOW",
 				sound = "ALERT3",
+				flashscreen = true,
 			},
 		},
 		arrows = {
@@ -140,7 +143,7 @@ do
 					-- Ancient Conservator
 					{
 						{expect = {"#1#","find",L["^Eonar, your servant"]}},
-						{tracing = {L["Freya"],L["Ancient Conservator"]}},
+						{tracing = {32906,33203}}, -- Freya, Ancient Conservator
 						{quash = "spawncd"},
 						{alert = "spawncd"},
 					},
@@ -153,7 +156,7 @@ do
 					-- Elementals
 					{
 						{expect = {"#1#","find",L["^Children, assist"]}},
-						{tracing = {L["Freya"],L["Ancient Water Spirit"], L["Storm Lasher"], L["Snaplasher"]}},
+						{tracing = {32906,33202,32919,32916}}, -- Freya, Ancient Water Spirit, Storm Lasher, Snap Lasher
 						{quash = "spawncd"},
 						{alert = "spawncd"},
 					},	

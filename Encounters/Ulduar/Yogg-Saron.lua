@@ -8,17 +8,17 @@ do
 		triggers = {
 			yell = L["^The time to strike at the head of the beast"],
 			scan = {
-				L["Yogg-Saron"],
-				L["Sara"],
-				L["Crusher Tentacle"],
-				L["Corruptor Tentacle"],
-				L["Constrictor Tentacle"],
-				L["Guardian of Yogg-Saron"],
-				L["Brain of Yogg-Saron"],
+				33134, -- Sara
+				33288, -- Yogg-Saron
+				33890, -- Brain of Yogg-Saron
+				33966, -- Crusher Tentacle
+				33985, -- Corruptor Tentacle
+				33983, -- Constrictor Tentacle
+				33136, -- Guardian of Yogg-Saron
 			},
 		},
 		onactivate = {
-			tracing = {"Sara"},
+			tracing = {33134}, -- Sara
 			combatstop = true,
 		},
 		userdata = {
@@ -34,24 +34,15 @@ do
 			},
 		},
 		alerts = {
-			lunaticgazewarn = {
-				varname = format(L["%s Cast"],SN[64163]),
-				type = "centerpopup",
-				text = format("%s! %s!",SN[64163],L["LOOK AWAY"]),
-				time = 4,
-				color1 = "PURPLE",
-				sound = "ALERT1",
-			},
-			lunaticgazecd = {
-				varname = format(L["%s Cooldown"],SN[64163]),
+			enragecd = {
+				varname = L["Enrage"],
 				type = "dropdown",
-				text = format(L["%s Cooldown"],SN[64163]),
-				time = 11,
-				flashtime = 5,
-				color1 = "GREEN",
-				color2 = "YELLOW",
-				sound = "ALERT2",
+				text = L["Enrage"],
+				time = 900,
+				flashtime = 10,
+				color1 = "RED",
 			},
+			-- Phase 2
 			brainlinkdur = {
 				varname = format(L["%s on self"],SN[63802]),
 				type = "centerpopup",
@@ -60,14 +51,7 @@ do
 				flashtime = 30,
 				color1 = "BLUE",
 				sound = "ALERT3",
-			},
-			enragecd = {
-				varname = L["Enrage"],
-				type = "dropdown",
-				text = L["Enrage"],
-				time = 900,
-				flashtime = 10,
-				color1 = "RED",
+				flashscreen = true,
 			},
 			portalcd = {
 				varname = format(L["%s Cooldown"],L["Portals"]),
@@ -112,16 +96,7 @@ do
 				time = 3,
 				sound = "ALERT5",
 				color1 = "GREEN",
-			},
-			empoweringshadowscd = {
-				varname = format(L["%s Timer"],SN[64486]),
-				type = "dropdown",
-				text = format(L["Next %s"],SN[64486]),
-				time = 45, 
-				flashtime = 5,
-				sound = "ALERT8",
-				color1 = "INDIGO",
-				color2 = "RED",
+				flashscreen = true,
 			},
 			crushertentaclespawn = {
 				varname = format(L["%s Spawns"],L["Crusher Tentacle"]),
@@ -131,6 +106,17 @@ do
 				flashtime = 7,
 				color1 = "DCYAN",
 				color2 = "INDIGO",
+			},
+			-- Phase 3
+			empoweringshadowscd = {
+				varname = format(L["%s Timer"],SN[64486]),
+				type = "dropdown",
+				text = format(L["Next %s"],SN[64486]),
+				time = 45, 
+				flashtime = 5,
+				sound = "ALERT8",
+				color1 = "INDIGO",
+				color2 = "RED",
 			},
 			deafeningcd = {
 				varname = format(L["%s Cooldown"],SN[64189]),
@@ -145,8 +131,27 @@ do
 				type = "centerpopup",
 				text = format(L["%s Cast"],SN[64189]),
 				time = 2.3,
-				color1 = "GREEN",
+				color1 = "ORANGE",
 				sound = "ALERT5",
+			},
+			lunaticgazewarn = {
+				varname = format(L["%s Cast"],SN[64163]),
+				type = "centerpopup",
+				text = format("%s! %s!",SN[64163],L["LOOK AWAY"]),
+				time = 4,
+				color1 = "PURPLE",
+				sound = "ALERT1",
+				flashscreen = true,
+			},
+			lunaticgazecd = {
+				varname = format(L["%s Cooldown"],SN[64163]),
+				type = "dropdown",
+				text = format(L["%s Cooldown"],SN[64163]),
+				time = 11,
+				flashtime = 5,
+				color1 = "GREEN",
+				color2 = "YELLOW",
+				sound = "ALERT2",
 			},
 		},
 		arrows = {
@@ -200,7 +205,7 @@ do
 					-- Phase 2
 					{
 						{expect = {"#1#","find",L["^I am the lucid dream"]}},
-						{tracing = {L["Yogg-Saron"],L["Brain of Yogg-Saron"]}},
+						{tracing = {33288,33890}}, -- Yogg-Saron, Brain of Yogg-Saron
 						{alert = "portalcd"},
 						{alert = "crushertentaclespawn"},
 						{set = {phase = "2"}},
@@ -208,7 +213,7 @@ do
 					-- Phase 3
 					{
 						{expect = {"#1#","find",L["^Look upon the true face"]}},
-						{tracing = {L["Yogg-Saron"]}},
+						{tracing = {33288}}, -- Yogg-Saron
 						{quash = "crushertentaclespawn"},
 						{quash = "inducewarn"},
 						{quash = "portalcd"},
@@ -248,7 +253,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellid = 64126,
+				spellid = {64126,64125},
 				execute = {
 					{
 						{expect = {"#4#","~=","&playerguid&"}},

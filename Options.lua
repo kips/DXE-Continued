@@ -1,5 +1,5 @@
 local addon = DXE
-local version = tonumber(("$Rev$"):sub(7, -3))
+local version = tonumber(("$Rev$"):match("%d+"))
 addon.version = version > addon.version and version or addon.version
 local L = addon.L
 
@@ -55,14 +55,18 @@ end
 
 -- Should be done in OnInitialize
 function addon:AddOptionArgsItems(module,func)
+	--@debug@
 	assert(type(module) == "table")
 	assert(type(func) == "string")
 	assert(type(module[func]) == "function")
+	--@end-debug@
 	OptionArgs[module] = func
 end
 
 function addon:RemoveOptionArgsItems(module)
+	--@debug@
 	assert(type(module) == "table")
+	--@end-debug@
 	local func = OptionsArgs[module]
 	if func then module[func] = nil end
 	OptionsArgs[module] = nil
@@ -70,9 +74,11 @@ end
 
 -- Should be done in OnInitializer
 function addon:AddModuleOptionInitializer(module,func)
+	--@debug@
 	assert(type(module) == "table")
 	assert(type(func) == "string")
 	assert(type(module[func]) == "function")
+	--@end-debug@
 	OptionInitializers[module] = func
 end
 
@@ -339,11 +345,27 @@ local Items = {
 				values = "GetSounds",
 				dialogControl = "LSM30_Sound",
 			},
+			flashscreen = {
+				type = "toggle",
+				name = L["Flash screen"],
+				order = 400,
+			},
 			test = {
 				type = "execute",
 				name = L["Test"],
-				order = 400,
+				order = 500,
 				func = "TestAlert",
+			},
+			reset = {
+				type = "execute",
+				name = L["Reset"],
+				order = 600,
+				func = function(info)
+					local key,var = info[3],info[5]
+					local defaults = addon.defaults.profile.Encounters[key][var]
+					local vardb = pfl.Encounters[key][var]
+					for k,v in pairs(defaults) do vardb[k] = v end
+				end,
 			},
 		},
 		raidicons = {
@@ -433,11 +455,11 @@ do
 		local stgs = pfl.Encounters[key][var]
 
 		if info.type == "dropdown" then
-			addon.Alerts:Dropdown(info.var,info.varname,10,5,stgs.sound,stgs.color1,stgs.color2)
+			addon.Alerts:Dropdown(info.var,info.varname,10,5,stgs.sound,stgs.color1,stgs.color2,stgs.flashscreen)
 		elseif info.type == "centerpopup" then
-			addon.Alerts:CenterPopup(name,info.varname,10,5,stgs.sound,stgs.color1,stgs.color2)
+			addon.Alerts:CenterPopup(name,info.varname,10,5,stgs.sound,stgs.color1,stgs.color2,stgs.flashscreen)
 		elseif info.type == "simple" then
-			addon.Alerts:Simple(info.varname,5,stgs.sound,stgs.color1)
+			addon.Alerts:Simple(info.varname,5,stgs.sound,stgs.color1,stgs.flashscreen)
 		end
 	end
 end
@@ -447,6 +469,7 @@ local SignificantKeys = {
 		color1 = "Clear",
 		color2 = "Off",
 		sound = "None",
+		flashscreen = false,
 	},
 	raidicons = {
 		icon = 8,
@@ -469,7 +492,7 @@ end
 
 local outputInfos = {
 	alerts = { L = L["Alerts"], order = 100, defaultEnabled = true },
-	raidicons = { L = L["Raid Icons"], order = 200, defaultEnabled = false},
+	raidicons = { L = L["Raid Icons"], order = 200, defaultEnabled = true},
 	arrows = { L = L["Arrows"], order = 300, defaultEnabled = true },
 }
 
@@ -500,8 +523,6 @@ function addon:AddEncounterOptions(data)
 		local encArgs = catArgs[data.key].args
 		-- Version header
 		encArgs.version = Items.VersionHeader
-
-		-- TODO: Find some way to make less tables
 
 		-- Add output options
 		for outputType,outputInfo in pairs(outputInfos) do

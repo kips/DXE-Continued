@@ -8,13 +8,16 @@ do
 		name = L["Auriaya"], 
 		triggers = {
 			scan = {
-				L["Auriaya"],
-				L["Feral Defender"],
-				L["Sanctum Sentry"]
+				33515, -- Auriaya
+				34035, -- Feral Defender
+				34014, -- Sanctum Sentry
 			}, 
 		},
 		onactivate = {
-			tracing = {L["Auriaya"],L["Feral Defender"]},
+			tracing = {
+				33515, -- Auriaya
+				34035, -- Feral Defender
+			},
 			tracerstart = true,
 			tracerstop = true,
 			combatstop = true,
@@ -50,10 +53,10 @@ do
 				sound = "ALERT1",
 			},
 			sentinelwarn = {
-				varname = format(L["%s Warning"],SN[64389]),
-				type = "simple",
-				text = format(L["%s Casted"],SN[64389]).."!",
-				time = 1.5,
+				varname = format(L["%s Cast"],SN[64389]),
+				type = "centerpopup",
+				text = format(L["%s Cast"],SN[64389]).."!",
+				time = 2,
 				color1 = "BLUE",
 				sound = "ALERT2",
 			},
@@ -135,6 +138,17 @@ do
 				execute = {
 					{
 						{alert = "sentinelwarn"},
+					},
+				},
+			},
+			-- Sentinel Blast Interruption
+			{
+				type = "combatevent",
+				eventtype = "SPELL_INTERRUPT",
+				execute = {
+					{
+						{expect = {"&npcid|#4#&","==","33515"}}, -- Auriaya
+						{quash = "sentinelwarn"},
 					},
 				},
 			},

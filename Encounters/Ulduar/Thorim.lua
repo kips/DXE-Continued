@@ -7,18 +7,16 @@ do
 		name = L["Thorim"], 
 		triggers = {
 			scan = {
-				L["Thorim"],
-				L["Jormungar Behemoth"],
-				L["Runic Colossus"],
-				L["Ancient Rune Giant"],
-				L["Iron Ring Guard"],
-				L["Dark Rune Thunderer"],
-				L["Dark Rune Commoner"],
+				32865, -- Thorim,
+				32882, -- Jormungar Behemoth,
+				32872, -- Runic Colossus,
+				32873, -- Ancient Rune Giant,
+				32874, -- Iron Ring Guard,
 			},
 			yell = L["^Interlopers! You mortals who"],
 		},
 		onactivate = {
-			tracing = {L["Runic Colossus"],L["Ancient Rune Giant"]},
+			tracing = {32872,32873}, -- Runic Colossus, Ancient Rune Giant
 			combatstop = true,
 		},
 		userdata = {
@@ -115,7 +113,7 @@ do
 						{quash = "hardmodecd"},
 						{quash = "enrage2cd"},
 						{canceltimer = "hardmodefailed"},
-						{tracing = {"Thorim"}},
+						{tracing = {32865}}, -- Thorim
 						{alert = "chargecd"},
 						{set = {chargetime = 15}},
 					},

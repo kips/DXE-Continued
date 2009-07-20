@@ -7,10 +7,10 @@ do
 		zone = L["Naxxramas"],
 		name = L_Gluth,
 		triggers = {
-			scan = L_Gluth,
+			scan = 15932, -- Gluth
 		},
 		onactivate = {
-			tracing = {L_Gluth},
+			tracing = {15932},
 			tracerstart = true,
 			tracerstop = true,
 			combatstop = true,

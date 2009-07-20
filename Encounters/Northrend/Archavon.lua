@@ -7,10 +7,10 @@ do
 		category = L["Northrend"],
 		name = L["Archavon the Stone Watcher"],
 		triggers = {
-			scan = L["Archavon the Stone Watcher"],
+			scan = 31125, -- Archavon
 		},
 		onactivate = {
-			tracing = {L["Archavon the Stone Watcher"]},
+			tracing = {31125}, -- Archavon
 			tracerstart = true,
 			tracerstop = true,
 			combatstop = true,
@@ -53,6 +53,7 @@ do
 				color1 = "YELLOW",
 				text = format("%s: %s! %s!",SN[58695],L["YOU"],L["MOVE"]),
 				sound = "ALERT3",
+				flashscreen = true,
 			},
 			shardswarnother = {
 				varname = format(L["%s Cast"],SN[58695]),
@@ -121,6 +122,7 @@ do
 					},
 				},
 			},
+			-- Charge
 			{
 				type = "event",
 				event = "CHAT_MSG_MONSTER_EMOTE",

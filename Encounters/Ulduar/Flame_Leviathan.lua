@@ -6,11 +6,11 @@ do
 		zone = "Ulduar", 
 		name = L["Flame Leviathan"], 
 		triggers = {
-			scan = L["Flame Leviathan"], 
+			scan = 33113, -- Flame Leviathan
 			yell = L["^Hostile entities detected. Threat assessment protocol active"],
 		},
 		onactivate = {
-			tracing = {L["Flame Leviathan"],},
+			tracing = {33113}, -- Flame Leviathan
 			combatstop = true,
 		},
 		userdata = {},
@@ -55,6 +55,7 @@ do
 				sound = "ALERT4", 
 				color1 = "CYAN",
 				color1 = "MAGENTA",
+				flashscreen = true,
 			},
 		},
 		events = {

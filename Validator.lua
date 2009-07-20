@@ -4,7 +4,7 @@
 ---------------------------------------------
 
 local addon = DXE
-local version = tonumber(("$Rev$"):sub(7, -3))
+local version = tonumber(("$Rev$"):match("%d+"))
 addon.version = version > addon.version and version or addon.version
 
 local ipairs,pairs = ipairs,pairs
@@ -80,6 +80,7 @@ local alertBaseKeys = {
 	sound = optstring,
 	color1 = optstring,
 	color2 = optstring,
+	flashscreen = optboolean,
 }
 
 local alertTypeValues = {
@@ -221,7 +222,7 @@ local function validateTracing(tbl,errlvl,...)
 		err(": not an array with 1 <= size <= 4",errlvl,"tracing",...)
 	end
 	for k,v in ipairs(tbl) do
-		validateVal(v,isstring,errlvl,"tracing",...)
+		validateVal(v,isnumber,errlvl,"tracing",...)
 	end
 end
 
@@ -246,9 +247,10 @@ local function validateCommandLine(data,line,errlvl,...)
 		validateReplaces(data,info[1],errlvl,type,...)
 		validateReplaces(data,info[3],errlvl,type,...)
 	elseif type == "set" then
-		local var = next(info)
-		if not data.userdata or not data.userdata[var] then
-			err(": setting a non-existent userdata variable '"..var.."'",errlvl,type,...)
+		for var,value in pairs(info) do
+			if not data.userdata or not data.userdata[var] then
+				err(": setting a non-existent userdata variable '"..var.."'",errlvl,type,...)
+			end
 		end
 	elseif type == "alert" or type == "quash" then
 		if not data.alerts or not data.alerts[info] then
@@ -483,9 +485,9 @@ local function validate(data,errlvl,...)
 		if k == "onstart" and data[k] and util.tablesize(data[k]) > 0 then
 			validateCommandBundle(data,data.onstart,errlvl,"onstart",...)
 		elseif k == "onacquired" and data[k] and util.tablesize(data[k]) > 0 then
-			for name,bundle in pairs(data[k]) do
-				validateVal(name,isstring,errlvl,name,"onacquired",...)
-				validateCommandBundle(data,bundle,errlvl,name,"onacquired",...)
+			for npcid,bundle in pairs(data[k]) do
+				validateVal(npcid,isnumber,errlvl,npcid,"onacquired",...)
+				validateCommandBundle(data,bundle,errlvl,npcid,"onacquired",...)
 			end
 		elseif k == "timers" and data.timers then
 			for name,bundle in pairs(data.timers) do

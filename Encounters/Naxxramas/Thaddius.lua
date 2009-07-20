@@ -1,20 +1,25 @@
 do
 	local L,SN = DXE.L,DXE.SN
 
-	local L_Thaddius = L["Thaddius"]
-
 	local data = {
 		version = "$Rev$",
 		key = "thaddius", 
 		zone = L["Naxxramas"], 
-		name = L_Thaddius, 
-		title = L_Thaddius, 
+		name = L["Thaddius"], 
 		triggers = {
-			scan = {L_Thaddius,L["Stalagg"],L["Feugen"]},
+			scan = {
+				15928, -- Thaddius
+				15929, -- Stalagg
+				15930, -- Feugen
+			},
 			yell = {L["Stalagg crush you!"],L["Feed you to master!"]},
 		},
 		onactivate = {
-			tracing = {L_Thaddius,L["Stalagg"],L["Feugen"]},
+			tracing = {
+				15928, -- Thaddius
+				15929, -- Stalagg
+				15930, -- Feugen
+			},
 			tracerstart = true,
 			tracerstop = true,
 			combatstop = true,
@@ -23,13 +28,13 @@ do
 			dead = 0,
 		},
 		onacquired = {
-			[L_Thaddius] = {
+			[15928] = { -- Thaddius
 				{
 					{resettimer = true},
 					{alert = "enragecd"},
 					{quash = "tankthrowcd"},
 					{canceltimer = "tankthrow"},
-					{tracing = {L_Thaddius}},
+					{tracing = {15928}}, -- Thaddius
 				},
 			},
 		},
@@ -66,6 +71,7 @@ do
 				flashtime = 3, 
 				sound = "ALERT1", 
 				color1 = "BLUE", 
+				flashscreen = true,
 			},
 		},
 		timers = {
@@ -99,7 +105,7 @@ do
 						{expect = {"<dead>",">=","2"}},
 						{quash = "tankthrowcd"},
 						{canceltimer = "tankthrow"},
-						{tracing = {L_Thaddius}},
+						{tracing = {15928}}, -- Thaddius
 					},
 				},
 			},

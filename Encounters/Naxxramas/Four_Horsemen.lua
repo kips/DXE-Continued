@@ -7,10 +7,20 @@ do
 		zone = L["Naxxramas"], 
 		name = L["The Four Horsemen"],
 		triggers = {
-			scan = {L["Thane Korth'azz"],L["Baron Rivendare"],L["Lady Blaumeux"],L["Sir Zeliek"]},
+			scan = {
+				16064, -- Thane Korth'azz
+				30549, -- Baron Rivendare
+				16065, -- Lady Blaumeux
+				16063, -- Sir Zeliek
+			},
 		},
 		onactivate = {
-			tracing = {L["Thane Korth'azz"],L["Baron Rivendare"],L["Lady Blaumeux"],L["Sir Zeliek"]},
+			tracing = {
+				16064, -- Thane Korth'azz
+				30549, -- Baron Rivendare
+				16065, -- Lady Blaumeux
+				16063, -- Sir Zeliek
+			},
 			tracerstart = true,
 			combatstop = true,
 		},
@@ -79,15 +89,15 @@ do
 				eventtype = "UNIT_DIED",
 				execute = {
 					{
-						{expect = {"#5#","==",L["Sir Zeliek"]},},
+						{expect = {"&npcid|#4#&","==","16063"}},
 						{quash = "wrathcd"},
 					},
 					{
-						{expect = {"#5#","==",L["Thane Korth'azz"]},},
+						{expect = {"&npcid|#4#&","==","16064"}},
 						{quash = "meteorcd"},
 					},
 					{
-						{expect = {"#5#","==",L["Lady Blaumeux"]},},
+						{expect = {"&npcid|#4#&","==","16065"}},
 						{quash = "voidzonecd"},
 					},
 				},

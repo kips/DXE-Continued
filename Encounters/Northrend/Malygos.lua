@@ -7,10 +7,15 @@ do
 		category = L["Northrend"],
 		name = L["Malygos"], 
 		triggers = {
-			scan = {L["Malygos"],L["Nexus Lord"],L["Scion of Eternity"],L["Power Spark"]}, 
+			scan = {
+				28859, -- Malygos
+				30245, -- Nexus Lord
+				30249, -- Scion of Eternity
+				30084, -- Power Spark
+			}, 
 		},
 		onactivate = {
-			tracing = {L["Malygos"]},
+			tracing = {28859}, -- Malygos
 			tracerstart = true,
 			tracerstop = true,
 			combatstop = true,
@@ -59,6 +64,7 @@ do
 				time = 1.5, 
 				sound = "ALERT5", 
 				color1 = "TURQUOISE",
+				flashscreen = true,
 			},
 			deepbreath = {
 				varname = format(L["%s Cooldown"],L["Deep Breath"]), 

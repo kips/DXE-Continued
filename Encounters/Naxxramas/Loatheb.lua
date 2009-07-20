@@ -1,18 +1,16 @@
 do
 	local L,SN = DXE.L,DXE.SN
 
-	local L_Loatheb = L["Loatheb"]
-
 	local data = {
 		version = "$Rev$",
 		key = "loatheb", 
 		zone = L["Naxxramas"], 
-		name = L_Loatheb, 
+		name = L["Loatheb"], 
 		triggers = {
-			scan = L_Loatheb, 
+			scan = 16011, -- Loatheb
 		},
 		onactivate = {
-			tracing = {L_Loatheb,},
+			tracing = {16011}, -- Loatheb
 			tracerstart = true,
 			tracerstop = true,
 			combatstop = true,

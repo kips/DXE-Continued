@@ -6,10 +6,18 @@ do
 		zone = "Ulduar", 
 		name = L["The Iron Council"], 
 		triggers = {
-			scan = {L["Steelbreaker"], L["Runemaster Molgeim"], L["Stormcaller Brundir"],},
+			scan = {
+				32867, -- Steelbreaker
+				32927, -- Runemaster Molgeim
+				32857, -- Stormcaller Brundir
+			},
 		},
 		onactivate = {
-			tracing = {L["Steelbreaker"], L["Runemaster Molgeim"], L["Stormcaller Brundir"],},
+			tracing = {
+				32867, -- Steelbreaker
+				32927, -- Runemaster Molgeim
+				32857, -- Stormcaller Brundir
+			},
 			tracerstart = true,
 			combatstop = true,
 		},
@@ -102,9 +110,10 @@ do
 			tendrilswarnself = {
 				varname = format(L["%s Target"],SN[61887]),
 				type = "simple",
-				text = format("%s: <previoustarget>",SN[61887]),
+				text = format("%s: %s",SN[61887],L["YOU!"]),
 				color1 = "YELLOW",
 				time = 1.5,
+				flashscreen = true,
 			},
 			tendrilswarnother = {
 				varname = format(L["%s Target"],SN[61887]),
@@ -132,6 +141,7 @@ do
 				color1 = "DCYAN",
 				color2 = "YELLOW",
 				sound = "ALERT6",
+				flashscreen = true,
 			},
 			overwhelmdurother = {
 				varname = format(L["%s on others"],L["Overwhelm"]),
@@ -287,20 +297,15 @@ do
 				eventtype = "UNIT_DIED",
 				execute = {
 					{
-						{expect = {"#5#","==",L["Steelbreaker"]}},
+						{expect = {"&npcid|#4#&","==","32867"}}, -- Steelbreaker
 						{quash = "fusionpunchcd"},
 						{quash = "fusionpunchcast"},
 					},
 					{
-						{expect = {"#5#","==",L["Stormcaller Brundir"]}},
+						{expect = {"&npcid|#4#&","==","32857"}}, -- Stormcaller Brundir
 						{quash = "overloadcd"},
 						{quash = "overloadwarn"},
 					},
-					--[[
-					{
-						{expect = {"#5#","==",L["Runemaster Molgeim"]}},
-					},
-					]]
 				},
 			},
 		},

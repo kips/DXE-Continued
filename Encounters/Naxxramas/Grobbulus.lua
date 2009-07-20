@@ -9,10 +9,10 @@ do
 		zone = L["Naxxramas"],
 		name = L_Grobbulus,
 		triggers = {
-			scan = L_Grobbulus,
+			scan = 15931, -- Grobbulus
 		},
 		onactivate = {
-			tracing = {L_Grobbulus,},
+			tracing = {15931},
 			tracerstart = true,
 			tracerstop = true,
 			combatstop = true,
@@ -41,6 +41,7 @@ do
 				sound = "ALERT1",
 				color1 = "RED",
 				color2 = "MAGENTA",
+				flashscreen = true,
 			},
 			injectionwarnother = {
 				varname = format(L["%s on others"],L["Injection"]),

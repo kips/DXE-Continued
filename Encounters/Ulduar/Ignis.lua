@@ -7,10 +7,10 @@ do
 		zone = L["Ulduar"], 
 		name = L["Ignis the Furnace Master"], 
 		triggers = {
-			scan = L["Ignis the Furnace Master"], 
+			scan = 33118, -- Ignis
 		},
 		onactivate = {
-			tracing = {L["Ignis the Furnace Master"],},
+			tracing = {33118}, -- Ignis
 			tracerstart = true,
 			tracerstop = true,
 			combatstop = true,
@@ -33,6 +33,7 @@ do
 				time = 2.7,
 				color1 = "RED",
 				sound = "ALERT3",
+				flashscreen = true,
 			},
 			flamejetscd = {
 				varname = format(L["%s Cooldown"],SN[62680]),
@@ -51,6 +52,7 @@ do
 				time = 1.5,
 				color1 = "MAGENTA",
 				sound = "ALERT5",
+				flashscreen = true,
 			},
 			scorchcd = {
 				varname = format(L["%s Cooldown"],SN[62546]),

@@ -1,25 +1,26 @@
 do
 	local L,SN = DXE.L,DXE.SN
 
-	local L_KelThuzad = L["Kel'Thuzad"]
-
 	local data = {
 		version = "$Rev$",
 		key = "kelthuzad", 
 		zone = L["Naxxramas"], 
-		name = L_KelThuzad, 
+		name = L["Kel'Thuzad"], 
 		triggers = {
 			yell = "^Minions, servants, soldiers of the cold dark",
 			scan = {
-				L["Kel'Thuzad"],
-				L["Guardian of Icecrown"],
-				L["Soldier of the Frozen Wastes"], 
-				L["Unstoppable Abomination"], 
-				L["Soul Weaver"],
+				15990, -- Kel'Thuzad
+				16441, -- Guardian of Icecrown
+				16427, -- Soldier of the Frozen Wastes
+				23561, -- Soldier of the Frozen Wastes
+				16428, -- Unstoppable Abomination
+				23562, -- Unstoppable Abomination
+				23563, -- Soul Weaver
+				16429, -- Soul Weaver
 			},
 		},
 		onactivate = {
-			tracing = {L["Kel'Thuzad"]},
+			tracing = {15990}, -- Kel'Thuzad
 			combatstop = true,
 		},
 		userdata = {},
@@ -52,12 +53,13 @@ do
 				text = format("%s: %s!",SN[29870],L["YOU"]),
 				time = 5, 
 				sound = "ALERT3", 
-				color1 = "WHITE", 
+				color1 = "WHITE",
+				flashscreen = true,
 			},
 			ktarrives = {
-				varname = format(L["%s Arrival"],L_KelThuzad),
+				varname = format(L["%s Arrival"],L["Kel'Thuzad"]),
 				type = "dropdown", 
-				text = format(L["%s Arrives"],L_KelThuzad),
+				text = format(L["%s Arrives"],L["Kel'Thuzad"]),
 				time = 225, 
 				color1 = "RED",
 				flashtime = 5, 

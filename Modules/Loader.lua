@@ -1,5 +1,5 @@
 local addon = DXE
-local version = tonumber(("$Rev$"):sub(7, -3))
+local version = tonumber(("$Rev$"):match("%d+"))
 addon.version = version > addon.version and version or addon.version
 local L = addon.L
 
@@ -27,7 +27,8 @@ end
 function module:OnInitialize()
 	for i=1, GetNumAddOns() do
 		local name,_,_,enabled,loadable = GetAddOnInfo(i)
-		if enabled and loadable and not IsAddOnLoaded(i) then
+		--if enabled and loadable and not IsAddOnLoaded(i) then
+		if loadable and not IsAddOnLoaded(i) then
 			local zonedata = GetAddOnMetadata(i,"X-DXE-Zone")
 			if zonedata then
 				local catdata = GetAddOnMetadata(i,"X-DXE-Category")
