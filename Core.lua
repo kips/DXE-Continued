@@ -186,7 +186,7 @@ end
 
 function addon:DisableAllModules()
 	for name in self:IterateModules() do
-		self:DisableModule(name)
+		self:DisableModule(name) 
 	end
 end
 
