@@ -110,7 +110,7 @@ do
 			tendrilswarnself = {
 				varname = format(L["%s Target"],SN[61887]),
 				type = "simple",
-				text = format("%s: %s",SN[61887],L["YOU!"]),
+				text = format("%s: %s",SN[61887],L["YOU"]).."!",
 				color1 = "YELLOW",
 				time = 1.5,
 				flashscreen = true,
