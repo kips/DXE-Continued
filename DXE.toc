@@ -17,7 +17,7 @@ Widgets.xml
 # Main files
 Core.lua
 Constants.lua
-HOT.lua
+Tracer.lua
 Window.lua
 Modules.xml
 Options.lua

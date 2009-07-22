@@ -66,6 +66,7 @@ do
 				sound = "ALERT1",
 				color1 = "YELLOW",
 				color2 = "RED",
+				flashscreen = true,
 			},
 			cosmicsmashcd = {
 				varname = format(L["%s Cooldown"],SN[62301]),
@@ -95,6 +96,7 @@ do
 				spellid = {64443,64584},
 				execute = {
 					{
+						{quash = "bigbangcd"},
 						{alert = "bigbangwarn"},
 						{alert = "bigbangcd"},
 					},
@@ -107,6 +109,7 @@ do
 				spellid = {62301,64598},
 				execute = {
 					{
+						{quash = "cosmicsmashcd"},
 						{alert = "cosmicsmashwarn"},
 						{alert = "cosmicsmashcd"},
 					}

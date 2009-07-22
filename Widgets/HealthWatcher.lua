@@ -26,12 +26,8 @@ do
 		self.frame:SetParent(nil)
 	end
 
-	local function TrackUnitName(self,name)
-		self.tracer:TrackUnitName(name)
-	end
-
-	local function TrackNPCID(self,npcid)
-		self.tracer:TrackNPCID(npcid)
+	local function Track(self,trackType,goal)
+		self.tracer:Track(trackType,goal)
 	end
 
 	local function SetInfoBundle(self,health,perc,r,g,b)
@@ -85,12 +81,8 @@ do
 		self.title:SetText("")
 	end
 
-	local function GetName(self)
-		return self.tracer.name
-	end
-
-	local function GetNPCID(self)
-		return self.tracer.npcid
+	local function GetGoal(self)
+		return self.tracer.goal
 	end
 
 	local function EnableUpdates(self)
@@ -155,23 +147,21 @@ do
 		self.TRACER_LOST = TRACER_LOST
 		self.TRACER_ACQUIRED = TRACER_ACQUIRED
 
-		self.tracer = DXE.HOT:New()
+		self.tracer = DXE.Tracer:New()
 		self.tracer:SetCallback(self,"TRACER_UPDATE")
 		self.tracer:SetCallback(self,"TRACER_LOST")
 		self.tracer:SetCallback(self,"TRACER_ACQUIRED")
 
 		self.OnAcquire = OnAcquire
 		self.OnRelease = OnRelease
-		self.TrackUnitName = TrackUnitName
-		self.TrackNPCID = TrackNPCID
+		self.Track = Track
 		self.SetInfoBundle = SetInfoBundle
 		self.EnableUpdates = EnableUpdates
 		self.OnWidthSet = OnWidthSet
 		self.IsOpen = IsOpen
 		self.Open = Open
 		self.Close = Close
-		self.GetName = GetName
-		self.GetNPCID = GetNPCID
+		self.GetGoal = GetGoal
 		self.SetTitle = SetTitle
 		self.IsTitleSet = IsTitleSet
 		

@@ -23,6 +23,7 @@ local defaults = {
 		PaneOnlyInInstance = false,
 		PaneScale = 1,
 		ShowMinimap = true,
+		AdvancedMode = false,
 		_Minimap = {},
 
 		-- NPC id -> Localized name
@@ -1260,7 +1261,7 @@ local DEAD = DEAD:upper()
 function addon:UNIT_DIED(_, _,eventtype, _, _, _, dstGUID)
 	if eventtype ~= "UNIT_DIED" then return end
 	for i,hw in ipairs(HW) do
-		if hw:IsOpen() and hw:GetNPCID() == NID[dstGUID] then
+		if hw:IsOpen() and hw:GetGoal() == NID[dstGUID] then
 			hw:SetInfoBundle(DEAD,0)
 			break
 		end
@@ -1273,19 +1274,19 @@ function addon:CreateHealthWatchers()
 	for i=1,4 do HW[i] = AceGUI:Create("DXE_HealthWatcher") end
 
 	-- Only the main one sends updates
-	HW[1]:SetCallback("HW_TRACER_UPDATE",function(self,event,uid) addon:TRACER_UPDATE(uid) end)
+	HW[1]:SetCallback("HW_TRACER_UPDATE",function(self,event,unit) addon:TRACER_UPDATE(unit) end)
 	HW[1]:EnableUpdates()
 
 	-- OnAcquired
-	local onacquired = function(self,event,uid) 
-		local npcid = self:GetNPCID()
+	local onacquired = function(self,event,unit) 
+		local npcid = self:GetGoal()
 		if not self:IsTitleSet() then
 			-- Should only enter once
-			local name = UnitName(uid)
+			local name = UnitName(unit)
 			gbl.L_NPC[npcid] = name
 			self:SetTitle(name)
 		end
-		addon.callbacks:Fire("HW_TRACER_ACQUIRED",uid,npcid) 
+		addon.callbacks:Fire("HW_TRACER_ACQUIRED",unit,npcid) 
 	end
 	for i,hw in ipairs(HW) do
 		hw:SetCallback("HW_TRACER_ACQUIRED",onacquired) 
@@ -1310,10 +1311,10 @@ function addon:SetTracing(npcids)
 	local n = 0
 	for i,npcid in ipairs(npcids) do
 		-- Prevents overwriting
-		if HW[i]:GetNPCID() ~= npcid then
+		if HW[i]:GetGoal() ~= npcid then
 			HW[i]:SetTitle(gbl.L_NPC[npcid] or "...")
 			HW[i]:SetInfoBundle("",1,0,0,1)
-			HW[i]:TrackNPCID(npcid)
+			HW[i]:Track("npcid",npcid)
 			HW[i]:Open()
 			HW[i].frame:Show()
 		end
@@ -1355,12 +1356,12 @@ do
 	local throttle = 5
 	-- The last time the encounter was auto started + throttle time
 	local last = 0
-	function addon:TRACER_UPDATE(uid)
+	function addon:TRACER_UPDATE(unit)
 		local time,running = GetTime(),self:IsRunning()
-		if self:IsTracerStart() and not running and UnitIsFriend(targetof[uid],"player") then
+		if self:IsTracerStart() and not running and UnitIsFriend(targetof[unit],"player") then
 			self:StartEncounter()
 			last = time + throttle
-		elseif (UnitIsDead(uid) or not UnitAffectingCombat(uid)) and self:IsTracerStop() and running and last < time then
+		elseif (UnitIsDead(unit) or not UnitAffectingCombat(unit)) and self:IsTracerStop() and running and last < time then
 			self:StopEncounter()
 		end
 	end
@@ -1708,7 +1709,7 @@ do
 			RefreshEncDropdown()
 			self:RefreshVersionList()
 		elseif not window then
-			window = self:CreateWindow("Version Check",220,295)--175,220)
+			window = self:CreateWindow("Version Check",220,295)
 			--@debug@
 			window:AddTitleButton("Interface\\Addons\\DXE\\Textures\\Window\\Sync.tga",
 											function() self:RequestAllVersions() end)

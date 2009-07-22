@@ -22,11 +22,8 @@ local CN = addon.CN
 
 local GetPlayerMapPosition,GetPlayerFacing = GetPlayerMapPosition,GetPlayerFacing
 local UnitIsVisible = UnitIsVisible
-local GetTime = GetTime
 local PI,PI2 = math.pi,math.pi*2
 local floor,atan = math.floor,math.atan
-
-local INTERVAL = 0.2
 
 local ARROW_FILE = "Interface\\Addons\\DXE\\Textures\\Arrow"
 local NUM_CELLS = 108

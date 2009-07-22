@@ -10,7 +10,7 @@ local db,pfl,gbl
 local EDB = addon.EDB
 
 local DEFAULT_WIDTH = 890
-local DEFAULT_HEIGHT = 550
+local DEFAULT_HEIGHT = 575
 
 -- Usage: t[<module>] = <func>
 -- func is passed a table the module can add option groups to
@@ -117,7 +117,22 @@ function addon:InitializeOptions()
 				order = 200,
 				childGroups = "tab",
 				handler = ConfigHandler,
-				args = {},
+				args = {
+					simple_mode = {
+						type = "execute",
+						name = "Simple",
+						desc = L["This mode only allows you to enable or disable"],
+						order = 1,
+						func = "SimpleMode",
+					},
+					advanced_mode = {
+						type = "execute",
+						name = "Advanced",
+						desc = L["This mode has customization options"],
+						order = 2,
+						func = "AdvancedMode",
+					},
+				},
 			},
 		},
 	}
@@ -374,14 +389,14 @@ local Items = {
 				name = L["Icon"],
 				order = 100,
 				values = {
-					L["Star"],
-					L["Circle"],
-					L["Diamond"],
-					L["Triangle"],
-					L["Moon"],
-					L["Square"],
-					L["Cross"],
-					L["Skull"],
+					"1. "..L["Star"],
+					"2. "..L["Circle"],
+					"3. "..L["Diamond"],
+					"4. "..L["Triangle"],
+					"5. "..L["Moon"],
+					"6. "..L["Square"],
+					"7. "..L["Cross"],
+					"8. "..L["Skull"],
 				},
 			},
 		},
@@ -464,37 +479,163 @@ do
 	end
 end
 
-local SignificantKeys = {
-	alerts = {
-		color1 = "Clear",
-		color2 = "Off",
-		sound = "None",
-		flashscreen = false,
-	},
-	raidicons = {
-		icon = 8,
-	},
-	arrows = {
-		sound = "None",
-	},
-}
-
 local Filters = {
 	sound = function(str)
-		return "DXE "..str
+		if str:find("^ALERT%d+$") then
+			return "DXE "..str
+		else return str end
 	end
 }
-
 
 local function formatkey(str)
 	return str:gsub(" ",""):lower()
 end
 
+
 local outputInfos = {
-	alerts = { L = L["Alerts"], order = 100, defaultEnabled = true },
-	raidicons = { L = L["Raid Icons"], order = 200, defaultEnabled = true},
-	arrows = { L = L["Arrows"], order = 300, defaultEnabled = true },
+	alerts = { 
+		L = L["Alerts"], 
+		order = 100, 
+		defaultEnabled = true ,
+		defaults = {
+			color1 = "Clear",
+			color2 = "Off",
+			sound = "None",
+			flashscreen = false,
+		},
+	},
+	raidicons = { 
+		L = L["Raid Icons"], 
+		order = 200, 
+		defaultEnabled = true,
+		defaults = {
+			icon = 8,
+		},
+	},
+	arrows = { 
+		L = L["Arrows"], 
+		order = 300, 
+		defaultEnabled = true,
+		defaults = {
+			sound = "None",
+		},
+	},
 }
+
+function ConfigHandler:GetSimpleEnable(info)
+	return pfl.Encounters[info[#info-2]][info[#info]].enabled
+end
+
+function ConfigHandler:SetSimpleEnable(info,v)
+	pfl.Encounters[info[#info-2]][info[#info]].enabled = v
+end
+
+-- Can only enable/disable outputs
+local function InjectSimpleOptions(data,encArgs)
+	for outputType,outputInfo in pairs(outputInfos) do
+		local outputData = data[outputType]
+		if outputData then
+			encArgs[outputType] = encArgs[outputType] or {
+				type = "group",
+				name = outputInfo.L,
+				order = order,
+				args = {},
+			}
+			encArgs[outputType].inline = true
+			encArgs[outputType].childGroups = nil
+
+			local outputArgs = encArgs[outputType].args
+
+			for var,info in pairs(outputData) do
+				outputArgs[var] = outputArgs[var] or {
+					name = info.varname,
+					width = "full",
+				}
+				outputArgs[var].type = "toggle"
+				outputArgs[var].args = nil
+				outputArgs[var].set = "SetSimpleEnable"
+				outputArgs[var].get = "GetSimpleEnable"
+			end
+		end
+	end
+end
+
+local function InjectAdvancedOptions(data,encArgs)
+	-- Add output options
+	for outputType,outputInfo in pairs(outputInfos) do
+		local outputData = data[outputType]
+		if outputData then
+			encArgs[outputType] = encArgs[outputType] or {
+				type = "group",
+				name = outputInfo.L,
+				order = order,
+				args = {},
+			}
+			encArgs[outputType].inline = nil
+			encArgs[outputType].childGroups = "select"
+
+			local outputArgs = encArgs[outputType].args
+			for var,info in pairs(outputData) do
+				outputArgs[var] = outputArgs[var] or {
+					name = info.varname,
+					width = "full",
+				}
+
+				outputArgs[var].type = "group"
+				outputArgs[var].args = {}
+				outputArgs[var].get = nil
+				outputArgs[var].set = nil
+
+				local itemArgs = outputArgs[var].args
+				itemArgs.enabled = Items.EnabledToggle
+				if Items.Output[outputType] then
+					itemArgs.settings = {
+						type = "group",
+						name = L["Settings"],
+						order = 1,
+						inline = true,
+						disabled = "DisableSettings",
+						get = "GetOutput",
+						set = "SetOutput",
+						args = {}
+					}
+
+					local settingsArgs = itemArgs.settings.args
+					for k,item in pairs(Items.Output[outputType]) do
+						settingsArgs[k] = item
+					end
+				end
+			end
+		end
+	end
+end
+
+do
+	local function SwapMode()
+		for catkey in pairs(encsArgs) do
+			if encsArgs[catkey].type == "group" then
+				local catArgs = encsArgs[catkey].args
+				for key in pairs(catArgs) do
+					local data = EDB[key]
+					local encArgs = catArgs[key].args
+					if gbl.AdvancedMode then
+						InjectAdvancedOptions(data,encArgs)
+					else
+						InjectSimpleOptions(data,encArgs)
+					end
+				end
+			end
+		end
+	end
+
+	function ConfigHandler:SimpleMode()
+		if gbl.AdvancedMode then gbl.AdvancedMode = false; SwapMode() end
+	end
+
+	function ConfigHandler:AdvancedMode()
+		if not gbl.AdvancedMode then gbl.AdvancedMode = true; SwapMode() end
+	end
+end
 
 function addon:AddEncounterOptions(data)
 	if self.options then
@@ -513,7 +654,6 @@ function addon:AddEncounterOptions(data)
 			-- Add the encounter group
 			catArgs[data.key] = {
 				type = "group",
-				--name = data.name,
 				name = data.name,
 				childGroups = "tab",
 				args = {},
@@ -521,51 +661,10 @@ function addon:AddEncounterOptions(data)
 		end
 		-- Set pointer to the correct encounter group
 		local encArgs = catArgs[data.key].args
-		-- Version header
-		encArgs.version = Items.VersionHeader
-
-		-- Add output options
-		for outputType,outputInfo in pairs(outputInfos) do
-			local outputData = data[outputType]
-			if outputData then
-				encArgs[outputType] = {
-					type = "group",
-					name = outputInfo.L,
-					order = order,
-					childGroups = "select",
-					args = {},
-				}
-				local outputArgs = encArgs[outputType].args
-				for var,info in pairs(outputData) do
-					outputArgs[var] = {
-						name = info.varname,
-						type = "group",
-						width = "full",
-						args = {},
-					}
-
-					local itemArgs = outputArgs[var].args
-					itemArgs.enabled = Items.EnabledToggle
-					if Items.Output[outputType] then
-						-- Items.SettingsGroup
-						itemArgs.settings = {
-							type = "group",
-							name = L["Settings"],
-							order = 1,
-							inline = true,
-							disabled = "DisableSettings",
-							get = "GetOutput",
-							set = "SetOutput",
-							args = {}
-						}
-
-						local settingsArgs = itemArgs.settings.args
-						for k,item in pairs(Items.Output[outputType]) do
-							settingsArgs[k] = item
-						end
-					end
-				end
-			end
+		if gbl.AdvancedMode then
+			InjectAdvancedOptions(data,encArgs)
+		else
+			InjectSimpleOptions(data,encArgs)
 		end
 	else
 		QueuedEncs[data.key] = true
@@ -612,7 +711,7 @@ function addon:AddEncounterDefaults(data)
 				-------
 
 				-- Add setting defaults
-				for k,varDefault in pairs(SignificantKeys[outputType]) do
+				for k,varDefault in pairs(outputInfos[outputType].defaults) do
 					if Filters[k] then
 						defaults[var][k] = info[k] and Filters[k](info[k]) or varDefault
 					else

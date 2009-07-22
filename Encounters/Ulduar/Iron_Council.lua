@@ -108,7 +108,7 @@ do
 				color1 = "BLUE", 
 			},
 			tendrilswarnself = {
-				varname = format(L["%s Target"],SN[61887]),
+				varname = format(L["%s on self"],SN[61887]),
 				type = "simple",
 				text = format("%s: %s",SN[61887],L["YOU"]).."!",
 				color1 = "YELLOW",
@@ -116,7 +116,7 @@ do
 				flashscreen = true,
 			},
 			tendrilswarnother = {
-				varname = format(L["%s Target"],SN[61887]),
+				varname = format(L["%s on others"],SN[61887]),
 				type = "simple",
 				text = format("%s: <previoustarget>",SN[61887]),
 				color1 = "YELLOW",

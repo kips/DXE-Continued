@@ -35,8 +35,23 @@ local wipe = table.wipe
 
 local NID = addon.NID
 local EncDB,CE,alerts,raidicons,arrows
-local CommandHandlers = {}
+-- Temp variable environment
 local userdata = {}
+
+---------------------------------------------
+-- COMMAND LINE HANDLERS
+---------------------------------------------
+local handlers = {}
+
+--@debug@
+setmetatable(handlers,{
+	__newindex = function(t,k,v)
+		assert(type(k) == "string")
+		assert(type(v) == "function")
+		rawset(t,k,v)
+	end,
+})
+--@end-debug@
 
 ---------------------------------------------
 -- TABLE POOL
@@ -269,9 +284,11 @@ do
 	end
 end
 
+--@debug@
 function module:GetRepFuncs()
 	return RepFuncs
 end
+--@end-debug@
 
 local replace_nums = tuple
 
@@ -491,7 +508,7 @@ end
 -- FUNCTIONS TABLE
 ---------------------------------------------
 
-local CommandFuncs = {
+local CommandHandlers = {
 	expect = function(info)
 		return expect(ReplaceTokens(info[1]),info[2],ReplaceTokens(info[3]))
 	end,
@@ -577,7 +594,9 @@ function module:InvokeCommands(bundle,...)
 	for _,list in ipairs(bundle) do
 		for _,line in ipairs(list) do
 			local type,info = next(line)
-			if not CommandFuncs[type](info) then break end
+			local handler = CommandHandlers[type]
+			-- Make sure handler exists in case of an unsupported command
+			if handler and not handler(info) then break end
 		end
 	end
 end
@@ -695,4 +714,3 @@ function module:OnSet(_,data)
 	-- OnAcquired
 	self:SetOnAcquired()
 end
-

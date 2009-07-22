@@ -1,3 +1,5 @@
+-- Based off RDX's alert system
+
 local addon = DXE
 local version = tonumber(("$Rev$"):match("%d+"))
 addon.version = version > addon.version and version or addon.version
@@ -179,7 +181,7 @@ end
 ---------------------------------------------
 
 do
-	local FLASH_DURATION, PERIOD,AMP,MULT
+	local FLASH_DURATION,PERIOD,AMP,MULT
 
 	local flash = CreateFrame("Frame","DXEAlertsFlash",UIParent)
 	flash:SetFrameStrata("BACKGROUND")
@@ -187,11 +189,11 @@ do
 	flash:SetAllPoints(true)
 	flash:Hide()
 	
-	local elapsed
-	local function OnUpdate(self,delta)
-		elapsed = elapsed + delta
-		if elapsed > FLASH_DURATION then self:Hide() end
-		local p = elapsed % PERIOD
+	local counter
+	local function OnUpdate(self,elapsed)
+		counter = counter + elapsed
+		if counter > FLASH_DURATION then self:Hide() end
+		local p = counter % PERIOD
 		if p > AMP then p = PERIOD - p end
 		self:SetAlpha(p * MULT)
 	end
@@ -200,12 +202,13 @@ do
 
 	function module:FlashScreen(c) 
 		c = c or Colors.BLACK
-		elapsed = 0
+		counter = 0
 		FLASH_DURATION = pfl.FlashDuration
 		PERIOD = FLASH_DURATION / pfl.FlashOscillations
 		AMP = PERIOD / 2
 		MULT = 1 / AMP
 		flash:SetBackdropColor(c.r,c.g,c.b,pfl.FlashAlpha)
+		flash:SetAlpha(0)
 		flash:Show()
 	end
 end

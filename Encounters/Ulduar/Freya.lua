@@ -82,6 +82,7 @@ do
 				color1 = "GREEN",
 				throttle = 5,
 				sound = "ALERT6",
+				flashscreen = true,
 			},
 			enragecd = {
 				varname = L["Enrage"],
