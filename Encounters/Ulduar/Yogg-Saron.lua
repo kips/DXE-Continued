@@ -42,6 +42,25 @@ do
 				flashtime = 10,
 				color1 = "RED",
 			},
+			-- Phase 1
+			fervorwarn = {
+				varname = format(L["%s on self"],SN[63138]),
+				type = "simple",
+				text = format("%s: %s!",SN[63138],L["YOU"]),
+				time = 2,
+				sound = "ALERT4",
+				color1 = "PURPLE",
+				flashscreen = true,
+			},
+			blessingwarn = {
+				varname = format(L["%s on self"],SN[63134]),
+				type = "simple",
+				text = format("%s: %s!",SN[63134],L["YOU"]),
+				time = 2,
+				sound = "ALERT8",
+				color1 = "CYAN",
+				flashscreen = true,
+			},
 			-- Phase 2
 			brainlinkdur = {
 				varname = format(L["%s on self"],SN[63802]),
@@ -85,7 +104,7 @@ do
 				varname = format(L["%s on others"],SN[64126]),
 				type = "simple",
 				text = format("%s: #5#",SN[64126]),
-				time = 3,
+				time = 4,
 				color1 = "YELLOW",
 				sound = "ALERT7",
 			},
@@ -110,13 +129,20 @@ do
 			-- Phase 3
 			empoweringshadowscd = {
 				varname = format(L["%s Timer"],SN[64486]),
-				type = "dropdown",
+				type = "centerpopup",
 				text = format(L["Next %s"],SN[64486]),
-				time = 45, 
+				time = 10, 
 				flashtime = 5,
-				sound = "ALERT8",
 				color1 = "INDIGO",
 				color2 = "RED",
+			},
+			shadowbeaconcd = {
+				varname = format(L["%s Cooldown"],SN[64465]),
+				type = "dropdown",
+				text = format(L["Next %s"],SN[64465]),
+				time = 45, 
+				flashtime = 5,
+				color1 = "BLUE",
 			},
 			deafeningcd = {
 				varname = format(L["%s Cooldown"],SN[64189]),
@@ -151,7 +177,6 @@ do
 				flashtime = 5,
 				color1 = "GREEN",
 				color2 = "YELLOW",
-				sound = "ALERT2",
 			},
 		},
 		arrows = {
@@ -174,6 +199,30 @@ do
 			}
 		},
 		events = {
+			-- Sara's Fervor
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellid = 63138,
+				execute = {
+					{
+						{expect = {"#4#","==","&playerguid&"}},
+						{alert = "fervorwarn"},
+					},
+				},
+			},
+			-- Sara's Blessing
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellid = 63134,
+				execute = {
+					{
+						{expect = {"#4#","==","&playerguid&"}},
+						{alert = "blessingwarn"},
+					},
+				},
+			},
 			-- Lunatic Gaze
 			{
 				type = "combatevent",
@@ -217,7 +266,7 @@ do
 						{quash = "crushertentaclespawn"},
 						{quash = "inducewarn"},
 						{quash = "portalcd"},
-						{alert = "empoweringshadowscd"},
+						{alert = "shadowbeaconcd"},
 						{set = {phase = "3"}},
 					},
 				},
@@ -241,11 +290,6 @@ do
 						{set = {crushertime = "&timeleft|weakeneddur|1&"}},
 						{quash = "crushertentaclespawn"},
 						{alert = "crushertentaclespawn"},
-					},
-					-- Empowering Shadows
-					{
-						{expect = {"#1#","find",L["prepares to unleash Empowering Shadows!$"]}},
-						{alert = "empoweringshadowscd"},
 					},
 				},
 			},
@@ -326,6 +370,19 @@ do
 						{quash = "deafeningcd"},
 						{alert = "deafeningcast"},
 						{alert = "deafeningcd"},
+					},
+				},
+			},
+			-- Shadow Beacon, Empowering Shadows
+			{
+				type = "combatevent",
+				eventtype = "SPELL_CAST_SUCCESS",
+				spellid = 64465,
+				execute = {
+					{
+						{quash = "shadowbeaconcd"},
+						{alert = "shadowbeaconcd"},
+						{alert = "empoweringshadowscd"},
 					},
 				},
 			},

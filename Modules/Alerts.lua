@@ -417,8 +417,9 @@ end
 local Backdrop = {bgFile="Interface\\DialogFrame\\UI-DialogBox-Background", tileSize=16, insets = {left = 2, right = 2, top = 1, bottom = 2}}
 local BackdropBorder = {edgeFile="Interface\\Tooltips\\UI-Tooltip-Border", edgeSize = 9, insets = {left = 2, right = 2, top = 3, bottom = 2}}
 
+local BarCount = 1
 local function CreateAlert()
-	local self = CreateFrame("Frame",nil,UIParent)
+	local self = CreateFrame("Frame","DXEAlertBar"..BarCount,UIParent)
 	self:SetWidth(250)
 	self:SetHeight(30)
 	self:SetBackdrop(Backdrop)
@@ -426,7 +427,6 @@ local function CreateAlert()
 	self.data = {}
 
 	local bar = CreateFrame("StatusBar",nil,self)
-	--bar:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
 	bar:SetPoint("TOPLEFT",2,-2)
 	bar:SetPoint("BOTTOMRIGHT",-2,2)
 	bar:SetMinMaxValues(0,1) 
@@ -452,6 +452,8 @@ local function CreateAlert()
 
 	addon.AceTimer:Embed(self)
 	for k,v in pairs(prototype) do self[k] = v end
+
+	BarCount = BarCount + 1
 
 	return self
 end
