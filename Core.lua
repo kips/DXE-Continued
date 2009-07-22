@@ -1362,7 +1362,7 @@ do
 			self:StartEncounter()
 			last = time + throttle
 		elseif (UnitIsDead(unit) or not UnitAffectingCombat(unit)) and self:IsTracerStop() and running and last < time then
-			self:StopEncounter()
+			self:StopEncounter() 
 		end
 	end
 end
