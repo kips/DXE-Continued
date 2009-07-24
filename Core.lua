@@ -49,7 +49,6 @@ addon:SetDefaultModuleState(false)
 addon.callbacks = LibStub("CallbackHandler-1.0"):New(addon)
 addon.defaults = defaults
 
-
 ---------------------------------------------
 -- UPVALUES
 ---------------------------------------------
