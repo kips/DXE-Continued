@@ -9,7 +9,7 @@ do
 		triggers = {
 			scan = {
 				16061, -- Razuvious
-				16803,
+				16803, -- Death Knight Understudy
 			}, 
 			yell = L["^The time for practice is over!"],
 		},

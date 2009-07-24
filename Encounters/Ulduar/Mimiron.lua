@@ -193,9 +193,9 @@ do
 				sound = "ALERT3",
 			},
 			spinupwarn = {
-				varname = format(L["%s Cast"],L["Spinning Up"]),
+				varname = format(L["%s Cast"],SN[63414]),
 				type = "centerpopup",
-				text = L["Spinning Up"].."!",
+				text = SN[63414].."!",
 				time = 4,
 				color1 = "WHITE",
 				color2 = "RED",

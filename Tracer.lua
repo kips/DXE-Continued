@@ -11,6 +11,9 @@ local UnitExists,UnitGUID = UnitExists,UnitGUID
 
 local DELAY = 0.2
 
+local ACQUIRED = 0
+local LOST = 1
+
 ----------------------------------
 -- INITIALIZATION
 ----------------------------------
@@ -25,8 +28,8 @@ local trackInfos = {
 function Tracer:New()
 	local tracer = addon.AceTimer:Embed({})
 	for k,v in pairs(prototype) do tracer[k] = v end
-	tracer.n = 0
-	tracer.callbacks = {}
+	tracer.s = LOST 			-- Status
+	tracer.callbacks = {} 	-- Events
 
 	return tracer
 end
@@ -63,15 +66,15 @@ function prototype:Fire(event)
 end
 
 function prototype:Execute()
-	local n = 0
+	local flag
 	self.first = nil
 
 	-- Raid unit tests
 	for _,proto_unit in pairs(index_to_unit) do
 		local unit = self:Test(proto_unit)
 		if unit then
-			self.first = self.first or unit
-			n = n + 1 
+			self.first,flag = unit,true
+			break
 		end
 	end
 
@@ -79,23 +82,19 @@ function prototype:Execute()
 	if not self.first then
 		local unit = self:TestFocus()
 		if unit then 
-			self.first = self.first or unit
-			n = n + 1 
+			self.first,flag = unit,true
 		end
 	end
 
-	if n > 0 then
-		if self.n == 0 then
-			self.n = n
+	if flag then
+		if self.s == LOST then
+			self.s = ACQUIRED
 			self:Fire("TRACER_ACQUIRED")
 		end
-		self.n = n
 		self:Fire("TRACER_UPDATE")
-	else
-		if self.n > 0 then
-			self.n = 0 
-			self:Fire("TRACER_LOST")
-		end
+	elseif self.s == ACQUIRED then
+		self.s = LOST
+		self:Fire("TRACER_LOST")
 	end
 end
 
@@ -131,7 +130,8 @@ function prototype:Close()
 	self.goal = nil; self.attribute = nil
 	self:CancelTimer(self.handle,true)
 	self.handle = nil
-	self.first = nil; self.n = 0; 
+	self.first = nil
+	self.s = LOST
 end
 
 function prototype:First() 

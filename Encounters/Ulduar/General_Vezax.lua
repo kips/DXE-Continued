@@ -164,6 +164,11 @@ do
 					{alert = "shadowcrashwarn"},
 					{arrow = "crasharrow"},
 				},
+				{
+					{expect = {"&tft_unitexists&","==","nil"}},
+					{set = {shadowcrashmessage = format("%s: %s!",L["Crash"],UNKNOWN:upper())}},
+					{alert = "shadowcrashwarn"},
+				},
 			},
 		},
 		events = {

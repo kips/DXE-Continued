@@ -38,3 +38,7 @@ function addon:KOLOGARNTEST()
 	self.Invoker:COMBAT_EVENT(nil,nil,"UNIT_DIED",nil,nil,nil,"0xF5300080A6000000")
 end
 
+function addon:TestArrowOnTarget()
+	addon.Arrows:AddTarget("target",10,"AWAY","MOVE","Crash","None",false)
+end
+

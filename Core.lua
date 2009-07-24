@@ -60,6 +60,7 @@ local _G,select,tostring,type,tonumber = _G,select,tostring,type,tonumber
 local GetTime,GetNumRaidMembers,GetRaidRosterInfo = GetTime,GetNumRaidMembers,GetRaidRosterInfo
 local UnitName,UnitGUID,UnitIsEnemy,UnitClass,UnitAffectingCombat,UnitHealth,UnitIsFriend,UnitIsDead = 
 		UnitName,UnitGUID,UnitIsEnemy,UnitClass,UnitAffectingCombat,UnitHealth,UnitIsFriend,UnitIsDead
+local rawget = rawget
 
 local db,gbl,pfl
 
@@ -112,6 +113,8 @@ local CN = setmetatable({}, {__index =
 		local class = select(2,UnitClass(unit))
 		if not class then return unit end
 		local name = UnitName(unit)
+		local prev = rawget(t,name)
+		if prev then return prev end
 		t[name] = class_to_color[class]..name.."|r"
 		return t[name]
 	end,

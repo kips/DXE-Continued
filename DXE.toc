@@ -18,6 +18,7 @@ Widgets.xml
 Core.lua
 Constants.lua
 Tracer.lua
+Coords.lua
 Window.lua
 Modules.xml
 Options.lua

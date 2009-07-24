@@ -357,7 +357,7 @@ local Items = {
 				type = "select",
 				name = L["Sound"],
 				order = 300,
-				values = "GetSounds",
+				values = addon.SM:HashTable("sound"),
 				dialogControl = "LSM30_Sound",
 			},
 			flashscreen = {
@@ -405,7 +405,7 @@ local Items = {
 				type = "select",
 				name = L["Sound"],
 				order = 100,
-				values = "GetSounds",
+				values = addon.SM:HashTable("sound"),
 				dialogControl = "LSM30_Sound",
 			},
 		},
@@ -431,13 +431,6 @@ do
 	end
 	colors1simple["Clear"] = L["Clear"]
 	colors2["Off"] = OFF
-
-	function ConfigHandler:GetSounds()
-		self.sounds = self.sounds or {}
-		wipe(self.sounds)
-		for _, name in pairs(addon.SM:List("sound")) do self.sounds[name] = name end
-		return self.sounds
-	end
 
 	function ConfigHandler:GetColor1(info)
 		local key,var = info[3],info[5]

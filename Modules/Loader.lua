@@ -27,7 +27,6 @@ end
 function module:OnInitialize()
 	for i=1, GetNumAddOns() do
 		local name,_,_,enabled,loadable = GetAddOnInfo(i)
-		--if enabled and loadable and not IsAddOnLoaded(i) then
 		if loadable and not IsAddOnLoaded(i) then
 			local zonedata = GetAddOnMetadata(i,"X-DXE-Zone")
 			if zonedata then

@@ -47,14 +47,6 @@ function module:RefreshAlerts()
 end
 
 function module:InitializeOptions(area)
-	local ConfigHandler = {}
-	function ConfigHandler:GetBarTextures()
-		self.bartextures = self.bartextures or {}
-		wipe(self.bartextures)
-		for _, name in pairs(SM:List("statusbar")) do self.bartextures[name] = name end
-		return self.bartextures
-	end
-
 	area.alerts_group = {
 		type = "group",
 		name = L["Alerts"],
@@ -88,8 +80,7 @@ function module:InitializeOptions(area)
 						order = 300,
 						type = "select",
 						name = L["Bar Texture"],
-						handler = ConfigHandler,
-						values = "GetBarTextures",
+						values = SM:HashTable("statusbar"),
 						set = function(info,v) pfl.BarTexture = v; self:RefreshAlerts() end,
 						dialogControl = "LSM30_Statusbar",
 					},
@@ -507,7 +498,7 @@ end
 
 -- Dropdown countdown alert
 -- This alert counts down a timer at the top of the screen
--- When a "Lead Time" is achieved, it drops to the center, announces a message, and plays a sound effect
+-- When a "Flash Time" is achieved, it drops to the center, announces a message, and plays a sound effect
 -- When it expires, it fades off the screen
 function module:Dropdown(id, text, totalTime, flashTime, sound, c1, c2, flashscreen)
 	local soundFile,c1Data,c2Data = GetMedia(sound,c1,c2)

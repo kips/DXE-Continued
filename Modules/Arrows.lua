@@ -15,12 +15,11 @@ local units = {}
 ---------------------------------------
 
 local name_to_unit = addon.Roster.name_to_unit
-local ProximityFuncs = addon:GetProximityFuncs()
 local Sounds = addon.Constants.Sounds
 local util = addon.util
 local CN = addon.CN
 
-local GetPlayerMapPosition,GetPlayerFacing = GetPlayerMapPosition,GetPlayerFacing
+local GetPlayerFacing = GetPlayerFacing
 local UnitIsVisible = UnitIsVisible
 local PI,PI2 = math.pi,math.pi*2
 local floor,atan = math.floor,math.atan
@@ -43,24 +42,19 @@ local colors = {
 
 local TRANS_TIME = 0.5
 
-local function GetColor(self)
-	if self.action == "TOWARD" then
-		local i = 4
-		if ProximityFuncs[10](self.unit) then i = 1
-		elseif ProximityFuncs[18](self.unit) then i = 2
-		elseif ProximityFuncs[28](self.unit) then i = 3 end
+local function GetColor(self,d,action)
+	if action == "TOWARD" then
+		-- Faster than if-else chain
+		local i = (d <= 10 and 1 or (d <= 20 and 2 or (d <= 30 and 3 or 4)))
 		return colors[i]
-	elseif self.action == "AWAY" then
-		local i = 1
-		if ProximityFuncs[10](self.unit) then i = 4
-		elseif ProximityFuncs[18](self.unit) then i = 3
-		elseif ProximityFuncs[28](self.unit) then i = 2 end
+	elseif action == "AWAY" then
+		local i = (d <= 10 and 4 or (d <= 20 and 3 or (d <= 30 and 2 or 1)))
 		return colors[i]
 	end
 end
 
-local function SetColor(self)
-	local color = self:GetColor()
+local function SetColor(self,d)
+	local color = self:GetColor(d,self.action)
 	if self.color == color then return end
 	-- Transition
 	self.tcolor = color
@@ -68,25 +62,14 @@ local function SetColor(self)
 end
 
 local e = 10e-5
-local function GetAngle(self)
-	if not UnitIsVisible(self.unit) then self:Destroy() return end
-	local x_0,y_0 = GetPlayerMapPosition("player")
-	local x,y
-	if self.isFixed then
-		x,y = self.fixedX,self.fixedY
-	else
-		x,y = GetPlayerMapPosition(self.unit)
-	end
-	local dx,dy = x - x_0, y - y_0
-	if dy == 0 then dy = e end -- Prevents NaN
+local function SetAngle(self,dx,dy)
+	-- Calculate
+	if dy == 0 then dy = e end -- Prevents division by 0
 	local angle_axis = dy < 0 and PI + atan(dx/dy) or atan(dx/dy)
 	local angle = (PI-(GetPlayerFacing()-angle_axis)) % PI2
 	if self.action == "AWAY" then angle = (PI + angle) % PI2 end
-	return angle
-end
 
--- Simplified from Claidhaire's TomTom
-local function SetAngle(self,angle)
+	-- Simplified from Claidhaire's TomTom
 	local cell = floor(angle / PI2 * NUM_CELLS + 0.5) % NUM_CELLS
 	local col = (cell % NUM_COLUMNS) * CELL_WIDTH_PERC
 	local row = floor(cell / NUM_COLUMNS) * CELL_HEIGHT_PERC
@@ -95,7 +78,7 @@ local function SetAngle(self,angle)
 end
 
 local function SetFixed(self)
-	self.fixedX,self.fixedY = GetPlayerMapPosition(self.unit)
+	self.fx,self.fy = addon:GetPlayerMapPosition(self.unit)
 	self.isFixed = true
 end
 
@@ -104,9 +87,10 @@ local function OnUpdate(self,elapsed)
 	if self.elapsed > self.persist then
 		self:Destroy()
 	else
-		local angle = self:GetAngle()
-		if not angle then return end
-		self:SetAngle(angle)
+		if not UnitIsVisible(self.unit) then self:Destroy() return end
+		local d,dx,dy = addon:GetDistanceToUnit(self.unit,self.fx2,self.fy2)
+		self:SetAngle(dx,dy)
+		self.label2:SetFormattedText(self.fmt,d)
 
 		if self.tcolor then
 			local perc = 1 - ((self.dt - self.elapsed) / TRANS_TIME)
@@ -120,7 +104,7 @@ local function OnUpdate(self,elapsed)
 				self.t:SetVertexColor(r,g,b)
 			end
 		else
-			self:SetColor()
+			self:SetColor(d)
 		end
 	end
 end
@@ -133,17 +117,20 @@ local function SetTarget(self,unit,persist,action,msg,spell,sound,fixed)
 	self.unit = unit
 	self.elapsed = 0
 	self.persist = persist
+	self.fmt = spell.." <|cffffff78%0.0f|r> "..CN[unit]
 
-	local color = self:GetColor()
+	if fixed then self:SetFixed() end
+	local d,dx,dy = addon:GetDistanceToUnit(unit,self.fx2,self.fy2)
+	self:SetAngle(dx,dy)
+
+	local color = self:GetColor(d,action)
 	self.color = color
 	self.t:SetVertexColor(color.r,color.g,color.b)
 	units[unit] = true
 	self.label:SetText(msg)
-	self.label2:SetText(spell .. " > " .. CN[unit])
+	self.label2:SetFormattedText(self.fmt,d)
 	self:SetAlpha(1)
-	if fixed then self:SetFixed() end
 	self:SetScript("OnUpdate",OnUpdate)
-	self:SetAngle(self:GetAngle())
 	self:Show()
 end
 
@@ -153,8 +140,9 @@ local function Destroy(self)
 	self.color = nil
 	self.tcolor = nil
 	self.isFixed = nil
-	self.fixedX = nil
-	self.fixedY = nil
+	self.fx = nil
+	self.fy = nil
+	self.fmt = nil
 	self.fadeTable.fadeTimer = 0
 	UIFrameFade(self,self.fadeTable)
 	self:SetScript("OnUpdate",nil)
@@ -182,7 +170,7 @@ local function CreateArrow()
 	arrow.label2 = label2
 
 	arrow.SetAngle = SetAngle
-	arrow.GetAngle = GetAngle
+	arrow.CalcAngle = CalcAngle
 	arrow.SetTarget = SetTarget
 	arrow.Destroy = Destroy
 	arrow.GetColor = GetColor

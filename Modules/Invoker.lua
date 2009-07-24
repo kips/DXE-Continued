@@ -123,16 +123,16 @@ end
 local tuple = {}
 
 local function SetTuple(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10)
-	tuple["1"]  = a1
-	tuple["2"]  = a2
-	tuple["3"]  = a3
-	tuple["4"]  = a4
-	tuple["5"]  = a5
-	tuple["6"]  = a6
-	tuple["7"]  = a7
-	tuple["8"]  = a8
-	tuple["9"]  = a9
-	tuple["10"] = a10
+	tuple['1']  = a1
+	tuple['2']  = a2
+	tuple['3']  = a3
+	tuple['4']  = a4
+	tuple['5']  = a5
+	tuple['6']  = a6
+	tuple['7']  = a7
+	tuple['8']  = a8
+	tuple['9']  = a9
+	tuple['10'] = a10
 end
 
 
@@ -476,6 +476,7 @@ end
 local function StartArrow(name,stgs)
 	local info = arrows[name]
 	local unit = ReplaceTokens(info.unit)
+	if not UnitExists(unit) then return end
 	Arrows:AddTarget(unit,info.persist,info.action,info.msg,info.spell,stgs.sound,info.fixed)
 end
 
@@ -500,6 +501,7 @@ local function SetRaidIcon(name,stgs)
 	if not info then return end
 	if info.type == "FRIENDLY" then
 		local unit = ReplaceTokens(info.unit)
+		if not UnitExists(unit) then return end
 		RaidIcons:MarkFriendly(unit,stgs.icon,info.persist)
 	end
 end
