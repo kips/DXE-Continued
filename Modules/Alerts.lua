@@ -9,7 +9,7 @@ local UIParent = UIParent
 local SM = addon.SM
 local format = string.format
 local wipe = table.wipe
-local Colors,Sounds = addon.Constants.Colors,addon.Constants.Sounds
+local Colors = addon.Media.Colors
 
 local GetTime,PlaySoundFile,ipairs,pairs,next,remove = 
 		GetTime,PlaySoundFile,ipairs,pairs,next,tremove

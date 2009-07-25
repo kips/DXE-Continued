@@ -15,7 +15,6 @@ local units = {}
 ---------------------------------------
 
 local name_to_unit = addon.Roster.name_to_unit
-local Sounds = addon.Constants.Sounds
 local util = addon.util
 local CN = addon.CN
 

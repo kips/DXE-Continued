@@ -12,8 +12,8 @@ local gmatch,match = string.gmatch,string.match
 local assert,type,select = assert,type,select
 local select,concat,wipe = select,table.concat,wipe
 
-local Sounds = addon.Constants.Sounds
-local Colors = addon.Constants.Colors
+local Sounds = addon.Media.Sounds
+local Colors = addon.Media.Colors
 local conditions = addon.Invoker:GetConditions()
 local RepFuncs = addon.Invoker:GetRepFuncs()
 local ProximityFuncs = addon:GetProximityFuncs()

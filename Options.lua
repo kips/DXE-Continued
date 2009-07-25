@@ -423,7 +423,7 @@ do
 	local colors1 = {}
 	local colors1simple = {}
 	local colors2 = {}
-	for k,c in pairs(addon.Constants.Colors) do
+	for k,c in pairs(addon.Media.Colors) do
 		local hex = ("|cff%02x%02x%02x%s|r"):format(c.r*255,c.g*255,c.b*255,L[k])
 		colors1[k] = hex
 		colors1simple[k] = hex

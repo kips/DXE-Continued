@@ -3,7 +3,7 @@ local version = tonumber(("$Rev$"):match("%d+"))
 addon.version = version > addon.version and version or addon.version
 local L = addon.L
 
-local Colors = addon.Constants.Colors
+local Colors = addon.Media.Colors
 
 local ipairs, pairs = ipairs, pairs
 local remove,wipe = table.remove,table.wipe

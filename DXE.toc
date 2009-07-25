@@ -16,7 +16,7 @@ Widgets.xml
 
 # Main files
 Core.lua
-Constants.lua
+Media.lua
 Tracer.lua
 Coords.lua
 Window.lua
