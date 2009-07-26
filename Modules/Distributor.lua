@@ -1,3 +1,5 @@
+-- Credits to Bazaar (by Shadowed) for this idea
+
 local addon = DXE
 local version = tonumber(("$Rev$"):match("%d+"))
 addon.version = version > addon.version and version or addon.version
@@ -11,7 +13,6 @@ local match,len,format,split,find = string.match,string.len,string.format,string
 
 local db,pfl
 
--- Credits to Bazaar for this implementation
 ----------------------------------
 -- CONSTANTS
 ----------------------------------
@@ -21,8 +22,8 @@ local MAIN_PREFIX = "DXE_Distri"
 local TRANSFER_PREFIX = "DXE_DistriT"
 local UL_SUFFIX = "UL"
 local DL_SUFFIX = "DL"
-local DR_PTN = TRANSFER_PREFIX.."_([%w'%- ]+)"
-local CMA_PTN = TRANSFER_PREFIX.."_([%w'%- ]+)(.*)"
+local DR_PTN = TRANSFER_PREFIX.."_([%w'%- ]+)" -- DownloadReceived
+local CMA_PTN = TRANSFER_PREFIX.."_([%w'%- ]+)(.*)" -- CHAT_MSG_ADDON
 
 ----------------------------------
 -- INITIALIZATION

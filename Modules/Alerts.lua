@@ -319,11 +319,11 @@ do
 end
 
 function prototype:RemoveFromStack(stack)
-	for i,alert in ipairs(stack) do
-		if alert == self then 
-			remove(stack,i) 
-			return
-		end
+	local i = 1
+	while stack[i] do
+		if self == stack[i] then 
+			remove(stack,i)
+		else i = i + 1 end
 	end
 end
 

@@ -67,9 +67,9 @@ function addon:RemoveOptionArgsItems(module)
 	--@debug@
 	assert(type(module) == "table")
 	--@end-debug@
-	local func = OptionsArgs[module]
+	local func = OptionArgs[module]
 	if func then module[func] = nil end
-	OptionsArgs[module] = nil
+	OptionArgs[module] = nil
 end
 
 -- Should be done in OnInitializer
@@ -474,9 +474,7 @@ end
 
 local Filters = {
 	sound = function(str)
-		if str:find("^ALERT%d+$") then
-			return "DXE "..str
-		else return str end
+		return str:find("^ALERT%d+$") and "DXE "..str or str
 	end
 }
 

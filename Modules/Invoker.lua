@@ -8,7 +8,7 @@
 	A command bundle is an array of command lists
 
 	Valid commands are:
-		expect 				= {"<token or value> ... <token_n or value_n>","<condition>","<token' or value'> ... <token_n' or value_n'>"}
+		expect 				= {"<token or value> ... <token_n or value_n>","<op>","<token' or value'> ... <token_n' or value_n'>"}
 		quash 				= "<alert>"
 		set 					= {<var> = <token or value>, ..., <var_n> = <token_n or value_n> }
 		alert 				= "<alert>"
@@ -182,61 +182,61 @@ end
 
 ---------------------------------------------
 -- CONDITIONS
--- Taken from Pitbull4
+-- Credits to PitBull4's debug for this idea
 ---------------------------------------------
 
-local conditions = {}
+local ops = {}
 
-conditions['=='] = function(a, b)
-	return a == b
-end
-conditions['~='] = function(a, b)
-	return a ~= b
-end
+ops['=='] = function(a, b) return a == b end
+ops['~='] = function(a, b) return a ~= b end
+ops['find'] = function(a,b) return find(a,b) end
 
-conditions['find'] = function(a,b)
-	return find(a,b)
-end
+do
+	-- Intended to be used on numbers
 
--- Intended to be used on numbers
-conditions['>'] = function(a, b)
-	a,b = tonumber(a),tonumber(b)
-	if not a or not b then return false 
-	else return a > b end
-end
+	ops['>'] = function(a, b)
+		a,b = tonumber(a),tonumber(b)
+		if not a or not b then return false 
+		else return a > b end
+	end
 
-conditions['>='] = function(a, b)
-	a,b = tonumber(a),tonumber(b)
-	if not a or not b then return false
-	else return a >= b end
-end
+	ops['>='] = function(a, b)
+		a,b = tonumber(a),tonumber(b)
+		if not a or not b then return false
+		else return a >= b end
+	end
 
-conditions['<'] = function(a, b)
-	a,b = tonumber(a),tonumber(b)
-	if not a or not b then return false
-	else return a < b end
-end
+	ops['<'] = function(a, b)
+		a,b = tonumber(a),tonumber(b)
+		if not a or not b then return false
+		else return a < b end
+	end
 
-conditions['<='] = function(a, b)
-	a,b = tonumber(a),tonumber(b)
-	if not a or not b then return false
-	else return a <= b end
+	ops['<='] = function(a, b)
+		a,b = tonumber(a),tonumber(b)
+		if not a or not b then return false
+		else return a <= b end
+	end
 end
 
 do
 	local t = {}
-	for k, v in pairs(conditions) do
-		t[#t+1] = k
-	end
+	for k, v in pairs(ops) do t[#t+1] = k end
 	for _, k in ipairs(t) do
-		conditions["not_" .. k] = function(a, b)
-			return not conditions[k](a, b)
+		ops["not_" .. k] = function(a, b)
+			return not ops[k](a, b)
 		end
 	end
 end
 
+--@debug@
 function module:GetConditions()
-	return conditions
+	return ops
+end
+--@end-debug@
+
+local function expect(a, op, b)
+	return ops[op](a,b)
 end
 
 ---------------------------------------------
@@ -244,10 +244,6 @@ end
 ---------------------------------------------
 
 local UnitGUID, UnitName, UnitExists, UnitIsUnit = UnitGUID, UnitName, UnitExists, UnitIsUnit
-
-local function expect(a, condition, b)
-	return conditions[condition](a,b)
-end
 
 local function tft()
 	return HW[1].tracer:First() and HW[1].tracer:First().."target" or ""
