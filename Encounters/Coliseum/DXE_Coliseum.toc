@@ -8,8 +8,9 @@
 Locales.lua
 
 Anub.lua
+Faction_Champions.lua
 Gormok.lua
 Icehowl.lua
 Jormungars.lua
 Lord_Jaraxxus.lua
-Twins.lua
+Twin_Valkyr.lua

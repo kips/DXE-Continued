@@ -42,3 +42,8 @@ function addon:TestArrowOnTarget()
 	addon.Arrows:AddTarget("target",10,"AWAY","MOVE","Crash","None",false)
 end
 
+function addon:AlertsDouble()
+	self.Alerts:Dropdown("AlertTest2", "Bigger City Opening", 10, 5, "None", "BLUE")
+	self.Alerts:Dropdown("AlertTest2", "Bigger City Opening", 15, 10, "None", "BLUE")
+end
+

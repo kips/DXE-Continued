@@ -16,8 +16,10 @@ local GetTime,PlaySoundFile,ipairs,pairs,next,remove =
 
 local util = addon.util
 
-local animationTime = 0.3
-local fadeTime = 2
+local ANIMATION_TIME = 0.3
+local FADE_TIME = 2
+local BARWIDTH = 250
+local BARHEIGHT = 30
 
 local db,pfl
 
@@ -251,7 +253,7 @@ function prototype:Destroy()
 end
 
 do
-	local function SortFunc(alert1, alert2)
+	local function SortDesc(alert1, alert2)
 		local v1,v2 = 10000,10000
 		local time = GetTime()
 		v1 = alert1.data.endTime and alert1.data.endTime - time or v1
@@ -260,8 +262,8 @@ do
 	end
 
 	function prototype:LayoutAlertStack(stack,anchor)
-		sort(stack, SortFunc)
-		for _,alert in ipairs(stack) do
+		sort(stack, SortDesc)
+		for i,alert in ipairs(stack) do
 			alert:ClearAllPoints()
 			alert:SetPoint("TOP",anchor,"BOTTOM")
 			anchor = alert
@@ -285,7 +287,7 @@ end
 do
 	local function AnimationFunc(self,time)
 		local data = self.data
-		local perc = (time - data.t0) / animationTime
+		local perc = (time - data.t0) / ANIMATION_TIME
 		if perc > 1 or perc < 0 then 
 			self.animFunc = nil
 			self:AnchorToCenter()
@@ -302,6 +304,7 @@ do
 
 	function prototype:TranslateToCenter()
 		self:RemoveFromStacks()
+		self:LayoutAlertStack(TopAlertStack, TopStackAnchor)
 		local worldscale,escale = UIParent:GetEffectiveScale(),self:GetEffectiveScale()
 		local fx,fy = self:GetCenter()
 		fy = fy + self:GetHeight()/2
@@ -319,11 +322,11 @@ do
 end
 
 function prototype:RemoveFromStack(stack)
-	local i = 1
-	while stack[i] do
-		if self == stack[i] then 
-			remove(stack,i)
-		else i = i + 1 end
+	for i,alert in ipairs(stack) do
+		if alert == self then 
+			remove(stack,i) 
+			return
+		end
 	end
 end
 
@@ -382,7 +385,7 @@ end
 
 local UIFrameFadeOut = UIFrameFadeOut
 function prototype:Fade()
-	UIFrameFadeOut(self,fadeTime,self:GetAlpha(),0)
+	UIFrameFadeOut(self,FADE_TIME,self:GetAlpha(),0)
 end
 
 function prototype:SetID(id)
@@ -411,8 +414,8 @@ local BackdropBorder = {edgeFile="Interface\\Tooltips\\UI-Tooltip-Border", edgeS
 local BarCount = 1
 local function CreateAlert()
 	local self = CreateFrame("Frame","DXEAlertBar"..BarCount,UIParent)
-	self:SetWidth(250)
-	self:SetHeight(30)
+	self:SetWidth(BARWIDTH)
+	self:SetHeight(BARHEIGHT)
 	self:SetBackdrop(Backdrop)
 
 	self.data = {}
@@ -517,7 +520,7 @@ function module:Dropdown(id, text, totalTime, flashTime, sound, c1, c2, flashscr
 		else alert:ScheduleTimer("TranslateToCenter",waitTime) end
 	end
 	alert:ScheduleTimer("Fade",totalTime)
-	alert:ScheduleTimer("Destroy",totalTime+fadeTime)
+	alert:ScheduleTimer("Destroy",totalTime+FADE_TIME)
 	return alert
 end
 
@@ -535,7 +538,7 @@ function module:CenterPopup(id, text, totalTime, flashTime, sound, c1, c2, flash
 	alert:SetSound(soundFile)
 	alert:AnchorToCenter()
 	alert:ScheduleTimer("Fade",totalTime)
-	alert:ScheduleTimer("Destroy",totalTime+fadeTime)
+	alert:ScheduleTimer("Destroy",totalTime+FADE_TIME)
 	if flashscreen then self:FlashScreen(c1Data) end
 	return alert
 end
@@ -553,7 +556,7 @@ function module:Simple(text, totalTime, sound, c1, flashscreen)
 	alert:SetSound(soundFile)
 	alert:AnchorToCenter()
 	alert:ScheduleTimer("Fade",totalTime)
-	alert:ScheduleTimer("Destroy",totalTime+fadeTime)
+	alert:ScheduleTimer("Destroy",totalTime+FADE_TIME)
 	if flashscreen then self:FlashScreen(c1Data) end
 	return alert
 end
