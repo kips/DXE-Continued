@@ -253,12 +253,8 @@ function prototype:Destroy()
 end
 
 do
-	local function SortDesc(alert1, alert2)
-		local v1,v2 = 10000,10000
-		local time = GetTime()
-		v1 = alert1.data.endTime and alert1.data.endTime - time or v1
-		v2 = alert2.data.endTime and alert2.data.endTime - time or v2
-		return v1 > v2
+	local function SortDesc(a1, a2)
+		return (a1.data.timeleft or 10000) > (a2.data.timeleft or 10000)
 	end
 
 	function prototype:LayoutAlertStack(stack,anchor)
@@ -379,13 +375,13 @@ do
 	end
 end
 
-function prototype:RemoveCountdownFunc()
-	self.countFunc = nil
-end
-
-local UIFrameFadeOut = UIFrameFadeOut
 function prototype:Fade()
-	UIFrameFadeOut(self,FADE_TIME,self:GetAlpha(),0)
+	local fadeTable = self.fadeTable
+	fadeTable.startAlpha = self:GetAlpha()
+	fadeTable.fadeTimer = 0
+	fadeTable.finishedFunc = self.Destroy
+	fadeTable.finishedArg1 = self
+	UIFrameFade(self,fadeTable)
 end
 
 function prototype:SetID(id)
@@ -447,6 +443,8 @@ local function CreateAlert()
 	addon.AceTimer:Embed(self)
 	for k,v in pairs(prototype) do self[k] = v end
 
+	self.fadeTable = {mode = "OUT", timeToFade = FADE_TIME, endAlpha = 0}
+
 	BarCount = BarCount + 1
 
 	return self
@@ -460,8 +458,11 @@ local function GetAlert()
 	UpdateFrame:Show()
 	alert:Show()
 	alert:SetAlpha(0.6)
+
+	-- Apply settings
 	alert:SetScale(pfl.Scale)
 	alert.bar:SetStatusBarTexture(SM:Fetch("statusbar",pfl.BarTexture))
+
 	return alert
 end
 
@@ -520,7 +521,6 @@ function module:Dropdown(id, text, totalTime, flashTime, sound, c1, c2, flashscr
 		else alert:ScheduleTimer("TranslateToCenter",waitTime) end
 	end
 	alert:ScheduleTimer("Fade",totalTime)
-	alert:ScheduleTimer("Destroy",totalTime+FADE_TIME)
 	return alert
 end
 
@@ -538,7 +538,6 @@ function module:CenterPopup(id, text, totalTime, flashTime, sound, c1, c2, flash
 	alert:SetSound(soundFile)
 	alert:AnchorToCenter()
 	alert:ScheduleTimer("Fade",totalTime)
-	alert:ScheduleTimer("Destroy",totalTime+FADE_TIME)
 	if flashscreen then self:FlashScreen(c1Data) end
 	return alert
 end
@@ -556,7 +555,6 @@ function module:Simple(text, totalTime, sound, c1, flashscreen)
 	alert:SetSound(soundFile)
 	alert:AnchorToCenter()
 	alert:ScheduleTimer("Fade",totalTime)
-	alert:ScheduleTimer("Destroy",totalTime+FADE_TIME)
 	if flashscreen then self:FlashScreen(c1Data) end
 	return alert
 end

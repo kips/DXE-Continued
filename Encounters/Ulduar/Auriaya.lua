@@ -23,7 +23,6 @@ do
 			combatstop = true,
 		},
 		userdata = {
-			livecount = 8,
 			screechtime = 32,
 			guardianswarmtext = "",
 		},

@@ -11,146 +11,163 @@ local frames = {}
 local units = {}
 
 ---------------------------------------
--- CREATION
+-- PROTOTYPE
 ---------------------------------------
+local prototype = {}
 
-local name_to_unit = addon.Roster.name_to_unit
-local util = addon.util
-local CN = addon.CN
+do
+	local name_to_unit = addon.Roster.name_to_unit
+	local blend = addon.util.blend
+	local CN = addon.CN
 
-local GetPlayerFacing = GetPlayerFacing
-local UnitIsVisible = UnitIsVisible
-local PI,PI2 = math.pi,math.pi*2
-local floor,atan = math.floor,math.atan
+	local GetPlayerFacing = GetPlayerFacing
+	local UnitIsVisible = UnitIsVisible
+	local PI,PI2 = math.pi,math.pi*2
+	local floor,atan = math.floor,math.atan
 
-local ARROW_FILE = "Interface\\Addons\\DXE\\Textures\\Arrow"
-local NUM_CELLS = 108
-local NUM_COLUMNS = 9
-local CELL_WIDTH = 56
-local CELL_HEIGHT = 42
-local IMAGESIZE = 512
-local CELL_WIDTH_PERC = CELL_WIDTH / IMAGESIZE
-local CELL_HEIGHT_PERC = CELL_HEIGHT / IMAGESIZE
+	local ARROW_FILE = "Interface\\Addons\\DXE\\Textures\\Arrow"
+	local NUM_CELLS = 108
+	local NUM_COLUMNS = 9
+	local CELL_WIDTH = 56
+	local CELL_HEIGHT = 42
+	local IMAGESIZE = 512
+	local CELL_WIDTH_PERC = CELL_WIDTH / IMAGESIZE
+	local CELL_HEIGHT_PERC = CELL_HEIGHT / IMAGESIZE
 
-local colors = {
-	{r = 0, g = 1,    b = 0}, -- Green
-	{r = 1, g = 1,    b = 0}, -- Yellow
-	{r = 1, g = 0.65, b = 0}, -- Orange
-	{r = 1, g = 0,    b = 0}, -- Red
-}
+	local colors = {
+		{r = 0, g = 1,    b = 0}, -- Green
+		{r = 1, g = 1,    b = 0}, -- Yellow
+		{r = 1, g = 0.65, b = 0}, -- Orange
+		{r = 1, g = 0,    b = 0}, -- Red
+	}
 
-local TRANS_TIME = 0.5
+	local TRANS_TIME = 0.5
 
-local function GetColor(self,d,action)
-	if action == "TOWARD" then
-		-- Faster than if-else chain
-		local i = (d <= 10 and 1 or (d <= 20 and 2 or (d <= 30 and 3 or 4)))
-		return colors[i]
-	elseif action == "AWAY" then
-		local i = (d <= 10 and 4 or (d <= 20 and 3 or (d <= 30 and 2 or 1)))
-		return colors[i]
-	end
-end
-
-local function SetColor(self,d)
-	local color = self:GetColor(d,self.action)
-	if self.color == color then return end
-	-- Transition
-	self.tcolor = color
-	self.dt = self.elapsed + TRANS_TIME
-end
-
-local e = 10e-5
-local function SetAngle(self,dx,dy)
-	-- Calculate
-	if dy == 0 then dy = e end -- Prevents division by 0
-	local angle_axis = dy < 0 and PI + atan(dx/dy) or atan(dx/dy)
-	local angle = (PI-(GetPlayerFacing()-angle_axis)) % PI2
-	if self.action == "AWAY" then angle = (PI + angle) % PI2 end
-
-	-- Simplified from Claidhaire's TomTom
-	local cell = floor(angle / PI2 * NUM_CELLS + 0.5) % NUM_CELLS
-	local col = (cell % NUM_COLUMNS) * CELL_WIDTH_PERC
-	local row = floor(cell / NUM_COLUMNS) * CELL_HEIGHT_PERC
-
-	self.t:SetTexCoord(col, col + CELL_WIDTH_PERC, row, row + CELL_HEIGHT_PERC)
-end
-
-local function SetFixed(self)
-	self.fx,self.fy = addon:GetPlayerMapPosition(self.unit)
-	self.isFixed = true
-end
-
-local function OnUpdate(self,elapsed)
-	self.elapsed = self.elapsed + elapsed
-	if self.elapsed > self.persist then
-		self:Destroy()
-	else
-		if not UnitIsVisible(self.unit) then self:Destroy() return end
-		local d,dx,dy = addon:GetDistanceToUnit(self.unit,self.fx2,self.fy2)
-		self:SetAngle(dx,dy)
-		self.label2:SetFormattedText(self.fmt,d)
-
-		if self.tcolor then
-			local perc = 1 - ((self.dt - self.elapsed) / TRANS_TIME)
-			if perc < 0 or perc > 1 then
-				local color = self.tcolor
-				self.color = color
-				self.tcolor = nil
-				self.t:SetVertexColor(color.r,color.g,color.b)
-			else
-				local r,g,b = util.blend(self.color,self.tcolor,perc)
-				self.t:SetVertexColor(r,g,b)
-			end
-		else
-			self:SetColor(d)
+	local function GetColor(d,action)
+		if action == "TOWARD" then
+			-- Faster than if-else chain
+			local i = (d <= 10 and 1 or (d <= 20 and 2 or (d <= 30 and 3 or 4)))
+			return colors[i]
+		elseif action == "AWAY" then
+			local i = (d <= 10 and 4 or (d <= 20 and 3 or (d <= 30 and 2 or 1)))
+			return colors[i]
 		end
 	end
+
+	local function TransitionFunc(self)
+		local perc = (self.elapsed - self.st) / TRANS_TIME
+		if perc < 1 then
+			local r,g,b = blend(self.color,self.tcolor,perc)
+			self.t:SetVertexColor(r,g,b)
+		else
+			local color = self.tcolor
+			self.color = color
+			self.t:SetVertexColor(color.r,color.g,color.b)
+			self.tcolor = nil
+			self.transFunc = nil
+		end
+	end
+
+	function prototype:SetColor(self,d)
+		local color = GetColor(d,self.action)
+		if self.color == color then return end
+		-- Transition
+		self.tcolor = color
+		self.st = self.elapsed
+		self.transFunc = TransitionFunc
+	end
+
+	local e = 10e-5
+	function prototype:SetAngle(self,dx,dy)
+		-- Calculate
+		if dy == 0 then dy = e end -- Prevents division by 0
+		local angle_axis = dy < 0 and PI + atan(dx/dy) or atan(dx/dy)
+		local angle = (PI-(GetPlayerFacing()-angle_axis)) % PI2
+		if self.action == "AWAY" then angle = (PI + angle) % PI2 end
+
+		-- Simplified from Claidhaire's TomTom
+		local cell = floor(angle / PI2 * NUM_CELLS + 0.5) % NUM_CELLS
+		local col = (cell % NUM_COLUMNS) * CELL_WIDTH_PERC
+		local row = floor(cell / NUM_COLUMNS) * CELL_HEIGHT_PERC
+
+		self.t:SetTexCoord(col, col + CELL_WIDTH_PERC, row, row + CELL_HEIGHT_PERC)
+	end
+
+	function prototype:SetFixed(self)
+		self.fx,self.fy = addon:GetPlayerMapPosition(self.unit)
+		self.isFixed = true
+	end
+
+	local function OnUpdate(self,elapsed)
+		self.elapsed = self.elapsed + elapsed
+		if self.elapsed > self.persist then
+			self:Destroy()
+		else
+			if not UnitIsVisible(self.unit) then self:Destroy() return end
+			local d,dx,dy = addon:GetDistanceToUnit(self.unit,self.fx2,self.fy2)
+			self:SetAngle(dx,dy)
+			self.label2:SetFormattedText(self.fmt,d)
+
+			if self.transFunc then
+				self:transFunc()
+			else
+				self:SetColor(d)
+			end
+		end
+	end
+
+	-- @param action a string == "TOWARD" or "AWAY"
+	function prototype:SetTarget(self,unit,persist,action,msg,spell,sound,fixed)
+		if sound then PlaySoundFile(SM:Fetch("sound",sound)) end
+		UIFrameFadeRemoveFrame(self)
+		self.action = action
+		self.unit = unit
+		self.elapsed = 0
+		self.persist = persist
+		self.fmt = spell.." <|cffffff78%0.0f|r> "..CN[unit]
+
+		if fixed then self:SetFixed() end
+		local d,dx,dy = addon:GetDistanceToUnit(unit,self.fx2,self.fy2)
+		self:SetAngle(dx,dy)
+
+		local color = GetColor(d,action)
+		self.color = color
+		self.t:SetVertexColor(color.r,color.g,color.b)
+		units[unit] = true
+		self.label:SetText(msg)
+		self.label2:SetFormattedText(self.fmt,d)
+		self:SetAlpha(1)
+		self:SetScript("OnUpdate",OnUpdate)
+		self:Show()
+	end
+
+	function prototype:Destroy(self)
+		units[self.unit] = nil
+		self.unit = nil
+		self.color = nil
+		self.tcolor = nil
+		self.isFixed = nil
+		self.fx = nil
+		self.fy = nil
+		self.fmt = nil
+		self.transFunc = nil
+		local fadeTable = self.fadeTable
+		fadeTable.fadeTimer = 0
+		fadeTable.finishedFunc = self.Hide
+		fadeTable.finishedArg1 = self
+		UIFrameFade(self,fadeTable)
+		self:SetScript("OnUpdate",nil)
+	end
 end
 
--- @param action a string == "TOWARD" or "AWAY"
-local function SetTarget(self,unit,persist,action,msg,spell,sound,fixed)
-	if sound then PlaySoundFile(SM:Fetch("sound",sound)) end
-	UIFrameFadeRemoveFrame(self)
-	self.action = action
-	self.unit = unit
-	self.elapsed = 0
-	self.persist = persist
-	self.fmt = spell.." <|cffffff78%0.0f|r> "..CN[unit]
-
-	if fixed then self:SetFixed() end
-	local d,dx,dy = addon:GetDistanceToUnit(unit,self.fx2,self.fy2)
-	self:SetAngle(dx,dy)
-
-	local color = self:GetColor(d,action)
-	self.color = color
-	self.t:SetVertexColor(color.r,color.g,color.b)
-	units[unit] = true
-	self.label:SetText(msg)
-	self.label2:SetFormattedText(self.fmt,d)
-	self:SetAlpha(1)
-	self:SetScript("OnUpdate",OnUpdate)
-	self:Show()
-end
-
-local function Destroy(self)
-	units[self.unit] = nil
-	self.unit = nil
-	self.color = nil
-	self.tcolor = nil
-	self.isFixed = nil
-	self.fx = nil
-	self.fy = nil
-	self.fmt = nil
-	self.fadeTable.fadeTimer = 0
-	UIFrameFade(self,self.fadeTable)
-	self:SetScript("OnUpdate",nil)
-end
-
+---------------------------------------
+-- CREATION
+---------------------------------------
 local function CreateArrow()
 	local arrow = CreateFrame("Frame",nil,UIParent)
 	arrow:SetWidth(56)
 	arrow:SetHeight(42)
+	arrow:Hide()
 
 	local t = arrow:CreateTexture(nil,"OVERLAY")
 	t:SetTexture(ARROW_FILE)
@@ -168,16 +185,10 @@ local function CreateArrow()
 	label2:SetShadowColor(0,0,0)
 	arrow.label2 = label2
 
-	arrow.SetAngle = SetAngle
-	arrow.CalcAngle = CalcAngle
-	arrow.SetTarget = SetTarget
-	arrow.Destroy = Destroy
-	arrow.GetColor = GetColor
-	arrow.SetColor = SetColor
-	arrow.SetFixed = SetFixed
-	arrow.fadeTable = {mode = "OUT", timeToFade = 0.5, startAlpha = 1, endAlpha = 0, finishedFunc = function() arrow:Hide() end}
+	arrow.fadeTable = {mode = "OUT", timeToFade = 0.5, startAlpha = 1, endAlpha = 0}
 
-	arrow:Hide()
+	for k,v in pairs(prototype) do arrow[k] = v end
+
 	return arrow
 end
 
