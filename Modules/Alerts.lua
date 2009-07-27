@@ -380,7 +380,6 @@ function prototype:Fade()
 	fadeTable.startAlpha = self:GetAlpha()
 	fadeTable.fadeTimer = 0
 	fadeTable.finishedFunc = self.Destroy
-	fadeTable.finishedArg1 = self
 	UIFrameFade(self,fadeTable)
 end
 
@@ -443,7 +442,7 @@ local function CreateAlert()
 	addon.AceTimer:Embed(self)
 	for k,v in pairs(prototype) do self[k] = v end
 
-	self.fadeTable = {mode = "OUT", timeToFade = FADE_TIME, endAlpha = 0}
+	self.fadeTable = {mode = "OUT", timeToFade = FADE_TIME, endAlpha = 0, finishedArg1 = self }
 
 	BarCount = BarCount + 1
 

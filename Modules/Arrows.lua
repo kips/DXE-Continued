@@ -68,7 +68,7 @@ do
 		end
 	end
 
-	function prototype:SetColor(self,d)
+	function prototype:SetColor(d)
 		local color = GetColor(d,self.action)
 		if self.color == color then return end
 		-- Transition
@@ -78,7 +78,7 @@ do
 	end
 
 	local e = 10e-5
-	function prototype:SetAngle(self,dx,dy)
+	function prototype:SetAngle(dx,dy)
 		-- Calculate
 		if dy == 0 then dy = e end -- Prevents division by 0
 		local angle_axis = dy < 0 and PI + atan(dx/dy) or atan(dx/dy)
@@ -93,7 +93,7 @@ do
 		self.t:SetTexCoord(col, col + CELL_WIDTH_PERC, row, row + CELL_HEIGHT_PERC)
 	end
 
-	function prototype:SetFixed(self)
+	function prototype:SetFixed()
 		self.fx,self.fy = addon:GetPlayerMapPosition(self.unit)
 		self.isFixed = true
 	end
@@ -117,7 +117,7 @@ do
 	end
 
 	-- @param action a string == "TOWARD" or "AWAY"
-	function prototype:SetTarget(self,unit,persist,action,msg,spell,sound,fixed)
+	function prototype:SetTarget(unit,persist,action,msg,spell,sound,fixed)
 		if sound then PlaySoundFile(SM:Fetch("sound",sound)) end
 		UIFrameFadeRemoveFrame(self)
 		self.action = action
@@ -141,7 +141,7 @@ do
 		self:Show()
 	end
 
-	function prototype:Destroy(self)
+	function prototype:Destroy()
 		units[self.unit] = nil
 		self.unit = nil
 		self.color = nil
@@ -154,43 +154,43 @@ do
 		local fadeTable = self.fadeTable
 		fadeTable.fadeTimer = 0
 		fadeTable.finishedFunc = self.Hide
-		fadeTable.finishedArg1 = self
 		UIFrameFade(self,fadeTable)
 		self:SetScript("OnUpdate",nil)
+	end
+
+	function module:CreateArrow()
+		local arrow = CreateFrame("Frame",nil,UIParent)
+		arrow:SetWidth(56)
+		arrow:SetHeight(42)
+		arrow:Hide()
+
+		local t = arrow:CreateTexture(nil,"OVERLAY")
+		t:SetTexture(ARROW_FILE)
+		t:SetAllPoints(true)
+		arrow.t = t
+
+		local label = arrow:CreateFontString(nil,"ARTWORK")
+		label:SetFont(GameFontNormal:GetFont(),12,"THICKOUTLINE")
+		label:SetPoint("TOP",arrow,"BOTTOM")
+		arrow.label = label
+
+		local label2 = arrow:CreateFontString(nil,"ARTWORK","GameFontNormalSmall")
+		label2:SetPoint("TOP",label,"BOTTOM")
+		label2:SetShadowOffset(1,-1)
+		label2:SetShadowColor(0,0,0)
+		arrow.label2 = label2
+
+		arrow.fadeTable = {mode = "OUT", timeToFade = 0.5, startAlpha = 1, endAlpha = 0, finishedArg1 = arrow}
+
+		for k,v in pairs(prototype) do arrow[k] = v end
+
+		return arrow
 	end
 end
 
 ---------------------------------------
 -- CREATION
 ---------------------------------------
-local function CreateArrow()
-	local arrow = CreateFrame("Frame",nil,UIParent)
-	arrow:SetWidth(56)
-	arrow:SetHeight(42)
-	arrow:Hide()
-
-	local t = arrow:CreateTexture(nil,"OVERLAY")
-	t:SetTexture(ARROW_FILE)
-	t:SetAllPoints(true)
-	arrow.t = t
-
-	local label = arrow:CreateFontString(nil,"ARTWORK")
-	label:SetFont(GameFontNormal:GetFont(),12,"THICKOUTLINE")
-	label:SetPoint("TOP",arrow,"BOTTOM")
-	arrow.label = label
-
-	local label2 = arrow:CreateFontString(nil,"ARTWORK","GameFontNormalSmall")
-	label2:SetPoint("TOP",label,"BOTTOM")
-	label2:SetShadowOffset(1,-1)
-	label2:SetShadowColor(0,0,0)
-	arrow.label2 = label2
-
-	arrow.fadeTable = {mode = "OUT", timeToFade = 0.5, startAlpha = 1, endAlpha = 0}
-
-	for k,v in pairs(prototype) do arrow[k] = v end
-
-	return arrow
-end
 
 ---------------------------------------
 -- INITIALIZATION
@@ -198,7 +198,7 @@ end
 
 function module:OnInitialize()
 	for i=1,3 do 
-		local arrow = CreateArrow()
+		local arrow = self:CreateArrow()
 		local anchor = addon:CreateLockableFrame("ArrowsAnchor"..i,85,42,format("%s - %s",L["Arrows"],L["Anchor"].." "..i))
 		addon:RegisterMoveSaving(anchor,"CENTER","UIParent","CENTER",0,-(25 + (i*65)))
 		addon:LoadPosition("DXEArrowsAnchor"..i)
