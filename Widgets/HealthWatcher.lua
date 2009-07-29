@@ -107,7 +107,7 @@ do
 	local function Constructor()
 		local self = {}
 		self.type = WidgetType
-		local frame = CreateFrame("Frame",nil,UIParent)
+		local frame = CreateFrame("Button",nil,UIParent)
 		frame:SetWidth(220)
 		frame:SetHeight(22)
 		frame:SetBackdrop(backdrop)

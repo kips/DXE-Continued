@@ -72,15 +72,6 @@ do
 				sound = "ALERT3",
 				color1 = "YELLOW",
 			},
-			--[[
-			animuswarn = {
-				varname = format(L["%s Spawn"],L["Saronite Animus"]),
-				type = "simple",
-				text = format(L["%s Spawned"],L["Saronite Animus"]).."!",
-				time = 1.5,
-				sound = "ALERT3",
-			},
-			]]
 			vaporcd = {
 				varname = format(L["%s Cooldown"],L["Saronite Vapor"]),
 				type = "dropdown",
@@ -262,24 +253,16 @@ do
 					},
 				},
 			},
+			-- Saronite Vapors
 			{
 				type = "event",
 				event = "EMOTE",
 				execute = {
-					-- Saronite Vapors
 					{
 						{expect = {"#1#","find",L["^A cloud of saronite vapors"]}},
 						{alert = "vaporcd"},
 						{set = {saronitecount = "INCR|1"}},
 					},
-					--[[
-					-- Saronite Animus
-					{
-						{expect = {"#1#","find",L["A saronite barrier appears around"]}},
-						{alert = "animuswarn"},
-						{tracing = {33271,33524}},
-					},
-					]]
 				},
 			},
 			-- Saronite Barrier

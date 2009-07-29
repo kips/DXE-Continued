@@ -26,8 +26,8 @@ end
 
 function module:OnInitialize()
 	for i=1, GetNumAddOns() do
-		local name,_,_,enabled,loadable = GetAddOnInfo(i)
-		if loadable and not IsAddOnLoaded(i) then
+		local name = GetAddOnInfo(i)
+		if not IsAddOnLoaded(i) then
 			local zonedata = GetAddOnMetadata(i,"X-DXE-Zone")
 			if zonedata then
 				local catdata = GetAddOnMetadata(i,"X-DXE-Category")
@@ -63,6 +63,9 @@ function module:AddOptionItems(args)
 		desc = L["Modules will automatically load when you enter the appropriate zone. Click if you want to force load the currently selected one."],
 		order = 300,
 		func = function()
+			if not select(4,GetAddOnInfo(selected)) then
+				EnableAddOn(selected)
+			end
 			LoadAddOn(selected)
 		end,
 		width = "half",
@@ -100,6 +103,7 @@ function module:ADDON_LOADED(_,name)
 			addon:RemoveOptionArgsItems(self)
 		end
 	end
+	if addon.options then addon.ACR:NotifyChange("DXE") end
 end
 
 function module:ZONE_CHANGED_NEW_AREA()
@@ -110,4 +114,3 @@ function module:ZONE_CHANGED_NEW_AREA()
 		end
 	end
 end
-

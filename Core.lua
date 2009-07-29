@@ -890,22 +890,22 @@ do
 		end
 	end
 
-	local function onEnter(self)
+	local function OnEnter(self)
 		GameTooltip:SetOwner(self, calculatepoint(self))
 		if self._ttTitle then GameTooltip:AddLine(self._ttTitle,nil,nil,nil,true) end
 		if self._ttText then GameTooltip:AddLine(self._ttText,1,1,1,true) end
 		GameTooltip:Show()
 	end
 
-	local function onLeave(self)
+	local function OnLeave(self)
 		GameTooltip:Hide()
 	end
 
 	function addon:AddTooltipText(obj,title,text)
 		obj._ttTitle = title
 		obj._ttText = text
-		obj:SetScript("OnEnter",onEnter)
-		obj:SetScript("OnLeave",onLeave) 
+		obj:SetScript("OnEnter",OnEnter)
+		obj:SetScript("OnLeave",OnLeave) 
 	end
 end
 
@@ -950,12 +950,12 @@ do
 	-- @param highlight The highlight texture for the button
 	-- @param onclick The function of the OnClick script
 	-- @param anchor SetPoints the control LEFT, anchor, RIGHT
-	function addon:AddPaneButton(normal,highlight,onClick,name,text)
+	function addon:AddPaneButton(normal,highlight,OnClick,name,text)
 		local control = CreateFrame("Button",nil,self.Pane)
 		control:SetWidth(size)
 		control:SetHeight(size)
 		control:SetPoint("LEFT",buttons[#buttons] or self.Pane.timer.frame,"RIGHT")
-		control:SetScript("OnClick",onClick)
+		control:SetScript("OnClick",OnClick)
 		control:SetNormalTexture(normal)
 		control:SetHighlightTexture(highlight)
 		self:AddTooltipText(control,name,text)
@@ -981,8 +981,8 @@ function addon:CreatePane()
 	self:RegisterMoveSaving(Pane,"CENTER","UIParent","CENTER",nil,nil,true)
 	self:LoadPosition("DXEPane")
 	self:AddTooltipText(Pane,"Pane",L["|cffffff00Shift + Click|r to move"])
-	local function onUpdate() addon:LayoutHealthWatchers() end
-	Pane:HookScript("OnMouseDown",function(self) self:SetScript("OnUpdate",onUpdate) end)
+	local function OnUpdate() addon:LayoutHealthWatchers() end
+	Pane:HookScript("OnMouseDown",function(self) self:SetScript("OnUpdate",OnUpdate) end)
 	Pane:HookScript("OnMouseUp",function(self) self:SetScript("OnUpdate",nil) end)
   	self.Pane = Pane
 	
@@ -1043,7 +1043,7 @@ function addon:CreatePane()
 		L["Make windows visible"]
 	)
 
-	self:CreateHealthWatchers()
+	self:CreateHealthWatchers(Pane)
 end
 
 ---------------------------------------------
@@ -1124,7 +1124,7 @@ do
 	local UIDropDownMenu_CreateInfo = UIDropDownMenu_CreateInfo
 	local function closeall() CloseDropDownMenus(1) end
 
-	local function onClick(self)
+	local function OnClick(self)
 		addon:SetActiveEncounter(self.value)
 		CloseDropDownMenus()
 	end
@@ -1151,7 +1151,7 @@ do
 			info = UIDropDownMenu_CreateInfo()
 			info.text = L["Default"]
 			info.value = "default"
-			info.func = onClick
+			info.func = OnClick
 			info.colorCode = YELLOW
 			info.owner = self
 			UIDropDownMenu_AddButton(info,1)
@@ -1199,7 +1199,7 @@ do
 				info.text = name
 				info.owner = self
 				info.value = work[name]
-				info.func = onClick
+				info.func = OnClick
 				UIDropDownMenu_AddButton(info,2)
 			end
 		end
@@ -1235,7 +1235,7 @@ do
 		isRunning = val
 	end
 
-	local function onUpdate(self,elapsed)
+	local function OnUpdate(self,elapsed)
 		elapsedTime = elapsedTime + elapsed
 		self.obj:SetTime(elapsedTime)
 	end
@@ -1243,7 +1243,7 @@ do
 	--- Starts the Pane timer
 	function addon:StartTimer()
 		elapsedTime = 0
-		self.Pane.timer.frame:SetScript("OnUpdate",onUpdate)
+		self.Pane.timer.frame:SetScript("OnUpdate",OnUpdate)
 		self:SetRunning(true)
 	end
 
@@ -1278,16 +1278,13 @@ function addon:UNIT_DIED(_, _,eventtype, _, _, _, dstGUID)
 end
 
 -- Only four are needed currently. Too many health watchers clutters the screen.
-function addon:CreateHealthWatchers()
+function addon:CreateHealthWatchers(Pane)
 	if HW[1] then return end
-	for i=1,4 do HW[i] = AceGUI:Create("DXE_HealthWatcher") end
 
-	-- Only the main one sends updates
-	HW[1]:SetCallback("HW_TRACER_UPDATE",function(self,event,unit) addon:TRACER_UPDATE(unit) end)
-	HW[1]:EnableUpdates()
+	local function OnMouseDown() if IsShiftKeyDown() then Pane:StartMoving() end end
+	local function OnMouseUp() Pane:StopMovingOrSizing(); addon:SavePosition(Pane) end
 
-	-- OnAcquired
-	local onacquired = function(self,event,unit) 
+	local function OnAcquired(self,event,unit) 
 		local npcid = self:GetGoal()
 		if not self:IsTitleSet() then
 			-- Should only enter once per name
@@ -1297,10 +1294,20 @@ function addon:CreateHealthWatchers()
 		end
 		addon.callbacks:Fire("HW_TRACER_ACQUIRED",unit,npcid) 
 	end
-	for i,hw in ipairs(HW) do
-		hw:SetCallback("HW_TRACER_ACQUIRED",onacquired) 
-		hw.frame:SetParent(self.Pane)
+
+	for i=1,4 do 
+		local hw = AceGUI:Create("DXE_HealthWatcher")
+		self:AddTooltipText(hw.frame,"Pane",L["|cffffff00Shift + Click|r to move"])
+		hw.frame:SetScript("OnMouseDown",OnMouseDown)
+		hw.frame:SetScript("OnMouseUp",OnMouseUp)
+		hw.frame:SetParent(Pane)
+		hw:SetCallback("HW_TRACER_ACQUIRED",OnAcquired) 
+		HW[i] = hw
 	end
+
+	-- Only the main one sends updates
+	HW[1]:SetCallback("HW_TRACER_UPDATE",function(self,event,unit) addon:TRACER_UPDATE(unit) end)
+	HW[1]:EnableUpdates()
 end
 
 function addon:CloseAllHW()
