@@ -339,7 +339,6 @@ function module:ResetUserData()
 	end
 end
 
-
 local function SetUserData(info)
 	for k,v in pairs(info) do
 		local flag = true

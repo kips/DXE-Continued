@@ -9,6 +9,7 @@ addon.Arrows = module
 
 local frames = {}
 local units = {}
+local CreateArrow
 
 ---------------------------------------
 -- PROTOTYPE
@@ -33,6 +34,7 @@ do
 	local IMAGESIZE = 512
 	local CELL_WIDTH_PERC = CELL_WIDTH / IMAGESIZE
 	local CELL_HEIGHT_PERC = CELL_HEIGHT / IMAGESIZE
+	local TRANS_TIME = 0.5
 
 	local colors = {
 		{r = 0, g = 1,    b = 0}, -- Green
@@ -40,8 +42,6 @@ do
 		{r = 1, g = 0.65, b = 0}, -- Orange
 		{r = 1, g = 0,    b = 0}, -- Red
 	}
-
-	local TRANS_TIME = 0.5
 
 	local function GetColor(d,action)
 		if action == "TOWARD" then
@@ -95,7 +95,6 @@ do
 
 	function prototype:SetFixed()
 		self.fx,self.fy = addon:GetPlayerMapPosition(self.unit)
-		self.isFixed = true
 	end
 
 	local function OnUpdate(self,elapsed)
@@ -104,7 +103,7 @@ do
 			self:Destroy()
 		else
 			if not UnitIsVisible(self.unit) then self:Destroy() return end
-			local d,dx,dy = addon:GetDistanceToUnit(self.unit,self.fx2,self.fy2)
+			local d,dx,dy = addon:GetDistanceToUnit(self.unit,self.fx,self.fy)
 			self:SetAngle(dx,dy)
 			self.label2:SetFormattedText(self.fmt,d)
 
@@ -127,7 +126,7 @@ do
 		self.fmt = spell.." <|cffffff78%0.0f|r> "..CN[unit]
 
 		if fixed then self:SetFixed() end
-		local d,dx,dy = addon:GetDistanceToUnit(unit,self.fx2,self.fy2)
+		local d,dx,dy = addon:GetDistanceToUnit(unit,self.fx,self.fy)
 		self:SetAngle(dx,dy)
 
 		local color = GetColor(d,action)
@@ -146,7 +145,6 @@ do
 		self.unit = nil
 		self.color = nil
 		self.tcolor = nil
-		self.isFixed = nil
 		self.fx = nil
 		self.fy = nil
 		self.fmt = nil
@@ -158,39 +156,35 @@ do
 		self:SetScript("OnUpdate",nil)
 	end
 
-	function module:CreateArrow()
-		local arrow = CreateFrame("Frame",nil,UIParent)
-		arrow:SetWidth(56)
-		arrow:SetHeight(42)
-		arrow:Hide()
+	function CreateArrow(i)
+		local self = CreateFrame("Frame","DXEArrow"..i,UIParent)
+		self:SetWidth(56)
+		self:SetHeight(42)
+		self:Hide()
 
-		local t = arrow:CreateTexture(nil,"OVERLAY")
+		local t = self:CreateTexture(nil,"OVERLAY")
 		t:SetTexture(ARROW_FILE)
 		t:SetAllPoints(true)
-		arrow.t = t
+		self.t = t
 
-		local label = arrow:CreateFontString(nil,"ARTWORK")
+		local label = self:CreateFontString(nil,"ARTWORK")
 		label:SetFont(GameFontNormal:GetFont(),12,"THICKOUTLINE")
-		label:SetPoint("TOP",arrow,"BOTTOM")
-		arrow.label = label
+		label:SetPoint("TOP",self,"BOTTOM")
+		self.label = label
 
-		local label2 = arrow:CreateFontString(nil,"ARTWORK","GameFontNormalSmall")
+		local label2 = self:CreateFontString(nil,"ARTWORK","GameFontNormalSmall")
 		label2:SetPoint("TOP",label,"BOTTOM")
 		label2:SetShadowOffset(1,-1)
 		label2:SetShadowColor(0,0,0)
-		arrow.label2 = label2
+		self.label2 = label2
 
-		arrow.fadeTable = {mode = "OUT", timeToFade = 0.5, startAlpha = 1, endAlpha = 0, finishedArg1 = arrow}
+		self.fadeTable = {mode = "OUT", timeToFade = 0.5, startAlpha = 1, endAlpha = 0, finishedArg1 = self}
 
-		for k,v in pairs(prototype) do arrow[k] = v end
+		for k,v in pairs(prototype) do self[k] = v end
 
-		return arrow
+		return self
 	end
 end
-
----------------------------------------
--- CREATION
----------------------------------------
 
 ---------------------------------------
 -- INITIALIZATION
@@ -198,7 +192,7 @@ end
 
 function module:OnInitialize()
 	for i=1,3 do 
-		local arrow = self:CreateArrow()
+		local arrow = CreateArrow(i)
 		local anchor = addon:CreateLockableFrame("ArrowsAnchor"..i,85,42,format("%s - %s",L["Arrows"],L["Anchor"].." "..i))
 		addon:RegisterMoveSaving(anchor,"CENTER","UIParent","CENTER",0,-(25 + (i*65)))
 		addon:LoadPosition("DXEArrowsAnchor"..i)

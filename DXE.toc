@@ -22,6 +22,7 @@ Coords.lua
 Window.lua
 Modules.xml
 Options.lua
+Versions.lua
 
 #@debug@
 Debug.lua

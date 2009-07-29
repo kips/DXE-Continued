@@ -47,7 +47,6 @@ function module:OnEnable()
 	end
 end
 
-
 function module:AddOptionItems(args)
 	selected = next(modules)
 	args.LoaderSelect = {
@@ -84,6 +83,7 @@ function module:CleanZoneModules(name)
 end
 
 function module:ADDON_LOADED(_,name)
+	if not name:find("DXE") then return end
 	if modules[name] then
 		addon:Print(format(L["%s module loaded"],L[name:match("DXE_(%w+)")]))
 		modules[name] = nil

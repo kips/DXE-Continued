@@ -11,8 +11,7 @@ local format = string.format
 local wipe = table.wipe
 local Colors = addon.Media.Colors
 
-local GetTime,PlaySoundFile,ipairs,pairs,next,remove = 
-		GetTime,PlaySoundFile,ipairs,pairs,next,tremove
+local GetTime,PlaySoundFile,ipairs,pairs,next,remove = GetTime,PlaySoundFile,ipairs,pairs,next,table.remove
 
 local util = addon.util
 

@@ -346,7 +346,6 @@ function addon:RegisterEncounter(data)
 	EDB[key] = data
 
 	self:UpdateTriggers()
-	self:UpdateVersionString()
 end
 
 --- Remove an encounter previously added with RegisterEncounter.
@@ -364,7 +363,6 @@ function addon:UnregisterEncounter(key)
 	EDB[key] = nil
 
 	self:UpdateTriggers()
-	self:UpdateVersionString()
 end
 
 function addon:GetEncounterData(key)
@@ -507,6 +505,7 @@ function addon:RAID_ROSTER_UPDATE()
 
 	if tmpMembers ~= numMembers then
 		self:UpdatePaneVisibility()
+		self:RefreshVersionList()
 	end
 
 	numMembers = tmpMembers
@@ -893,8 +892,8 @@ do
 
 	local function onEnter(self)
 		GameTooltip:SetOwner(self, calculatepoint(self))
-		GameTooltip:AddLine(self._ttTitle)
-		GameTooltip:AddLine(self._ttText,1,1,1,true)
+		if self._ttTitle then GameTooltip:AddLine(self._ttTitle,nil,nil,nil,true) end
+		if self._ttText then GameTooltip:AddLine(self._ttText,1,1,1,true) end
 		GameTooltip:Show()
 	end
 
@@ -913,7 +912,6 @@ end
 ---------------------------------------------
 -- PANE
 ---------------------------------------------
-
 
 function addon:ToggleConfig()
 	if not self.options then self:InitializeOptions() end
@@ -946,7 +944,7 @@ end
 
 do
 	local size = 17
-	local controls = {}
+	local buttons = {}
 	--- Adds a button to the encounter pane
 	-- @param normal The normal texture for the button
 	-- @param highlight The highlight texture for the button
@@ -956,13 +954,13 @@ do
 		local control = CreateFrame("Button",nil,self.Pane)
 		control:SetWidth(size)
 		control:SetHeight(size)
-		control:SetPoint("LEFT",controls[#controls] or self.Pane.timer.frame,"RIGHT")
+		control:SetPoint("LEFT",buttons[#buttons] or self.Pane.timer.frame,"RIGHT")
 		control:SetScript("OnClick",onClick)
 		control:SetNormalTexture(normal)
 		control:SetHighlightTexture(highlight)
 		self:AddTooltipText(control,name,text)
 
-		controls[#controls+1] = control
+		buttons[#buttons+1] = control
 		return control
 	end
 end
@@ -1015,7 +1013,7 @@ function addon:CreatePane()
 	)
 
 	-- Create dropdown menu for folder
-	local selector = self:CreateSelector()
+	local selector = self:CreateSelectorDropDown()
 	Pane.SetFolderValue = function(key)
 		UIDropDownMenu_SetSelectedValue(selector,key)
 	end
@@ -1034,6 +1032,15 @@ function addon:CreatePane()
 		function() self:ToggleLock() end,
 		L["Locking"],
 		L["Toggle frame anchors"]
+	)
+
+	local windows = self:CreateWindowsDropDown()
+	Pane.windows = self:AddPaneButton(
+		PaneTextures.."Windows",
+		PaneTextures.."Windows",
+		function() ToggleDropDownMenu(1,nil,windows,Pane.windows,0,0) end,
+		L["Windows"],
+		L["Make windows visible"]
 	)
 
 	self:CreateHealthWatchers()
@@ -1198,8 +1205,8 @@ do
 		end
 	end
 
-	function addon:CreateSelector()
-		local selector = CreateFrame("Frame", "DXE_Selector", UIParent, "UIDropDownMenuTemplate") 
+	function addon:CreateSelectorDropDown()
+		local selector = CreateFrame("Frame", "DXEPaneSelector", UIParent, "UIDropDownMenuTemplate") 
 		UIDropDownMenu_Initialize(selector, Initialize, "MENU")
 		UIDropDownMenu_SetSelectedValue(selector,"default")
 		return selector
@@ -1283,7 +1290,7 @@ function addon:CreateHealthWatchers()
 	local onacquired = function(self,event,unit) 
 		local npcid = self:GetGoal()
 		if not self:IsTitleSet() then
-			-- Should only enter once
+			-- Should only enter once per name
 			local name = UnitName(unit)
 			gbl.L_NPC[npcid] = name
 			self:SetTitle(name)
@@ -1443,366 +1450,8 @@ end
 function addon:DispatchComm(sender,success,commType,...)
 	if success then
 		local callback = "OnComm"..commType
-		if self[callback] and type(self[callback]) == "function" then
-			self[callback](self,callback,commType,sender,...)
-		end
 		self.callbacks:Fire(callback,commType,sender,...)
 	end
 end
 
----------------------------------------------
--- VERSION CHECKING
----------------------------------------------
-
--- Roster versions
-local RVS = {}
-addon.RVS = RVS
-
-local window
-
-function addon:GetNumWithAddOn()
-	local n = 0
-	for k,v in ipairs(RVS) do
-		if v.versions.addon then
-			n = n + 1
-		end
-	end
-	return n
-end
-
-function addon:CleanVersions()
-	local n,i = #RVS,1
-	while i <= n do
-		local v = RVS[i]
-		if Roster.name_to_unit[v[1]] then i = i + 1
-		else remove(RVS,i); n = n - 1 end
-	end
-	self:RefreshVersionList()
-end
-
--- Version string
-local VersionString
-function addon:UpdateVersionString()
-	local work = {}
-	work[1] = format("%s,%s","addon",self.version)
-	for key, data in self:IterateEDB() do
-		work[#work+1] = format("%s,%s",data.key,data.version)
-	end
-	VersionString = concat(work,":")
-end
-addon:ThrottleFunc("UpdateVersionString",1,true)
-
--- All versions
-
-function addon:RequestAllVersions()
-	self:SendRaidComm("RequestAllVersions")
-end
-addon:ThrottleFunc("RequestAllVersions",5,true)
-
-function addon:OnCommRequestAllVersions()
-	self:BroadcastAllVersions()
-end
-
-function addon:BroadcastAllVersions()
-	self:SendRaidComm("AllVersionsBroadcast",VersionString)
-end
-addon:ThrottleFunc("BroadcastAllVersions",5,true)
-
-function addon:OnCommAllVersionsBroadcast(event,commType,sender,versionString)
-	local k = search(RVS,sender,1)
-	if not k then 
-		k = #RVS+1
-		RVS[k] = {sender, versions={}}
-	end
-
-	local versions = RVS[k].versions
-
-	for key,version in gmatch(versionString,"([^:,]+),([^:,]+)") do
-		versions[key] = tonumber(version)
-	end
-
-	self:RefreshVersionList()
-end
-
--- Single versions
-function addon:RequestVersions(key)
-	if not EDB[key] then return end
-	self:SendRaidComm("RequestVersions",key)
-end
-addon:ThrottleFunc("RequestVersions",1,true)
-
-function addon:OnCommRequestVersions(event,commType,sender,key)
-	if not EDB[key] then return end
-	self:SendWhisperComm(sender,"VersionBroadcast",key,EDB[key].version)
-end
-
-function addon:RequestAddOnVersions()
-	self:SendRaidComm("RequestAddOnVersion")
-end
-
-function addon:OnCommRequestAddOnVersion()
-	self:BroadcastVersion("addon")
-end
-
-function addon:BroadcastVersion(key)
-	if not EDB[key] and key ~= "addon" then return end
-	self:SendRaidComm("VersionBroadcast",key,key == "addon" and self.version or EDB[key].version)
-end
-
-function addon:OnCommVersionBroadcast(event,commType,sender,key,version)
-	local k = search(RVS,sender,1)
-	if not k then
-		k = #RVS+1
-		RVS[k] = {sender, versions = {}}
-	end
-
-	RVS[k].versions[key] = tonumber(version)
-
-	self:RefreshVersionList()
-end
-
------ GUI
--- Thanks to oRA3 for some of the implementation
-
-do
-	local dropdown, heading, scrollFrame
-	local list,headers = {},{}
-	local value = "addon"
-	local sortIndex = 1
-	local sortDir = true
-
-	local NONE = -1
-	local GREEN = "|cff99ff33"
-	local BLUE  = "|cff3399ff"
-	local GREY  = "|cff999999"
-	local RED   = "|cffff3300"
-	local NUM_ROWS = 12
-	local ROW_HEIGHT = 16
-
-	local function SetHeaderText(name,version)
-		heading:SetText(format("%s: |cffffffff%s|r",name,version))
-	end
-
-	local function dropdownChanged(widget,event,v)
-		value = v
-		SetHeaderText(list[v],EDB[v].version)
-		addon:RefreshVersionList()
-		addon:RequestVersions(value)
-	end
-
-	local function RefreshEncDropdown()
-		wipe(list)
-		for key,data in addon:IterateEDB() do
-			list[key] = data.name
-		end
-		dropdown:SetList(list)
-	end
-
-
-	local function colorCode(text)
-		if type(text) == "string" then
-			return CN[text]
-		elseif type(text) == "number" then
-			if text == NONE then
-				return GREY..L["None"].."|r"
-			else
-				local v = value == "addon" and addon.version or EDB[value].version
-				if v > text then
-					return RED..text.."|r"
-				elseif v < text then
-					return BLUE..text.."|r"
-				else
-					return GREEN..text.."|r"
-				end
-			end
-		end
-	end
-
-	local function UpdateScroll()
-		local n = #RVS
-		FauxScrollFrame_Update(scrollFrame, n, NUM_ROWS, ROW_HEIGHT, nil, nil, nil, nil, nil, nil, true)
-		local offset = FauxScrollFrame_GetOffset(scrollFrame)
-		for i = 1, NUM_ROWS do
-			local j = i + offset
-			if j <= n then
-				for k, header in ipairs(headers) do
-					local text = colorCode(RVS[j][k])
-					header.rows[i]:SetText(text)
-					header.rows[i]:Show()
-				end
-			else
-				for k, header in ipairs(headers) do
-					header.rows[i]:Hide()
-				end
-			end
-		end
-	end
-
-	local function sortAsc(a,b) return a[sortIndex] < b[sortIndex] end
-	local function sortDesc(a,b) return a[sortIndex] > b[sortIndex] end
-
-	local function SortColumn(column)
-		local header = headers[column]
-		sortIndex = column
-		if not header.sortDir then
-			table.sort(RVS, sortAsc)
-		else
-			table.sort(RVS, sortDesc)
-		end
-		UpdateScroll()
-	end
-
-	local function CreateRow(parent)
-		local text = parent:CreateFontString(nil,"OVERLAY")
-		text:SetHeight(ROW_HEIGHT)
-		text:SetFontObject(GameFontNormalSmall)
-		text:SetJustifyH("LEFT")
-		text:SetTextColor(1,1,1)
-		return text
-	end
-
-	local function CreateHeader(content,column)
-		local header = CreateFrame("Button", nil, content)
-		header:SetScript("OnClick",function() header.sortDir = not header.sortDir; SortColumn(column) end)
-		header:SetHeight(20)
-		local title = header:CreateFontString(nil,"OVERLAY")
-		title:SetPoint("LEFT",header,"LEFT",10,0)
-		header:SetFontString(title)
-		header:SetNormalFontObject(GameFontNormalSmall)
-		header:SetHighlightFontObject(GameFontNormal)
-
-		local rows = {}
-		header.rows = rows
-		local text = CreateRow(header)
-		text:SetPoint("TOPLEFT",header,"BOTTOMLEFT",10,-3)
-		text:SetPoint("TOPRIGHT",header,"BOTTOMRIGHT",0,-3)
-		rows[1] = text
-
-		for i=2,NUM_ROWS do
-			text = CreateRow(header)
-			text:SetPoint("TOPLEFT", rows[i-1], "BOTTOMLEFT")
-			text:SetPoint("TOPRIGHT", rows[i-1], "BOTTOMRIGHT")
-			rows[i] = text
-		end
-
-		return header
-	end
-
-	function addon:RefreshVersionList()
-		if window and window:IsShown() then
-			for k,v in ipairs(RVS) do
-				v[2] = v.versions[value] or NONE
-			end
-
-			for name in pairs(Roster.name_to_unit) do
-				if not search(RVS,name,1) and name ~= self.PNAME then
-					RVS[#RVS+1] = {name,NONE,versions = {}}
-				end
-			end
-
-			SortColumn(sortIndex)
-		end
-	end
-
-	function addon:VersionCheck()
-		if value ~= "addon" then self:RequestVersions(value) end
-		if window and not window:IsShown() then
-			window:Show()
-			RefreshEncDropdown()
-			self:RefreshVersionList()
-		elseif not window then
-			window = self:CreateWindow("Version Check",220,295)
-			--@debug@
-			window:AddTitleButton("Interface\\Addons\\DXE\\Textures\\Window\\Sync.tga",
-											function() self:RequestAllVersions() end)
-			--@end-debug@
-			local content = window.content
-			local addonButton = CreateFrame("Button", nil, content, "UIPanelButtonTemplate")
-			addonButton:SetWidth(content:GetWidth()/3)
-			addonButton:SetHeight(25)
-			addonButton:SetNormalFontObject(GameFontNormalSmall)
-			addonButton:SetHighlightFontObject(GameFontHighlightSmall)
-			addonButton:SetDisabledFontObject(GameFontDisableSmall)
-			addonButton:SetText("AddOn")
-			addonButton:SetPoint("TOPLEFT",content,"TOPLEFT",0,-1)
-			addonButton:RegisterForClicks("LeftButtonUp","RightButtonUp")
-			addonButton:SetScript("OnClick",function(_,button) 
-				if button == "LeftButton" then
-					SetHeaderText(L["AddOn"],self.version)
-					value = "addon"
-				elseif button == "RightButton" then
-					if not dropdown.value then return end
-					SetHeaderText(list[dropdown.value],EDB[dropdown.value].version)
-					value = dropdown.value
-					self:RequestVersions(value)
-				end
-				self:RefreshVersionList() 
-			end)
-
-			dropdown = AceGUI:Create("Dropdown")
-			dropdown.frame:SetParent(content)
-			dropdown.frame:Show()
-			dropdown:SetPoint("TOPRIGHT",content,"TOPRIGHT")
-			dropdown:SetWidth(content:GetWidth()*2/3)
-			dropdown:SetCallback("OnValueChanged", dropdownChanged)
-			RefreshEncDropdown()
-			dropdown:SetValue(next(list))
-
-			heading = CreateFrame("Frame",nil,content)
-			heading:SetWidth(content:GetWidth())
-			heading:SetHeight(18)
-			heading:SetPoint("TOPLEFT",addonButton,"BOTTOMLEFT",0,-2)
-			local label = heading:CreateFontString(nil,"ARTWORK")
-		 	label:SetFont(GameFontNormalSmall:GetFont())
-			label:SetPoint("CENTER")
-			label:SetTextColor(1,1,0)
-			function heading:SetText(text) label:SetText(text) end
-			SetHeaderText(L["AddOn"],self.version)
-
-			local left = heading:CreateTexture(nil, "BACKGROUND")
-			left:SetHeight(8)
-			left:SetPoint("LEFT",heading,"LEFT",3,0)
-			left:SetPoint("RIGHT",label,"LEFT",-5,0)
-			left:SetTexture("Interface\\Tooltips\\UI-Tooltip-Border")
-			left:SetTexCoord(0.81, 0.94, 0.5, 1)
-
-			local right = heading:CreateTexture(nil, "BACKGROUND")
-			right:SetHeight(8)
-			right:SetPoint("RIGHT",heading,"RIGHT",-3,0)
-			right:SetPoint("LEFT",label,"RIGHT",5,0)
-			right:SetTexture("Interface\\Tooltips\\UI-Tooltip-Border")
-			right:SetTexCoord(0.81, 0.94, 0.5, 1)
-
-			for i=1,2 do headers[i] = CreateHeader(content,i) end
-			headers[1]:SetPoint("TOPLEFT",heading,"BOTTOMLEFT")
-			headers[1]:SetText(L["Name"])
-			headers[1]:SetWidth(120)
-
-			headers[2]:SetPoint("LEFT",headers[1],"LEFT",content:GetWidth()/2,0)
-			headers[2]:SetText(L["Version"])
-			headers[2]:SetWidth(80)
-
-			scrollFrame = CreateFrame("ScrollFrame", "DXEVCScrollFrame", content, "FauxScrollFrameTemplate")
-			scrollFrame:SetPoint("TOPLEFT", headers[1], "BOTTOMLEFT")
-			scrollFrame:SetPoint("BOTTOMRIGHT",-21,0)
-			scrollFrame:SetBackdrop(backdrop)
-			scrollFrame:SetBackdropBorderColor(0.33,0.33,0.33)
-
-			local scrollBar = _G[scrollFrame:GetName() .. "ScrollBar"]
-			local scrollBarBG = CreateFrame("Frame",nil,scrollBar)
-			scrollBarBG:SetBackdrop(backdrop)
-			scrollBarBG:SetPoint("TOPLEFT",-3,19)
-			scrollBarBG:SetPoint("BOTTOMRIGHT",3,-18)
-			scrollBarBG:SetBackdropBorderColor(0.33,0.33,0.33)
-			scrollBarBG:SetFrameLevel(scrollBar:GetFrameLevel()-2)
-
-			scrollFrame:SetScript("OnVerticalScroll", function(self, offset) 
-				FauxScrollFrame_OnVerticalScroll(self, offset, ROW_HEIGHT, UpdateScroll) 
-			end)
-
-			self:RefreshVersionList()
-			UpdateScroll()
-		end
-	end
-end
 

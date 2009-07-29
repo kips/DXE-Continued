@@ -65,4 +65,9 @@ MapDims= {
 	TheEyeofEternity = {
 		[1] = {w = 400.728405332355, h = 267.09113174487},
 	},
+	--@debug@
+	Ironforge = {
+		[0] = {w = 790, h = 527},
+	},
+	--@end-debug@
 }

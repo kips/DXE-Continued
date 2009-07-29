@@ -16,10 +16,12 @@ local db,pfl
 ----------------------------------
 -- CONSTANTS
 ----------------------------------
+-- IMPORTANT: Change if previous encounters are incompatible with Invoker
+local VERSION = 4
 
 local FIRST_MULTIPART, NEXT_MULTIPART, LAST_MULTIPART = "\001", "\002", "\003"
-local MAIN_PREFIX = "DXE_Distri"
-local TRANSFER_PREFIX = "DXE_DistriT"
+local MAIN_PREFIX = "DXE_Dist"..VERSION
+local TRANSFER_PREFIX = "DXE_DistT"..VERSION
 local UL_SUFFIX = "UL"
 local DL_SUFFIX = "DL"
 local DR_PTN = TRANSFER_PREFIX.."_([%w'%- ]+)" -- DownloadReceived

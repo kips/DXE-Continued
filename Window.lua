@@ -14,9 +14,6 @@ local backdropBorder = {
 	insets = {left = 2, right = 2, top = 2, bottom = 2}
 }
 
-local Windows = {}
-addon.Windows = Windows
-
 local buttonSize = 12
 local titleHeight = 15
 local inset = 2
@@ -69,9 +66,7 @@ function addon:CreateWindow(name,width,height)
 	assert(type(width) == "number")
 	assert(type(height) == "number")
 	--@end-debug@
-	if Windows[name] then error("Window already exists") return end
 	local properName = name:gsub(" ","")
-
 	local window = CreateFrame("Frame","DXEWindow" .. properName,UIParent)
 	window:SetWidth(width)
 	window:SetHeight(height)
@@ -126,8 +121,54 @@ function addon:CreateWindow(name,width,height)
 	content:SetPoint("BOTTOMRIGHT",window,"BOTTOMRIGHT",-contentInset,contentInset)
 	window.content = content
 
-	Windows[name] = window
 	return window
 end
 
+---------------------------------------
+-- REGISTRY
+---------------------------------------
+local registry = {}
+
+function addon:RegisterWindow(name,openFunc)
+	--@debug@
+	assert(type(name) == "string")
+	assert(type(openFunc) == "function")
+	--@end-debug@
+	registry[name] = openFunc
+end
+
+---------------------------------------
+-- DROPDOWN MENU
+---------------------------------------
+
+do
+	local UIDropDownMenu_CreateInfo = UIDropDownMenu_CreateInfo
+
+	local function Initialize(self,level)
+		level = 1
+		if level == 1 then
+			info = UIDropDownMenu_CreateInfo()
+			info.isTitle = true 
+			info.text = L["Windows"]
+			info.notCheckable = true 
+			info.justifyH = "LEFT"
+			UIDropDownMenu_AddButton(info,1)
+
+			for name,openFunc in pairs(registry) do
+				info = UIDropDownMenu_CreateInfo()
+				info.text = name
+				info.notCheckable = true
+				info.func = openFunc
+				info.owner = self
+				UIDropDownMenu_AddButton(info,1)
+			end
+		end
+	end
+
+	function addon:CreateWindowsDropDown()
+		local dialogs = CreateFrame("Frame", "DXEPaneWindows", UIParent, "UIDropDownMenuTemplate") 
+		UIDropDownMenu_Initialize(dialogs, Initialize, "MENU")
+		return dialogs
+	end
+end
 

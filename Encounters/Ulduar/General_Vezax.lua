@@ -22,6 +22,7 @@ do
 			{
 				{alert = "vaporcd"},
 				{alert = "enragecd"},
+				{alert = "animuscd"},
 				{set = {saronitecount = "INCR|1"}},
 			},
 		},
@@ -62,6 +63,16 @@ do
 				color2 = "CYAN",
 				sound = "ALERT2",
 			},
+			animuscd = {
+				varname = format(L["%s Timer"],L["Saronite Animus"]),
+				type = "dropdown",
+				text = format(L["%s Spawns"],L["Saronite Animus"]),
+				time = 259,
+				flashtime = 10,
+				sound = "ALERT3",
+				color1 = "YELLOW",
+			},
+			--[[
 			animuswarn = {
 				varname = format(L["%s Spawn"],L["Saronite Animus"]),
 				type = "simple",
@@ -69,6 +80,7 @@ do
 				time = 1.5,
 				sound = "ALERT3",
 			},
+			]]
 			vaporcd = {
 				varname = format(L["%s Cooldown"],L["Saronite Vapor"]),
 				type = "dropdown",
@@ -260,22 +272,39 @@ do
 						{alert = "vaporcd"},
 						{set = {saronitecount = "INCR|1"}},
 					},
+					--[[
 					-- Saronite Animus
 					{
 						{expect = {"#1#","find",L["A saronite barrier appears around"]}},
 						{alert = "animuswarn"},
 						{tracing = {33271,33524}},
 					},
+					]]
 				},
 			},
-			-- Saronite Animus dies
+			-- Saronite Barrier
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellid = 63364,
+				execute = {
+					{
+						{tracing = {33271,33524}}, -- Vezax, Saronite Animus
+					},
+				},
+			},
+			-- NPC Deaths
 			{
 				type = "combatevent",
 				eventtype = "UNIT_DIED",
 				execute = {
 					{
-						{expect = {"&npcid|#4#&","==","33524"}},
+						{expect = {"&npcid|#4#&","==","33524"}}, -- Saronite Animus
 						{tracing = {33271}},
+					},
+					{
+						{expect = {"&npcid|#4#&","==","33488"}}, -- Saronite Vapor
+						{quash = "animuscd"},
 					},
 				},
 			},

@@ -52,7 +52,7 @@ do
 				type = "dropdown",
 				text = format(L["Next %s"],SN[64443]),
 				time = "<bigbangtime>",
-				flashtime = 5,
+				flashtime = 10,
 				sound = "ALERT2",
 				color1 = "BLUE",
 				color2 = "BLUE",
