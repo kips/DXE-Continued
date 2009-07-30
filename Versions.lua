@@ -5,7 +5,7 @@ local L = addon.L
 local util = addon.util
 
 local gmatch,format = string.gmatch,string.format
-local sort,remove = table.sort,table.remove
+local sort,remove,concat = table.sort,table.remove,table.concat
 local tonumber = tonumber
 
 local Roster = addon.Roster
@@ -363,7 +363,6 @@ function CommHandler:OnCommRequestVersions(event,commType,sender,key)
 	if not EDB[key] then return end
 	addon:SendWhisperComm(sender,"VersionBroadcast",key,EDB[key].version)
 end
-
 
 function CommHandler:OnCommRequestAddOnVersion()
 	addon:BroadcastVersion("addon")

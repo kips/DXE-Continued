@@ -53,8 +53,8 @@ addon.defaults = defaults
 -- UPVALUES
 ---------------------------------------------
 
-local wipe,concat,remove = table.wipe,table.concat,table.remove
-local match,find,gmatch,sub,split,join = string.match,string.find,string.gmatch,string.sub,string.split,string.join
+local wipe,remove = table.wipe,table.remove
+local match,find,gmatch,sub = string.match,string.find,string.gmatch,string.sub
 local _G,select,tostring,type,tonumber = _G,select,tostring,type,tonumber
 local GetTime,GetNumRaidMembers,GetRaidRosterInfo = GetTime,GetNumRaidMembers,GetRaidRosterInfo
 local UnitName,UnitGUID,UnitIsEnemy,UnitClass,UnitAffectingCombat,UnitHealth,UnitIsFriend,UnitIsDead = 
@@ -1460,5 +1460,3 @@ function addon:DispatchComm(sender,success,commType,...)
 		self.callbacks:Fire(callback,commType,sender,...)
 	end
 end
-
-
