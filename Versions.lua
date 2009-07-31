@@ -83,9 +83,9 @@ local function SortColumn(column)
 	local header = headers[column]
 	sortIndex = column
 	if not header.sortDir then
-		table.sort(RVS, SortAsc)
+		sort(RVS, SortAsc)
 	else
-		table.sort(RVS, SortDesc)
+		sort(RVS, SortDesc)
 	end
 	UpdateScroll()
 end

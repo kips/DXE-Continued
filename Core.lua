@@ -69,6 +69,7 @@ local db,gbl,pfl
 
 local ACD = LibStub("AceConfigDialog-3.0")
 local AC = LibStub("AceConfig-3.0")
+local ACR = LibStub("AceConfigRegistry-3.0")
 local AceGUI = LibStub("AceGUI-3.0")
 local AceTimer = LibStub("AceTimer-3.0")
 local L = LibStub("AceLocale-3.0"):GetLocale("DXE")
@@ -123,6 +124,7 @@ do
 	local libs = {
 		ACD = ACD,
 		AC = AC,
+		ACR = ACR,
 		AceGUI = AceGUI,
 		AceTimer = AceTimer,
 		L = L,
