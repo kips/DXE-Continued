@@ -582,7 +582,6 @@ local function GetAlert()
 	alert:Show()
 
 	-- Apply settings
-	alert:SetScale(pfl.Scale)
 	alert.bar:SetStatusBarTexture(SM:Fetch("statusbar",pfl.BarTexture))
 
 	return alert
