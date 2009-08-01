@@ -1,5 +1,21 @@
 -- Based off RDX's alert system
 
+local defaults = {
+	profile = {
+		BarTexture = "Blizzard",
+		DisableDropdowns = false,
+		TopScale = 1,
+		CenterScale = 1,
+		TopGrowth = "DOWN",
+		CenterGrowth = "DOWN",
+		TopAlpha = 0.55,
+		CenterAlpha = 0.75,
+		FlashAlpha = 0.6,
+		FlashDuration = 0.8,
+		FlashOscillations = 2,
+	}
+}
+
 local addon = DXE
 local version = tonumber(("$Rev$"):match("%d+"))
 addon.version = version > addon.version and version or addon.version
@@ -32,6 +48,7 @@ local Active = {}
 local TopAlertStack = {}
 local CenterAlertStack = {}
 local AlertPool = {}
+local prototype = {}
 
 local TopStackAnchor,CenterStackAnchor
 
@@ -41,10 +58,20 @@ function module:RefreshProfile()
 end
 
 function module:RefreshAlerts()
+	if not next(Active) then return end
 	for alert in pairs(Active) do
-		alert:SetScale(pfl.Scale)
 		alert.bar:SetStatusBarTexture(SM:Fetch("statusbar",pfl.BarTexture))
+		local data = alert.data
+		if data.anchor == "TOP" then
+			alert:SetScale(pfl.TopScale)
+			alert:SetAlpha(pfl.TopAlpha)
+		elseif data.anchor == "CENTER" then
+			alert:SetScale(pfl.CenterScale)
+			alert:SetAlpha(pfl.CenterAlpha)
+		end
 	end
+	prototype:LayoutAlertStack(TopAlertStack, TopStackAnchor, pfl.TopGrowth)
+	prototype:LayoutAlertStack(CenterAlertStack, CenterStackAnchor, pfl.CenterGrowth)
 end
 
 function module:InitializeOptions(area)
@@ -65,25 +92,104 @@ function module:InitializeOptions(area)
 					AlertsTest = {
 						type = "execute",
 						name = L["Test Bars"],
+						desc = L["Fires a dropdown, center popup, and simple alert bars"],
 						order = 100,
 						func = "AlertsTest",
-					},
-					Scale = {
-						order = 200,
-						type = "range",
-						name = L["Bar Scale"],
-						min = 0.5,
-						max = 1.5,
-						step = 0.1,
-						set = function(info,v) pfl.Scale = v; self:RefreshAlerts() end,
 					},
 					BarTexture = {
 						order = 300,
 						type = "select",
 						name = L["Bar Texture"],
+						desc = L["Select a bar texture used on all bars"],
 						values = SM:HashTable("statusbar"),
 						set = function(info,v) pfl.BarTexture = v; self:RefreshAlerts() end,
 						dialogControl = "LSM30_Statusbar",
+					},
+					DisableDropdowns = {
+						order = 400,
+						type = "toggle",
+						name = L["Disable Dropdowns"],
+						desc = L["Anchor bars onto the center anchor only"],
+					},
+					top_group = {
+						type = "group",
+						name = L["Top"],
+						order = 500,
+						args = {
+							top_desc = {
+								type = "description",
+								name = L["Adjust settings related to the top anchor"],
+								order = 1,
+							},
+							TopScale = {
+								order = 100,
+								type = "range",
+								name = L["Scale"],
+								desc = L["Adjust the size of top bars"],
+								min = 0.5,
+								max = 1.5,
+								step = 0.05,
+								set = function(info,v) pfl.TopScale = v; self:RefreshAlerts() end,
+							},
+							TopAlpha = {
+								type = "range",
+								name = L["Alpha"],
+								desc = L["Adjust the transparency of top bars"],
+								order = 300,
+								min = 0.1,
+								max = 1,
+								step = 0.05,
+								set = function(info,v) pfl.TopAlpha = v; self:RefreshAlerts() end,
+							},
+							TopGrowth = {
+								order = 300,
+								type = "select",
+								name = L["Growth"],
+								desc = L["The direction top bars grow"],
+								values = {DOWN = L["Down"], UP = L["Up"]},
+								set = function(info,v) pfl.TopGrowth = v; self:RefreshAlerts() end,
+							},
+						},
+					},
+					center_group = {
+						type = "group",
+						name = L["Center"],
+						order = 600,
+						args = {
+							center_desc = {
+								type = "description",
+								name = L["Adjust settings related to the center anchor"],
+								order = 1,
+							},
+							CenterScale = {
+								order = 100,
+								type = "range",
+								name = L["Scale"],
+								desc = L["Adjust the size of center bars"],
+								min = 0.5,
+								max = 1.5,
+								step = 0.05,
+								set = function(info,v) pfl.CenterScale = v; self:RefreshAlerts() end,
+							},
+							CenterAlpha = {
+								type = "range",
+								name = L["Alpha"],
+								desc = L["Adjust the transparency of center bars"],
+								order = 200,
+								min = 0.1,
+								max = 1,
+								step = 0.05,
+								set = function(info,v) pfl.CenterAlpha = v; self:RefreshAlerts() end,
+							},
+							CenterGrowth = {
+								order = 300,
+								type = "select",
+								name = L["Growth"],
+								desc = L["The direction center bars grow"],
+								values = {DOWN = L["Down"], UP = L["Up"]},
+								set = function(info,v) pfl.CenterGrowth = v; self:RefreshAlerts() end,
+							},
+						},
 					},
 				},
 			},
@@ -101,12 +207,14 @@ function module:InitializeOptions(area)
 					FlashTest = {
 						type = "execute",
 						name = L["Test Flash"],
+						desc = L["Fires a flash using a random color"],
 						order = 100,
 						func = "FlashTest",
 					},
 					FlashAlpha = {
 						type = "range",
 						name = L["Flash Alpha"],
+						desc = L["Adjust the transparency of the flash"],
 						order = 200,
 						min = 0.1,
 						max = 1,
@@ -115,6 +223,7 @@ function module:InitializeOptions(area)
 					FlashDuration = {
 						type = "range",
 						name = L["Duration"],
+						desc = L["Adjust how long the flash lasts"],
 						order = 300,
 						min = 0.2,
 						max = 3,
@@ -123,6 +232,7 @@ function module:InitializeOptions(area)
 					FlashOscillations = {
 						type = "range",
 						name = L["Oscillations"],
+						desc = L["Adjust how many times the flash fades in and out"],
 						order = 400,
 						min = 1,
 						max = 10,
@@ -145,15 +255,7 @@ function module:OnInitialize()
 	addon:RegisterMoveSaving(CenterStackAnchor,"CENTER","UIParent","CENTER",0,100)
 	addon:LoadPosition("DXEAlertsCenterStackAnchor")
 
-	self.db = addon.db:RegisterNamespace("Alerts", {
-		profile = {
-			BarTexture = "Blizzard",
-			Scale = 1,
-			FlashAlpha = 0.6,
-			FlashDuration = 0.8,
-			FlashOscillations = 2,
-		},
-	})
+	self.db = addon.db:RegisterNamespace("Alerts", defaults)
 	db = self.db
 	pfl = db.profile
 
@@ -228,7 +330,6 @@ UpdateFrame:Hide()
 -- PROTOTYPE
 ---------------------------------------
 
-local prototype = {}
 
 function prototype:SetColor(c1,c2)
 	self.data.c1 = c1
@@ -256,56 +357,80 @@ do
 		return (a1.data.timeleft or 10000) > (a2.data.timeleft or 10000)
 	end
 
-	function prototype:LayoutAlertStack(stack,anchor)
+	function prototype:LayoutAlertStack(stack,anchor,growth)
 		sort(stack, SortDesc)
+		local point,relpoint,mult
+		if growth == "DOWN" then
+			point = "TOP"
+			relpoint = "BOTTOM"
+			mult = -1
+		elseif growth == "UP" then
+			point = "BOTTOM"
+			relpoint = "TOP"
+			mult = 1
+		end
 		for i,alert in ipairs(stack) do
 			alert:ClearAllPoints()
-			alert:SetPoint("TOP",anchor,"BOTTOM")
-			anchor = alert
+			alert:SetPoint(point,anchor,relpoint,0,mult*(i-1)*BARHEIGHT)
 		end
 	end
 end
 
 function prototype:AnchorToTop()
+	self.data.anchor = "TOP"
+	self:SetAlpha(pfl.TopAlpha)
+	self:SetScale(pfl.TopScale)
 	self:RemoveFromStacks()
 	TopAlertStack[#TopAlertStack+1] = self
-	self:LayoutAlertStack(TopAlertStack, TopStackAnchor)
+	self:LayoutAlertStack(TopAlertStack, TopStackAnchor, pfl.TopGrowth)
 end
 
 function prototype:AnchorToCenter()
 	if self.data.sound then PlaySoundFile(self.data.sound) end
+	self.data.anchor = "CENTER"
+	self:SetAlpha(pfl.CenterAlpha)
+	self:SetScale(pfl.CenterScale)
 	self:RemoveFromStacks()
 	CenterAlertStack[#CenterAlertStack+1] = self
-	self:LayoutAlertStack(CenterAlertStack, CenterStackAnchor)
+	self:LayoutAlertStack(CenterAlertStack, CenterStackAnchor, pfl.CenterGrowth)
 end
 
 do
 	local function AnimationFunc(self,time)
 		local data = self.data
 		local perc = (time - data.t0) / ANIMATION_TIME
-		if perc > 1 or perc < 0 then 
+		if perc < 0 or perc > 1 then 
 			self.animFunc = nil
 			self:AnchorToCenter()
 			if self.data.flashscreen then
 				module:FlashScreen(self.data.c1)
 			end
-			return 
+		else
+			local a = pfl.TopAlpha + ((pfl.CenterAlpha - pfl.TopAlpha) * perc)
+			self:SetAlpha(a)
+
+			local s = pfl.TopScale + ((pfl.CenterScale - pfl.TopScale) * perc)
+			self:SetScale(s)
+
+			local escale = self:GetEffectiveScale()
+			local x = (data.fx + ((data.tox - data.fx) * perc)) / escale
+			local y = (data.fy + ((data.toy - data.fy) * perc)) / escale
+			self:ClearAllPoints()
+			self:SetPoint("CENTER",UIParent,"BOTTOMLEFT",x,y)
 		end
-		local x = data.fx + ((data.tox - data.fx) * perc)
-		local y = data.fy + ((data.toy - data.fy) * perc)
-		self:ClearAllPoints()
-		self:SetPoint("TOP",UIParent,"BOTTOMLEFT",x,y)
 	end
 
 	function prototype:TranslateToCenter()
+		self.data.anchor = nil
 		self:RemoveFromStacks()
-		self:LayoutAlertStack(TopAlertStack, TopStackAnchor)
+		local x,y = self:GetCenter()
+		self:ClearAllPoints()
+		self:SetPoint("CENTER",UIParent,"BOTTOMLEFT",x,y)
+		self:LayoutAlertStack(TopAlertStack, TopStackAnchor, pfl.TopGrowth)
 		local worldscale,escale = UIParent:GetEffectiveScale(),self:GetEffectiveScale()
-		local fx,fy = self:GetCenter()
-		fy = fy + self:GetHeight()/2
+		local fx,fy = x*escale, y*escale
 		local cx,cy = CenterStackAnchor:GetCenter()
-		cy = cy - CenterStackAnchor:GetHeight()/2
-		local tox,toy = cx*worldscale/escale,cy*worldscale/escale
+		local tox,toy = cx*worldscale,cy*worldscale
 		local data = self.data
 		data.t0 = GetTime()
 		data.fx = fx
@@ -455,7 +580,6 @@ local function GetAlert()
 	Active[alert] = true
 	UpdateFrame:Show()
 	alert:Show()
-	alert:SetAlpha(0.6)
 
 	-- Apply settings
 	alert:SetScale(pfl.Scale)
@@ -498,11 +622,8 @@ function module:GetAlertTimeleft(id)
 	return -1
 end
 
--- Dropdown countdown alert
--- This alert counts down a timer at the top of the screen
--- When a "Flash Time" is achieved, it drops to the center, announces a message, and plays a sound effect
--- When it expires, it fades off the screen
 function module:Dropdown(id, text, totalTime, flashTime, sound, c1, c2, flashscreen)
+	if pfl.DisableDropdowns then self:CenterPopup(id, text, totalTime, flashTime, sound, c1, c2, flashscreen) return end
 	local soundFile,c1Data,c2Data = GetMedia(sound,c1,c2)
 	local alert = GetAlert()
 	alert:SetID(id)
@@ -522,9 +643,6 @@ function module:Dropdown(id, text, totalTime, flashTime, sound, c1, c2, flashscr
 	return alert
 end
 
-
--- Center popup countdown alert
--- This alert plays a sound right away, then displays a (short) countdown midscreen.
 function module:CenterPopup(id, text, totalTime, flashTime, sound, c1, c2, flashscreen)
 	local soundFile,c1Data,c2Data = GetMedia(sound,c1,c2)
 	local alert = GetAlert()
@@ -540,7 +658,6 @@ function module:CenterPopup(id, text, totalTime, flashTime, sound, c1, c2, flash
 	return alert
 end
 
--- Center popup, simple text
 function module:Simple(text, totalTime, sound, c1, flashscreen)
 	local soundFile,c1Data = GetMedia(sound,c1)
 	local alert = GetAlert()
@@ -563,7 +680,7 @@ end
 
 function module:AlertsTest()
 	self:CenterPopup("AlertTest1", "Decimating. Life Tap Now!", 10, 5, "DXE ALERT1", "DCYAN")
-	self:Dropdown("AlertTest2", "Bigger City Opening", 20, 5, "DXE ALERT2", "BLUE")
+	self:Dropdown("AlertTest2", "Bigger City Opening", 20, 5, "DXE ALERT2", "BLUE", "ORANGE")
 	self:Simple("Just Kill It!",3,"DXE ALERT3","RED")
 end
 

@@ -171,6 +171,7 @@ function addon:InitializeOptions()
 						order = 100,
 						type = "toggle",
 						name = L["Show Pane"],
+						desc = L["Toggle the visibility of the pane"],
 						set = function(info,v)
 							gbl.ShowPane = v
 							self:UpdatePaneVisibility()
@@ -179,7 +180,8 @@ function addon:InitializeOptions()
 					PaneOnlyInRaid = {
 						order = 200,
 						type = "toggle",
-						name = L["Only in raid"],
+						name = L["Only in raids"],
+						desc = L["Show the pane only in raids"],
 						set = function(info,v)
 							gbl.PaneOnlyInRaid = v
 							self:UpdatePaneVisibility()
@@ -190,6 +192,7 @@ function addon:InitializeOptions()
 						order = 250,
 						type = "toggle",
 						name = L["Only in instances"],
+						desc = L["Show the pane only in instances"],
 						set = function(info,v)
 							gbl.PaneOnlyInInstance = v
 							self:UpdatePaneVisibility()
@@ -200,6 +203,7 @@ function addon:InitializeOptions()
 						order = 300,
 						type = "range",
 						name = L["Pane scale"],
+						desc = L["Adjust the scale of the pane"],
 						set = function(info,v)
 							gbl.PaneScale = v
 							self:UpdatePaneScale()
