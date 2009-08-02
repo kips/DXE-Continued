@@ -13,6 +13,8 @@ local defaults = {
 		FlashAlpha = 0.6,
 		FlashDuration = 0.8,
 		FlashOscillations = 2,
+		TopBarWidth = 250,
+		CenterBarWidth = 250,
 	}
 }
 
@@ -65,9 +67,11 @@ function module:RefreshAlerts()
 		if data.anchor == "TOP" then
 			alert:SetScale(pfl.TopScale)
 			alert:SetAlpha(pfl.TopAlpha)
+			alert:SetWidth(pfl.TopBarWidth)
 		elseif data.anchor == "CENTER" then
 			alert:SetScale(pfl.CenterScale)
 			alert:SetAlpha(pfl.CenterAlpha)
+			alert:SetWidth(pfl.CenterBarWidth)
 		end
 	end
 	prototype:LayoutAlertStack(TopAlertStack, TopStackAnchor, pfl.TopGrowth)
@@ -111,9 +115,10 @@ function module:InitializeOptions(area)
 						name = L["Disable Dropdowns"],
 						desc = L["Anchor bars onto the center anchor only"],
 					},
+					
 					top_group = {
 						type = "group",
-						name = L["Top"],
+						name = L["Top Anchored Bars"],
 						order = 500,
 						args = {
 							top_desc = {
@@ -124,7 +129,7 @@ function module:InitializeOptions(area)
 							TopScale = {
 								order = 100,
 								type = "range",
-								name = L["Scale"],
+								name = L["Bar Scale"],
 								desc = L["Adjust the size of top bars"],
 								min = 0.5,
 								max = 1.5,
@@ -133,7 +138,7 @@ function module:InitializeOptions(area)
 							},
 							TopAlpha = {
 								type = "range",
-								name = L["Alpha"],
+								name = L["Bar Alpha"],
 								desc = L["Adjust the transparency of top bars"],
 								order = 300,
 								min = 0.1,
@@ -144,16 +149,26 @@ function module:InitializeOptions(area)
 							TopGrowth = {
 								order = 300,
 								type = "select",
-								name = L["Growth"],
+								name = L["Bar Growth"],
 								desc = L["The direction top bars grow"],
 								values = {DOWN = L["Down"], UP = L["Up"]},
 								set = function(info,v) pfl.TopGrowth = v; self:RefreshAlerts() end,
+							},
+							TopBarWidth = {
+								order = 400,
+								type = "range",
+								name = L["Bar Width"],
+								desc = L["Adjust the width of top bars"],
+								min = 220,
+								max = 1000,
+								step = 1,
+								set = function(info,v) pfl.TopBarWidth = v; self:RefreshAlerts() end,
 							},
 						},
 					},
 					center_group = {
 						type = "group",
-						name = L["Center"],
+						name = L["Center Anchored Bars"],
 						order = 600,
 						args = {
 							center_desc = {
@@ -164,7 +179,7 @@ function module:InitializeOptions(area)
 							CenterScale = {
 								order = 100,
 								type = "range",
-								name = L["Scale"],
+								name = L["Bar Scale"],
 								desc = L["Adjust the size of center bars"],
 								min = 0.5,
 								max = 1.5,
@@ -173,7 +188,7 @@ function module:InitializeOptions(area)
 							},
 							CenterAlpha = {
 								type = "range",
-								name = L["Alpha"],
+								name = L["Bar Alpha"],
 								desc = L["Adjust the transparency of center bars"],
 								order = 200,
 								min = 0.1,
@@ -184,10 +199,20 @@ function module:InitializeOptions(area)
 							CenterGrowth = {
 								order = 300,
 								type = "select",
-								name = L["Growth"],
+								name = L["Bar Growth"],
 								desc = L["The direction center bars grow"],
 								values = {DOWN = L["Down"], UP = L["Up"]},
 								set = function(info,v) pfl.CenterGrowth = v; self:RefreshAlerts() end,
+							},
+							CenterBarWidth = {
+								order = 400,
+								type = "range",
+								name = L["Bar Width"],
+								desc = L["Adjust the width of center bars"],
+								min = 220,
+								max = 1000,
+								step = 1,
+								set = function(info,v) pfl.CenterBarWidth = v; self:RefreshAlerts() end,
 							},
 						},
 					},
@@ -380,6 +405,7 @@ function prototype:AnchorToTop()
 	self.data.anchor = "TOP"
 	self:SetAlpha(pfl.TopAlpha)
 	self:SetScale(pfl.TopScale)
+	self:SetWidth(pfl.TopBarWidth)
 	self:RemoveFromStacks()
 	TopAlertStack[#TopAlertStack+1] = self
 	self:LayoutAlertStack(TopAlertStack, TopStackAnchor, pfl.TopGrowth)
@@ -390,6 +416,7 @@ function prototype:AnchorToCenter()
 	self.data.anchor = "CENTER"
 	self:SetAlpha(pfl.CenterAlpha)
 	self:SetScale(pfl.CenterScale)
+	self:SetWidth(pfl.CenterBarWidth)
 	self:RemoveFromStacks()
 	CenterAlertStack[#CenterAlertStack+1] = self
 	self:LayoutAlertStack(CenterAlertStack, CenterStackAnchor, pfl.CenterGrowth)
@@ -411,6 +438,9 @@ do
 
 			local s = pfl.TopScale + ((pfl.CenterScale - pfl.TopScale) * perc)
 			self:SetScale(s)
+
+			local w = pfl.TopBarWidth + ((pfl.CenterBarWidth - pfl.TopBarWidth) * perc)
+			self:SetWidth(w)
 
 			local escale = self:GetEffectiveScale()
 			local x = (data.fx + ((data.tox - data.fx) * perc)) / escale
@@ -533,7 +563,7 @@ local BackdropBorder = {edgeFile="Interface\\Tooltips\\UI-Tooltip-Border", edgeS
 local BarCount = 1
 local function CreateAlert()
 	local self = CreateFrame("Frame","DXEAlertBar"..BarCount,UIParent)
-	self:SetWidth(BARWIDTH)
+	--self:SetWidth(BARWIDTH) -- 250
 	self:SetHeight(BARHEIGHT)
 	self:SetBackdrop(Backdrop)
 
@@ -551,17 +581,17 @@ local function CreateAlert()
 	border:SetBackdrop(BackdropBorder)
 	border:SetFrameLevel(bar:GetFrameLevel()+1)
 
-	local text = bar:CreateFontString(nil,"ARTWORK")
-	text:SetFont("Interface\\Addons\\DXE\\Fonts\\FGM.ttf",10)
-	text:SetWidth(160) 
-	text:SetHeight(20)
-	text:SetPoint("TOPLEFT",self,"TOPLEFT",5,-5)
-	self.text = text
-
 	self.timer = addon.AceGUI:Create("DXE_Timer")
-	self.timer:SetPoint("LEFT",self.text,"RIGHT")
+	self.timer:SetPoint("RIGHT",self,"RIGHT",-5,0)
 	self.timer.frame:SetFrameLevel(self:GetFrameLevel()+1)
 	self.timer.frame:SetParent(self)
+
+	local text = bar:CreateFontString(nil,"ARTWORK")
+	text:SetFont("Interface\\Addons\\DXE\\Fonts\\FGM.ttf",10)
+	text:SetPoint("LEFT",self,"LEFT",5,0)
+	-- Adjust if we ever have a timer > 1 hour
+	text:SetPoint("RIGHT",self.timer.frame,"LEFT",7,0)
+	self.text = text
 
 	addon.AceTimer:Embed(self)
 	for k,v in pairs(prototype) do self[k] = v end

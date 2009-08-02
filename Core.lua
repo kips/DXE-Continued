@@ -158,7 +158,6 @@ local function search(t,value,i)
 			if type(v) == "table" and v[i] == value then return k end
 		elseif v == value then return k end
 	end
-	return nil
 end
 
 local function blend(c1, c2, factor)
@@ -612,7 +611,6 @@ function addon:Scan()
 			end
 		end
 	end
-	return nil
 end
 
 function addon:ScanUpdate()
@@ -621,12 +619,26 @@ function addon:ScanUpdate()
 end
 
 ---------------------------------------------
+-- PLAYER CONSTANTS
+---------------------------------------------
+
+function addon:SetPGUID(n)
+	if n == 0 then return end
+	self.PGUID = UnitGUID("player")
+	if not self.PGUID then self:ScheduleTimer("SetPGUID",1,n-1) end
+end
+
+function addon:SetPlayerConstants()
+	self.PGUID = UnitGUID("player")
+	if not self.PGUID then self:ScheduleTimer("SetPGUID",1,5) end
+	self.PNAME = UnitName("player")
+end
+
+---------------------------------------------
 -- GENERIC EVENTS
 ---------------------------------------------
 
 function addon:PLAYER_ENTERING_WORLD()
-	self.PGUID = self.PGUID or UnitGUID("player")
-	self.PNAME = self.PNAME or UnitName("player")
 	self:UpdatePaneVisibility()
 	self:UpdateTriggers()
 end
@@ -745,6 +757,7 @@ function addon:OnInitialize()
 end
 
 function addon:OnEnable()
+	self:SetPlayerConstants()
 	self:UpdateTriggers()
 	self:UpdateLock()
 	self:UpdatePaneScale()
