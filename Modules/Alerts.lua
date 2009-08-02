@@ -14,7 +14,7 @@ local defaults = {
 		FlashDuration = 0.8,
 		FlashOscillations = 2,
 		TopBarWidth = 250,
-		CenterBarWidth = 250,
+		CenterBarWidth = 300,
 	}
 }
 
@@ -35,7 +35,6 @@ local util = addon.util
 
 local ANIMATION_TIME = 0.3
 local FADE_TIME = 2
-local BARWIDTH = 250
 local BARHEIGHT = 30
 
 local db,pfl
@@ -386,13 +385,9 @@ do
 		sort(stack, SortDesc)
 		local point,relpoint,mult
 		if growth == "DOWN" then
-			point = "TOP"
-			relpoint = "BOTTOM"
-			mult = -1
+			point,relpoint,mult = "TOP","BOTTOM",-1
 		elseif growth == "UP" then
-			point = "BOTTOM"
-			relpoint = "TOP"
-			mult = 1
+			point,relpoint,mult = "BOTTOM","TOP",1
 		end
 		for i,alert in ipairs(stack) do
 			alert:ClearAllPoints()
@@ -563,7 +558,6 @@ local BackdropBorder = {edgeFile="Interface\\Tooltips\\UI-Tooltip-Border", edgeS
 local BarCount = 1
 local function CreateAlert()
 	local self = CreateFrame("Frame","DXEAlertBar"..BarCount,UIParent)
-	--self:SetWidth(BARWIDTH) -- 250
 	self:SetHeight(BARHEIGHT)
 	self:SetBackdrop(Backdrop)
 
