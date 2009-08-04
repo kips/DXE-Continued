@@ -15,7 +15,7 @@ local debugDefaults = {
 
 local defaults = {
 	global = {
-		Enabled = true, 
+		Enabled = true,
 		Locked = true,
 		PaneScale = 1, 
 		ShowPane = true,
