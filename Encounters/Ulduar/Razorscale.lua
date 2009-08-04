@@ -36,9 +36,9 @@ do
 				sound = "ALERT6",
 			},
 			devourwarnself = {
-				varname = format(L["%s on self"],SN[63014]),
+				varname = format(L["%s on self"],SN[63236]),
 				type = "simple",
-				text = format(L["Move Out of %s"],SN[63014]).."!",
+				text = format(L["Move Out of %s"],SN[63236]).."!",
 				time = 1.5,
 				color1 = "RED",
 				sound = "ALERT1",
@@ -75,7 +75,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellid = {63014,63816},
+				spellid = {63236,64704,64733},
 				execute = {
 					{
 						{expect = {"#4#","==","&playerguid&"}},
