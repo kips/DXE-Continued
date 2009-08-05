@@ -29,3 +29,4 @@ move-folders:
     DXE/Encounters/Ulduar: DXE_Ulduar
     DXE/Encounters/Naxxramas: DXE_Naxxramas
     DXE/Encounters/Northrend: DXE_Northrend
+    DXE/Encounters/Coliseum: DXE_Coliseum

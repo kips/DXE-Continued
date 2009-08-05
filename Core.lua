@@ -14,7 +14,7 @@ local debugDefaults = {
 --@end-debug@
 
 local defaults = {
-	global = {
+	global = { 
 		Enabled = true,
 		Locked = true,
 		PaneScale = 1, 
