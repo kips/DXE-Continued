@@ -254,7 +254,7 @@ local RepFuncs = {
 	playerguid = function() return addon.PGUID end,
 	playername = function() return addon.PNAME end,
 	vehicleguid  = function() return UnitGUID("vehicle") or "" end,
-	difficulty = function() return tostring(GetCurrentDungeonDifficulty()) end,
+	difficulty = function() return tostring(GetRaidDifficulty()) end,
 	-- First health watcher
 	tft = tft,
 	tft_unitexists = function() return tostring(UnitExists(tft())) end,
