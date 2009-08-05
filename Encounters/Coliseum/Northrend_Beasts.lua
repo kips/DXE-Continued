@@ -288,6 +288,7 @@ do
 						{expect = {"&npcid|#4#","==","34796"}}, -- Gormok
 						{tracing = {35144,34799}},
 						{quash = "impalecd"},
+						{quash = "stompcd"},
 					},
 					{
 						{expect = {"&npcid|#4#","==","35144"}}, -- Acidmaw
