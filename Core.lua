@@ -82,7 +82,7 @@ local SN = setmetatable({},{
 		local name = GetSpellInfo(k)
 		if not name then error("Invalid spell name attempted to be retrieved") end
 		t[k] = name
-		return name
+		return name 
 	end,
 })
 

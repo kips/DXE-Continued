@@ -118,6 +118,14 @@ do
 				time = 15,
 				color1 = "GREY",
 			},
+			crashcast = {
+				varname = format(L["%s Cast"],SN[66683]),
+				type = "centerpopup",
+				text = format(L["%s Cast"],SN[66683]),
+				time = 1,
+				color1 = "INDIGO",
+				sound = "ALERT8",
+			},
 			crashcd = {
 				varname = format(L["%s Cooldown"],SN[66683]),
 				type = "dropdown",
@@ -266,6 +274,7 @@ do
 				spellid = 66683,
 				execute = {
 					{
+						{alert = "crashcast"},
 						{alert = "crashcd"},
 					},
 				},
