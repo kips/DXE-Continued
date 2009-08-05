@@ -66,7 +66,7 @@ do
 			bileonself = {
 				varname = format(L["%s on self"],SN[66870]),
 				type = "dropdown",
-				text = format(L["%s: %s"],SN[66870],L["YOU"]).."!",
+				text = format("%s: %s",SN[66870],L["YOU"]).."!",
 				time = 24,
 				flashtime = 24,
 				sound = "ALERT3",
@@ -85,7 +85,7 @@ do
 			toxinonself = {
 				varname = format(L["%s on self"],SN[66823]),
 				type = "dropdown",
-				text = format(L["%s: %s"],SN[66823],L["YOU"]).."!",
+				text = format("%s: %s",SN[66823],L["YOU"]).."!",
 				time = 60,
 				flashtime = 60,
 				sound = "ALERT2",
