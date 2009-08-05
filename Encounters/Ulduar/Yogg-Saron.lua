@@ -24,8 +24,7 @@ do
 		userdata = {
 			portaltime = {73,90,loop = false},
 			portaltext = {format(L["%s Soon"],L["Portals"]),format(L["Next %s"],L["Portals"]), loop = false},
-			crushertime = 14,
-			allowcrusher = 1,
+			crushertime = {14,55,loop = false},
 			phase = "1",
 		},
 		onstart = {
@@ -345,16 +344,16 @@ do
 					},
 				},
 			},
-			-- Crusher Tentacle spawn
+			-- Crusher Tentacle spawn -> Focused Anger
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_SUCCESS",
-				spellid = 64144,
+				spellid = {57688,57689},
 				execute = {
 					{
-						{expect = {"&timeleft|crushertentaclespawn&","<","0.5"}},
+						--{expect = {"&timeleft|crushertentaclespawn&","<","0.5"}},
 						{expect = {"<phase>","==","2"}},
-						{set = {crushertime = 50}},
+						--{set = {crushertime = 55}},
 						{quash = "crushertentaclespawn"},
 						{alert = "crushertentaclespawn"},
 					},

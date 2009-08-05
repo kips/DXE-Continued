@@ -35,7 +35,11 @@ function addon:VEZAXTEST()
 end
 
 function addon:KOLOGARNTEST()
-	self.Invoker:COMBAT_EVENT(nil,nil,"UNIT_DIED",nil,nil,nil,"0xF5300080A6000000")
+	self.Invoker:COMBAT_EVENT(nil,nil,"UNIT_DIED",nil,nil,nil,"0xF1500080A6006971")
+end
+
+function addon:KOLOGARNTEST2()
+	self.Invoker:COMBAT_EVENT(nil,nil,"UNIT_DIED",nil,nil,nil,"0xF1300080A5006972")
 end
 
 function addon:TestArrowOnTarget()
@@ -46,4 +50,3 @@ function addon:AlertsDouble()
 	self.Alerts:Dropdown("AlertTest2", "Bigger City Opening", 10, 5, "None", "BLUE")
 	self.Alerts:Dropdown("AlertTest2", "Bigger City Opening", 15, 10, "None", "BLUE")
 end
-

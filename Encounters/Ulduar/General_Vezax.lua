@@ -67,7 +67,7 @@ do
 				varname = format(L["%s Timer"],L["Saronite Animus"]),
 				type = "dropdown",
 				text = format(L["%s Spawns"],L["Saronite Animus"]),
-				time = 259,
+				time = 229,
 				flashtime = 10,
 				sound = "ALERT3",
 				color1 = "YELLOW",
