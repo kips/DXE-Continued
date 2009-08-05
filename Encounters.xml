@@ -37,4 +37,10 @@
 <Script file="Encounters\Ulduar\XT002.lua"/>
 <Script file="Encounters\Ulduar\Yogg-Saron.lua"/>
 
+<Script file="Encounters\Coliseum\Anub.lua"/>
+<Script file="Encounters\Coliseum\Faction_Champions.lua"/>
+<Script file="Encounters\Coliseum\Lord_Jaraxxus.lua"/>
+<Script file="Encounters\Coliseum\Northrend_Beasts.lua"/>
+<Script file="Encounters\Coliseum\Twin_Valkyr.lua"/>
+
 </Ui>

@@ -65,6 +65,10 @@ MapDims= {
 	TheEyeofEternity = {
 		[1] = {w = 400.728405332355, h = 267.09113174487},
 	},
+	TheArgentColiseum = {
+		[1] = {w = 344.20785972537, h = 229.57961178118},
+		--[2] = {}, TODO
+	},
 	--@debug@
 	Ironforge = {
 		[0] = {w = 790, h = 527},

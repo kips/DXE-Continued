@@ -43,7 +43,7 @@ function addon:KOLOGARNTEST2()
 end
 
 function addon:TestArrowOnTarget()
-	addon.Arrows:AddTarget("target",10,"AWAY","MOVE","Crash","None",false)
+	addon.Arrows:AddTarget("target",10,"TOWARD","MOVE","Crash","None",false)
 end
 
 function addon:AlertsDouble()
