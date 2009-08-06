@@ -641,6 +641,7 @@ end
 function addon:PLAYER_ENTERING_WORLD()
 	self:UpdatePaneVisibility()
 	self:UpdateTriggers()
+	self:StopEncounter()
 end
 
 ---------------------------------------------

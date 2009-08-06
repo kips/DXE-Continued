@@ -140,7 +140,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_DAMAGE",
-				spellid = {66317,66320}, -- Initial impact, Fire on ground
+				spellid = 67472,
 				execute = {
 					{
 						{alert = "firebombwarnself"},
@@ -151,7 +151,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_SUCCESS",
-				spellid = 66331,
+				spellid = 67477,
 				execute = {
 					{
 						{alert = "impalecd"},
@@ -162,7 +162,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_SUCCESS",
-				spellid = 66330,
+				spellid = 67647,
 				execute = {
 					{
 						{alert = "stompwarn"},
@@ -174,7 +174,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellid = 66823,
+				spellid = 67618,
 				execute = {
 					{
 						{expect = {"#4#","==","&playerguid&"}},
@@ -186,7 +186,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_REMOVED",
-				spellid = 66823,
+				spellid = 67618,
 				execute = {
 					{
 						{expect = {"#4#","==","&playerguid&"}},
@@ -198,7 +198,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellid = 66870,
+				spellid = 66869,
 				execute = {
 					{
 						{expect = {"#4#","==","&playerguid&"}},
@@ -227,7 +227,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellid = {66689,67650,67651,67652},
+				spellid = 67650,
 				execute = {
 					{
 						{alert = "breathwarn"},
@@ -238,7 +238,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellid = {67657,66759,67658,67659},
+				spellid = 67657,
 				execute = {
 					{
 						{alert = "ragewarn"},
@@ -249,7 +249,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_REMOVED",
-				spellid = {67657,66759,67658,67659},
+				spellid = 67657,
 				execute = {
 					{
 						{quash = "ragewarn"},
@@ -271,7 +271,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
-				spellid = 66683,
+				spellid = 67660,
 				execute = {
 					{
 						{alert = "crashcast"},
@@ -285,17 +285,17 @@ do
 				eventtype = "UNIT_DIED",
 				execute = {
 					{
-						{expect = {"&npcid|#4#","==","34796"}}, -- Gormok
+						{expect = {"&npcid|#4#&","==","34796"}}, -- Gormok
 						{tracing = {35144,34799}},
 						{quash = "impalecd"},
 						{quash = "stompcd"},
 					},
 					{
-						{expect = {"&npcid|#4#","==","35144"}}, -- Acidmaw
+						{expect = {"&npcid|#4#&","==","35144"}}, -- Acidmaw
 						{set = {acidmawdead = 1}}
 					},
 					{
-						{expect = {"&npcid|#4#","==","34799"}}, -- Dreadscale
+						{expect = {"&npcid|#4#&","==","34799"}}, -- Dreadscale
 						{set = {dreadscaledead = 1}}
 					},
 					{

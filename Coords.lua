@@ -19,7 +19,7 @@ end
 
 -- Computes the distance between the player and unit in game yards
 -- Intended to be used when the player and unit are in the same map
--- Supported: Ulduar, Naxxramas, The Eye of Eternity, The Obsidian Sanctum
+-- Supported: Ulduar, Naxxramas, The Eye of Eternity, The Obsidian Sanctum, Trial of the Crusader
 function addon:GetDistanceToUnit(unit,fx2,fy2)
 	local x1,y1 = self:GetPlayerMapPosition("player")
 	local x2,y2

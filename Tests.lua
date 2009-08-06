@@ -46,6 +46,10 @@ function addon:TestArrowOnTarget()
 	addon.Arrows:AddTarget("target",10,"TOWARD","MOVE","Crash","None",false)
 end
 
+function addon:GORMOKTEST()
+	self.Invoker:COMBAT_EVENT(nil,nil,"UNIT_DIED",nil,nil,nil,"0xF1500087EC0014CE")
+end
+
 function addon:AlertsDouble()
 	self.Alerts:Dropdown("AlertTest2", "Bigger City Opening", 10, 5, "None", "BLUE")
 	self.Alerts:Dropdown("AlertTest2", "Bigger City Opening", 15, 10, "None", "BLUE")
