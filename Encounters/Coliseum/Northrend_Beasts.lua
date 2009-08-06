@@ -140,7 +140,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_DAMAGE",
-				spellid = 67472,
+				spellid = {67472,66320},
 				execute = {
 					{
 						{alert = "firebombwarnself"},
@@ -151,7 +151,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_SUCCESS",
-				spellid = 67477,
+				spellid = {67477,66331},
 				execute = {
 					{
 						{alert = "impalecd"},
@@ -162,7 +162,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_SUCCESS",
-				spellid = 67647,
+				spellid = {67647,66330},
 				execute = {
 					{
 						{alert = "stompwarn"},
@@ -174,7 +174,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellid = 67618,
+				spellid = {67618,66823},
 				execute = {
 					{
 						{expect = {"#4#","==","&playerguid&"}},
@@ -186,7 +186,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_REMOVED",
-				spellid = 67618,
+				spellid = {67618,66823},
 				execute = {
 					{
 						{expect = {"#4#","==","&playerguid&"}},
@@ -198,7 +198,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellid = 66869,
+				spellid = {66869,66870},
 				execute = {
 					{
 						{expect = {"#4#","==","&playerguid&"}},
@@ -215,7 +215,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_REMOVED",
-				spellid = 66870,
+				spellid = {66870,66870},
 				execute = {
 					{
 						{expect = {"#4#","==","&playerguid&"}},
@@ -227,7 +227,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellid = 67650,
+				spellid = {67650,66689},
 				execute = {
 					{
 						{alert = "breathwarn"},
@@ -271,7 +271,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
-				spellid = 67660,
+				spellid = {67660,66683},
 				execute = {
 					{
 						{alert = "crashcast"},

@@ -22,7 +22,7 @@ local defaults = {
 		PaneOnlyInRaid = false,
 		PaneOnlyInInstance = false,
 		PaneScale = 1,
-		ShowMinimap = true,
+		ShowMinimap = true, 
 		AdvancedMode = false,
 		_Minimap = {},
 
