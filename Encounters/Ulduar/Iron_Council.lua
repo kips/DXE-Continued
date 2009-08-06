@@ -22,7 +22,7 @@ do
 			combatstop = true,
 		},
 		userdata = {
-			overwhelmtime = 30,
+			overwhelmtime = 35,
 			previoustarget = "",
 		},
 		onstart = {
