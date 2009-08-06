@@ -651,7 +651,9 @@ function addon:AddEncounterOptions(data)
 				type = "group",
 				name = data.name,
 				childGroups = "tab",
-				args = {},
+				args = {
+					version_header = Items.VersionHeader,
+				},
 			}
 		end
 		-- Set pointer to the correct encounter group

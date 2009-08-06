@@ -38,11 +38,12 @@ do
 			devourwarnself = {
 				varname = format(L["%s on self"],SN[63236]),
 				type = "simple",
-				text = format(L["Move Out of %s"],SN[63236]).."!",
+				text = format("%s: %s! %s!",SN[63236],L["YOU"],L["MOVE"]),
 				time = 1.5,
 				color1 = "RED",
 				sound = "ALERT1",
 				flashscreen = true,
+				throttle = 3,
 			},
 			breathwarn = {
 				varname = format(L["%s Cast"],SN[63317]),
@@ -74,7 +75,7 @@ do
 			-- Devouring Flame
 			{
 				type = "combatevent",
-				eventtype = "SPELL_AURA_APPLIED",
+				eventtype = "SPELL_DAMAGE",
 				spellid = {63236,64704,64733},
 				execute = {
 					{
