@@ -74,14 +74,6 @@ do
 				color2 = "ORANGE",
 				flashscreen = true,
 			},
-			bileproximitywarn = {
-				varname = format(L["%s Proximity Warning"],SN[66870]),
-				text = format("%s: #5#! %s!",SN[66870],L["MOVE AWAY"]),
-				type = "simple",
-				time = 2,
-				color1 = "BLACK",
-				sound = "ALERT1",
-			},
 			toxinonself = {
 				varname = format(L["%s on self"],SN[66823]),
 				type = "dropdown",
@@ -198,16 +190,11 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellid = {66869,66870},
+				spellid = 66869,
 				execute = {
 					{
 						{expect = {"#4#","==","&playerguid&"}},
 						{alert = "bileonself"},
-					},
-					{
-						{expect = {"#4#","~=","&playerguid&"}},
-						{proximitycheck = {"#5#",18}},
-						{alert = "bileproximitywarn"},
 					},
 				},
 			},
@@ -215,7 +202,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_REMOVED",
-				spellid = {66870,66870},
+				spellid = 66869,
 				execute = {
 					{
 						{expect = {"#4#","==","&playerguid&"}},

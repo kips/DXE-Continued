@@ -14,7 +14,7 @@ local defaults = {
 		FlashDuration = 0.8,
 		FlashOscillations = 2,
 		TopBarWidth = 250,
-		CenterBarWidth = 300,
+		CenterBarWidth = 275,
 	}
 }
 
