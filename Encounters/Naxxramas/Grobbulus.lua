@@ -1,5 +1,5 @@
 do
-	local L,SN = DXE.L,DXE.SN
+	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 
 	local L_Grobbulus = L["Grobbulus"]
 
@@ -31,6 +31,7 @@ do
 				time = 360,
 				flashtime = 5,
 				color1 = "RED",
+				icon = ST[12317],
 			},
 			injectionwarnself = {
 				varname = format(L["%s on self"],L["Injection"]),
@@ -42,6 +43,7 @@ do
 				color1 = "RED",
 				color2 = "MAGENTA",
 				flashscreen = true,
+				icon = ST[28169],
 			},
 			injectionwarnother = {
 				varname = format(L["%s on others"],L["Injection"]),
@@ -49,6 +51,7 @@ do
 				text = format("%s: #5#",L["Injection"]),
 				time = 10,
 				color1 = "ORANGE",
+				icon = ST[28169],
 			},
 			cloudcd = {
 				varname = format(L["%s Cooldown"],SN[28240]),
@@ -57,6 +60,7 @@ do
 				time = 15,
 				flashtime = 5,
 				color1 = "GREEN",
+				icon = ST[28240],
 			},
 		},
 		events = {

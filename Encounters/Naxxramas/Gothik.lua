@@ -1,5 +1,5 @@
 do
-	local L,SN = DXE.L,DXE.SN
+	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 
 	local data = {
 		version = "$Rev$",
@@ -29,6 +29,7 @@ do
 				flashtime = 5, 
 				color1 = "RED",
 				sound = "ALERT1", 
+				icon = ST[586],
 			},
 		},
 	}

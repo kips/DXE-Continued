@@ -81,6 +81,7 @@ local alertBaseKeys = {
 	color1 = optstring,
 	color2 = optstring,
 	flashscreen = optboolean,
+	icon = optstring,
 }
 
 local alertTypeValues = {

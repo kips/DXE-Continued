@@ -1,5 +1,5 @@
 do
-	local L,SN = DXE.L,DXE.SN
+	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
 		version = "$Rev$",
 		key = "emalon", 
@@ -35,6 +35,7 @@ do
 				color1 = "BLUE",
 				color2 = "BLUE",
 				sound = "ALERT1",
+				icon = ST[421],
 			},
 			novawarn = {
 				varname = format(L["%s Cast"],SN[64216]),
@@ -45,6 +46,7 @@ do
 				color1 = "BROWN",
 				color2 = "ORANGE",
 				sound = "ALERT5",
+				icon = ST[57322],
 			},
 			overchargecd = {
 				varname = format(L["%s Cooldown"],SN[64218]),
@@ -55,6 +57,7 @@ do
 				color1 = "RED",
 				color2 = "DCYAN",
 				sound = "ALERT2",
+				icon = ST[64218],
 			},
 			overchargedblastdur = {
 				varname = format(L["%s Timer"],SN[64219]),
@@ -65,6 +68,7 @@ do
 				color1 = "YELLOW",
 				color2 = "VIOLET",
 				sound = "ALERT3",
+				icon = ST[37104],
 			},
 		},
 		events = {

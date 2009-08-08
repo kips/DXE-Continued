@@ -1,5 +1,5 @@
 do
-	local L,SN = DXE.L,DXE.SN 
+	local L,SN,ST = DXE.L,DXE.SN,DXE.ST 
 
 	local data = {
 		version = "$Rev$",
@@ -32,13 +32,15 @@ do
 				flashtime = 5, 
 				sound = "ALERT1", 
 				color1 = "RED", 
+				icon = ST[12317],
 			},
 			enragewarn = {
 				varname = format(L["%s Warning"],L["Enrage"]),
 				type = "simple", 
 				text = format("%s!",L["Enraged"]), 
 				time = 1.5, 
-				sound = "ALERT2", 
+				sound = "ALERT2",
+				icon = ST[40735],
 			},
 			rainwarn = {
 				varname = format(L["%s Warning"],SN[39024]),
@@ -47,6 +49,8 @@ do
 				time = 1.5, 
 				sound = "ALERT3", 
 				flashscreen = true,
+				color1 = "BROWN",
+				icon = ST[39024],
 			},
 			silencedur = {
 				varname = format(L["%s Duration"],SN[15487]),
@@ -56,6 +60,7 @@ do
 				flashtime = 5, 
 				sound = "ALERT4", 
 				color1 = "ORANGE",
+				icon = ST[29943],
 			},
 		},
 		events = {

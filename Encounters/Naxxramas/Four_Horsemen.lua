@@ -1,5 +1,5 @@
 do
-	local L,SN = DXE.L,DXE.SN
+	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 
 	local data = {
 		version = "$Rev$",
@@ -33,6 +33,7 @@ do
 				text = format(L["%s Cooldown"],SN[28863]),
 				time = 12,
 				color1 = "MAGENTA",
+				icon = ST[28863],
 			},
 			meteorcd = {
 				varname = format(L["%s Cooldown"],SN[28884]),
@@ -40,6 +41,7 @@ do
 				text = format(L["%s Cooldown"],SN[28884]),
 				time = 12,
 				color1 = "RED",
+				icon = ST[28884],
 			},
 			wrathcd = {
 				varname = format(L["%s Cooldown"],SN[28883]),
@@ -47,6 +49,7 @@ do
 				text = format(L["%s Cooldown"],SN[28883]),
 				time = 12,
 				color1 = "YELLOW",
+				icon = ST[28883],
 			},
 		},
 		events = {

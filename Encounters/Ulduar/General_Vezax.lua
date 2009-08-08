@@ -1,5 +1,5 @@
 do
-	local L,SN = DXE.L,DXE.SN
+	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
 		version = "$Rev$",
 		key = "generalvezax", 
@@ -36,6 +36,7 @@ do
 				sound = "ALERT7",
 				color1 = "BROWN",
 				color2 = "BROWN",
+				icon = ST[12317],
 			},
 			searingflamewarn = {
 				varname = format(L["%s Cast"],SN[62661]),
@@ -44,6 +45,7 @@ do
 				time = 2,
 				color1 = "ORANGE",
 				sound = "ALERT1",
+				icon = ST[62661],
 			},
 			darknesswarn = {
 				varname = format(L["%s Cast"],SN[62662]),
@@ -52,6 +54,7 @@ do
 				time = 3,
 				color1 = "VIOLET",
 				sound = "ALERT1",
+				icon = ST[62662],
 			},
 			darknessdur = {
 				varname = format(L["%s Duration"],SN[62662]),
@@ -62,6 +65,7 @@ do
 				color1 = "VIOLET",
 				color2 = "CYAN",
 				sound = "ALERT2",
+				icon = ST[62662],
 			},
 			animuscd = {
 				varname = format(L["%s Timer"],L["Saronite Animus"]),
@@ -71,6 +75,7 @@ do
 				flashtime = 10,
 				sound = "ALERT3",
 				color1 = "YELLOW",
+				icon = ST[63319],
 			},
 			vaporcd = {
 				varname = format(L["%s Cooldown"],L["Saronite Vapor"]),
@@ -79,6 +84,7 @@ do
 				time = 30,
 				flashtime = 5,
 				color1 = "GREEN",
+				icon = ST[63337],
 			},
 			shadowcrashwarn = {
 				varname = format(L["%s Warning"],SN[62660]),
@@ -88,6 +94,7 @@ do
 				color1 = "BLACK",
 				sound = "ALERT4",
 				flashscreen = true,
+				icon = ST[62660],
 			},
 			facelessdurself = {
 				varname = format(L["%s on self"],SN[63276]),
@@ -98,6 +105,7 @@ do
 				sound = "ALERT5",
 				color1 = "RED",
 				flashscreen = true,
+				icon = ST[63276],
 			},
 			facelessdurothers = {
 				varname = format(L["%s on others"],SN[63276]),
@@ -105,6 +113,7 @@ do
 				text = format("%s: #5#",L["Mark"]),
 				time = 10,
 				color1 = "RED",
+				icon = ST[63276],
 			},
 			facelessproxwarn = {
 				varname = format(L["%s Proximity Warning"],SN[63276]),
@@ -113,6 +122,7 @@ do
 				time = 1.5,
 				color1 = "MAGENTA",
 				sound = "ALERT6",
+				icon = ST[63276],
 			},
 		},
 		arrows = {

@@ -1,5 +1,5 @@
 do
-	local L,SN = DXE.L,DXE.SN
+	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
 		version = "$Rev$",
 		key = "archavon", 
@@ -30,6 +30,7 @@ do
 				time = 300,
 				flashtime = 5,
 				color1 = "RED",
+				icon = ST[12317],
 			},
 			chargewarn = {
 				varname = format(L["%s Warning"],SN[100]),
@@ -37,6 +38,7 @@ do
 				text = format("%s: #5#",SN[100]),
 				time = 1.5,
 				sound = "ALERT2",
+				icon = ST[100],
 			},
 			cloudwarn = {
 				varname = format(L["%s Warning"],SN[58965]),
@@ -44,9 +46,10 @@ do
 				text = format("%s: %s! %s!",SN[58965],L["YOU"],L["MOVE"]),
 				time = 1.5,
 				sound = "ALERT2",
+				icon = ST[58965],
 			},
 			shardswarnself = {
-				varname = format(L["%s Cast"],SN[58695]),
+				varname = format(L["%s on self"],SN[58695]),
 				type = "centerpopup",
 				time = 3,
 				flashtime = 3,
@@ -54,15 +57,17 @@ do
 				text = format("%s: %s! %s!",SN[58695],L["YOU"],L["MOVE"]),
 				sound = "ALERT3",
 				flashscreen = true,
+				icon = ST[58695],
 			},
 			shardswarnother = {
-				varname = format(L["%s Cast"],SN[58695]),
+				varname = format(L["%s on others"],SN[58695]),
 				type = "centerpopup",
 				time = 3,
 				flashtime = 3,
 				color1 = "YELLOW",
 				sound = "ALERT3",
 				text = format("%s: &tft_unitname&",SN[58695]),
+				icon = ST[58695],
 			},
 			stompcd = {
 				varname = format(L["%s Cooldown"],SN[58663]),
@@ -72,7 +77,7 @@ do
 				flashtime = 5,
 				sound = "ALERT1",
 				color1 = "BROWN",
-
+				icon = ST[58663],
 			},
 		},
 		timers = {

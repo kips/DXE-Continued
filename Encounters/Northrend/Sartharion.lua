@@ -1,5 +1,5 @@
 do
-	local L,SN = DXE.L,DXE.SN
+	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 
 	local L_Sartharion = L["Sartharion"]
 	local L_Vesperon = L["Vesperon"]
@@ -81,6 +81,7 @@ do
 				flashtime = 5, 
 				sound = "ALERT3", 
 				color1 = "ORANGE", 
+				icon = ST[43114],
 			},
 			lavawallwarn = {
 				varname = format(L["%s Cast"],L["Lava Wall"]),
@@ -91,6 +92,7 @@ do
 				color1 = "RED", 
 				color2 = "ORANGE",
 				flashscreen = true,
+				icon = ST[43114],
 			},
 			shadowfissurewarn = {
 				varname = format(L["%s Warning"],SN[59127]),
@@ -99,6 +101,7 @@ do
 				sound = "ALERT2",
 				color1 = "PURPLE",
 				time = 1.5, 
+				icon = ST[59127],
 			},
 			flamebreathwarn = {
 				varname = format(L["%s Cast"],SN[56908]),
@@ -107,6 +110,7 @@ do
 				time = 2,
 				color1 = "DCYAN",
 				sound = "ALERT4",
+				icon = ST[56908],
 			},
 			shadronarrives = {
 				type = "dropdown",
@@ -114,6 +118,7 @@ do
 				text = format(L["%s Arrives"],L_Shadron),
 				time = 80,
 				color1 = "DCYAN",
+				icon = ST[58105],
 			},
 			tenebronarrives = {
 				type = "dropdown",
@@ -121,6 +126,7 @@ do
 				text = format(L["%s Arrives"],L_Tenebron),
 				time = 30,
 				color1 = "CYAN",
+				icon = ST[61248],
 			},
 			vesperonarrives = {
 				type = "dropdown",
@@ -128,6 +134,7 @@ do
 				text = format(L["%s Arrives"],L_Vesperon),
 				time = 120,
 				color1 = "GREEN",
+				icon = ST[61251],
 			},
 		},
 		events = {

@@ -1,5 +1,5 @@
 do
-	local L,SN = DXE.L,DXE.SN
+	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
 		version = "$Rev$",
 		key = "hodir", 
@@ -33,6 +33,7 @@ do
 				color1 = "BLUE",
 				color2 = "GREEN",
 				flashscreen = true,
+				icon = ST[61968],
 			},
 			flashfreezecd = {
 				varname = format(L["%s Cooldown"],SN[61968]),
@@ -43,6 +44,7 @@ do
 				sound = "ALERT2", 
 				color1 = "TURQUOISE",
 				color2 = "TURQUOISE",
+				icon = ST[61968],
 			},
 			enragecd = {
 				varname = L["Enrage"],
@@ -51,6 +53,7 @@ do
 				time = 480,
 				flashtime = 5,
 				color1 = "RED",
+				icon = ST[12317],
 			},
 			frozenblowdur = {
 				varname = format(L["%s Duration"],SN[63512]),
@@ -61,6 +64,7 @@ do
 				sound = "ALERT3", 
 				color1 = "MAGENTA",
 				color2 = "MAGENTA",
+				icon = ST[63512],
 			},
 			hardmodeends = {
 				varname = format(L["%s Timer"],L["Hard Mode"]),
@@ -71,6 +75,7 @@ do
 				sound = "ALERT4",
 				color1 = "YELLOW",
 				color2 = "YELLOW",
+				icon = ST[20573],
 			},
 			stormcloudwarnself = {
 				varname = format(L["%s on self"],SN[65133]),
@@ -80,6 +85,7 @@ do
 				color1 = "ORANGE",
 				sound = "ALERT4",
 				flashscreen = true,
+				icon = ST[65133],
 			},
 			stormcloudwarnother = {
 				varname = format(L["%s on others"],SN[65133]),
@@ -88,6 +94,7 @@ do
 				time = 1.5,
 				color1 = "ORANGE",
 				sound = "ALERT4",
+				icon = ST[65133],
 			},
 		},
 		events = {

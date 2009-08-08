@@ -1,5 +1,5 @@
 do
-	local L,SN = DXE.L,DXE.SN
+	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 
 	local data = {
 		version = "$Rev$",
@@ -34,6 +34,7 @@ do
 				color1 = "RED",
 				sound = "ALERT3",
 				flashscreen = true,
+				icon = ST[62680],
 			},
 			flamejetscd = {
 				varname = format(L["%s Cooldown"],SN[62680]),
@@ -44,6 +45,7 @@ do
 				color1 = "RED",
 				color2 = "MAGENTA",
 				sound = "ALERT1",
+				icon = ST[62680],
 			},
 			scorchwarnself = {
 				varname = format(L["%s on self"],SN[62546]),
@@ -53,6 +55,8 @@ do
 				color1 = "MAGENTA",
 				sound = "ALERT5",
 				flashscreen = true,
+				throttle = 5,
+				icon = ST[62546],
 			},
 			scorchcd = {
 				varname = format(L["%s Cooldown"],SN[62546]),
@@ -63,6 +67,7 @@ do
 				color1 = "MAGENTA",
 				color2 = "YELLOW",
 				sound = "ALERT2",
+				icon = ST[62546],
 			},
 			slagpotdur = {
 				varname = format(L["%s Duration"],SN[62717]),
@@ -71,6 +76,7 @@ do
 				time = 10,
 				color1 = "GREEN",
 				sound = "ALERT4",
+				icon = ST[62717],
 			},
 			hardmodeends = {
 				varname = format("%s Timer",L["Hard Mode"]),
@@ -81,6 +87,7 @@ do
 				color1 = "BROWN",
 				color2 = "BROWN",
 				sound = "ALERT6",
+				icon = ST[20573],
 			},
 		},
 		timers = {
@@ -94,7 +101,7 @@ do
 			-- Scorch cooldown",
 			{
 				type = "combatevent",
-				eventtype = "SPELL_CAST_START",
+				eventtype = "SPELL_CAST_SUCCESS",
 				spellid = {62546, 63474},
 				execute = {
 					{
@@ -105,7 +112,7 @@ do
 			-- Scorch warning on self
 			{
 				type = "combatevent",
-				eventtype = "SPELL_AURA_APPLIED",
+				eventtype = "SPELL_DAMAGE",
 				spellid = {62546, 63474},
 				execute = {
 					{

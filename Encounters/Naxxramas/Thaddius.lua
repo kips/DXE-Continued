@@ -1,5 +1,5 @@
 do
-	local L,SN = DXE.L,DXE.SN
+	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 
 	local data = {
 		version = "$Rev$",
@@ -53,6 +53,7 @@ do
 				flashtime = 5, 
 				sound = "ALERT2", 
 				color1 = "RED",
+				icon = ST[12317],
 			},
 			tankthrowcd = {
 				varname = format(L["%s Cooldown"],L["Tank Throw"]),
@@ -62,6 +63,7 @@ do
 				flashtime = 3, 
 				sound = "ALERT2", 
 				color1 = "MAGENTA", 
+				icon = ST[52272],
 			},
 			polarityshiftwarn = {
 				varname = format(L["%s Cast"],SN[28089]),
@@ -72,6 +74,7 @@ do
 				sound = "ALERT1", 
 				color1 = "BLUE", 
 				flashscreen = true,
+				icon = ST[28089],
 			},
 		},
 		timers = {

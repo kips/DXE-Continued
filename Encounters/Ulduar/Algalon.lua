@@ -1,5 +1,5 @@
 do
-	local L,SN = DXE.L,DXE.SN
+	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
 		version = "$Rev$",
 		key = "algalon", 
@@ -35,6 +35,7 @@ do
 				sound = "ALERT6",
 				color1 = "GREY",
 				color2 = "GREY",
+				icon = ST[12317],
 			},
 			bigbangwarn = {
 				varname = format(L["%s Cast"],SN[64443]),
@@ -46,6 +47,7 @@ do
 				color1 = "ORANGE",
 				color2 = "BROWN",
 				flashscreen = true,
+				icon = ST[64443],
 			},
 			bigbangcd = {
 				varname = format(L["%s Cooldown"],SN[64443]),
@@ -56,6 +58,7 @@ do
 				sound = "ALERT2",
 				color1 = "BLUE",
 				color2 = "BLUE",
+				icon = ST[64443],
 			},
 			cosmicsmashwarn = {
 				varname = format(L["%s ETA"],SN[62301]),
@@ -67,6 +70,7 @@ do
 				color1 = "YELLOW",
 				color2 = "RED",
 				flashscreen = true,
+				icon = ST[62311],
 			},
 			cosmicsmashcd = {
 				varname = format(L["%s Cooldown"],SN[62301]),
@@ -77,6 +81,7 @@ do
 				sound = "ALERT3",
 				color1 = "GREEN",
 				color2 = "GREEN",
+				icon = ST[62311],
 			},
 			punchcd = {
 				varname = format(L["%s Cooldown"],SN[64412]),
@@ -86,6 +91,7 @@ do
 				flashtime = 5,
 				color1 = "PURPLE",
 				color2 = "PURPLE",
+				icon = ST[64412],
 			},
 		},
 		events = {

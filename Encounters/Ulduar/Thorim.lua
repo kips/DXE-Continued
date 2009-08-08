@@ -1,5 +1,5 @@
 do
-	local L,SN = DXE.L,DXE.SN
+	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
 		version = "$Rev$",
 		key = "thorim", 
@@ -45,6 +45,7 @@ do
 				flashtime = 5, 
 				sound = "ALERT1", 
 				color1 = "RED",
+				icon = ST[12317],
 			},
 			hardmodecd = {
 				varname = format(L["%s Timeleft"],L["Hard Mode"]),
@@ -54,6 +55,7 @@ do
 				flashtime = 5, 
 				color1 = "RED",
 				sound = "ALERT1", 
+				icon = ST[20573],
 			},
 			hardmodeactivation = {
 				varname = format(L["%s Warning"],L["Hard Mode"]),
@@ -61,6 +63,7 @@ do
 				text = format(L["%s Activated"],L["Hard Mode"]),
 				time = 1.5, 
 				sound = "ALERT1", 
+				icon = ST[62972],
 			},
 			chargecd = {
 				varname = format(L["%s Cooldown"],SN[62279]),
@@ -70,6 +73,7 @@ do
 				flashtime = 7, 
 				sound = "ALERT2",
 				color1 = "VIOLET",
+				icon = ST[62279],
 			},
 			chainlightningcd = {
 				varname = format(L["%s Cooldown"],SN[62131]),
@@ -80,6 +84,7 @@ do
 				sound = "ALERT3",
 				color1 = "ORANGE",
 				color2 = "ORANGE",
+				icon = ST[62131],
 			},
 			frostnovacast = {
 				varname = format(L["%s Cast"],SN[122]),
@@ -90,6 +95,7 @@ do
 				sound = "ALERT4",
 				color1 = "BLUE",
 				color2 = "BLUE",
+				icon = ST[122],
 			},
 			strikecd = {
 				varname = format(L["%s Cooldown"],SN[62130]),
@@ -100,6 +106,7 @@ do
 				sound = "ALERT5",
 				color1 = "BROWN",
 				color2 = "BROWN",
+				icon = ST[62130],
 			},
 		},
 		events = {

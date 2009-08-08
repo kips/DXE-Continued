@@ -1,5 +1,5 @@
 do
-	local L,SN = DXE.L,DXE.SN
+	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
 		version = "$Rev$",
 		key = "yoggsaron", 
@@ -40,6 +40,7 @@ do
 				time = 900,
 				flashtime = 10,
 				color1 = "RED",
+				icon = ST[12317],
 			},
 			-- Phase 1
 			fervorwarn = {
@@ -50,6 +51,7 @@ do
 				sound = "ALERT4",
 				color1 = "PURPLE",
 				flashscreen = true,
+				icon = ST[63138],
 			},
 			blessingwarn = {
 				varname = format(L["%s on self"],SN[63134]),
@@ -59,6 +61,7 @@ do
 				sound = "ALERT8",
 				color1 = "CYAN",
 				flashscreen = true,
+				icon = ST[63134],
 			},
 			-- Phase 2
 			brainlinkdur = {
@@ -70,6 +73,7 @@ do
 				color1 = "BLUE",
 				sound = "ALERT3",
 				flashscreen = true,
+				icon = ST[63802],
 			},
 			portalcd = {
 				varname = format(L["%s Cooldown"],L["Portals"]),
@@ -80,6 +84,7 @@ do
 				sound = "ALERT2",
 				color1 = "MAGENTA",
 				color2 = "MAGENTA",
+				icon = ST[66634],
 			},
 			weakeneddur = {
 				varname = format(L["%s Duration"],L["Weakened"]),
@@ -88,6 +93,7 @@ do
 				time = "&timeleft|inducewarn&",
 				flashtime = 5,
 				color1 = "ORANGE",
+				icon = ST[64173],
 			},
 			inducewarn = {
 				varname = format(L["%s Cast"],SN[64059]),
@@ -98,6 +104,7 @@ do
 				color1 = "BROWN",
 				color2 = "MIDGREY",
 				sound = "ALERT6",
+				icon = ST[64059],
 			},
 			squeezewarn = {
 				varname = format(L["%s on others"],SN[64126]),
@@ -106,6 +113,7 @@ do
 				time = 4,
 				color1 = "YELLOW",
 				sound = "ALERT7",
+				icon = ST[64126],
 			},
 			maladywarn = {
 				varname = format(L["%s Warning"],SN[63830]),
@@ -115,6 +123,7 @@ do
 				sound = "ALERT5",
 				color1 = "GREEN",
 				flashscreen = true,
+				icon = ST[63830],
 			},
 			crushertentaclespawn = {
 				varname = format(L["%s Spawns"],L["Crusher Tentacle"]),
@@ -124,6 +133,7 @@ do
 				flashtime = 7,
 				color1 = "DCYAN",
 				color2 = "INDIGO",
+				icon = ST[50234],
 			},
 			-- Phase 3
 			empoweringshadowscd = {
@@ -134,6 +144,7 @@ do
 				flashtime = 5,
 				color1 = "INDIGO",
 				color2 = "RED",
+				icon = ST[64486],
 			},
 			shadowbeaconcd = {
 				varname = format(L["%s Cooldown"],SN[64465]),
@@ -142,6 +153,7 @@ do
 				time = 45, 
 				flashtime = 5,
 				color1 = "BLUE",
+				icon = ST[64465],
 			},
 			deafeningcd = {
 				varname = format(L["%s Cooldown"],SN[64189]),
@@ -150,6 +162,7 @@ do
 				time = 60,
 				flashtime = 5,
 				color1 = "BROWN",
+				icon = ST[64189],
 			},
 			deafeningcast = {
 				varname = format(L["%s Cast"],SN[64189]),
@@ -158,6 +171,7 @@ do
 				time = 2.3,
 				color1 = "ORANGE",
 				sound = "ALERT5",
+				icon = ST[64189],
 			},
 			lunaticgazewarn = {
 				varname = format(L["%s Cast"],SN[64163]),
@@ -167,6 +181,7 @@ do
 				color1 = "PURPLE",
 				sound = "ALERT1",
 				flashscreen = true,
+				icon = ST[64163],
 			},
 			lunaticgazecd = {
 				varname = format(L["%s Cooldown"],SN[64163]),
@@ -176,6 +191,7 @@ do
 				flashtime = 5,
 				color1 = "GREEN",
 				color2 = "YELLOW",
+				icon = ST[64163],
 			},
 		},
 		arrows = {

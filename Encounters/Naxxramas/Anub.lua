@@ -1,5 +1,5 @@
 do
-	local L,SN = DXE.L,DXE.SN
+	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 
 	local L_AnubRekhan = L["Anub'Rekhan"]
 
@@ -38,6 +38,7 @@ do
 				flashtime = 5, 
 				sound = "ALERT1", 
 				color1 = "GREEN", 
+				icon = ST[28785],
 			},
 			locustswarmcast = {
 				varname = format(L["%s Cast"],SN[28785]), 
@@ -46,6 +47,7 @@ do
 				time = 3, 
 				sound = "ALERT3", 
 				color1 = "GREY", 
+				icon = ST[28785],
 			},
 			locustswarmgain = {
 				varname = format(L["%s Duration"],SN[28785]), 
@@ -54,6 +56,7 @@ do
 				time = 20, 
 				sound = "ALERT2", 
 				color1 = "YELLOW", 
+				icon = ST[28785],
 			},
 		},
 		events = {

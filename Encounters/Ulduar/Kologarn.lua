@@ -1,5 +1,5 @@
 do
-	local L,SN = DXE.L,DXE.SN
+	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
 		version = "$Rev$",
 		key = "kologarn", 
@@ -32,6 +32,7 @@ do
 				time = 1.5,
 				color1 = "BROWN",
 				sound = "ALERT2",
+				icon = ST[64290],
 			},
 			armsweepcd = {
 				varname = format(L["%s Cooldown"],SN[63766]),
@@ -41,6 +42,7 @@ do
 				flashtime = 5,
 				color1 = "ORANGE",
 				sound = "ALERT3",
+				icon = ST[63766],
 			},
 			shockwavecd = {
 				varname = format(L["%s Cooldown"],SN[63783]),
@@ -51,6 +53,7 @@ do
 				color1 = "YELLOW",
 				color2 = "GOLD",
 				sound = "ALERT4",
+				icon = ST[63783],
 			},
 			leftarmcd = {
 				varname = format(L["%s Respawn"],L["Left Arm"]),
@@ -58,6 +61,7 @@ do
 				text = format(L["%s Respawns"],L["Left Arm"]),
 				time = "<armrespawntime>",
 				color1 = "CYAN",
+				icon = ST[43563],
 			},
 			rightarmcd = {
 				varname = format(L["%s Respawn"],L["Right Arm"]),
@@ -65,6 +69,7 @@ do
 				text = format(L["%s Respawns"],L["Right Arm"]),
 				time = "<armrespawntime>",
 				color1 = "DCYAN",
+				icon = ST[43563],
 			},
 		},
 		userdata = {

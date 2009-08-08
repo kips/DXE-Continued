@@ -1,5 +1,5 @@
 do
-	local L,SN = DXE.L,DXE.SN
+	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
 		version = "$Rev$",
 		key = "razorscale", 
@@ -34,6 +34,7 @@ do
 				color1 = "RED",
 				color2 = "RED",
 				sound = "ALERT6",
+				icon = ST[12317],
 			},
 			devourwarnself = {
 				varname = format(L["%s on self"],SN[63236]),
@@ -44,6 +45,7 @@ do
 				sound = "ALERT1",
 				flashscreen = true,
 				throttle = 3,
+				icon = ST[63236],
 			},
 			breathwarn = {
 				varname = format(L["%s Cast"],SN[63317]),
@@ -54,6 +56,7 @@ do
 				color1 = "BLUE",
 				color2 = "WHITE",
 				sound = "ALERT2",
+				icon = ST[63317],
 			},
 			chaindur = {
 				varname = format(L["%s Duration"],L["Chain"]),
@@ -62,6 +65,7 @@ do
 				time = 38,
 				color1 = "BROWN",
 				sound = "ALERT3",
+				icon = ST[60540],
 			},
 			permlandwarn = {
 				varname = format(L["%s Warning"],L["Permanent Landing"]),
@@ -69,6 +73,7 @@ do
 				text = format(L["%s Permanently Landed"],L["Razorscale"]).."!",
 				time = 1.5,
 				sound = "ALERT4",
+				icon = ST[45753],
 			},
 		},
 		events = {

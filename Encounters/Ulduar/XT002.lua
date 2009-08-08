@@ -1,5 +1,5 @@
 do
-	local L,SN = DXE.L,DXE.SN
+	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 
 	local data = {
 		version = "$Rev$",
@@ -33,6 +33,7 @@ do
 				sound = "ALERT5",
 				color1 = "RED",
 				color2 = "RED",
+				icon = ST[12317],
 			},
 			gravitywarnself = {
 				varname = format(L["%s on self"],SN[63024]),
@@ -44,6 +45,7 @@ do
 				color1 = "GREEN",
 				color2 = "PINK",
 				flashscreen = true,
+				icon = ST[63024],
 			},
 			gravitywarnother = {
 				varname = format(L["%s on others"],SN[63024]),
@@ -51,6 +53,7 @@ do
 				text = format("%s: #5#",SN[63024]),
 				time = 9,
 				color1 = "GREEN",
+				icon = ST[63024],
 			},
 			lightwarnself = {
 				varname = format(L["%s on self"],SN[63018]),
@@ -62,6 +65,7 @@ do
 				color1 = "CYAN",
 				color2 = "MAGENTA",
 				flashscreen = true,
+				icon = ST[63018],
 			},
 			lightwarnother = {
 				varname = format(L["%s on others"],SN[63018]),
@@ -69,6 +73,7 @@ do
 				text = format("%s: #5#",SN[63018]),
 				time = 9,
 				color1 = "CYAN",
+				icon = ST[63018],
 			},
 			tympanicwarn = {
 				varname = format(L["%s Cast"],SN[62776]),
@@ -79,6 +84,7 @@ do
 				color1 = "YELLOW",
 				color2 = "YELLOW",
 				sound = "ALERT2",
+				icon = ST[62776],
 			},
 			tympaniccd = {
 				varname = format(L["%s Cooldown"],SN[62776]),
@@ -89,6 +95,7 @@ do
 				color1 = "ORANGE",
 				color2 = "ORANGE",
 				sound = "ALERT6",
+				icon = ST[62776],
 			},
 			exposedwarn = {
 				varname = format(L["%s Timer"],L["Heart"]),
@@ -99,6 +106,7 @@ do
 				sound = "ALERT4",
 				color1 = "BLUE",
 				color2 = "RED",
+				icon = ST[63849],
 			},
 			hardmodealert = {
 				varname = format(L["%s Activation"],L["Hard Mode"]),
@@ -106,6 +114,7 @@ do
 				text = format(L["%s Activated"],L["Hard Mode"]).."!",
 				time = 1.5,
 				sound = "ALERT5",
+				icon = ST[62972],
 			},
 		},
 		timers = {

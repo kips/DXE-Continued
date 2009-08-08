@@ -6,6 +6,8 @@ local defaults = {
 		DisableDropdowns = false,
 		DisableScreenFlash = false,
 		DisableSounds = false,
+		IconPosition = "LEFT",
+		HideIcons = false,
 		TopScale = 1,
 		CenterScale = 1,
 		TopGrowth = "DOWN",
@@ -60,25 +62,6 @@ function module:RefreshProfile()
 	self:RefreshAlerts()
 end
 
-function module:RefreshAlerts()
-	if not next(Active) then return end
-	for alert in pairs(Active) do
-		alert.bar:SetStatusBarTexture(SM:Fetch("statusbar",pfl.BarTexture))
-		local data = alert.data
-		if data.anchor == "TOP" then
-			alert:SetScale(pfl.TopScale)
-			alert:SetAlpha(pfl.TopAlpha)
-			alert:SetWidth(pfl.TopBarWidth)
-		elseif data.anchor == "CENTER" then
-			alert:SetScale(pfl.CenterScale)
-			alert:SetAlpha(pfl.CenterAlpha)
-			alert:SetWidth(pfl.CenterBarWidth)
-		end
-	end
-	prototype:LayoutAlertStack(TopAlertStack, TopStackAnchor, pfl.TopGrowth)
-	prototype:LayoutAlertStack(CenterAlertStack, CenterStackAnchor, pfl.CenterGrowth)
-end
-
 function module:InitializeOptions(area)
 	area.alerts_group = {
 		type = "group",
@@ -109,6 +92,22 @@ function module:InitializeOptions(area)
 						values = SM:HashTable("statusbar"),
 						set = function(info,v) pfl.BarTexture = v; self:RefreshAlerts() end,
 						dialogControl = "LSM30_Statusbar",
+					},
+					IconPosition = {
+						order = 310,
+						type = "select",
+						name = L["Icon Position"],
+						desc = L["Select where to show icons on bars"],
+						values = {LEFT = L["Left"], RIGHT = L["Right"]},
+						set = function(info,v) pfl.IconPosition = v; self:RefreshAlerts() end,
+					},
+					HideIcons = {
+						order = 320,
+						type = "toggle",
+						width = "full",
+						name = L["Hide Icons"],
+						desc = L["Hide icons on bars"],
+						set = function(info,v) pfl.HideIcons = v; self:RefreshAlerts() end,
 					},
 					DisableDropdowns = {
 						order = 400,
@@ -392,6 +391,8 @@ function prototype:Destroy()
 	AlertPool[self] = true
 	wipe(self.data)
 	self.timer.frame:Show()
+	self.iconf:Hide()
+	self.icon:SetTexture("")
 end
 
 do
@@ -570,8 +571,51 @@ function prototype:SetText(text)
 	self.text:SetText(text)
 end
 
+function prototype:SetIcon(texture)
+	if not texture then self.iconf:Hide() return end
+	self.data.icon = texture
+	if pfl.HideIcons then return end
+	self.iconf:Show()
+	self.icon:SetTexture(texture)
+end
+
 local Backdrop = {bgFile="Interface\\DialogFrame\\UI-DialogBox-Background", tileSize=16, insets = {left = 2, right = 2, top = 1, bottom = 2}}
 local BackdropBorder = {edgeFile="Interface\\Tooltips\\UI-Tooltip-Border", edgeSize = 9, insets = {left = 2, right = 2, top = 3, bottom = 2}}
+
+local function SkinAlert(alert)
+	alert.bar:SetStatusBarTexture(SM:Fetch("statusbar",pfl.BarTexture))
+
+	if pfl.HideIcons then 
+		alert.iconf:Hide() 
+	else
+		alert:SetIcon(alert.data.icon)
+	end
+	alert.iconf:ClearAllPoints()
+	if pfl.IconPosition == "LEFT" then
+		alert.iconf:SetPoint("RIGHT",alert,"LEFT")
+	elseif pfl.IconPosition == "RIGHT" then
+		alert.iconf:SetPoint("LEFT",alert,"RIGHT")
+	end
+
+	local data = alert.data
+	if data.anchor == "TOP" then
+		alert:SetScale(pfl.TopScale)
+		alert:SetAlpha(pfl.TopAlpha)
+		alert:SetWidth(pfl.TopBarWidth)
+	elseif data.anchor == "CENTER" then
+		alert:SetScale(pfl.CenterScale)
+		alert:SetAlpha(pfl.CenterAlpha)
+		alert:SetWidth(pfl.CenterBarWidth)
+	end
+end
+
+function module:RefreshAlerts()
+	if not next(Active) and not next(AlertPool) then return end
+	for alert in pairs(Active) do SkinAlert(alert) end
+	for alert in pairs(AlertPool) do SkinAlert(alert) end
+	prototype:LayoutAlertStack(TopAlertStack, TopStackAnchor, pfl.TopGrowth)
+	prototype:LayoutAlertStack(CenterAlertStack, CenterStackAnchor, pfl.CenterGrowth)
+end
 
 local BarCount = 1
 local function CreateAlert()
@@ -605,12 +649,27 @@ local function CreateAlert()
 	text:SetPoint("RIGHT",self.timer.frame,"LEFT",7,0)
 	self.text = text
 
+	local iconf = CreateFrame("Frame",nil,self)
+	iconf:SetHeight(BARHEIGHT)
+	iconf:SetWidth(BARHEIGHT)
+	iconf:SetPoint("RIGHT",self,"LEFT")
+	iconf:SetBackdrop(BackdropBorder)
+	self.iconf = iconf
+
+	local icon = iconf:CreateTexture(nil,"BACKGROUND")
+	icon:SetPoint("TOPLEFT",2,-2)
+	icon:SetPoint("BOTTOMRIGHT",-2,2)
+	icon:SetTexCoord(0.07,0.93,0.07,0.93)
+	self.icon = icon
+
 	addon.AceTimer:Embed(self)
 	for k,v in pairs(prototype) do self[k] = v end
 
 	self.fadeTable = {mode = "OUT", timeToFade = FADE_TIME, endAlpha = 0, finishedArg1 = self }
 
 	BarCount = BarCount + 1
+
+	SkinAlert(self)
 
 	return self
 end
@@ -622,9 +681,6 @@ local function GetAlert()
 	Active[alert] = true
 	UpdateFrame:Show()
 	alert:Show()
-
-	-- Apply settings
-	alert.bar:SetStatusBarTexture(SM:Fetch("statusbar",pfl.BarTexture))
 
 	return alert
 end
@@ -663,11 +719,12 @@ function module:GetAlertTimeleft(id)
 	return -1
 end
 
-function module:Dropdown(id, text, totalTime, flashTime, sound, c1, c2, flashscreen)
-	if pfl.DisableDropdowns then self:CenterPopup(id, text, totalTime, flashTime, sound, c1, c2, flashscreen) return end
+function module:Dropdown(id, text, totalTime, flashTime, sound, c1, c2, flashscreen, icon)
+	if pfl.DisableDropdowns then self:CenterPopup(id, text, totalTime, flashTime, sound, c1, c2, flashscreen, icon) return end
 	local soundFile,c1Data,c2Data = GetMedia(sound,c1,c2)
 	local alert = GetAlert()
 	alert:SetID(id)
+	alert:SetIcon(icon)
 	alert:SetTimeleft(totalTime)
 	alert:SetText(text) 
 	alert:SetFlashScreen(flashscreen)
@@ -684,10 +741,11 @@ function module:Dropdown(id, text, totalTime, flashTime, sound, c1, c2, flashscr
 	return alert
 end
 
-function module:CenterPopup(id, text, totalTime, flashTime, sound, c1, c2, flashscreen)
+function module:CenterPopup(id, text, totalTime, flashTime, sound, c1, c2, flashscreen, icon)
 	local soundFile,c1Data,c2Data = GetMedia(sound,c1,c2)
 	local alert = GetAlert()
 	alert:SetID(id)
+	alert:SetIcon(icon)
 	alert:SetTimeleft(totalTime)
 	alert:SetColor(c1Data,c2Data)
 	alert:SetText(text)
@@ -699,13 +757,14 @@ function module:CenterPopup(id, text, totalTime, flashTime, sound, c1, c2, flash
 	return alert
 end
 
-function module:Simple(text, totalTime, sound, c1, flashscreen)
+function module:Simple(text, totalTime, sound, c1, flashscreen, icon)
 	local soundFile,c1Data = GetMedia(sound,c1)
 	local alert = GetAlert()
 	if c1Data then 
 		alert:SetColor(c1Data)
 		alert.bar:SetValue(1)
 	end
+	alert:SetIcon(icon)
 	alert:SetText(text) 
 	alert.timer.frame:Hide()
 	alert:SetSound(soundFile)
@@ -720,9 +779,9 @@ end
 ---------------------------------------------
 
 function module:AlertsTest()
-	self:CenterPopup("AlertTest1", "Decimating. Life Tap Now!", 10, 5, "DXE ALERT1", "DCYAN")
-	self:Dropdown("AlertTest2", "Bigger City Opening", 20, 5, "DXE ALERT2", "BLUE", "ORANGE")
-	self:Simple("Just Kill It!",3,"DXE ALERT3","RED")
+	self:CenterPopup("AlertTest1", "Decimating. Life Tap Now!", 10, 5, "DXE ALERT1", "DCYAN", nil, nil, addon.ST[28374])
+	self:Dropdown("AlertTest2", "Bigger City Opening", 20, 5, "DXE ALERT2", "BLUE", "ORANGE", nil, addon.ST[64813])
+	self:Simple("Just Kill It!",3,"DXE ALERT3","RED", nil, addon.ST[53351])
 end
 
 local lookup

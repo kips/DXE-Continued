@@ -1,5 +1,5 @@
 do
-	local L,SN = DXE.L,DXE.SN
+	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 
 	local data = {
 		version = "$Rev$",
@@ -42,6 +42,7 @@ do
 				time = "<screechtime>",
 				flashtime = 5,
 				color1 = "PURPLE",
+				icon = ST[64386],
 			},
 			screechwarn = {
 				varname = format(L["%s Cast"],SN[64386]),
@@ -50,6 +51,7 @@ do
 				time = 2,
 				color1 = "BROWN",
 				sound = "ALERT1",
+				icon = ST[64386],
 			},
 			sentinelwarn = {
 				varname = format(L["%s Cast"],SN[64389]),
@@ -58,6 +60,7 @@ do
 				time = 2,
 				color1 = "BLUE",
 				sound = "ALERT2",
+				icon = ST[64389],
 			},
 			sonicscreechwarn = {
 				varname = format(L["%s Cast"],SN[64422]),
@@ -67,6 +70,7 @@ do
 				color1 = "MAGENTA",
 				color2 = "MAGENTA",
 				sound = "ALERT3",
+				icon = ST[64422],
 			},
 			sonicscreechcd = {
 				varname = format(L["%s Cooldown"],SN[64422]),
@@ -77,6 +81,7 @@ do
 				color1 = "YELLOW",
 				color2 = "INDIGO",
 				sound = "ALERT4",
+				icon = ST[64422],
 			},
 			guardianswarmcd = {
 				varname = format(L["%s Cooldown"],SN[64396]),
@@ -87,6 +92,7 @@ do
 				color1 = "GREEN",
 				color2 = "GREEN",
 				sound = "ALERT5",
+				icon = ST[64396],
 			},
 			guardianswarmwarn = {
 				varname = format(L["%s Warning"],SN[64396]),
@@ -95,6 +101,7 @@ do
 				time = 1.5,
 				color1 = "ORANGE",
 				sound = "ALERT8",
+				icon = ST[64396],
 			},
 			feraldefenderspawn = {
 				varname = format(L["%s Spawn"],L["Feral Defender"]),
@@ -105,6 +112,7 @@ do
 				color1 = "DCYAN",
 				color2 = "DCYAN",
 				sound = "ALERT8",
+				icon = ST[64449],
 			},
 			enragecd = {
 				varname = L["Enrage"],
@@ -114,6 +122,7 @@ do
 				flashtime = 5,
 				color1 = "RED",
 				sound = "ALERT7",
+				icon = ST[12317],
 			},
 		},
 		events = {

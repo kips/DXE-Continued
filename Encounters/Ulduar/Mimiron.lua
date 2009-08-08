@@ -1,6 +1,6 @@
 -- Proximity Mine cooldown. 30.5 seconds
 do
-	local L,SN = DXE.L,DXE.SN
+	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
 		version = "$Rev$",
 		key = "mimiron", 
@@ -91,6 +91,7 @@ do
 				time = 2,
 				sound = "ALERT5",
 				color1 = "TEAL",
+				icon = ST[64570],
 			},
 			flamesuppressantcd = {
 				type = "dropdown",
@@ -99,6 +100,7 @@ do
 				time = 60,
 				flashtime = 5,
 				color1 = "INDIGO",
+				icon = ST[64570],
 			},
 			frostbombwarn = {
 				type = "centerpopup",
@@ -107,6 +109,7 @@ do
 				time = 2,
 				sound = "ALERT5",
 				color1 = "BLUE",
+				icon = ST[64623],
 			},
 			frostbombexplodes = {
 				type = "centerpopup",
@@ -118,6 +121,7 @@ do
 				color1 = "BLUE",
 				color2 = "WHITE",
 				flashscreen = true,
+				icon = ST[64623],
 			},
 			flamecd = {
 				type = "dropdown",
@@ -128,6 +132,7 @@ do
 				sound = "ALERT1",
 				color1 = "GREEN",
 				color2 = "GREEN",
+				icon = ST[15643],
 			},
 			-- Leviathan MKII
 			plasmablastwarn = { 
@@ -137,6 +142,7 @@ do
 				time = 3,
 				color1 = "ORANGE",
 				sound = "ALERT5",
+				icon = ST[62997],
 			},
 			plasmablastdur = { 
 				type = "centerpopup",
@@ -144,6 +150,7 @@ do
 				text = format(L["%s Duration"],SN[62997]),
 				time = 6,
 				color1 = "ORANGE",
+				icon = ST[62997],
 			},
 			plasmablastcd = {
 				type = "dropdown",
@@ -154,6 +161,7 @@ do
 				color1 = "ORANGE",
 				color2 = "RED",
 				sound = "ALERT2",
+				icon = ST[62997],
 			},
 			shockblastwarn = {
 				varname = format(L["%s Cast"],SN[63631]),
@@ -162,6 +170,7 @@ do
 				time = 4,
 				color1 = "MAGENTA",
 				sound = "ALERT5",
+				icon = ST[63631],
 			},
 			--- VX-001
 			laserbarragedur = {
@@ -171,6 +180,7 @@ do
 				time = 10,
 				color1 = "PURPLE",
 				sound = "ALERT6",
+				icon = ST[63293],
 			},
 			laserbarragecd = {
 				varname = format(L["%s Cooldown"],L["Laser Barrage"]),
@@ -181,6 +191,7 @@ do
 				color1 = "PURPLE",
 				color2 = "YELLOW",
 				sound = "ALERT3",
+				icon = ST[63293],
 			},
 			shockblastcd = {
 				varname = format(L["%s Cooldown"],SN[63631]),
@@ -191,6 +202,7 @@ do
 				color1 = "MAGENTA",
 				color2 = "ORANGE",
 				sound = "ALERT3",
+				icon = ST[63631],
 			},
 			spinupwarn = {
 				varname = format(L["%s Cast"],SN[63414]),
@@ -201,6 +213,7 @@ do
 				color2 = "RED",
 				sound = "ALERT4",
 				flashscreen = true,
+				icon = ST[64385],
 			},
 			weakeneddur = {
 				varname = format(L["%s Duration"],L["Weakened"]),
@@ -211,6 +224,7 @@ do
 				color1 = "GREY",
 				color2 = "GREY",
 				sound = "ALERT7",
+				icon = ST[64436],
 			},
 			--- Phase Changes
 			onetotwo = {
@@ -220,6 +234,7 @@ do
 				time = 40,
 				flashtime = 10,
 				color1 = "RED",
+				icon = ST[3648],
 			},
 			twotothree = {
 				varname = format(L["%s Timer"],L["Phase Three"]),
@@ -228,6 +243,7 @@ do
 				time = 25,
 				flashtime = 10,
 				color1 = "RED",
+				icon = ST[3648],
 			},
 			threetofour = {
 				varname = format(L["%s Timer"],L["Phase Four"]),
@@ -236,6 +252,7 @@ do
 				time = 25,
 				flashtime = 10,
 				color1 = "RED",
+				icon = ST[3648],
 			},
 			-- Hard Mode
 			hardmodetimer = {
@@ -245,6 +262,7 @@ do
 				time = 620,
 				flashtime = 10,
 				color1 = "BROWN",
+				icon = ST[20573],
 			},
 			-- Bomb bot
 			bombbotwarn = {
@@ -253,6 +271,7 @@ do
 				text = format(L["%s Spawned"],L["Bomb Bot"]).."!",
 				time = 5,
 				sound = "ALERT8",
+				icon = ST[15048],
 			},
 		},
 		events = {

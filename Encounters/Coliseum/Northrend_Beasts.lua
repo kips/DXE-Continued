@@ -1,5 +1,5 @@
 do
-	local L,SN = DXE.L,DXE.SN
+	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
 		version = "$Rev$",
 		key = "northrendbeasts", 
@@ -36,6 +36,7 @@ do
 				color1 = "ORANGE",
 				sound = "ALERT3",
 				flashscreen = true,
+				icon = ST[66313],
 			},
 			impalecd = {
 				varname = format(L["%s Cooldown"],SN[66331]),
@@ -44,6 +45,7 @@ do
 				time = 10,
 				flashtime = 5,
 				color1 = "PURPLE",
+				icon = ST[66331],
 			},
 			stompwarn = {
 				varname = format(L["%s Cast"],SN[66330]),
@@ -52,6 +54,7 @@ do
 				time = 0.5,
 				color1 = "BROWN",
 				sound = "ALERT5",
+				icon = ST[66330],
 			},
 			stompcd = {
 				varname = format(L["%s Cooldown"],SN[66330]),
@@ -62,6 +65,7 @@ do
 				color1 = "TAN",
 				color2 = "TAN",
 				sound = "ALERT7",
+				icon = ST[66330],
 			},
 			bileonself = {
 				varname = format(L["%s on self"],SN[66870]),
@@ -73,6 +77,7 @@ do
 				color1 = "CYAN",
 				color2 = "ORANGE",
 				flashscreen = true,
+				icon = ST[66870],
 			},
 			toxinonself = {
 				varname = format(L["%s on self"],SN[66823]),
@@ -84,6 +89,7 @@ do
 				color1 = "GREEN",
 				color2 = "PINK",
 				flashscreen = true,
+				icon = ST[66823],
 			},
 			breathwarn = {
 				varname = format(L["%s Cast"],SN[66689]),
@@ -93,6 +99,7 @@ do
 				color1 = "BLUE",
 				sound = "ALERT6",
 				throttle = 6,
+				icon = ST[66689],
 			},
 			ragewarn = {
 				varname = format(L["%s Warning"],SN[67657]),
@@ -102,6 +109,7 @@ do
 				throttle = 15,
 				color1 = "RED",
 				sound = "ALERT4",
+				icon = ST[67657],
 			},
 			dazedur = {
 				varname = format(L["%s Duration"],SN[66758]),
@@ -109,6 +117,7 @@ do
 				text = SN[66758].."!",
 				time = 15,
 				color1 = "GREY",
+				icon = ST[66758],
 			},
 			crashcast = {
 				varname = format(L["%s Cast"],SN[66683]),
@@ -117,6 +126,7 @@ do
 				time = 1,
 				color1 = "INDIGO",
 				sound = "ALERT8",
+				icon = ST[66683],
 			},
 			crashcd = {
 				varname = format(L["%s Cooldown"],SN[66683]),
@@ -125,6 +135,7 @@ do
 				time = 56,
 				flashtime = 10,
 				color1 = "YELLOW",
+				icon = ST[66683],
 			},
 		},
 		events = { 

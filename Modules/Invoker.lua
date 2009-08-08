@@ -415,11 +415,11 @@ local function StartAlert(id,stgs)
 	if not time or time < 0 then return end
 	-- Pass in appropriate arguments
 	if info.type == "dropdown" then
-		Alerts:Dropdown(id,text,time,info.flashtime,stgs.sound,stgs.color1,stgs.color2,stgs.flashscreen)
+		Alerts:Dropdown(id,text,time,info.flashtime,stgs.sound,stgs.color1,stgs.color2,stgs.flashscreen,info.icon)
 	elseif info.type == "centerpopup" then
-		Alerts:CenterPopup(id,text,time,info.flashtime,stgs.sound,stgs.color1,stgs.color2,stgs.flashscreen)
+		Alerts:CenterPopup(id,text,time,info.flashtime,stgs.sound,stgs.color1,stgs.color2,stgs.flashscreen,info.icon)
 	elseif info.type == "simple" then
-		Alerts:Simple(text,time,stgs.sound,stgs.color1,stgs.flashscreen)
+		Alerts:Simple(text,time,stgs.sound,stgs.color1,stgs.flashscreen,info.icon)
 	end
 end
 

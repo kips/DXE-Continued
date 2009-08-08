@@ -1,5 +1,5 @@
 do
-	local L,SN = DXE.L,DXE.SN
+	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 
 	local data = {
 		version = "$Rev$",
@@ -33,6 +33,7 @@ do
 				flashtime = 5, 
 				sound = "ALERT1", 
 				color1 = "MAGENTA", 
+				icon = ST[55543],
 			},
 			tauntdur = {
 				varname = format(L["%s Duration"],SN[355]),
@@ -42,6 +43,7 @@ do
 				flashtime = 5, 
 				sound = "ALERT2", 
 				color1 = "BLUE", 
+				icon = ST[355],
 			},
 			shieldwalldur = {
 				varname = format(L["%s Duration"],SN[871]),
@@ -51,6 +53,7 @@ do
 				flashtime = 5, 
 				sound = "ALERT3", 
 				color1 = "YELLOW", 
+				icon = ST[871],
 			},
 		},
 		events = {

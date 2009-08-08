@@ -1,5 +1,5 @@
 do
-	local L,SN = DXE.L,DXE.SN
+	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 
 	local data = {
 		version = "$Rev$",
@@ -31,6 +31,7 @@ do
 				flashtime = 5, 
 				sound = "ALERT1", 
 				color1 = "YELLOW", 
+				icon = ST[29484],
 			},
 			spidercd = {
 				varname = format(L["%s Cooldown"],L["Spider"]),
@@ -40,13 +41,15 @@ do
 				flashtime = 5, 
 				sound = "ALERT2", 
 				color1 = "ORANGE", 
+				icon = ST[51069],
 			},
 			enragewarn = {
 				varname = format(L["%s Warning"],L["Enrage"]),
 				type = "simple", 
 				text = format("%s!",L["Enraged"]),
 				time = 1.5, 
-				sound = "ALERT3", 
+				sound = "ALERT3",
+				icon = ST[12317],
 			},
 		},
 		events = {

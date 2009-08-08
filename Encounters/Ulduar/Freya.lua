@@ -1,5 +1,5 @@
 do
-	local L,SN = DXE.L,DXE.SN
+	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 
 	local data = {
 		version = "$Rev$",
@@ -39,6 +39,7 @@ do
 				time = "<spawntime>",
 				flashtime = 5,
 				color1 = "MAGENTA",
+				icon = ST[31687],
 			},
 			giftwarn = {
 				varname = format(L["%s Warning"],L["Eonar's Gift"]),
@@ -47,6 +48,7 @@ do
 				time = 3,
 				sound = "ALERT2",
 				color1 = "VIOLET",
+				icon = ST[62584],
 			},
 			attunedwarn = {
 				type = "simple",
@@ -54,6 +56,7 @@ do
 				text = format(L["%s Removed"],SN[62519]).."!",
 				time = 1.5,
 				sound = "ALERT9",
+				icon = ST[62519],
 			},
 			naturesfuryself = {
 				varname = format(L["%s on self"],SN[62589]),
@@ -65,6 +68,7 @@ do
 				color2 = "WHITE",
 				sound = "ALERT1",
 				flashscreen = true,
+				icon = ST[62589],
 			},
 			naturesfuryproximitywarn = {
 				varname = format(L["%s Proximity Warning"],SN[62589]),
@@ -73,6 +77,7 @@ do
 				time = 2,
 				color1 = "BLACK",
 				sound = "ALERT1",
+				icon = ST[62589],
 			},
 			gripwarn = {
 				varname = format(L["%s Warning"],SN[62532]),
@@ -83,6 +88,7 @@ do
 				throttle = 5,
 				sound = "ALERT6",
 				flashscreen = true,
+				icon = ST[62532],
 			},
 			enragecd = {
 				varname = L["Enrage"],
@@ -91,6 +97,7 @@ do
 				time = 600,
 				flashtime = 5,
 				color1 = "RED",
+				icon = ST[12317],
 			},
 			groundtremorwarn = {
 				varname = format(L["%s Cast"],SN[62437]),
@@ -102,6 +109,7 @@ do
 				color2 = "ORANGE",
 				sound = "ALERT5",
 				flashscreen = true,
+				icon = ST[62437],
 			},
 			groundtremorcd = {
 				varname = format(L["%s Cooldown"],SN[62437]),
@@ -112,6 +120,7 @@ do
 				color1 = "TAN",
 				color2 = "TAN",
 				sound = "ALERT7",
+				icon = ST[62437],
 			},
 			unstablewarnself = {
 				varname = format(L["%s on self"],SN[62217]),
@@ -122,6 +131,7 @@ do
 				color1 = "YELLOW",
 				sound = "ALERT3",
 				flashscreen = true,
+				icon = ST[62217],
 			},
 		},
 		arrows = {

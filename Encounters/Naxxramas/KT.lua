@@ -1,5 +1,5 @@
 do
-	local L,SN = DXE.L,DXE.SN
+	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 
 	local data = {
 		version = "$Rev$",
@@ -37,6 +37,7 @@ do
 				time = 1.5, 
 				sound = "ALERT1",
 				color1 = "BLACK",
+				icon = ST[27810],
 			},
 			frostblastwarn = {
 				varname = format(L["%s Warning"],SN[27808]),
@@ -46,6 +47,7 @@ do
 				sound = "ALERT2", 
 				throttle = 5,
 				color1 = "BLUE",
+				icon = ST[27808],
 			},
 			detonatewarn = {
 				varname = format(L["%s Warning"],SN[29870]),
@@ -55,14 +57,16 @@ do
 				sound = "ALERT3", 
 				color1 = "WHITE",
 				flashscreen = true,
+				icon = ST[29870],
 			},
 			ktarrives = {
 				varname = format(L["%s Arrival"],L["Kel'Thuzad"]),
 				type = "dropdown", 
 				text = format(L["%s Arrives"],L["Kel'Thuzad"]),
-				time = 225, 
+				time = 225,
 				color1 = "RED",
 				flashtime = 5, 
+				icon = ST[586],
 			},
 			guardianswarn = {
 				varname = format(L["%s Spawns"],SN[4070]),
@@ -72,6 +76,7 @@ do
 				flashtime = 3, 
 				sound = "ALERT1", 
 				color1 = "MAGENTA", 
+				icon = ST[4070],
 			},
 		},
 		events = {

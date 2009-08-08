@@ -470,11 +470,11 @@ do
 		local stgs = pfl.Encounters[key][var]
 
 		if info.type == "dropdown" then
-			addon.Alerts:Dropdown(info.var,info.varname,10,5,stgs.sound,stgs.color1,stgs.color2,stgs.flashscreen)
+			addon.Alerts:Dropdown(info.var,info.varname,10,5,stgs.sound,stgs.color1,stgs.color2,stgs.flashscreen,info.icon)
 		elseif info.type == "centerpopup" then
-			addon.Alerts:CenterPopup(name,info.varname,10,5,stgs.sound,stgs.color1,stgs.color2,stgs.flashscreen)
+			addon.Alerts:CenterPopup(name,info.varname,10,5,stgs.sound,stgs.color1,stgs.color2,stgs.flashscreen,info.icon)
 		elseif info.type == "simple" then
-			addon.Alerts:Simple(info.varname,5,stgs.sound,stgs.color1,stgs.flashscreen)
+			addon.Alerts:Simple(info.varname,5,stgs.sound,stgs.color1,stgs.flashscreen,info.icon)
 		end
 	end
 end

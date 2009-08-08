@@ -1,5 +1,5 @@
 do
-	local L,SN = DXE.L,DXE.SN
+	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 
 	local data = {
 		version = "$Rev$",
@@ -30,6 +30,7 @@ do
 				flashtime = 5,
 				color1 = "RED",
 				color2 = "RED",
+				icon = ST[12317],
 			},
 			lifedraincd = {
 				varname = format(L["%s Cooldown"],SN[28542]),
@@ -39,6 +40,7 @@ do
 				flashtime = 5, 
 				sound = "ALERT3", 
 				color1 = "MAGENTA", 
+				icon = ST[28542],
 			},
 			airphasedur = {
 				varname = format(L["%s Duration"],L["Air Phase"]),
@@ -48,6 +50,7 @@ do
 				flashtime = 5, 
 				sound = "ALERT2", 
 				color1 = "YELLOW", 
+				icon = ST[51475],
 			},
 			deepbreathwarn = {
 				varname = format(L["%s Warning"],L["Deep Breath"]),
@@ -58,6 +61,7 @@ do
 				sound = "ALERT1", 
 				color1 = "BLUE",
 				flashscreen = true,
+				icon = ST[28524],
 			},
 		},
 		events = {

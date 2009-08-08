@@ -81,8 +81,19 @@ local SN = setmetatable({},{
 		if type(k) ~= "number" then return "nil" end
 		local name = GetSpellInfo(k)
 		if not name then error("Invalid spell name attempted to be retrieved") end
-		t[k] = name
+		--t[k] = name
 		return name 
+	end,
+})
+
+-- Spell textures
+local ST = setmetatable({},{
+	__index = function(t,k)
+		if type(k) ~= "number" then return "nil" end
+		local texture = select(3,GetSpellInfo(k))
+		if not texture then error("Invalid spell texture attempted to be retrieved") end
+		--t[k] = texture
+		return texture
 	end,
 })
 
@@ -132,6 +143,7 @@ do
 		NID = NID,
 		CN = CN,
 		SM = SM,
+		ST = ST,
 	}
 	for k,lib in pairs(libs) do
 		addon[k] = lib

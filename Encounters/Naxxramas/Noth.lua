@@ -1,5 +1,5 @@
 do
-	local L,SN = DXE.L,DXE.SN
+	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 
 	local data = {
 		version = "$Rev$",
@@ -39,6 +39,7 @@ do
 				flashtime = 5, 
 				sound = "ALERT1", 
 				color1 = "MAGENTA", 
+				icon = ST[29208],
 			},
 			teleportbalc = {
 				varname = L["Teleport to Balcony"], 
@@ -47,7 +48,8 @@ do
 				time = "<roomtime>", 
 				flashtime = 5, 
 				color1 = "RED",
-				sound = "ALERT2", 
+				sound = "ALERT2",
+				icon = ST[66548],
 			},
 			teleportroom = {
 				varname = L["Teleport to Room"], 
@@ -56,7 +58,8 @@ do
 				time = "<balconytime>", 
 				flashtime = 5, 
 				color1 = "RED",
-				sound = "ALERT2", 
+				sound = "ALERT2",
+				icon = ST[29231],
 			},
 			cursewarn = {
 				varname = format(L["%s Warning"],L["Curse"]),
@@ -64,6 +67,7 @@ do
 				text = format(L["%s Casted"],L["Curse"]).."!",
 				time = 1.5, 
 				sound = "ALERT3", 
+				icon = ST[29213],
 			},
 		},
 		events = {

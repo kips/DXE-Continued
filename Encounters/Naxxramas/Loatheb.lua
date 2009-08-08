@@ -1,5 +1,5 @@
 do
-	local L,SN = DXE.L,DXE.SN
+	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 
 	local data = {
 		version = "$Rev$",
@@ -35,6 +35,7 @@ do
 				flashtime = 7, 
 				sound = "ALERT2", 
 				color1 = "MAGENTA", 
+				icon = ST[55593],
 			},
 			openheals = {
 				varname = format(L["%s Duration"],SN[37455]),
@@ -43,7 +44,7 @@ do
 				time = 3, 
 				sound = "ALERT3", 
 				color1 = "GREEN", 
-				
+				icon = ST[53765],
 			},
 			sporespawn = {
 				varname = format(L["%s Timer"],SN[29234]),
@@ -53,6 +54,7 @@ do
 				flashtime = 5, 
 				sound = "ALERT1", 
 				color1 = "ORANGE", 
+				icon = ST[35336],
 			},
 		},
 		timers = {

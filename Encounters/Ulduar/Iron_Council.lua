@@ -1,5 +1,5 @@
 do
-	local L,SN = DXE.L,DXE.SN
+	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
 		version = "$Rev$",
 		key = "ironcouncil", 
@@ -40,6 +40,7 @@ do
 				time = 600,
 				flashtime = 5,
 				color1 = "RED",
+				icon = ST[12317],
 			},
 			fusionpunchcast = {
 				varname = format(L["%s Cast"],SN[61903]),
@@ -48,6 +49,7 @@ do
 				time = 3,
 				color1 = "BROWN",
 				sound = "ALERT5",
+				icon = ST[61903],
 			},
 			fusionpunchcd = {
 				varname = format(L["%s Cooldown"],SN[61903]),
@@ -57,6 +59,7 @@ do
 				flashtime = 5,
 				color1 = "BLUE",
 				color2 = "GREY",
+				icon = ST[61903],
 			},
 			runeofsummoningwarn = {
 				varname = format(L["%s Warning"],SN[62273]),
@@ -65,6 +68,7 @@ do
 				sound = "ALERT1",
 				color2 = "MAGENTA",
 				time = 1.5,
+				icon = ST[62273],
 			},
 			runeofdeathwarn = {
 				varname = format(L["%s on self"],SN[62269]),
@@ -72,6 +76,7 @@ do
 				text = format("%s: %s!",SN[62269],L["YOU"]),
 				time = 1.5,
 				sound = "ALERT3",
+				icon = ST[62269],
 			},
 			runeofpowerwarn = {
 				varname = format(L["%s Cast"],SN[61973]),
@@ -80,6 +85,7 @@ do
 				sound = "ALERT4",
 				color1 = "GREEN",
 				time = 1.5,
+				icon = ST[61973],
 			},
 			overloadwarn = {
 				varname = format(L["%s Cast"],SN[61869]),
@@ -89,6 +95,7 @@ do
 				flashtime = 6,
 				sound = "ALERT2",
 				color1 = "PURPLE",
+				icon = ST[61869],
 			},
 			overloadcd = {
 				varname = format(L["%s Cooldown"],SN[61869]),
@@ -99,6 +106,7 @@ do
 				sound = "ALERT9",
 				color1 = "PURPLE",
 				color2 = "PURPLE",
+				icon = ST[61869],
 			},
 			tendrilsdur = {
 				varname = format(L["%s Duration"],SN[61887]),
@@ -106,6 +114,7 @@ do
 				text = format(L["%s Duration"],SN[61887]),
 				time = 35, 
 				color1 = "BLUE", 
+				icon = ST[61887],
 			},
 			tendrilswarnself = {
 				varname = format(L["%s on self"],SN[61887]),
@@ -114,6 +123,7 @@ do
 				color1 = "YELLOW",
 				time = 1.5,
 				flashscreen = true,
+				icon = ST[61887],
 			},
 			tendrilswarnother = {
 				varname = format(L["%s on others"],SN[61887]),
@@ -121,6 +131,7 @@ do
 				text = format("%s: <previoustarget>",SN[61887]),
 				color1 = "YELLOW",
 				time = 1.5,
+				icon = ST[61887],
 			},
 			whirlwarn = {
 				varname = format(L["%s Cast"],SN[61915]),
@@ -131,6 +142,7 @@ do
 				color1 = "ORANGE",
 				color2 = "ORANGE",
 				sound = "ALERT7",
+				icon = ST[61915],
 			},
 			overwhelmdurself = {
 				varname = format(L["%s on self"],L["Overwhelm"]),
@@ -142,6 +154,7 @@ do
 				color2 = "YELLOW",
 				sound = "ALERT6",
 				flashscreen = true,
+				icon = ST[64637],
 			},
 			overwhelmdurother = {
 				varname = format(L["%s on others"],L["Overwhelm"]),
@@ -149,6 +162,7 @@ do
 				text = format("%s: #5#",L["Overwhelm"]),
 				time = "<overwhelmtime>",
 				color1 = "DCYAN",
+				icon = ST[64637],
 			},
 		},
 		timers = {

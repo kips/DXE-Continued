@@ -1,5 +1,5 @@
 do
-	local L,SN = DXE.L,DXE.SN
+	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
 		version = "$Rev$",
 		key = "flameleviathan", 
@@ -26,6 +26,7 @@ do
 				color1 = "BLUE", 
 				color2 = "BLUE",
 				throttle = 5,
+				icon = ST[62475],
 			},
 			flameventdur = {
 				varname = format(L["%s Duration"],SN[62396]),
@@ -36,6 +37,7 @@ do
 				sound = "ALERT2", 
 				color1 = "RED",
 				color2 = "ORANGE",
+				icon = ST[62396],
 			},
 			pursuedurother = {
 				varname = format(L["%s on others"],SN[62374]),
@@ -45,6 +47,7 @@ do
 				flashtime = 30, 
 				color1 = "CYAN",
 				color2 = "CYAN",
+				icon = ST[62374],
 			},
 			pursuedurself = {
 				varname = format(L["%s on self"],SN[62374]),
@@ -56,6 +59,7 @@ do
 				color1 = "CYAN",
 				color1 = "MAGENTA",
 				flashscreen = true,
+				icon = ST[62374],
 			},
 		},
 		events = {

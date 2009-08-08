@@ -1,5 +1,5 @@
 do
-	local L,SN = DXE.L,DXE.SN
+	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 
 	local data = {
 		version = "$Rev$",
@@ -29,7 +29,8 @@ do
 				time = 90, 
 				flashtime = 5, 
 				sound = "ALERT1", 
-				color1 = "MAGENTA", 
+				color1 = "MAGENTA",
+				icon = ST[29516],
 			},
 			danceends = {
 				varname = format(L["%s Ends"],L["Dance"]),
@@ -39,6 +40,7 @@ do
 				flashtime = 5, 
 				sound = "ALERT2", 
 				color1 = "DCYAN", 
+				icon = ST[49838],
 			},
 		},
 		timers = {

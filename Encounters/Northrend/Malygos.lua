@@ -1,5 +1,5 @@
 do
-	local L,SN = DXE.L,DXE.SN
+	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
 		version = "$Rev$",
 		key = "malygos", 
@@ -38,6 +38,7 @@ do
 				flashtime = 5, 
 				sound = "ALERT1", 
 				color1 = "BLUE", 
+				icon = ST[56105],
 			},
 			staticfieldwarn = {
 				varname = format(L["%s Warning"],SN[57430]),
@@ -46,6 +47,7 @@ do
 				time = 1.5, 
 				sound = "ALERT2", 
 				color1 = "YELLOW",
+				icon = ST[57430],
 			},
 			surgewarn = { 
 				varname = format(L["%s on self"],L["Surge"]),
@@ -56,6 +58,7 @@ do
 				sound = "ALERT1", 
 				throttle = 5,
 				color1 = "MAGENTA",
+				icon = ST[56505],
 			},
 			presurgewarn = { 
 				varname = format(L["%s Warning"],L["Surge"]), 
@@ -65,6 +68,7 @@ do
 				sound = "ALERT5", 
 				color1 = "TURQUOISE",
 				flashscreen = true,
+				icon = ST[56505],
 			},
 			deepbreath = {
 				varname = format(L["%s Cooldown"],L["Deep Breath"]), 
@@ -74,6 +78,7 @@ do
 				flashtime = 5, 
 				sound = "ALERT3", 
 				color1 = "ORANGE", 
+				icon = ST[57432],
 			},
 			vortexdur = {
 				varname = format(L["%s Duration"],SN[56105]),
@@ -82,6 +87,7 @@ do
 				time = 10, 
 				sound = "ALERT1", 
 				color1 = "BLUE", 
+				icon = ST[56105],
 			},
 			powerspark = {
 				varname = format(L["%s Spawns"],L["Power Spark"]),
@@ -91,6 +97,7 @@ do
 				flashtime = 5, 
 				sound = "ALERT2", 
 				color1 = "WHITE", 
+				icon = ST[56152],
 			},
 		},
 		events = {
