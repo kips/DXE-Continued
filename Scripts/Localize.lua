@@ -1,7 +1,7 @@
 local fmt = string.format
 
 local temp = {}
-local tempFile = "Localize.temp"
+local tempFile = "Localizetemp.lua"
 local out = "Localize_output.lua"
 
 local work = {}
@@ -14,13 +14,13 @@ local files = {}
 
 local directories = {"","Modules"}
 
-for _,directory in pairs(directories) do
-	os.execute(fmt("ls ../"..directory.." | grep 'lua' > %s",tempFile))
-	io.input(tempFile)
+for i,directory in pairs(directories) do
+	os.execute(fmt("ls ../"..directory.." | grep 'lua' > %s",i..tempFile))
+	io.input(i..tempFile)
 	for line in io.lines() do
 		files[#files+1] = directory..(directory ~= "" and "/" or "")..line
 	end
-	os.execute(fmt("rm %s",tempFile))
+	os.execute(fmt("rm %s",i..tempFile))
 	io.close()
 end
 
