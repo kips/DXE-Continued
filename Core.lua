@@ -13,7 +13,7 @@ local debugDefaults = {
 }
 --@end-debug@
 
-local defaults = {
+local defaults = { 
 	global = { 
 		Enabled = true,
 		Locked = true,
