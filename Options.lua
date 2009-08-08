@@ -9,8 +9,10 @@ local db,pfl,gbl
 
 local EDB = addon.EDB
 
-local DEFAULT_WIDTH = 890
-local DEFAULT_HEIGHT = 575
+--local DEFAULT_WIDTH = 890
+local DEFAULT_WIDTH = 723
+--local DEFAULT_HEIGHT = 575
+local DEFAULT_HEIGHT = 607
 
 -- Usage: t[<module>] = <func>
 -- func is passed a table the module can add option groups to
@@ -89,6 +91,7 @@ function addon:InitializeOptions()
 	options.name = "DXE"
 	options.handler = self
 	options.disabled = function() return not gbl.Enabled end
+	options.childGroups = "tab"
 	options.args = {
 		dxe_header = {
 			type = "header",

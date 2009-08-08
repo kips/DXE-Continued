@@ -4,6 +4,8 @@ local defaults = {
 	profile = {
 		BarTexture = "Blizzard",
 		DisableDropdowns = false,
+		DisableScreenFlash = false,
+		DisableSounds = false,
 		TopScale = 1,
 		CenterScale = 1,
 		TopGrowth = "DOWN",
@@ -111,8 +113,23 @@ function module:InitializeOptions(area)
 					DisableDropdowns = {
 						order = 400,
 						type = "toggle",
+						width = "full",
 						name = L["Disable Dropdowns"],
 						desc = L["Anchor bars onto the center anchor only"],
+					},
+					DisableScreenFlash = {
+						order = 410,
+						type = "toggle",
+						width = "full",
+						name = L["Disable Screen Flash"],
+						desc = L["Turns off all alert screen flashes"],
+					},
+					DisableSounds = {
+						order = 420,
+						type = "toggle",
+						width = "full",
+						name = L["Disable Sounds"],
+						desc = L["Turns off all alert sounds"],
 					},
 					
 					top_group = {
@@ -319,6 +336,7 @@ do
 	flash:SetScript("OnUpdate",OnUpdate)
 
 	function module:FlashScreen(c) 
+		if pfl.DisableScreenFlash then return end
 		c = c or Colors.BLACK
 		counter = 0
 		FLASH_DURATION = pfl.FlashDuration
@@ -407,7 +425,7 @@ function prototype:AnchorToTop()
 end
 
 function prototype:AnchorToCenter()
-	if self.data.sound then PlaySoundFile(self.data.sound) end
+	if self.data.sound and not pfl.DisableSounds then PlaySoundFile(self.data.sound) end
 	self.data.anchor = "CENTER"
 	self:SetAlpha(pfl.CenterAlpha)
 	self:SetScale(pfl.CenterScale)
