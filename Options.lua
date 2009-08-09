@@ -180,6 +180,11 @@ function addon:InitializeOptions()
 							self:UpdatePaneVisibility()
 						end,
 					},
+					showpane_desc = {
+						order = 150,
+						type = "description",
+						name = L["Show Pane"].."...",
+					},
 					PaneOnlyInRaid = {
 						order = 200,
 						type = "toggle",
@@ -190,6 +195,7 @@ function addon:InitializeOptions()
 							self:UpdatePaneVisibility()
 						end,
 						disabled = function() return not gbl.ShowPane end,
+						width = "full",
 					},
 					PaneOnlyInInstance = {
 						order = 250,
@@ -199,6 +205,43 @@ function addon:InitializeOptions()
 						set = function(info,v)
 							gbl.PaneOnlyInInstance = v
 							self:UpdatePaneVisibility()
+						end,
+						disabled = function() return not gbl.ShowPane end,
+						width = "full",
+					},
+					PaneOnlyIfRunning = {
+						order = 260,
+						type = "toggle",
+						name = L["Only if engaged"],
+						desc = L["Show the pane only if an encounter is running"],
+						set = function(info,v)
+							gbl.PaneOnlyIfRunning = v
+							self:UpdatePaneVisibility()
+						end,
+						disabled = function() return not gbl.ShowPane end,
+						width = "full",
+					},
+					PaneOnlyOnMouseover = {
+						order = 261,
+						type = "toggle",
+						name = L["Only on mouseover"],
+						desc = L["Show the pane only if the mouse is over it"],
+						set = function(info,v)
+							gbl.PaneOnlyOnMouseover = v
+							self:UpdatePaneVisibility()
+						end,
+						disabled = function() return not gbl.ShowPane end,
+						width = "full",
+					},
+					PaneBarGrowth = {
+						order = 265,
+						type = "select",
+						name = L["Bar Growth"],
+						desc = L["Direction health watcher bars grow. If set to automatic, they grow based on where the pane is"],
+						values = {AUTOMATIC = L["Automatic"], UP = L["Up"], DOWN = L["Down"]},
+						set = function(info,v)
+							gbl.PaneBarGrowth = v
+							self:LayoutHealthWatchers()
 						end,
 						disabled = function() return not gbl.ShowPane end,
 					},

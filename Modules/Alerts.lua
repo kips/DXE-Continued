@@ -7,6 +7,7 @@ local defaults = {
 		DisableScreenFlash = false,
 		DisableSounds = false,
 		IconPosition = "LEFT",
+		IconOffset = 0,
 		HideIcons = false,
 		TopScale = 1,
 		CenterScale = 1,
@@ -19,6 +20,12 @@ local defaults = {
 		FlashOscillations = 2,
 		TopBarWidth = 250,
 		CenterBarWidth = 275,
+		BarBackgroundColor = {0,0,0,0.8},
+		BarBorder = "Blizzard Tooltip",
+		BarBorderColor = {1,1,1},
+		BarFont = "Franklin Gothic Medium",
+		BarFontSize = 10,
+		BarStyle = "RDX",
 	}
 }
 
@@ -39,7 +46,7 @@ local util = addon.util
 
 local ANIMATION_TIME = 0.3
 local FADE_TIME = 2
-local BARHEIGHT = 30
+local BARHEIGHT
 
 local db,pfl
 
@@ -63,13 +70,28 @@ function module:RefreshProfile()
 end
 
 function module:InitializeOptions(area)
+	local function SetNotRefresh(info,v,v2,v3,v4)
+		local var = info[#info]
+		if var:find("Color") then pfl[var] = {v,v2,v3,v4}
+		else pfl[var] = v end
+	end
+
 	area.alerts_group = {
 		type = "group",
 		name = L["Alerts"],
 		order = 200,
 		handler = self,
-		get = function(info) return pfl[info[#info]] end,
-		set = function(info,v) pfl[info[#info]] = v end,
+		get = function(info) 
+			local var = info[#info]
+			if var:find("Color") then return unpack(pfl[var])
+			else return pfl[var] end
+		end,
+		set = function(info,v,v2,v3,v4) 
+			local var = info[#info]
+			if var:find("Color") then pfl[var] = {v,v2,v3,v4}
+			else pfl[var] = v end
+			self:RefreshAlerts()
+		end,
 		args = {
 			bars_group = {
 				type = "group",
@@ -84,57 +106,134 @@ function module:InitializeOptions(area)
 						order = 100,
 						func = "AlertsTest",
 					},
-					BarTexture = {
+					general_group = {
+						type = "group",
+						name = L["General"],
+						order = 200,
+						args = {
+							BarStyle = {
+								order = 100,
+								type = "select",
+								name = L["Bar Style"],
+								desc = L["Select a bar style"],
+								values = {RDX = "RDX", BIGWIGS = "BigWigs"},
+							},
+							BarTexture = {
+								order = 200,
+								type = "select",
+								name = L["Bar Texture"],
+								desc = L["Select a bar texture"],
+								values = SM:HashTable("statusbar"),
+								dialogControl = "LSM30_Statusbar",
+							},
+							BarBackgroundColor = {
+								order = 300,
+								type = "color",
+								name = L["Bar Background Color"],
+								desc = L["Select a bar background color"],
+								hasAlpha = true,
+							},
+							DisableDropdowns = {
+								order = 400,
+								type = "toggle",
+								name = L["Disable Dropdowns"],
+								desc = L["Anchor bars onto the center anchor only"],
+								set = SetNoRefresh,
+							},
+							DisableSounds = {
+								order = 500,
+								type = "toggle",
+								name = L["Disable Sounds"],
+								desc = L["Turns off all alert sounds"],
+								set = SetNoRefresh,
+							},
+						},
+					},
+					border_group = {
+						type = "group",
 						order = 300,
-						type = "select",
-						name = L["Bar Texture"],
-						desc = L["Select a bar texture used on all bars"],
-						values = SM:HashTable("statusbar"),
-						set = function(info,v) pfl.BarTexture = v; self:RefreshAlerts() end,
-						dialogControl = "LSM30_Statusbar",
+						name = L["Border"],
+						args = {
+							BarBorder = {
+								order = 100,
+								type = "select",
+								name = L["Bar Border"],
+								desc = L["Select a bar border"],
+								values = SM:HashTable("border"),
+								dialogControl = "LSM30_Border",
+								disabled = function() return pfl.BarStyle == "BIGWIGS" end,
+							},
+							BarBorderColor = {
+								order = 200,
+								type = "color",
+								name = L["Bar Border Color"],
+								desc = L["Select a bar border color"],
+								disabled = function() return pfl.BarStyle == "BIGWIGS" end,
+							},
+						},
 					},
-					IconPosition = {
-						order = 310,
-						type = "select",
-						name = L["Icon Position"],
-						desc = L["Select where to show icons on bars"],
-						values = {LEFT = L["Left"], RIGHT = L["Right"]},
-						set = function(info,v) pfl.IconPosition = v; self:RefreshAlerts() end,
-					},
-					HideIcons = {
-						order = 320,
-						type = "toggle",
-						width = "full",
-						name = L["Hide Icons"],
-						desc = L["Hide icons on bars"],
-						set = function(info,v) pfl.HideIcons = v; self:RefreshAlerts() end,
-					},
-					DisableDropdowns = {
+
+					font_group = {
+						type = "group",
+						name = L["Font"],
 						order = 400,
-						type = "toggle",
-						width = "full",
-						name = L["Disable Dropdowns"],
-						desc = L["Anchor bars onto the center anchor only"],
+						args = {
+							BarFont = {
+								order = 100,
+								type = "select",
+								name = L["Bar Font"],
+								desc = L["Select a font used on all bar texts"],
+								values = SM:HashTable("font"),
+								dialogControl = "LSM30_Font",
+							},
+							BarFontSize = {
+								order = 200,
+								type = "range",
+								name = L["Bar Font Size"],
+								desc = L["Select a font size used on all bar texts"],
+								min = 8,
+								max = 20,
+								step = 1,
+							},
+						},
 					},
-					DisableScreenFlash = {
-						order = 410,
-						type = "toggle",
-						width = "full",
-						name = L["Disable Screen Flash"],
-						desc = L["Turns off all alert screen flashes"],
-					},
-					DisableSounds = {
-						order = 420,
-						type = "toggle",
-						width = "full",
-						name = L["Disable Sounds"],
-						desc = L["Turns off all alert sounds"],
+					icon_group = {
+						type = "group",
+						name = L["Icon"],
+						order = 500,
+						args = {
+							HideIcons = {
+								order = 100,
+								type = "toggle",
+								name = L["Hide Icons"],
+								desc = L["Hide icons on bars"],
+							},
+							IconPosition = {
+								order = 200,
+								type = "select",
+								name = L["Icon Position"],
+								desc = L["Select where to show icons on bars"],
+								values = {LEFT = L["Left"], RIGHT = L["Right"]},
+								disabled = function() return pfl.HideIcons end,
+							},
+							IconOffset = {
+								order = 300,
+								type = "range",
+								name = L["Icon Offset"],
+								desc = L["How far away the icon is from the bar"],
+								min = -4,
+								max = 10,
+								step = 0.1,
+								disabled = function() return pfl.HideIcons end,
+							},
+						},
 					},
 					
 					top_group = {
 						type = "group",
 						name = L["Top Anchored Bars"],
-						order = 500,
+						order = 600,
+						disabled = function() return pfl.DisableDropdowns end,
 						args = {
 							top_desc = {
 								type = "description",
@@ -149,42 +248,38 @@ function module:InitializeOptions(area)
 								min = 0.5,
 								max = 1.5,
 								step = 0.05,
-								set = function(info,v) pfl.TopScale = v; self:RefreshAlerts() end,
 							},
 							TopAlpha = {
 								type = "range",
 								name = L["Bar Alpha"],
 								desc = L["Adjust the transparency of top bars"],
-								order = 300,
+								order = 200,
 								min = 0.1,
 								max = 1,
 								step = 0.05,
-								set = function(info,v) pfl.TopAlpha = v; self:RefreshAlerts() end,
-							},
-							TopGrowth = {
-								order = 300,
-								type = "select",
-								name = L["Bar Growth"],
-								desc = L["The direction top bars grow"],
-								values = {DOWN = L["Down"], UP = L["Up"]},
-								set = function(info,v) pfl.TopGrowth = v; self:RefreshAlerts() end,
 							},
 							TopBarWidth = {
-								order = 400,
+								order = 300,
 								type = "range",
 								name = L["Bar Width"],
 								desc = L["Adjust the width of top bars"],
 								min = 220,
 								max = 1000,
 								step = 1,
-								set = function(info,v) pfl.TopBarWidth = v; self:RefreshAlerts() end,
+							},
+							TopGrowth = {
+								order = 400,
+								type = "select",
+								name = L["Bar Growth"],
+								desc = L["The direction top bars grow"],
+								values = {DOWN = L["Down"], UP = L["Up"]},
 							},
 						},
 					},
 					center_group = {
 						type = "group",
 						name = L["Center Anchored Bars"],
-						order = 600,
+						order = 700,
 						args = {
 							center_desc = {
 								type = "description",
@@ -199,7 +294,6 @@ function module:InitializeOptions(area)
 								min = 0.5,
 								max = 1.5,
 								step = 0.05,
-								set = function(info,v) pfl.CenterScale = v; self:RefreshAlerts() end,
 							},
 							CenterAlpha = {
 								type = "range",
@@ -209,25 +303,22 @@ function module:InitializeOptions(area)
 								min = 0.1,
 								max = 1,
 								step = 0.05,
-								set = function(info,v) pfl.CenterAlpha = v; self:RefreshAlerts() end,
-							},
-							CenterGrowth = {
-								order = 300,
-								type = "select",
-								name = L["Bar Growth"],
-								desc = L["The direction center bars grow"],
-								values = {DOWN = L["Down"], UP = L["Up"]},
-								set = function(info,v) pfl.CenterGrowth = v; self:RefreshAlerts() end,
 							},
 							CenterBarWidth = {
-								order = 400,
+								order = 300,
 								type = "range",
 								name = L["Bar Width"],
 								desc = L["Adjust the width of center bars"],
 								min = 220,
 								max = 1000,
 								step = 1,
-								set = function(info,v) pfl.CenterBarWidth = v; self:RefreshAlerts() end,
+							},
+							CenterGrowth = {
+								order = 400,
+								type = "select",
+								name = L["Bar Growth"],
+								desc = L["The direction center bars grow"],
+								values = {DOWN = L["Down"], UP = L["Up"]},
 							},
 						},
 					},
@@ -242,41 +333,57 @@ function module:InitializeOptions(area)
 					flash_desc = {
 						type = "description",
 						name = L["The color of the flash becomes the main color of the alert. Colors for each alert are set in the Encounters section. If the color is set to 'Clear' it defaults to black"],
-						order = 1,
+						order = 50,
 					},
-					FlashTest = {
-						type = "execute",
-						name = L["Test Flash"],
-						desc = L["Fires a flash using a random color"],
+					DisableScreenFlash = {
+						order = 75,
+						type = "toggle",
+						name = L["Disable Screen Flash"],
+						desc = L["Turns off all alert screen flashes"],
+						set = SetNoRefresh,
+						width = "full",
+					},
+					flash_inner_group = {
+						name = "",
+						type = "group",
 						order = 100,
-						func = "FlashTest",
-					},
-					FlashAlpha = {
-						type = "range",
-						name = L["Flash Alpha"],
-						desc = L["Adjust the transparency of the flash"],
-						order = 200,
-						min = 0.1,
-						max = 1,
-						step = 0.05,
-					},
-					FlashDuration = {
-						type = "range",
-						name = L["Duration"],
-						desc = L["Adjust how long the flash lasts"],
-						order = 300,
-						min = 0.2,
-						max = 3,
-						step = 0.05,
-					},
-					FlashOscillations = {
-						type = "range",
-						name = L["Oscillations"],
-						desc = L["Adjust how many times the flash fades in and out"],
-						order = 400,
-						min = 1,
-						max = 10,
-						step = 1,
+						disabled = function() return pfl.DisableScreenFlash end,
+						args = {
+							FlashTest = {
+								type = "execute",
+								name = L["Test Flash"],
+								desc = L["Fires a flash using a random color"],
+								order = 100,
+								func = "FlashTest",
+							},
+							FlashAlpha = {
+								type = "range",
+								name = L["Flash Alpha"],
+								desc = L["Adjust the transparency of the flash"],
+								order = 200,
+								min = 0.1,
+								max = 1,
+								step = 0.05,
+							},
+							FlashDuration = {
+								type = "range",
+								name = L["Duration"],
+								desc = L["Adjust how long the flash lasts"],
+								order = 300,
+								min = 0.2,
+								max = 3,
+								step = 0.05,
+							},
+							FlashOscillations = {
+								type = "range",
+								name = L["Oscillations"],
+								desc = L["Adjust how many times the flash fades in and out"],
+								order = 400,
+								min = 1,
+								max = 10,
+								step = 1,
+							},
+						},
 					},
 				},
 			},
@@ -579,10 +686,63 @@ function prototype:SetIcon(texture)
 	self.icon:SetTexture(texture)
 end
 
-local Backdrop = {bgFile="Interface\\DialogFrame\\UI-DialogBox-Background", tileSize=16, insets = {left = 2, right = 2, top = 1, bottom = 2}}
-local BackdropBorder = {edgeFile="Interface\\Tooltips\\UI-Tooltip-Border", edgeSize = 9, insets = {left = 2, right = 2, top = 3, bottom = 2}}
+local Backdrop = {bgFile = "Interface\\Tooltips\\UI-Tooltip-Background", tileSize=16, insets = {left = 2, right = 2, top = 2, bottom = 2}}
+local BackdropBorder = {edgeFile="Interface\\Tooltips\\UI-Tooltip-Border", edgeSize = 9, insets = {left = 2, right = 2, top = 2, bottom = 2}}
+local BackdropDummy = {bgFile = "", insets = {left = 0, right = 0, top = 0, bottom = 0}}
+local function StyleAlert(alert,style)
+	alert.bar:ClearAllPoints()
+	alert.icon:ClearAllPoints()
+
+	local timer = alert.timer
+	timer.frame:ClearAllPoints()
+
+	if style == "RDX" then
+		BARHEIGHT = 30
+
+		timer.left:SetFont("Interface\\Addons\\DXE\\Fonts\\BS.ttf",20)
+		timer.right:SetFont("Interface\\Addons\\DXE\\Fonts\\BS.ttf",12)
+		timer.frame:SetPoint("RIGHT",alert,"RIGHT",-5,0)
+		alert.border:Show()
+
+		alert.bar:SetPoint("TOPLEFT",2,-2)
+		alert.bar:SetPoint("BOTTOMRIGHT",-2,2)
+
+		for k,v in pairs(Backdrop.insets) do Backdrop.insets[k] = 2 end
+		Backdrop.bgFile = "Interface\\Tooltips\\UI-Tooltip-Background"
+
+		alert.iconf:SetBackdrop(BackdropBorder)
+
+		alert.icon:SetPoint("TOPLEFT",2,-2)
+		alert.icon:SetPoint("BOTTOMRIGHT",-2,2)
+
+	elseif style == "BIGWIGS" then
+		BARHEIGHT = 14
+
+		timer.left:SetFont("Interface\\Addons\\DXE\\Fonts\\BS.ttf",13)
+		timer.right:SetFont("Interface\\Addons\\DXE\\Fonts\\BS.ttf",8)
+		timer.frame:SetPoint("RIGHT",alert,"RIGHT",5,0)
+
+		alert.border:Hide()
+
+		alert.bar:SetAllPoints(true)
+
+		for k,v in pairs(Backdrop.insets) do Backdrop.insets[k] = 0 end
+		Backdrop.bgFile = SM:Fetch("statusbar",pfl.BarTexture)
+
+		alert.iconf:SetBackdrop(BackdropDummy)
+
+		alert.icon:SetAllPoints(true)
+	end
+
+	alert:SetBackdrop(Backdrop)
+	alert:SetHeight(BARHEIGHT)
+	alert.iconf:SetWidth(BARHEIGHT)
+	alert.iconf:SetHeight(BARHEIGHT)
+end
 
 local function SkinAlert(alert)
+	StyleAlert(alert,pfl.BarStyle)
+
 	alert.bar:SetStatusBarTexture(SM:Fetch("statusbar",pfl.BarTexture))
 
 	if pfl.HideIcons then 
@@ -590,12 +750,23 @@ local function SkinAlert(alert)
 	else
 		alert:SetIcon(alert.data.icon)
 	end
+
 	alert.iconf:ClearAllPoints()
 	if pfl.IconPosition == "LEFT" then
-		alert.iconf:SetPoint("RIGHT",alert,"LEFT")
+		alert.iconf:SetPoint("RIGHT",alert,"LEFT",-pfl.IconOffset,0)
 	elseif pfl.IconPosition == "RIGHT" then
-		alert.iconf:SetPoint("LEFT",alert,"RIGHT")
+		alert.iconf:SetPoint("LEFT",alert,"RIGHT",pfl.IconOffset,0)
 	end
+
+	BackdropBorder.edgeFile = SM:Fetch("border",pfl.BarBorder)
+	local r,g,b = unpack(pfl.BarBorderColor)
+	alert.border:SetBackdrop(BackdropBorder)
+	alert.border:SetBackdropBorderColor(r,g,b)
+	alert.iconf:SetBackdropBorderColor(r,g,b)
+
+	alert.text:SetFont(SM:Fetch("font",pfl.BarFont),pfl.BarFontSize)
+
+	alert:SetBackdropColor(unpack(pfl.BarBackgroundColor))
 
 	local data = alert.data
 	if data.anchor == "TOP" then
@@ -620,45 +791,37 @@ end
 local BarCount = 1
 local function CreateAlert()
 	local self = CreateFrame("Frame","DXEAlertBar"..BarCount,UIParent)
-	self:SetHeight(BARHEIGHT)
-	self:SetBackdrop(Backdrop)
 
 	self.data = {}
 
 	local bar = CreateFrame("StatusBar",nil,self)
-	bar:SetPoint("TOPLEFT",2,-2)
-	bar:SetPoint("BOTTOMRIGHT",-2,2)
 	bar:SetMinMaxValues(0,1) 
 	bar:SetValue(0)
 	self.bar = bar
 
 	local border = CreateFrame("Frame",nil,self)
 	border:SetAllPoints(true)
-	border:SetBackdrop(BackdropBorder)
 	border:SetFrameLevel(bar:GetFrameLevel()+1)
+	self.border = border
 
-	self.timer = addon.AceGUI:Create("DXE_Timer")
-	self.timer:SetPoint("RIGHT",self,"RIGHT",-5,0)
-	self.timer.frame:SetFrameLevel(self:GetFrameLevel()+1)
-	self.timer.frame:SetParent(self)
+	local timer = addon.AceGUI:Create("DXE_Timer")
+	timer.frame:SetFrameLevel(self:GetFrameLevel()+1)
+	timer.frame:SetParent(self)
+	timer.left:SetShadowOffset(1,-1)
+	timer.right:SetShadowOffset(1,-1)
+	self.timer = timer
 
 	local text = bar:CreateFontString(nil,"ARTWORK")
-	text:SetFont("Interface\\Addons\\DXE\\Fonts\\FGM.ttf",10)
 	text:SetPoint("LEFT",self,"LEFT",5,0)
 	-- Adjust if we ever have a timer > 1 hour
 	text:SetPoint("RIGHT",self.timer.frame,"LEFT",7,0)
+	text:SetShadowOffset(1,-1)
 	self.text = text
 
 	local iconf = CreateFrame("Frame",nil,self)
-	iconf:SetHeight(BARHEIGHT)
-	iconf:SetWidth(BARHEIGHT)
-	iconf:SetPoint("RIGHT",self,"LEFT")
-	iconf:SetBackdrop(BackdropBorder)
 	self.iconf = iconf
 
 	local icon = iconf:CreateTexture(nil,"BACKGROUND")
-	icon:SetPoint("TOPLEFT",2,-2)
-	icon:SetPoint("BOTTOMRIGHT",-2,2)
 	icon:SetTexCoord(0.07,0.93,0.07,0.93)
 	self.icon = icon
 

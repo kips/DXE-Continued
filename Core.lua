@@ -21,7 +21,10 @@ local defaults = {
 		ShowPane = true,
 		PaneOnlyInRaid = false, 
 		PaneOnlyInInstance = false,
+		PaneOnlyIfRunning = false,
+		PaneOnlyOnMouseover = false,
 		PaneScale = 1,
+		PaneBarGrowth = "AUTOMATIC",
 		ShowMinimap = true, 
 		AdvancedMode = false,
 		_Minimap = {},
@@ -436,6 +439,7 @@ function addon:StartEncounter(...)
 	self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED","UNIT_DIED")
 	self.callbacks:Fire("StartEncounter",...)
 	self:StartTimer()
+	self:UpdatePaneVisibility()
 end
 
 -- Stop the current encounter
@@ -444,6 +448,7 @@ function addon:StopEncounter()
 	self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 	self.callbacks:Fire("StopEncounter")
 	self:StopTimer()
+	self:UpdatePaneVisibility()
 end
 
 do
@@ -940,6 +945,7 @@ end
 ---------------------------------------------
 -- PANE
 ---------------------------------------------
+local Pane
 
 function addon:ToggleConfig()
 	if not self.options then self:InitializeOptions() end
@@ -954,19 +960,39 @@ local backdrop = {
 }
 
 function addon:UpdatePaneScale()
-	local scale = gbl.PaneScale
-	self.Pane:SetScale(scale)
+	self.Pane:SetScale(gbl.PaneScale)
 	addon:SavePosition(self.Pane)
 end
 
-function addon:UpdatePaneVisibility()
-	if gbl.ShowPane then
-		local func = "Show"
-		func = gbl.PaneOnlyInRaid and (GetNumRaidMembers() > 0 and "Show" or "Hide") or func
-		func = gbl.PaneOnlyInInstance and (IsInInstance() and "Show" or "Hide") or func
-		self.Pane[func](self.Pane)
-	else
-		self.Pane:Hide()
+do
+	function addon:UpdatePaneVisibility()
+		if gbl.ShowPane then
+			local op = 0
+			op = op + (gbl.PaneOnlyInRaid 		and (GetNumRaidMembers() > 0 	and 1 or 0) or 1)
+			op = op + (gbl.PaneOnlyInInstance 	and (IsInInstance() 				and 2 or 0) or 2)
+			op = op + (gbl.PaneOnlyIfRunning 	and (self:IsRunning() 			and 4 or 0) or 4)
+			local show = op == 7
+			Pane[show and "Show" or "Hide"](Pane)
+
+			-- Fading
+			UIFrameFadeRemoveFrame(Pane)
+			local fadeTable = Pane.fadeTable
+			fadeTable.fadeTimer = 0
+			local a = gbl.PaneOnlyOnMouseover and (addon.Pane.MouseIsOver and 1 or 0) or 1
+			local p_a = Pane:GetAlpha()
+			if not show and p_a > 0 then
+				fadeTable.startAlpha = p_a
+				fadeTable.endAlpha = 0
+				fadeTable.finishedFunc = Pane.Hide
+				UIFrameFade(Pane,fadeTable)
+			elseif show and a ~= p_a then
+				fadeTable.startAlpha = p_a
+				fadeTable.endAlpha = a
+				UIFrameFade(Pane,fadeTable)
+			end
+		else
+			self.Pane:Hide()
+		end
 	end
 end
 
@@ -987,6 +1013,8 @@ do
 		control:SetNormalTexture(normal)
 		control:SetHighlightTexture(highlight)
 		self:AddTooltipText(control,name,text)
+		control:HookScript("OnEnter",function(self) addon.Pane.MouseIsOver = true; addon:UpdatePaneVisibility() end)
+		control:HookScript("OnLeave",function(self) addon.Pane.MouseIsOver = false; addon:UpdatePaneVisibility()end)
 
 		buttons[#buttons+1] = control
 		return control
@@ -996,7 +1024,8 @@ end
 -- Idea based off RDX's Pane
 function addon:CreatePane()
 	if self.Pane then self.Pane:Show() return end
-	local Pane = CreateFrame("Frame","DXEPane",UIParent)
+	Pane = CreateFrame("Frame","DXEPane",UIParent)
+	Pane:SetAlpha(0)
 	Pane:Hide()
 	Pane:SetClampedToScreen(true)
 	Pane:SetBackdrop(backdrop)
@@ -1012,6 +1041,9 @@ function addon:CreatePane()
 	local function OnUpdate() addon:LayoutHealthWatchers() end
 	Pane:HookScript("OnMouseDown",function(self) self:SetScript("OnUpdate",OnUpdate) end)
 	Pane:HookScript("OnMouseUp",function(self) self:SetScript("OnUpdate",nil) end)
+	Pane:HookScript("OnEnter",function(self) self.MouseIsOver = true; addon:UpdatePaneVisibility() end)
+	Pane:HookScript("OnLeave",function(self) self.MouseIsOver = false; addon:UpdatePaneVisibility() end)
+	Pane.fadeTable = {timeToFade = 0.5, finishedArg1 = Pane}
   	self.Pane = Pane
 	
 	Pane.timer = AceGUI:Create("DXE_Timer")
@@ -1326,6 +1358,8 @@ function addon:CreateHealthWatchers(Pane)
 	for i=1,4 do 
 		local hw = AceGUI:Create("DXE_HealthWatcher")
 		self:AddTooltipText(hw.frame,"Pane",L["|cffffff00Shift + Click|r to move"])
+		hw.frame:HookScript("OnEnter",function(self) Pane.MouseIsOver = true; addon:UpdatePaneVisibility() end)
+		hw.frame:HookScript("OnLeave",function(self) Pane.MouseIsOver = false; addon:UpdatePaneVisibility()end)
 		hw.frame:SetScript("OnMouseDown",OnMouseDown)
 		hw.frame:SetScript("OnMouseUp",OnMouseUp)
 		hw.frame:SetParent(Pane)
@@ -1372,17 +1406,24 @@ function addon:SetTracing(npcids)
 end
 
 function addon:LayoutHealthWatchers()
-	local midY = (GetScreenHeight()/2)*UIParent:GetEffectiveScale()
-	local x,y = self.Pane:GetCenter()
-	local s = self.Pane:GetEffectiveScale()
-	x,y = x*s,y*s
-	local point = y > midY and "TOP" or "BOTTOM"
-	local relPoint = y > midY and "BOTTOM" or "TOP"
-	local anchor = self.Pane
+	local anchor,point,relpoint = Pane
+	local growth = gbl.PaneBarGrowth
+	if growth == "AUTOMATIC" then
+		local midY = (GetScreenHeight()/2)*UIParent:GetEffectiveScale()
+		local x,y = Pane:GetCenter()
+		local s = Pane:GetEffectiveScale()
+		x,y = x*s,y*s
+		point = y > midY and "TOP" or "BOTTOM"
+		relpoint = y > midY and "BOTTOM" or "TOP"
+	elseif growth == "UP" then
+		point,relpoint = "BOTTOM","TOP"
+	elseif growth == "DOWN" then
+		point,relpoint = "TOP","BOTTOM"
+	end
 	for i,hw in ipairs(self.HW) do
 		if hw.frame:IsShown() then
 			hw:ClearAllPoints()
-			hw:SetPoint(point,anchor,relPoint)
+			hw:SetPoint(point,anchor,relpoint)
 			anchor = hw.frame
 		end
 	end
