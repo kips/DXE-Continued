@@ -17,18 +17,8 @@ local defaults = {
 	global = { 
 		Enabled = true,
 		Locked = true,
-		PaneScale = 1, 
-		ShowPane = true,
-		PaneOnlyInRaid = false, 
-		PaneOnlyInInstance = false,
-		PaneOnlyIfRunning = false,
-		PaneOnlyOnMouseover = false,
-		PaneScale = 1,
-		PaneBarGrowth = "AUTOMATIC",
-		ShowMinimap = true, 
 		AdvancedMode = false,
 		_Minimap = {},
-
 		-- NPC id -> Localized name
 		L_NPC = {},
 		--@debug@
@@ -38,6 +28,16 @@ local defaults = {
 	profile = {
 		Positions = {},
 		Encounters = {},
+		Pane = {
+			Show = true,
+			Scale = 1, 
+			OnlyInRaid = false, 
+			OnlyInInstance = false,
+			OnlyIfRunning = false,
+			OnlyOnMouseover = false,
+			BarGrowth = "AUTOMATIC",
+			BarTexture = "Blizzard",
+		},
 	},
 }
 
@@ -705,6 +705,10 @@ do
 		end
 		
 		self:LoadAllPositions()
+		self.Pane:SetScale(pfl.Pane.Scale)
+		self:LayoutHealthWatchers()
+		self:SkinHealthWatchers()
+		self:UpdatePaneVisibility()
 	end
 end
 
@@ -778,7 +782,6 @@ function addon:OnEnable()
 	self:SetPlayerConstants()
 	self:UpdateTriggers()
 	self:UpdateLock()
-	self:UpdatePaneScale()
 	self:LayoutHealthWatchers()
 
 	-- Events
@@ -959,18 +962,25 @@ local backdrop = {
 	insets = {left = 2, right = 2, top = 2, bottom = 2}
 }
 
-function addon:UpdatePaneScale()
-	self.Pane:SetScale(gbl.PaneScale)
-	addon:SavePosition(self.Pane)
+function addon:ScalePaneAndCenter()
+	local x,y = Pane:GetCenter()
+	local escale = Pane:GetEffectiveScale()
+	x,y = x*escale,y*escale
+	Pane:SetScale(pfl.Pane.Scale)
+	escale = Pane:GetEffectiveScale()
+	x,y = x/escale,y/escale
+	Pane:ClearAllPoints()
+	Pane:SetPoint("CENTER",UIParent,"BOTTOMLEFT",x,y)
+	addon:SavePosition(Pane)
 end
 
 do
 	function addon:UpdatePaneVisibility()
-		if gbl.ShowPane then
+		if pfl.Pane.Show then
 			local op = 0
-			op = op + (gbl.PaneOnlyInRaid 		and (GetNumRaidMembers() > 0 	and 1 or 0) or 1)
-			op = op + (gbl.PaneOnlyInInstance 	and (IsInInstance() 				and 2 or 0) or 2)
-			op = op + (gbl.PaneOnlyIfRunning 	and (self:IsRunning() 			and 4 or 0) or 4)
+			op = op + (pfl.Pane.OnlyInRaid 		and (GetNumRaidMembers() > 0 	and 1 or 0) or 1)
+			op = op + (pfl.Pane.OnlyInInstance 	and (IsInInstance() 			and 2 or 0) or 2)
+			op = op + (pfl.Pane.OnlyIfRunning 	and (self:IsRunning() 			and 4 or 0) or 4)
 			local show = op == 7
 			Pane[show and "Show" or "Hide"](Pane)
 
@@ -978,7 +988,7 @@ do
 			UIFrameFadeRemoveFrame(Pane)
 			local fadeTable = Pane.fadeTable
 			fadeTable.fadeTimer = 0
-			local a = gbl.PaneOnlyOnMouseover and (addon.Pane.MouseIsOver and 1 or 0) or 1
+			local a = pfl.Pane.OnlyOnMouseover and (addon.Pane.MouseIsOver and 1 or 0) or 1
 			local p_a = Pane:GetAlpha()
 			if not show and p_a > 0 then
 				fadeTable.startAlpha = p_a
@@ -991,6 +1001,7 @@ do
 				UIFrameFade(Pane,fadeTable)
 			end
 		else
+			self.Pane:SetAlpha(0)
 			self.Pane:Hide()
 		end
 	end
@@ -1035,6 +1046,7 @@ function addon:CreatePane()
 	Pane:EnableMouse(true)
 	Pane:SetMovable(true)
 	Pane:SetPoint("CENTER")
+	Pane:SetScale(pfl.Pane.Scale)
 	self:RegisterMoveSaving(Pane,"CENTER","UIParent","CENTER",nil,nil,true)
 	self:LoadPosition("DXEPane")
 	self:AddTooltipText(Pane,"Pane",L["|cffffff00Shift + Click|r to move"])
@@ -1337,7 +1349,13 @@ function addon:UNIT_DIED(_, _,eventtype, _, _, _, dstGUID)
 	end
 end
 
--- Only four are needed currently. Too many health watchers clutters the screen.
+function addon:SkinHealthWatchers()
+	for i,hw in ipairs(HW) do
+		hw.bar:SetStatusBarTexture(SM:Fetch("statusbar",pfl.Pane.BarTexture))
+	end
+end
+
+-- Currently, only four are needed. We don't want to clutter the screen
 function addon:CreateHealthWatchers(Pane)
 	if HW[1] then return end
 
@@ -1370,6 +1388,7 @@ function addon:CreateHealthWatchers(Pane)
 	-- Only the main one sends updates
 	HW[1]:SetCallback("HW_TRACER_UPDATE",function(self,event,unit) addon:TRACER_UPDATE(unit) end)
 	HW[1]:EnableUpdates()
+	self:SkinHealthWatchers()
 end
 
 function addon:CloseAllHW()
@@ -1407,7 +1426,7 @@ end
 
 function addon:LayoutHealthWatchers()
 	local anchor,point,relpoint = Pane
-	local growth = gbl.PaneBarGrowth
+	local growth = pfl.Pane.BarGrowth
 	if growth == "AUTOMATIC" then
 		local midY = (GetScreenHeight()/2)*UIParent:GetEffectiveScale()
 		local x,y = Pane:GetCenter()

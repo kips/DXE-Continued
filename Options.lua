@@ -1,7 +1,7 @@
 local addon = DXE
 local version = tonumber(("$Rev$"):match("%d+"))
 addon.version = version > addon.version and version or addon.version
-local L = addon.L
+local L,SM = addon.L,addon.SM
 
 local wipe = table.wipe
 
@@ -153,15 +153,13 @@ function addon:InitializeOptions()
 			set = function(info,v) gbl._Minimap.hide = not v; LDBIcon[gbl._Minimap.hide and "Hide" or "Show"](LDBIcon,"DXE") end,
 			width = "half",
 		}
-
 	end
+
 	-------ADDITIONAL GROUPS
 	local general = {
 		type = "group",
 		name = L["General"],
 		order = 100,
-		get = function(info) return gbl[info[#info]] end,
-		set = function(info,v) gbl[info[#info]] = v end,
 		handler = self,
 		args = {
 			pane_group = {
@@ -169,94 +167,98 @@ function addon:InitializeOptions()
 				name = L["Pane"],
 				inline = true,
 				order = 100,
+				get = function(info) return pfl.Pane[info[#info]] end,
+				set = function(info,v) pfl.Pane[info[#info]] = v end,
 				args = {
-					ShowPane = {
+					visibility_group = {
+						type = "group",
+						name = "",
+						inline = true,
 						order = 100,
-						type = "toggle",
-						name = L["Show Pane"],
-						desc = L["Toggle the visibility of the pane"],
 						set = function(info,v)
-							gbl.ShowPane = v
-							self:UpdatePaneVisibility()
+							pfl.Pane[info[#info]] = v
+							addon:UpdatePaneVisibility()
 						end,
+						disabled = function() return not pfl.Pane.Show end,
+						args = {
+							Show = {
+								order = 100,
+								type = "toggle",
+								name = L["Show Pane"],
+								desc = L["Toggle the visibility of the pane"],
+								disabled = function() return false end,
+							},
+							showpane_desc = {
+								order = 150,
+								type = "description",
+								name = L["Show Pane"].."...",
+							},
+							OnlyInRaid = {
+								order = 200,
+								type = "toggle",
+								name = L["Only in raids"],
+								desc = L["Show the pane only in raids"],
+								width = "full",
+							},
+							OnlyInInstance = {
+								order = 250,
+								type = "toggle",
+								name = L["Only in instances"],
+								desc = L["Show the pane only in instances"],
+								width = "full",
+							},
+							OnlyIfRunning = {
+								order = 260,
+								type = "toggle",
+								name = L["Only if engaged"],
+								desc = L["Show the pane only if an encounter is running"],
+								width = "full",
+							},
+							OnlyOnMouseover = {
+								order = 261,
+								type = "toggle",
+								name = L["Only on mouseover"],
+								desc = L["Show the pane only if the mouse is over it"],
+								width = "full",
+							},
+						},
 					},
-					showpane_desc = {
-						order = 150,
-						type = "description",
-						name = L["Show Pane"].."...",
-					},
-					PaneOnlyInRaid = {
+					Scale = {
 						order = 200,
-						type = "toggle",
-						name = L["Only in raids"],
-						desc = L["Show the pane only in raids"],
+						type = "range",
+						name = L["Pane scale"],
+						desc = L["Adjust the scale of the pane"],
 						set = function(info,v)
-							gbl.PaneOnlyInRaid = v
-							self:UpdatePaneVisibility()
+							pfl.Pane.Scale = v
+							addon:ScalePaneAndCenter()
 						end,
-						disabled = function() return not gbl.ShowPane end,
-						width = "full",
+						min = 0.1,
+						max = 2,
+						step = 0.1,
 					},
-					PaneOnlyInInstance = {
-						order = 250,
-						type = "toggle",
-						name = L["Only in instances"],
-						desc = L["Show the pane only in instances"],
-						set = function(info,v)
-							gbl.PaneOnlyInInstance = v
-							self:UpdatePaneVisibility()
-						end,
-						disabled = function() return not gbl.ShowPane end,
-						width = "full",
-					},
-					PaneOnlyIfRunning = {
-						order = 260,
-						type = "toggle",
-						name = L["Only if engaged"],
-						desc = L["Show the pane only if an encounter is running"],
-						set = function(info,v)
-							gbl.PaneOnlyIfRunning = v
-							self:UpdatePaneVisibility()
-						end,
-						disabled = function() return not gbl.ShowPane end,
-						width = "full",
-					},
-					PaneOnlyOnMouseover = {
-						order = 261,
-						type = "toggle",
-						name = L["Only on mouseover"],
-						desc = L["Show the pane only if the mouse is over it"],
-						set = function(info,v)
-							gbl.PaneOnlyOnMouseover = v
-							self:UpdatePaneVisibility()
-						end,
-						disabled = function() return not gbl.ShowPane end,
-						width = "full",
-					},
-					PaneBarGrowth = {
-						order = 265,
+					BarGrowth = {
+						order = 300,
 						type = "select",
 						name = L["Bar Growth"],
 						desc = L["Direction health watcher bars grow. If set to automatic, they grow based on where the pane is"],
 						values = {AUTOMATIC = L["Automatic"], UP = L["Up"], DOWN = L["Down"]},
 						set = function(info,v)
-							gbl.PaneBarGrowth = v
-							self:LayoutHealthWatchers()
+							pfl.Pane.BarGrowth = v
+							addon:LayoutHealthWatchers()
 						end,
-						disabled = function() return not gbl.ShowPane end,
+						disabled = function() return not pfl.Pane.Show end,
 					},
-					PaneScale = {
-						order = 300,
-						type = "range",
-						name = L["Pane scale"],
-						desc = L["Adjust the scale of the pane"],
+					BarTexture = {
+						order = 400,
+						type = "select",
+						name = L["Bar Texture"],
+						desc = L["Select a bar texture used on health watchers"],
 						set = function(info,v)
-							gbl.PaneScale = v
-							self:UpdatePaneScale()
+							pfl.Pane.BarTexture = v
+							addon:SkinHealthWatchers()
 						end,
-						min = 0.1,
-						max = 2,
-						step = 0.1,
+						values = SM:HashTable("statusbar"),
+						dialogControl = "LSM30_Statusbar",
 					},
 				},
 			},
