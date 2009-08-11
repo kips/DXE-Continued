@@ -63,7 +63,7 @@ function module:InitializeOptions(area)
 			raid_desc = {
 				type = "description",
 				order = 90,
-				name = L["\nIf you want to send an encounter to the raid, select an encounter, and then press '|cffffd200Send to raid|r'"],
+				name = "\n"..L["If you want to send an encounter to the raid, select an encounter, and then press '|cffffd200Send to raid|r'"],
 			},
 			ListSelect = {
 				type = "select",
@@ -89,7 +89,7 @@ function module:InitializeOptions(area)
 			player_desc = {
 				type = "description",
 				order = 250,
-				name = L["\n\nIf you want to send an encounter to a player, select an encounter, select a player, and then press '|cffffd200Send to player|r'"],
+				name = "\n\n"..L["If you want to send an encounter to a player, select an encounter, select a player, and then press '|cffffd200Send to player|r'"],
 			},
 			PlayerSelect = {
 				type = "select",
