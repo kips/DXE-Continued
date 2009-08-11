@@ -608,17 +608,20 @@ do
 		text:SetFont("Interface\\Addons\\DXE\\Fonts\\FGM.ttf",9)
 		text:SetPoint("CENTER",frame,"CENTER",0,-4)
 		text:SetTextColor(0.6,1,0.2)
+		text:SetShadowOffset(1,-1)
 		self.text = text
 
 		local perc = bar:CreateFontString(nil,"ARTWORK")
 		perc:SetFont("Interface\\Addons\\DXE\\Fonts\\FGM.ttf",8)
 		perc:SetPoint("TOPRIGHT",frame,"TOPRIGHT",-5,-3)
+		perc:SetShadowOffset(1,-1)
 		self.perc = perc
 
 		local status = bar:CreateFontString(nil,"ARTWORK")
 		status:SetFont("Interface\\Addons\\DXE\\Fonts\\FGM.ttf",8)
 		status:SetPoint("TOPLEFT",frame,"TOPLEFT",5,-3)
 		status:SetTextColor(1,0.82,0)
+		status:SetShadowOffset(1,-1)
 		self.status = status
 		
 		self.OnAcquire = OnAcquire

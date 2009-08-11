@@ -214,6 +214,7 @@ do
 				spellid = {67472,66320},
 				execute = {
 					{
+						{expect = {"#4#","==","&playerguid&"}},
 						{alert = "firebombwarnself"},
 					}
 				},
