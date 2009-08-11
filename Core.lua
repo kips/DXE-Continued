@@ -5,7 +5,7 @@
 --@debug@
 local debug
 
-local debugDefaults = {
+local debugDefaults = { 
 	CheckForEngage = false,
 	CombatStop = false,
 	CHAT_MSG_MONSTER_YELL = false,

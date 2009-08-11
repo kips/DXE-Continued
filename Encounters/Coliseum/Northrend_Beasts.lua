@@ -190,7 +190,7 @@ do
 			tramplearrow = {
 				varname = SN[66734],
 				unit = "#5#",
-				persist = 4,
+				persist = 8,
 				action = "AWAY",
 				msg = L["MOVE AWAY"],
 				spell = SN[66734],
