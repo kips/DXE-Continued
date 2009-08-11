@@ -681,6 +681,7 @@ function addon:SetupMinimapIcon()
 	})
 	local LDBIcon = LibStub("LibDBIcon-1.0",true)
 	if LDBIcon then LDBIcon:Register("DXE",self.launcher,gbl._Minimap) end
+	self.SetupMinimapIcon = nil
 end
 
 -- Replace default Print
@@ -776,6 +777,7 @@ function addon:OnInitialize()
 
 	self:SetEnabledState(gbl.Enabled)
 	self:Print(L["Type |cffffff00/dxe|r for slash commands"])
+	self.OnInitialize = nil
 end
 
 function addon:OnEnable()
@@ -979,7 +981,7 @@ do
 		if pfl.Pane.Show then
 			local op = 0
 			op = op + (pfl.Pane.OnlyInRaid 		and (GetNumRaidMembers() > 0 	and 1 or 0) or 1)
-			op = op + (pfl.Pane.OnlyInInstance 	and (IsInInstance() 			and 2 or 0) or 2)
+			op = op + (pfl.Pane.OnlyInInstance 	and (IsInInstance() 				and 2 or 0) or 2)
 			op = op + (pfl.Pane.OnlyIfRunning 	and (self:IsRunning() 			and 4 or 0) or 4)
 			local show = op == 7
 			Pane[show and "Show" or "Hide"](Pane)
@@ -1034,7 +1036,6 @@ end
 
 -- Idea based off RDX's Pane
 function addon:CreatePane()
-	if self.Pane then self.Pane:Show() return end
 	Pane = CreateFrame("Frame","DXEPane",UIParent)
 	Pane:SetAlpha(0)
 	Pane:Hide()
@@ -1116,6 +1117,8 @@ function addon:CreatePane()
 	)
 
 	self:CreateHealthWatchers(Pane)
+
+	self.CreatePane = nil
 end
 
 ---------------------------------------------
@@ -1357,8 +1360,6 @@ end
 
 -- Currently, only four are needed. We don't want to clutter the screen
 function addon:CreateHealthWatchers(Pane)
-	if HW[1] then return end
-
 	local function OnMouseDown() if IsShiftKeyDown() then Pane:StartMoving() end end
 	local function OnMouseUp() Pane:StopMovingOrSizing(); addon:SavePosition(Pane) end
 
@@ -1389,6 +1390,7 @@ function addon:CreateHealthWatchers(Pane)
 	HW[1]:SetCallback("HW_TRACER_UPDATE",function(self,event,unit) addon:TRACER_UPDATE(unit) end)
 	HW[1]:EnableUpdates()
 	self:SkinHealthWatchers()
+	self.CreateHealthWatchers = nil
 end
 
 function addon:CloseAllHW()
@@ -1500,7 +1502,7 @@ function addon:CombatStop()
 	debug("CombatStop","Invoked")
 	--@end-debug@
 	if (UnitHealth("player") > 0 or UnitIsGhost("player")) and not UnitAffectingCombat("player") then
-		-- If this doesn't work then scan for the raid for units in combat
+		-- If this doesn't work then scan the raid for units in combat
 		if dead then
 			self:ScheduleTimer("CombatStop",3)
 			dead = nil

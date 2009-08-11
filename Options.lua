@@ -95,7 +95,7 @@ function addon:InitializeOptions()
 	options.args = {
 		dxe_header = {
 			type = "header",
-			name = format("%s - %s",L["Deus Vox Encounters"],L["Version"])..format(" |cff99ff33%d|r",self.version),
+			name = format("%s - %s",L["Deus Vox Encounters"],L["Version"])..format(": |cff99ff33%d|r",self.version),
 			order = 1,
 			width = "full",
 		},
