@@ -281,6 +281,7 @@ do
 						{quash = "crushertentaclespawn"},
 						{quash = "inducewarn"},
 						{quash = "portalcd"},
+						{quash = "weakeneddur"},
 						{alert = "shadowbeaconcd"},
 						{set = {phase = "3"}},
 					},

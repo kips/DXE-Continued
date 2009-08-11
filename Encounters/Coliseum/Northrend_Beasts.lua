@@ -25,8 +25,21 @@ do
 			jormunactivated = 0,
 		},
 		onstart = {
+			{
+				{alert = "enragecd"},
+			},
 		},
 		alerts = {
+			enragecd = {
+				varname = L["Enrage"],
+				type = "dropdown", 
+				text = L["Enrage"],
+				time = 900, 
+				flashtime = 10, 
+				color1 = "RED", 
+				icon = ST[12317],
+			},
+			-- Gormok
 			firebombwarnself = {
 				varname = format(L["%s on self"],SN[66313]),
 				type = "simple",
@@ -67,6 +80,7 @@ do
 				sound = "ALERT7",
 				icon = ST[66330],
 			},
+			-- Jormungars
 			bileonself = {
 				varname = format(L["%s on self"],SN[66870]),
 				type = "dropdown",
@@ -91,6 +105,18 @@ do
 				flashscreen = true,
 				icon = ST[66823],
 			},
+			slimepoolself = {
+				varname = format(L["%s on self"],SN[67638]),
+				type = "simple",
+				text = format("%s: %s!",SN[67638],L["YOU"]),
+				time = 3,
+				sound = "ALERT1",
+				color1 = "TURQUOISE",
+				icon = ST[67638],
+				throttle = 3,
+				flashscreen = true,
+			},
+			-- Icehowl
 			breathwarn = {
 				varname = format(L["%s Cast"],SN[66689]),
 				type = "centerpopup",
@@ -136,6 +162,48 @@ do
 				flashtime = 10,
 				color1 = "YELLOW",
 				icon = ST[66683],
+			},
+			tramplewarnself = {
+				type = "centerpopup",
+				varname = format(L["%s on self"],SN[66734]),
+				text = format("%s: %s! %s",SN[66734],L["YOU"],L["MOVE"]),
+				time = 3,
+				flashtime = 3,
+				color1 = "ORANGE",
+				color2 = "GREEN",
+				sound = "ALERT9",
+				icon = ST[66734],
+				flashscreen = true,
+			},
+			tramplewarnothers = {
+				type = "centerpopup",
+				varname = format(L["%s on others"],SN[66734]),
+				time = 3,
+				text = format("%s: #5#! %s!",SN[66734],L["MOVE AWAY"]),
+				color1 = "ORANGE",
+				sound = "ALERT9",
+				icon = ST[66734],
+				flashscreen = true,
+			},
+		},
+		arrows = {
+			tramplearrow = {
+				varname = SN[66734],
+				unit = "#5#",
+				persist = 4,
+				action = "AWAY",
+				msg = L["MOVE AWAY"],
+				spell = SN[66734],
+				fixed = true,
+			},
+		},
+		raidicons = {
+			tramplemark = {
+				varname = SN[66734],
+				type = "FRIENDLY",
+				persist = 4,
+				unit = "#5#",
+				icon = 7,
 			},
 		},
 		events = { 
@@ -221,6 +289,18 @@ do
 					},
 				},
 			},
+			-- Slime Pool - Jormungars - Acidmaw
+			{
+				type = "combatevent",
+				eventtype = "SPELL_DAMAGE",
+				spellid = {66881,67638},
+				execute = {
+					{
+						{expect = {"#4#","==","&playerguid&"}},
+						{alert = "slimepoolself"},
+					},
+				},
+			},
 			-- Arctic Breath - Icehowl
 			{
 				type = "combatevent",
@@ -277,6 +357,29 @@ do
 					},
 				},
 			},
+			-- Trample - Icehowl
+			{
+				type = "event",
+				event = "EMOTE",
+				execute = {
+					{
+						{expect = {"#1#","find",L["lets out a bellowing roar!$"]}},
+						{expect = {"#5#","~=","&playername&"}},
+						{proximitycheck = {"#5#",18}},
+						{alert = "tramplewarnothers"},
+						{arrow = "tramplearrow"},
+					},
+					{
+						{expect = {"#1#","find",L["lets out a bellowing roar!$"]}},
+						{expect = {"#5#","==","&playername&"}},
+						{alert = "tramplewarnself"},
+					},
+					{
+						{expect = {"#1#","find",L["lets out a bellowing roar!$"]}},
+						{raidicon = "tramplemark"},
+					},
+				},
+			},
 			-- Deaths
 			{
 				type = "combatevent",
@@ -287,6 +390,7 @@ do
 						{tracing = {35144,34799}},
 						{quash = "impalecd"},
 						{quash = "stompcd"},
+						{resettimer = true},
 					},
 					{
 						{expect = {"&npcid|#4#&","==","35144"}}, -- Acidmaw
@@ -300,6 +404,7 @@ do
 						{expect = {"<acidmawdead> <dreadscaledead> <jormunactivated>","==","1 1 0"}},
 						{set = {jormunactivated = 1}},
 						{tracing = {34797}}, -- Icehowl
+						{resettimer = true},
 					},
 				},
 			},

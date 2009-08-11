@@ -41,7 +41,7 @@ end
 
 function module:InitializeOptions(area)
 	local list,names = {},{}
-	local listSelect,playerSelect
+	local ListSelect,PlayerSelect
 	area.dist_group = {
 		type = "group",
 		name = L["Distributor"],
@@ -52,15 +52,25 @@ function module:InitializeOptions(area)
 			AutoAccept = {
 				type = "toggle",
 				name = L["Auto accept"],
+				desc = L["Automatically accepts encounters sent by players"],
 				order = 50,
 			},
-			blank = addon.genblank(75),
-			listSelect = {
+			first_desc = {
+				type = "description",
+				order = 75,
+				name = L["You can send encounters to the entire raid or to a player. You can check versions by typing |cffffd200/dxe vc|r or by opening the version checker from the pane"],
+			},
+			raid_desc = {
+				type = "description",
+				order = 90,
+				name = L["\nIf you want to send an encounter to the raid, select an encounter, and then press '|cffffd200Send to raid|r'"],
+			},
+			ListSelect = {
 				type = "select",
 				order = 100,
 				name = L["Select an encounter"],
-				get = function() return listSelect end,
-				set = function(info,value) listSelect = value end,
+				get = function() return ListSelect end,
+				set = function(info,value) ListSelect = value end,
 				values = function()
 					wipe(list)
 					for k in addon:IterateEDB() do
@@ -69,87 +79,41 @@ function module:InitializeOptions(area)
 					return list
 				end,
 			},
-			send_raid_group = {
-				type = "group",
-				name = L["Raid Distributing"],
-				order = 120,
-				inline = true,
-				args = {
-					DistributeToRaid = {
-						type = "execute",
-						name = L["Send to raid"],
-						order = 100,
-						func = function() module:Distribute(listSelect) end,
-						disabled = function() return not listSelect end,
-					},
-					--[[
-					DistributeAllToRaid = {
-						type = "execute",
-						name = "Send all to raid",
-						order = 200,
-						func = function() 
-									for key in pairs(DXE.EDB) do
-										if key ~= "default" then
-											module:Distribute(name)
-										end
-									end
-								 end,
-						confirm = true,
-						confirmText = "Are you sure you want to do this?",
-					},
-					]]
-				},
-			},
-			send_player_group = {
-				type = "group",
-				name = L["Player Distributing"],
+			DistributeToRaid = {
+				type = "execute",
+				name = L["Send to raid"],
 				order = 200,
-				inline = true,
-				disabled = function() return not listSelect end,
-				args = {
-					playerSelect = {
-						type = "select",
-						order = 100,
-						name = L["Select a player"],
-						get = function() return playerSelect end,
-						set = function(info,value) playerSelect = value end,
-						values = function()
-							wipe(names)
-							for name in pairs(addon.Roster.name_to_unit) do
-								if name ~= addon.PNAME then
-									 names[name] = name
-								end
-							end
-							return names
-						end,
-						disabled = function() return GetNumRaidMembers() == 0 or not listSelect end,
-					},
-					blank = addon.genblank(200),
-					DistributeToPlayer = {
-						type = "execute",
-						order = 300,
-						name = L["Send to player"],
-						func = function() module:Distribute(listSelect, "WHISPER", playerSelect) end,
-						disabled = function() return not playerSelect end,
-					},
-					--[[
-					DistributeAllToPlayer = {
-						type = "execute",
-						order = 400,
-						name = "Send all to player",
-						func = function()
-									for key in pairs(DXE.EDB) do
-										if key ~= "default" then
-											module:Distribute(name, "WHISPER", playerSelect)
-										end
-									end
-								 end,
-						disabled = function() return not playerSelect end,
-						confirm = true,
-						confirmText = "Are you sure you want to do this?",
-					},
-					]]
-				},
+				func = function() module:Distribute(ListSelect) end,
+				disabled = function() return GetNumRaidMembers() == 0 or not ListSelect  end,
+			},
+			player_desc = {
+				type = "description",
+				order = 250,
+				name = L["\n\nIf you want to send an encounter to a player, select an encounter, select a player, and then press '|cffffd200Send to player|r'"],
+			},
+			PlayerSelect = {
+				type = "select",
+				order = 300,
+				name = L["Select a player"],
+				get = function() return PlayerSelect end,
+				set = function(info,value) PlayerSelect = value end,
+				values = function()
+					wipe(names)
+					for name in pairs(addon.Roster.name_to_unit) do
+						if name ~= addon.PNAME then
+							 names[name] = name
+						end
+					end
+					return names
+				end,
+				disabled = function() return GetNumRaidMembers() == 0 or not ListSelect end,
+			},
+			DistributeToPlayer = {
+				type = "execute",
+				order = 400,
+				name = L["Send to player"],
+				func = function() module:Distribute(ListSelect, "WHISPER", PlayerSelect) end,
+				disabled = function() return not PlayerSelect end,
 			},
 		},
 	}
@@ -177,7 +141,6 @@ end
 
 function module:OnEnable()
 	self:RegisterComm(MAIN_PREFIX)
-	self:RegisterEvent("CHAT_MSG_ADDON")
 end
 
 ----------------------------------
@@ -240,6 +203,7 @@ function module:StartUpload(key)
 	if ul.started then return end
 	if ul.accepts == 0 then self:ULTimeout(key) return end
 	local message = ul.serialData
+	self:RegisterEvent("CHAT_MSG_ADDON")
 	self:SendCommMessage(format("%s_%s",TRANSFER_PREFIX,key), message, ul.dist, ul.target)
 	ul.bar:SetValue(0)
 	ul.bar:SetStatus(L["Uploading"])
@@ -251,6 +215,7 @@ end
 function module:StartReceiving(key,length,sender,dist,name)
 	local prefix = format("%s_%s",TRANSFER_PREFIX,key)
 	if Downloads[key] then self:RemoveDL(key) end
+	self:RegisterEvent("CHAT_MSG_ADDON")
 
 	-- Create download bar
 	local bar = self:GetProgressBar()
@@ -301,7 +266,6 @@ function module:OnCommReceived(prefix, msg, dist, sender)
 			self:Respond(format("RESPONSE:%s:%s",key,"YES"),sender)
 			return
 		end
-
 
 		local popupkey = format("DXE_Confirm_%s",key)
 		if not StaticPopupDialogs[popupkey] then
@@ -393,6 +357,14 @@ end
 -- COMPLETIONS
 ----------------------------------
 
+function module:QueueNextUL()
+	local qname,info = next(UploadQueue)
+	if qname then
+		UploadQueue[qname] = nil
+		self:ScheduleTimer("DispatchDistribute",5,info)
+	end
+end
+
 function module:DownloadReceived(prefix, msg, dist, sender)
 	self:UnregisterComm(prefix)
 	local key = match(prefix, DR_PTN)
@@ -429,14 +401,6 @@ function module:DLTimeout(key)
 	self:LoadCompleted(key,Downloads[key],L["Timed Out"],Colors.Red,"RemoveDL")
 end
 
-function module:QueueNextUL()
-	local qname,info = next(UploadQueue)
-	if qname then
-		UploadQueue[qname] = nil
-		self:ScheduleTimer("DispatchDistribute",3.5,info)
-	end
-end
-
 function module:ULCompleted(key)
 	addon:Print(format(L["%s successfully sent"],Uploads[key].name))
 	self:LoadCompleted(key,Uploads[key],L["Completed"],Colors.GREEN,"RemoveUL")
@@ -449,9 +413,8 @@ function module:ULTimeout(key)
 	self:QueueNextUL()
 end
 
-function module:LoadCompleted(key,ld,text,color,func)
-	if not ld then return end
-	local bar = ld.bar
+function module:LoadCompleted(key,loadInfo,text,color,func) -- func = RemoveDL|RemoveUL
+	local bar = loadInfo.bar
 	bar:SetStatus(text)
 	bar:SetColor(color)
 	bar:SetValue(1)
@@ -467,15 +430,17 @@ function module:RemoveUL(key)
 	self:RemoveLoad(Uploads,key)
 end
 
-function module:RemoveLoad(tbl,key)
+function module:RemoveLoad(loadTable,key)
 	self:RemoveFromUpdating(key..UL_SUFFIX)
 	self:RemoveFromUpdating(key..DL_SUFFIX)
-	local ld = tbl[key]
-	if not ld then return end
-	self:CancelTimer(ld.timer,true)
-	self:RemoveProgressBar(ld.bar)
-	addon.AceGUI:Release(ld.bar)
-	tbl[key] = nil
+	local loadInfo = loadTable[key]
+	self:CancelTimer(loadInfo.timer,true)
+	self:RemoveProgressBar(loadInfo.bar)
+	addon.AceGUI:Release(loadInfo.bar)
+	loadTable[key] = nil
+	if not next(Uploads) and not next(Downloads) then
+		self:UnregisterEvent("CHAT_MSG_ADDON")
+	end
 end
 
 function module:FadeBar(bar)
