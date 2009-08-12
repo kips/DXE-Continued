@@ -12,7 +12,7 @@ function addon:GetPlayerMapPosition(unit)
 	local x,y = GetPlayerMapPosition(unit)
 	if x <= 0 and y <= 0 then
 		SetMapToCurrentZone()
-		x,y = GetPlayerMapPosition(unit)
+		x,y = GetPlayerMapPosition(unit) 
 	end
 	return x,y
 end

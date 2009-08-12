@@ -9,10 +9,11 @@ do
 		triggers = {
 			scan = {
 				34780, -- Jaraxxus
+				34826, -- Mistress of Pain
 			}, 
 		},
 		onactivate = {
-			tracing = {34780},
+			tracing = {34780,34826},
 			tracerstart = true,
 			combatstop = true,
 		},
