@@ -19,7 +19,7 @@ local defaults = {
 		Locked = true,
 		AdvancedMode = false,
 		_Minimap = {},
-		-- NPC id -> Localized name
+		-- NPC id -> Localized name 
 		L_NPC = {},
 		--@debug@
 		debug = debugDefaults,

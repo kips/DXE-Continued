@@ -17,8 +17,8 @@ do
 			combatstop = true,
 		},
 		userdata = {
-			eruptiontime = {105,120, loop = false},
-			portaltime = {45,120, loop = false},
+			eruptiontime = {81,120, loop = false},
+			portaltime = {21,120, loop = false},
 			fleshtime = {14, 23, loop = false},
 			flametime = {20, 30, loop = false},
 		},
@@ -136,7 +136,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellid = {68123,68125},
+				spellid = {68123,68125,66197 --[[10man]]},
 				execute = {
 					{
 						{alert = "legionflamecd"},
@@ -152,7 +152,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellid = {67049,67051},
+				spellid = {67049,67051,66237 --[[10man]]},
 				execute = {
 					{
 						{alert = "fleshcd"},
@@ -167,7 +167,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_REMOVED",
-				spellid = {67049,67051},
+				spellid = {67049,67051,66237},
 				execute = {
 					{
 						{expect = {"#4#","==","&playerguid&"}},
@@ -179,7 +179,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_SUCCESS",
-				spellid = {67901,67903},
+				spellid = {67901,67903, 66258--[[10man]]},
 				execute = {
 					{
 						{alert = "eruptioncd"},
@@ -190,7 +190,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_SUCCESS",
-				spellid = {67900,67898},
+				spellid = {67900,67898,66269 --[[10man]]},
 				execute = {
 					{
 						{alert = "portalcd"},
