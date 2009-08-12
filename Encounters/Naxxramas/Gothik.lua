@@ -2,7 +2,7 @@ do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 
 	local data = {
-		version = "$Rev$",
+		version = 296,
 		key = "gothiktheharvester",
 		zone = L["Naxxramas"],
 		name = L["Gothik the Harvester"],

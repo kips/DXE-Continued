@@ -7,7 +7,7 @@ do
 	local L_Tenebron = L["Tenebron"]
 
 	local data = {
-		version = "$Rev$",
+		version = 296,
 		key = "sartharion", 
 		zone = L["The Obsidian Sanctum"], 
 		category = L["Northrend"],

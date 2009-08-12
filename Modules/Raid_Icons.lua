@@ -1,6 +1,4 @@
 local addon = DXE
-local version = tonumber(("$Rev$"):match("%d+"))
-addon.version = version > addon.version and version or addon.version
 local L = addon.L
 
 local module = addon:NewModule("RaidIcons","AceTimer-3.0")

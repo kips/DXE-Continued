@@ -4,8 +4,6 @@
 ---------------------------------------------
 
 local addon = DXE
-local version = tonumber(("$Rev$"):match("%d+"))
-addon.version = version > addon.version and version or addon.version
 
 local ipairs,pairs = ipairs,pairs
 local gmatch,match = string.gmatch,string.match
@@ -37,7 +35,7 @@ local optnumber = {["number"] = true, ["nil"] = true, _ = "number or nil"}
 local optboolean = {["boolean"] = true, ["nil"] = true, _ = "boolean or nil"}
 
 local baseKeys = {
-	version = optnumberstring,
+	version = optnumber,
 	key = isstring,
 	zone = optstring,
 	name = isstring,

@@ -1,6 +1,4 @@
 local addon = DXE
-local version = tonumber(("$Rev: 256 $"):match("%d+"))
-addon.version = version > addon.version and version or addon.version
 local L = addon.L
 local util = addon.util
 

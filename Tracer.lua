@@ -1,8 +1,6 @@
 -- Based off RDX's HOT
 
 local addon = DXE
-local version = tonumber(("$Rev$"):match("%d+"))
-addon.version = version > addon.version and version or addon.version
 local index_to_unit = addon.Roster.index_to_unit
 local NID = addon.NID
 

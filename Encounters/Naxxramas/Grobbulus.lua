@@ -4,7 +4,7 @@ do
 	local L_Grobbulus = L["Grobbulus"]
 
 	local data = {
-		version = "$Rev$",
+		version = 296,
 		key = "grobbulus",
 		zone = L["Naxxramas"],
 		name = L_Grobbulus,
