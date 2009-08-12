@@ -120,7 +120,7 @@ do
 			breathwarn = {
 				varname = format(L["%s Cast"],SN[66689]),
 				type = "centerpopup",
-				text = format(L["%s Cast"],SN[66689]),
+				text = SN[66689].."!",
 				time = 5,
 				color1 = "BLUE",
 				sound = "ALERT6",
@@ -133,7 +133,7 @@ do
 				text = format("%s! %s!",SN[67657],L["DISPEL"]),
 				time = 15,
 				throttle = 15,
-				color1 = "RED",
+				color1 = "DCYAN",
 				sound = "ALERT4",
 				icon = ST[67657],
 			},
@@ -185,6 +185,25 @@ do
 				icon = ST[66734],
 				flashscreen = true,
 			},
+			--- Phase Changes
+			onetotwo = {
+				varname = format(L["%s Timer"],L["Phase Two"]),
+				type = "centerpopup",
+				text = format(L["%s Begins"],L["Phase Two"]),
+				time = 15,
+				flashtime = 15,
+				color1 = "MIDGREY",
+				icon = ST[3648],
+			},
+			twotothree = {
+				varname = format(L["%s Timer"],L["Phase Three"]),
+				type = "centerpopup",
+				text = format(L["%s Begins"],L["Phase Three"]),
+				time = 10,
+				flashtime = 10,
+				color1 = "MIDGREY",
+				icon = ST[3648],
+			},
 		},
 		arrows = {
 			tramplearrow = {
@@ -201,9 +220,14 @@ do
 			tramplemark = {
 				varname = SN[66734],
 				type = "FRIENDLY",
-				persist = 4,
+				persist = 8,
 				unit = "#5#",
 				icon = 7,
+			},
+		},
+		timers = {
+			reset = {
+				{{resettimer = true}},
 			},
 		},
 		events = { 
@@ -233,7 +257,7 @@ do
 			-- Staggering Stomp - Gormok
 			{
 				type = "combatevent",
-				eventtype = "SPELL_CAST_SUCCESS",
+				eventtype = "SPELL_CAST_START",
 				spellid = {67647,66330},
 				execute = {
 					{
@@ -391,7 +415,8 @@ do
 						{tracing = {35144,34799}},
 						{quash = "impalecd"},
 						{quash = "stompcd"},
-						{resettimer = true},
+						{alert = "onetotwo"},
+						{scheduletimer = {"reset",15}},
 					},
 					{
 						{expect = {"&npcid|#4#&","==","35144"}}, -- Acidmaw
@@ -405,7 +430,8 @@ do
 						{expect = {"<acidmawdead> <dreadscaledead> <jormunactivated>","==","1 1 0"}},
 						{set = {jormunactivated = 1}},
 						{tracing = {34797}}, -- Icehowl
-						{resettimer = true},
+						{alert = "twotothree"},
+						{scheduletimer = {"reset",10}},
 					},
 				},
 			},

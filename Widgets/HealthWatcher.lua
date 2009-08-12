@@ -133,6 +133,7 @@ do
 		title:SetPoint("LEFT",bar,"LEFT",2,0)
 		title:SetJustifyH("LEFT")
 		title:SetText("...")
+		title:SetShadowOffset(1,-1)
 		self.title = title
 
 		-- Add health text
@@ -141,6 +142,7 @@ do
 		health:SetFont("Interface\\Addons\\DXE\\Fonts\\FGM.ttf",12)
 		health:SetJustifyH("RIGHT")
 		health:SetPoint("RIGHT",bar,"RIGHT",-2,0)
+		health:SetShadowOffset(1,-1)
 		self.health = health
 		
 		self.TRACER_UPDATE = TRACER_UPDATE

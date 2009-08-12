@@ -132,7 +132,7 @@ do
 				sound = "ALERT1",
 				color1 = "GREEN",
 				color2 = "GREEN",
-				icon = ST[15643],
+				icon = ST[22436],
 			},
 			-- Leviathan MKII
 			plasmablastwarn = { 

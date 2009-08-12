@@ -113,7 +113,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_DAMAGE",
-				spellid = {62546, 63474},
+				spellid = {62548, 63475},
 				execute = {
 					{
 						{expect = {"#4#","==","&playerguid&"},},
