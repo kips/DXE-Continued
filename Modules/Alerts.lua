@@ -26,6 +26,7 @@ local defaults = {
 		BarFont = "Franklin Gothic Medium",
 		BarFontSize = 10,
 		BarStyle = "RDX",
+		BarBorderSize = 8,
 	}
 }
 
@@ -166,6 +167,15 @@ function module:InitializeOptions(area)
 								type = "color",
 								name = L["Bar Border Color"],
 								desc = L["Select a bar border color"],
+							},
+							BarBorderSize = {
+								order = 300,
+								type = "range",
+								name = L["Bar Border Size"],
+								desc = L["Adjust the size of bar borders"],
+								min = 6,
+								max = 20,
+								step = 1,
 							},
 						},
 					},
@@ -683,8 +693,8 @@ function prototype:SetIcon(texture)
 	self.icon:SetTexture(texture)
 end
 
-local Backdrop = {bgFile = "Interface\\Tooltips\\UI-Tooltip-Background", tileSize=16, insets = {left = 2, right = 2, top = 2, bottom = 2}}
-local BackdropBorder = {edgeFile="Interface\\Tooltips\\UI-Tooltip-Border", edgeSize = 9, insets = {left = 2, right = 2, top = 2, bottom = 2}}
+local Backdrop = {bgFile = "Interface\\Tooltips\\UI-Tooltip-Background", insets = {left = 2, right = 2, top = 2, bottom = 2}}
+local BackdropBorder = {edgeFile="Interface\\Tooltips\\UI-Tooltip-Border", edgeSize = 8, insets = {left = 2, right = 2, top = 2, bottom = 2}}
 local BackdropDummy = {bgFile = "", insets = {left = 0, right = 0, top = 0, bottom = 0}}
 local function StyleAlert(alert,style)
 	alert.bar:ClearAllPoints()
@@ -701,12 +711,17 @@ local function StyleAlert(alert,style)
 		timer.frame:SetPoint("RIGHT",alert,"RIGHT",-5,0)
 		alert.border:Show()
 
-		alert.bar:SetPoint("TOPLEFT",2,-2)
-		alert.bar:SetPoint("BOTTOMRIGHT",-2,2)
+		local inset = pfl.BarBorderSize/4
+		alert.bar:SetPoint("TOPLEFT",inset,-inset)
+		alert.bar:SetPoint("BOTTOMRIGHT",-inset,inset)
 
-		for k,v in pairs(Backdrop.insets) do Backdrop.insets[k] = 2 end
+		for k,v in pairs(Backdrop.insets) do 
+			Backdrop.insets[k] = inset 
+			BackdropBorder.insets[k] = inset
+		end
 		Backdrop.bgFile = "Interface\\Tooltips\\UI-Tooltip-Background"
 
+		BackdropBorder.edgeSize = pfl.BarBorderSize
 		alert.iconf:SetBackdrop(BackdropBorder)
 
 		alert.icon:SetPoint("TOPLEFT",2,-2)
