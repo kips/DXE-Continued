@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 308,
+		version = 309,
 		key = "northrendbeasts", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -27,6 +27,7 @@ do
 		onstart = {
 			{
 				{alert = "enragecd"},
+				{alert = "zerotoone"},
 			},
 		},
 		alerts = {
@@ -186,6 +187,15 @@ do
 				flashscreen = true,
 			},
 			--- Phase Changes
+			zerotoone = {
+				varname = format(L["%s Timer"],L["Phase One"]),
+				type = "centerpopup",
+				text = format(L["%s Begins"],L["Phase One"]),
+				time = 25,
+				flashtime = 25,
+				color1 = "MIDGREY",
+				icon = ST[3648],
+			},
 			onetotwo = {
 				varname = format(L["%s Timer"],L["Phase Two"]),
 				type = "centerpopup",
