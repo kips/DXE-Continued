@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 300,
+		version = 301,
 		key = "generalvezax", 
 		zone = L["Ulduar"], 
 		name = L["General Vezax"], 
@@ -20,6 +20,7 @@ do
 		},
 		onstart = {
 			{
+				{alert = "darknesscd"},
 				{alert = "vaporcd"},
 				{alert = "enragecd"},
 				{alert = "animuscd"},
@@ -65,6 +66,15 @@ do
 				color1 = "VIOLET",
 				color2 = "CYAN",
 				sound = "ALERT2",
+				icon = ST[62662],
+			},
+			darknesscd = {
+				varname = format(L["%s Cooldown"],SN[62662]),
+				type = "dropdown",
+				text = format(L["Next %s"],SN[62662]),
+				time = 60,
+				flashtime = 10,
+				color1 = "INDIGO",
 				icon = ST[62662],
 			},
 			animuscd = {
@@ -214,7 +224,9 @@ do
 				spellid = 62662,
 				execute = {
 					{
+						{quash = "darknesscd"},
 						{alert = "darknesswarn"},
+						{alert = "darknesscd"},
 					},
 				},
 			},
