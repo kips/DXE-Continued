@@ -288,7 +288,7 @@ end
 --@end-debug@
 
 local function replace_nums(str)
-	if str == "5" then -- Class color dstName
+	if str == '5' then -- Class color dstName
 		local name = tuple['5']
 		return name_to_unit[name] and CN[name] or name
 	else

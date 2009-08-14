@@ -47,7 +47,7 @@ local defaults = {
 
 local addon = LibStub("AceAddon-3.0"):NewAddon("DXE","AceEvent-3.0","AceTimer-3.0","AceConsole-3.0","AceComm-3.0","AceSerializer-3.0")
 _G.DXE = addon
-addon.version = 310
+addon.version = 311
 addon:SetDefaultModuleState(false)
 addon.callbacks = LibStub("CallbackHandler-1.0"):New(addon)
 addon.defaults = defaults
@@ -960,7 +960,7 @@ end
 local backdrop = {
 	bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
    edgeFile="Interface\\Tooltips\\UI-Tooltip-Border", 
-	edgeSize = 9,             
+	edgeSize = 8,             
 	insets = {left = 2, right = 2, top = 2, bottom = 2}
 }
 

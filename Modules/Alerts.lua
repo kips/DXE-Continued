@@ -27,6 +27,7 @@ local defaults = {
 		BarFontSize = 10,
 		BarStyle = "RDX",
 		BarBorderSize = 8,
+		BarFillDirection = "FILL",
 	}
 }
 
@@ -124,6 +125,16 @@ function module:InitializeOptions(area)
 								desc = L["Select a bar texture"],
 								values = SM:HashTable("statusbar"),
 								dialogControl = "LSM30_Statusbar",
+							},
+							BarFillDirection = {
+								order = 250,
+								type = "select",
+								name = L["Bar Fill Direction"],
+								desc = L["The direction bars fill"],
+								values = {
+									FILL = L["Left to Right"],
+									DEPLETE = L["Right to Left"],
+								},
 							},
 							BarBackgroundColor = {
 								order = 300,
@@ -624,7 +635,7 @@ do
 		end
 		self.timer:SetTime(timeleft)
 		local value = 1 - (timeleft / self.data.totalTime)
-		self.bar:SetValue(value)
+		self.bar:SetValue(pfl.BarFillDirection == "FILL" and value or 1 - value)
 	end
 
 	local cos = math.cos
@@ -639,7 +650,7 @@ do
 		end
 		self.timer:SetTime(timeleft)
 		local value = 1 - (timeleft / data.totalTime)
-		self.bar:SetValue(value)
+		self.bar:SetValue(pfl.BarFillDirection == "FILL" and value or 1 - value)
 		if timeleft < data.flashTime then 
 			self.bar:SetStatusBarColor(util.blend(data.c1, data.c2, 0.5*(cos(timeleft*12) + 1))) 
 		end

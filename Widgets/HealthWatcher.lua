@@ -100,7 +100,7 @@ do
 
 	local backdropborder = {
 		edgeFile="Interface\\Tooltips\\UI-Tooltip-Border", 
-		edgeSize = 9,             
+		edgeSize = 8,             
 		insets = {left = 2, right = 2, top = 2, bottom = 2}
 	}
 
