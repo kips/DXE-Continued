@@ -33,6 +33,7 @@ local wipe = table.wipe
 
 local NID = addon.NID
 local CN = addon.CN
+local name_to_unit = addon.Roster.name_to_unit
 local EncDB,CE,alerts,raidicons,arrows
 -- Temp variable environment
 local userdata = {}
@@ -243,7 +244,7 @@ end
 -- REPLACES
 ---------------------------------------------
 
-local UnitGUID, UnitName, UnitExists, UnitIsUnit, UnitInRaid = UnitGUID, UnitName, UnitExists, UnitIsUnit, UnitInRaid
+local UnitGUID, UnitName, UnitExists, UnitIsUnit = UnitGUID, UnitName, UnitExists, UnitIsUnit
 
 local function tft()
 	return HW[1].tracer:First() and HW[1].tracer:First().."target" or ""
@@ -288,8 +289,8 @@ end
 
 local function replace_nums(str)
 	if str == "5" then -- Class color dstName
-		local unit = tuple["5"]
-		return UnitInRaid(unit) and CN[unit] or unit
+		local name = tuple['5']
+		return name_to_unit[name] and CN[name] or name
 	else
 		return tuple[str]
 	end
@@ -317,7 +318,7 @@ local function replace_funcs(str)
 		return RepFuncs[func](split("|",args))
 	else
 		local ret = RepFuncs[str]()
-		return UnitInRaid(ret) and CN[ret] or ret
+		return name_to_unit[ret] and CN[ret] or ret
 	end
 end
 
