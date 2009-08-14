@@ -32,6 +32,7 @@ local match,gmatch,gsub,find,split = string.match,string.gmatch,string.gsub,stri
 local wipe = table.wipe
 
 local NID = addon.NID
+local CN = addon.CN
 local EncDB,CE,alerts,raidicons,arrows
 -- Temp variable environment
 local userdata = {}
@@ -242,7 +243,7 @@ end
 -- REPLACES
 ---------------------------------------------
 
-local UnitGUID, UnitName, UnitExists, UnitIsUnit = UnitGUID, UnitName, UnitExists, UnitIsUnit
+local UnitGUID, UnitName, UnitExists, UnitIsUnit, UnitInRaid = UnitGUID, UnitName, UnitExists, UnitIsUnit, UnitInRaid
 
 local function tft()
 	return HW[1].tracer:First() and HW[1].tracer:First().."target" or ""
@@ -285,7 +286,14 @@ function module:GetRepFuncs()
 end
 --@end-debug@
 
-local replace_nums = tuple
+local function replace_nums(str)
+	if str == "5" then -- Class color dstName
+		local unit = tuple["5"]
+		return UnitInRaid(unit) and CN[unit] or unit
+	else
+		return tuple[str]
+	end
+end
 
 local function replace_vars(str)
 	local val = userdata[str]
@@ -308,7 +316,8 @@ local function replace_funcs(str)
 		local func,args = match(str,"^([^|]+)|(.+)") 
 		return RepFuncs[func](split("|",args))
 	else
-		return RepFuncs[str]()
+		local ret = RepFuncs[str]()
+		return UnitInRaid(ret) and CN[ret] or ret
 	end
 end
 
