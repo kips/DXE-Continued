@@ -22,8 +22,12 @@ function addon:YOGGTEST5()
 	self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_CAST_START",nil,nil,nil,nil,nil,nil,64059)
 end
 
+function addon:YOGGSQUEEZETEST()
+	self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_APPLIED",nil,nil,nil,"","Kruciel",nil,64125)
+end
+
 function addon:FREYATEST()
-	self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_APPLIED",nil,nil,nil,"","Apollex",nil,62283)
+	self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_APPLIED",nil,nil,nil,"","Kruciel",nil,63571)
 end
 
 function addon:FREYATEST2()

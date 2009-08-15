@@ -25,6 +25,7 @@ local defaults = {
 		BarBorderColor = {1,1,1},
 		BarFont = "Franklin Gothic Medium",
 		BarFontSize = 10,
+		BarFontColor = {1,1,1},
 		BarStyle = "RDX",
 		BarBorderSize = 8,
 		BarFillDirection = "FILL",
@@ -72,7 +73,7 @@ function module:RefreshProfile()
 end
 
 function module:InitializeOptions(area)
-	local function SetNotRefresh(info,v,v2,v3,v4)
+	local function SetNoRefresh(info,v,v2,v3,v4)
 		local var = info[#info]
 		if var:find("Color") then pfl[var] = {v,v2,v3,v4}
 		else pfl[var] = v end
@@ -695,12 +696,12 @@ function prototype:SetFlashScreen(flashscreen)
 end
 
 do
-	local function colorname(word)
-		return name_to_unit[word] and CN[word] or word
+	local function colorname(prefix,word)
+		return name_to_unit[word] and prefix..CN[word] or prefix..word
 	end
 
 	function prototype:SetText(text)
-		text = gsub(text,".+: (%w+)",colorname)
+		text = gsub(text,"(.+: )(%w+)",colorname)
 		self.text:SetText(text)
 	end
 end
