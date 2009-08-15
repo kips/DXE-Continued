@@ -32,7 +32,6 @@ local match,gmatch,gsub,find,split = string.match,string.gmatch,string.gsub,stri
 local wipe = table.wipe
 
 local NID = addon.NID
-local CN = addon.CN
 local name_to_unit = addon.Roster.name_to_unit
 local EncDB,CE,alerts,raidicons,arrows
 -- Temp variable environment
@@ -287,14 +286,7 @@ function module:GetRepFuncs()
 end
 --@end-debug@
 
-local function replace_nums(str)
-	if str == '5' then -- Class color dstName
-		local name = tuple['5']
-		return name_to_unit[name] and CN[name] or name
-	else
-		return tuple[str]
-	end
-end
+local replace_nums = tuple
 
 local function replace_vars(str)
 	local val = userdata[str]
@@ -317,8 +309,7 @@ local function replace_funcs(str)
 		local func,args = match(str,"^([^|]+)|(.+)") 
 		return RepFuncs[func](split("|",args))
 	else
-		local ret = RepFuncs[str]()
-		return name_to_unit[ret] and CN[ret] or ret
+		return RepFuncs[str]()
 	end
 end
 

@@ -36,8 +36,10 @@ local L = addon.L
 
 local UIParent = UIParent
 local SM = addon.SM
-local format = string.format
+local format,gsub = string.format,string.gsub
 local wipe = table.wipe
+local name_to_unit = addon.Roster.name_to_unit
+local CN = addon.CN
 local Colors = addon.Media.Colors
 
 local GetTime,PlaySoundFile,ipairs,pairs,next,remove = GetTime,PlaySoundFile,ipairs,pairs,next,table.remove
@@ -692,8 +694,15 @@ function prototype:SetFlashScreen(flashscreen)
 	self.data.flashscreen = flashscreen
 end
 
-function prototype:SetText(text)
-	self.text:SetText(text)
+do
+	local function colorname(word)
+		return name_to_unit[word] and CN[word] or word
+	end
+
+	function prototype:SetText(text)
+		text = gsub(text,".+: (%w+)",colorname)
+		self.text:SetText(text)
+	end
 end
 
 function prototype:SetIcon(texture)
