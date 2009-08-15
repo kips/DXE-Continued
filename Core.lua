@@ -47,7 +47,7 @@ local defaults = {
 
 local addon = LibStub("AceAddon-3.0"):NewAddon("DXE","AceEvent-3.0","AceTimer-3.0","AceConsole-3.0","AceComm-3.0","AceSerializer-3.0")
 _G.DXE = addon
-addon.version = 311
+addon.version = 313
 addon:SetDefaultModuleState(false)
 addon.callbacks = LibStub("CallbackHandler-1.0"):New(addon)
 addon.defaults = defaults
@@ -1136,7 +1136,12 @@ do
 		self:UpdateLockedFrames()
 	end
 
-	local backdrop = {bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background"}
+	local backdrop = {
+		bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
+		edgeFile="Interface\\Tooltips\\UI-Tooltip-Border", 
+		edgeSize = 8,             
+		insets = {left = 2, right = 2, top = 2, bottom = 2},
+	}
 	function addon:CreateLockableFrame(name,width,height,text)
 		--@debug@
 		assert(type(name) == "string","expected 'name' to be a string")
@@ -1145,18 +1150,19 @@ do
 		assert(type(text) == "string","expected 'text' to be a string")
 		--@end-debug@
 		local frame = CreateFrame("Frame","DXE"..name,UIParent)
-		--frame:SetClampedToScreen(true)
 		frame:EnableMouse(true)
 		frame:SetMovable(true)
 		frame:SetBackdrop(backdrop)
+		frame:SetBackdropBorderColor(0.33,0.33,0.33)
 		frame:SetWidth(width)
 		frame:SetHeight(height)
 		LockableFrames[frame] = true
 		self:UpdateLockedFrames()
 		
 		local desc = frame:CreateFontString(nil,"ARTWORK")
-		desc:SetFont("Interface\\Addons\\DXE\\Fonts\\FGM.ttf",10)
-		desc:SetPoint("CENTER")
+		desc:SetShadowOffset(1,-1)
+		desc:SetPoint("BOTTOM",frame,"TOP")
+		desc:SetFont(GameFontNormal:GetFont(),9)
 		desc:SetText(text)
 		return frame
 	end

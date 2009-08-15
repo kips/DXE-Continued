@@ -23,7 +23,7 @@ function addon:YOGGTEST5()
 end
 
 function addon:FREYATEST()
-	self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_APPLIED",nil,nil,nil,"","Efy",nil,62283)
+	self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_APPLIED",nil,nil,nil,"","Apollex",nil,62283)
 end
 
 function addon:FREYATEST2()
