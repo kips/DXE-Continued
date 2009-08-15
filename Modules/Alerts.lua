@@ -176,20 +176,20 @@ function module:InitializeOptions(area)
 								values = SM:HashTable("border"),
 								dialogControl = "LSM30_Border",
 							},
-							BarBorderColor = {
-								order = 200,
-								type = "color",
-								name = L["Bar Border Color"],
-								desc = L["Select a bar border color"],
-							},
 							BarBorderSize = {
-								order = 300,
+								order = 200,
 								type = "range",
 								name = L["Bar Border Size"],
 								desc = L["Adjust the size of bar borders"],
 								min = 6,
 								max = 20,
 								step = 1,
+							},
+							BarBorderColor = {
+								order = 300,
+								type = "color",
+								name = L["Bar Border Color"],
+								desc = L["Select a bar border color"],
 							},
 						},
 					},
@@ -203,7 +203,7 @@ function module:InitializeOptions(area)
 								order = 100,
 								type = "select",
 								name = L["Bar Font"],
-								desc = L["Select a font used on all"],
+								desc = L["Select a font used on bars"],
 								values = SM:HashTable("font"),
 								dialogControl = "LSM30_Font",
 							},
@@ -211,10 +211,16 @@ function module:InitializeOptions(area)
 								order = 200,
 								type = "range",
 								name = L["Bar Font Size"],
-								desc = L["Select a font size used on all"],
+								desc = L["Select a font size used on bars"],
 								min = 8,
 								max = 20,
 								step = 1,
+							},
+							BarFontColor = {
+								order = 300,
+								type = "color",
+								name = L["Bar Font Color"],
+								desc = L["Set a font color used on bars"],
 							},
 						},
 					},
@@ -697,7 +703,7 @@ end
 
 do
 	local function colorname(prefix,word)
-		return name_to_unit[word] and prefix..CN[word] or prefix..word
+		return prefix..CN[word]
 	end
 
 	function prototype:SetText(text)
@@ -798,6 +804,7 @@ local function SkinAlert(alert)
 	alert.iconf:SetBackdropBorderColor(r,g,b)
 
 	alert.text:SetFont(SM:Fetch("font",pfl.BarFont),pfl.BarFontSize)
+	alert.text:SetVertexColor(unpack(pfl.BarFontColor))
 
 	alert:SetBackdropColor(unpack(pfl.BarBackgroundColor))
 
