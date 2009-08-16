@@ -994,10 +994,6 @@ function module:BarTest()
 	self:Simple("Just Kill It!",3,"DXE ALERT3","RED", nil, addon.ST[53351])
 end
 
-function module:BarTest2()
-	self:Dropdown("AlertTest", "Bigger City Opening", 7, 5, "DXE ALERT2", "BLUE", "ORANGE", nil, addon.ST[64813])
-end
-
 local lookup
 function module:FlashTest()
 	if not lookup then
