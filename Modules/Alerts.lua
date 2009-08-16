@@ -69,7 +69,7 @@ local TopStackAnchor,CenterStackAnchor
 
 function module:RefreshProfile()
 	pfl = db.profile
-	self:RefreshAlerts()
+	self:RefreshBars()
 end
 
 function module:InitializeOptions(area)
@@ -93,7 +93,7 @@ function module:InitializeOptions(area)
 			local var = info[#info]
 			if var:find("Color") then pfl[var] = {v,v2,v3,v4}
 			else pfl[var] = v end
-			self:RefreshAlerts()
+			self:RefreshBars()
 		end,
 		args = {
 			bars_group = {
@@ -102,12 +102,12 @@ function module:InitializeOptions(area)
 				order = 100,
 				inline = true,
 				args = {
-					AlertsTest = {
+					BarTest = {
 						type = "execute",
 						name = L["Test Bars"],
 						desc = L["Fires a dropdown, center popup, and simple alert bars"],
 						order = 100,
-						func = "AlertsTest",
+						func = "BarTest",
 					},
 					general_group = {
 						type = "group",
@@ -441,7 +441,7 @@ function module:OnInitialize()
 end
 
 function module:OnDisable()
-	self:QuashAllAlerts()
+	self:QuashAll()
 end
 
 ---------------------------------------------
@@ -723,7 +723,7 @@ end
 local Backdrop = {bgFile = "Interface\\Tooltips\\UI-Tooltip-Background", insets = {left = 2, right = 2, top = 2, bottom = 2}}
 local BackdropBorder = {edgeFile="Interface\\Tooltips\\UI-Tooltip-Border", edgeSize = 8, insets = {left = 2, right = 2, top = 2, bottom = 2}}
 local BackdropDummy = {bgFile = "", insets = {left = 0, right = 0, top = 0, bottom = 0}}
-local function StyleAlert(alert,style)
+local function StyleBar(alert,style)
 	alert.bar:ClearAllPoints()
 	alert.icon:ClearAllPoints()
 
@@ -779,8 +779,8 @@ local function StyleAlert(alert,style)
 	alert.iconf:SetHeight(BARHEIGHT)
 end
 
-local function SkinAlert(alert)
-	StyleAlert(alert,pfl.BarStyle)
+local function SkinBar(alert)
+	StyleBar(alert,pfl.BarStyle)
 
 	alert.bar:SetStatusBarTexture(SM:Fetch("statusbar",pfl.BarTexture))
 
@@ -820,10 +820,10 @@ local function SkinAlert(alert)
 	end
 end
 
-function module:RefreshAlerts()
+function module:RefreshBars()
 	if not next(Active) and not next(AlertPool) then return end
-	for alert in pairs(Active) do SkinAlert(alert) end
-	for alert in pairs(AlertPool) do SkinAlert(alert) end
+	for alert in pairs(Active) do SkinBar(alert) end
+	for alert in pairs(AlertPool) do SkinBar(alert) end
 	prototype:LayoutAlertStack(TopAlertStack, TopStackAnchor, pfl.TopGrowth)
 	prototype:LayoutAlertStack(CenterAlertStack, CenterStackAnchor, pfl.CenterGrowth)
 end
@@ -872,7 +872,7 @@ local function CreateAlert()
 
 	BarCount = BarCount + 1
 
-	SkinAlert(self)
+	SkinBar(self)
 
 	return self
 end
@@ -900,12 +900,12 @@ end
 -- API
 ---------------------------------------
 
-function module:QuashAllAlerts()
+function module:QuashAll()
 	for alert in pairs(Active) do alert:Destroy() end
 end
 
 local find = string.find
-function module:QuashAlertsByPattern(pattern)
+function module:QuashByPattern(pattern)
 	for alert in pairs(Active) do
 		if alert.data.id and find(alert.data.id,pattern) then
 			alert:Destroy()
@@ -913,7 +913,7 @@ function module:QuashAlertsByPattern(pattern)
 	end
 end
 
-function module:GetAlertTimeleft(id)
+function module:GetTimeleft(id)
 	for alert in pairs(Active) do
 		if alert.data.id == id then
 			return alert.data.timeleft
@@ -981,7 +981,7 @@ end
 -- ALERT TESTS
 ---------------------------------------------
 
-function module:AlertsTest()
+function module:BarTest()
 	self:CenterPopup("AlertTest1", "Decimating. Life Tap Now!", 10, 5, "DXE ALERT1", "DCYAN", nil, nil, addon.ST[28374])
 	self:Dropdown("AlertTest2", "Bigger City Opening", 20, 5, "DXE ALERT2", "BLUE", "ORANGE", nil, addon.ST[64813])
 	self:Simple("Just Kill It!",3,"DXE ALERT3","RED", nil, addon.ST[53351])

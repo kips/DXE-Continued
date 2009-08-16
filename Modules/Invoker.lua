@@ -168,7 +168,7 @@ function module:OnStop()
 	-- Reset userdata
 	self:ResetUserData()
 	-- Quashes all alerts
-	Alerts:QuashAllAlerts()
+	Alerts:QuashAll()
 	-- Removes Arrows
 	Arrows:RemoveAll()
 	-- Remove Icons
@@ -262,7 +262,7 @@ local RepFuncs = {
 	tft_unitname = function() return tostring(UnitName(tft())) end,
 	--- Functions with passable arguments
 	-- Get's an alert's timeleft
-	timeleft = function(id,delta) return tostring(Alerts:GetAlertTimeleft(id) + (tonumber(delta) or 0)) end,
+	timeleft = function(id,delta) return tostring(Alerts:GetTimeleft(id) + (tonumber(delta) or 0)) end,
 	npcid = function(guid) return NID[guid] or "" end,
 }
 
@@ -511,7 +511,7 @@ local CommandHandlers = {
 	end,
 
 	quash = function(info)
-		Alerts:QuashAlertsByPattern(info)
+		Alerts:QuashByPattern(info)
 		return true
 	end,
 
