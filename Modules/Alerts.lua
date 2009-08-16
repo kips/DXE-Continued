@@ -62,7 +62,7 @@ addon.Alerts = module
 local Active = {}
 local TopAlertStack = {}
 local CenterAlertStack = {}
-local AlertPool = {}
+local BarPool = {}
 local prototype = {}
 
 local TopStackAnchor,CenterStackAnchor
@@ -487,13 +487,13 @@ end
 ---------------------------------------
 
 local function OnUpdate(self,elapsed)
-	local alert = next(Active)
-	if not alert then self:Hide() return end
+	local bar = next(Active)
+	if not bar then self:Hide() return end
 	local time = GetTime()
-	while alert do
-		if alert.countFunc then alert:countFunc(time) end
-		if alert.animFunc then alert:animFunc(time) end
-		alert = next(Active,alert)
+	while bar do
+		if bar.countFunc then bar:countFunc(time) end
+		if bar.animFunc then bar:animFunc(time) end
+		bar = next(Active,bar)
 	end
 end
 
@@ -508,7 +508,7 @@ UpdateFrame:Hide()
 
 function prototype:SetColor(c1,c2)
 	self.data.c1 = c1
-	self.bar:SetStatusBarColor(c1.r,c1.g,c1.b)
+	self.statusbar:SetStatusBarColor(c1.r,c1.g,c1.b)
 	self.data.c2 = c2 or c1
 end
 
@@ -519,10 +519,10 @@ function prototype:Destroy()
 	self:CancelAllTimers()
 	self.countFunc = nil
 	self.animFunc = nil
-	self.bar:SetValue(0)
+	self.statusbar:SetValue(0)
 	Active[self] = nil
 	UIFrameFadeRemoveFrame(self)
-	AlertPool[self] = true
+	BarPool[self] = true
 	wipe(self.data)
 	self.timer.frame:Show()
 	self.iconf:Hide()
@@ -542,9 +542,9 @@ do
 		elseif growth == "UP" then
 			point,relpoint,mult = "BOTTOM","TOP",1
 		end
-		for i,alert in ipairs(stack) do
-			alert:ClearAllPoints()
-			alert:SetPoint(point,anchor,relpoint,0,mult*(i-1)*BARHEIGHT)
+		for i,bar in ipairs(stack) do
+			bar:ClearAllPoints()
+			bar:SetPoint(point,anchor,relpoint,0,mult*(i-1)*BARHEIGHT)
 		end
 	end
 end
@@ -605,10 +605,17 @@ do
 		self:ClearAllPoints()
 		self:SetPoint("CENTER",UIParent,"BOTTOMLEFT",x,y)
 		self:LayoutAlertStack(TopAlertStack, TopStackAnchor, pfl.TopGrowth)
+
 		local worldscale,escale = UIParent:GetEffectiveScale(),self:GetEffectiveScale()
 		local fx,fy = x*escale, y*escale
 		local cx,cy = CenterStackAnchor:GetCenter()
+		local mult = pfl.CenterGrowth == "DOWN" and -1 or 1
+		cy = cy + mult*5 -- CenterStackAnchor:GetHeight() / 2
+
+		local offset = (BARHEIGHT * #CenterAlertStack + BARHEIGHT/2) * (pfl.CenterScale * worldscale)
 		local tox,toy = cx*worldscale,cy*worldscale
+		toy = toy + mult*(offset)
+
 		local data = self.data
 		data.t0 = GetTime()
 		data.fx = fx
@@ -620,8 +627,8 @@ do
 end
 
 function prototype:RemoveFromStack(stack)
-	for i,alert in ipairs(stack) do
-		if alert == self then 
+	for i,bar in ipairs(stack) do
+		if bar == self then 
 			remove(stack,i) 
 			return
 		end
@@ -644,7 +651,7 @@ do
 		end
 		self.timer:SetTime(timeleft)
 		local value = 1 - (timeleft / self.data.totalTime)
-		self.bar:SetValue(pfl.BarFillDirection == "FILL" and value or 1 - value)
+		self.statusbar:SetValue(pfl.BarFillDirection == "FILL" and value or 1 - value)
 	end
 
 	local cos = math.cos
@@ -659,9 +666,9 @@ do
 		end
 		self.timer:SetTime(timeleft)
 		local value = 1 - (timeleft / data.totalTime)
-		self.bar:SetValue(pfl.BarFillDirection == "FILL" and value or 1 - value)
+		self.statusbar:SetValue(pfl.BarFillDirection == "FILL" and value or 1 - value)
 		if timeleft < data.flashTime then 
-			self.bar:SetStatusBarColor(util.blend(data.c1, data.c2, 0.5*(cos(timeleft*12) + 1))) 
+			self.statusbar:SetStatusBarColor(util.blend(data.c1, data.c2, 0.5*(cos(timeleft*12) + 1))) 
 		end
 	end
 
@@ -723,11 +730,11 @@ end
 local Backdrop = {bgFile = "Interface\\Tooltips\\UI-Tooltip-Background", insets = {left = 2, right = 2, top = 2, bottom = 2}}
 local BackdropBorder = {edgeFile="Interface\\Tooltips\\UI-Tooltip-Border", edgeSize = 8, insets = {left = 2, right = 2, top = 2, bottom = 2}}
 local BackdropDummy = {bgFile = "", insets = {left = 0, right = 0, top = 0, bottom = 0}}
-local function StyleBar(alert,style)
-	alert.bar:ClearAllPoints()
-	alert.icon:ClearAllPoints()
+local function StyleBar(bar,style)
+	bar.statusbar:ClearAllPoints()
+	bar.icon:ClearAllPoints()
 
-	local timer = alert.timer
+	local timer = bar.timer
 	timer.frame:ClearAllPoints()
 
 	if style == "RDX" then
@@ -735,12 +742,12 @@ local function StyleBar(alert,style)
 
 		timer.left:SetFont("Interface\\Addons\\DXE\\Fonts\\BS.ttf",20)
 		timer.right:SetFont("Interface\\Addons\\DXE\\Fonts\\BS.ttf",12)
-		timer.frame:SetPoint("RIGHT",alert,"RIGHT",-5,0)
-		alert.border:Show()
+		timer.frame:SetPoint("RIGHT",bar,"RIGHT",-5,0)
+		bar.border:Show()
 
 		local inset = pfl.BarBorderSize/4
-		alert.bar:SetPoint("TOPLEFT",inset,-inset)
-		alert.bar:SetPoint("BOTTOMRIGHT",-inset,inset)
+		bar.statusbar:SetPoint("TOPLEFT",inset,-inset)
+		bar.statusbar:SetPoint("BOTTOMRIGHT",-inset,inset)
 
 		for k,v in pairs(Backdrop.insets) do 
 			Backdrop.insets[k] = inset 
@@ -749,87 +756,87 @@ local function StyleBar(alert,style)
 		Backdrop.bgFile = "Interface\\Tooltips\\UI-Tooltip-Background"
 
 		BackdropBorder.edgeSize = pfl.BarBorderSize
-		alert.iconf:SetBackdrop(BackdropBorder)
+		bar.iconf:SetBackdrop(BackdropBorder)
 
-		alert.icon:SetPoint("TOPLEFT",2,-2)
-		alert.icon:SetPoint("BOTTOMRIGHT",-2,2)
+		bar.icon:SetPoint("TOPLEFT",2,-2)
+		bar.icon:SetPoint("BOTTOMRIGHT",-2,2)
 
 	elseif style == "BIGWIGS" then
 		BARHEIGHT = 14
 
 		timer.left:SetFont("Interface\\Addons\\DXE\\Fonts\\BS.ttf",13)
 		timer.right:SetFont("Interface\\Addons\\DXE\\Fonts\\BS.ttf",8)
-		timer.frame:SetPoint("RIGHT",alert,"RIGHT",5,0)
+		timer.frame:SetPoint("RIGHT",bar,"RIGHT",5,0)
 
-		alert.border:Hide()
+		bar.border:Hide()
 
-		alert.bar:SetAllPoints(true)
+		bar.statusbar:SetAllPoints(true)
 
 		for k,v in pairs(Backdrop.insets) do Backdrop.insets[k] = 0 end
 		Backdrop.bgFile = SM:Fetch("statusbar",pfl.BarTexture)
 
-		alert.iconf:SetBackdrop(BackdropDummy)
+		bar.iconf:SetBackdrop(BackdropDummy)
 
-		alert.icon:SetAllPoints(true)
+		bar.icon:SetAllPoints(true)
 	end
 
-	alert:SetBackdrop(Backdrop)
-	alert:SetHeight(BARHEIGHT)
-	alert.iconf:SetWidth(BARHEIGHT)
-	alert.iconf:SetHeight(BARHEIGHT)
+	bar:SetBackdrop(Backdrop)
+	bar:SetHeight(BARHEIGHT)
+	bar.iconf:SetWidth(BARHEIGHT)
+	bar.iconf:SetHeight(BARHEIGHT)
 end
 
-local function SkinBar(alert)
-	StyleBar(alert,pfl.BarStyle)
+local function SkinBar(bar)
+	StyleBar(bar,pfl.BarStyle)
 
-	alert.bar:SetStatusBarTexture(SM:Fetch("statusbar",pfl.BarTexture))
+	bar.statusbar:SetStatusBarTexture(SM:Fetch("statusbar",pfl.BarTexture))
 
 	if pfl.HideIcons then 
-		alert.iconf:Hide() 
+		bar.iconf:Hide() 
 	else
-		alert:SetIcon(alert.data.icon)
+		bar:SetIcon(bar.data.icon)
 	end
 
-	alert.iconf:ClearAllPoints()
+	bar.iconf:ClearAllPoints()
 	if pfl.IconPosition == "LEFT" then
-		alert.iconf:SetPoint("RIGHT",alert,"LEFT",-pfl.IconOffset,0)
+		bar.iconf:SetPoint("RIGHT",bar,"LEFT",-pfl.IconOffset,0)
 	elseif pfl.IconPosition == "RIGHT" then
-		alert.iconf:SetPoint("LEFT",alert,"RIGHT",pfl.IconOffset,0)
+		bar.iconf:SetPoint("LEFT",bar,"RIGHT",pfl.IconOffset,0)
 	end
 
 	BackdropBorder.edgeFile = SM:Fetch("border",pfl.BarBorder)
 	local r,g,b = unpack(pfl.BarBorderColor)
-	alert.border:SetBackdrop(BackdropBorder)
-	alert.border:SetBackdropBorderColor(r,g,b)
-	alert.iconf:SetBackdropBorderColor(r,g,b)
+	bar.border:SetBackdrop(BackdropBorder)
+	bar.border:SetBackdropBorderColor(r,g,b)
+	bar.iconf:SetBackdropBorderColor(r,g,b)
 
-	alert.text:SetFont(SM:Fetch("font",pfl.BarFont),pfl.BarFontSize)
-	alert.text:SetVertexColor(unpack(pfl.BarFontColor))
+	bar.text:SetFont(SM:Fetch("font",pfl.BarFont),pfl.BarFontSize)
+	bar.text:SetVertexColor(unpack(pfl.BarFontColor))
 
-	alert:SetBackdropColor(unpack(pfl.BarBackgroundColor))
+	bar:SetBackdropColor(unpack(pfl.BarBackgroundColor))
 
-	local data = alert.data
+	local data = bar.data
 	if data.anchor == "TOP" then
-		alert:SetScale(pfl.TopScale)
-		alert:SetAlpha(pfl.TopAlpha)
-		alert:SetWidth(pfl.TopBarWidth)
+		bar:SetScale(pfl.TopScale)
+		bar:SetAlpha(pfl.TopAlpha)
+		bar:SetWidth(pfl.TopBarWidth)
 	elseif data.anchor == "CENTER" then
-		alert:SetScale(pfl.CenterScale)
-		alert:SetAlpha(pfl.CenterAlpha)
-		alert:SetWidth(pfl.CenterBarWidth)
+		bar:SetScale(pfl.CenterScale)
+		bar:SetAlpha(pfl.CenterAlpha)
+		bar:SetWidth(pfl.CenterBarWidth)
 	end
 end
 
 function module:RefreshBars()
-	if not next(Active) and not next(AlertPool) then return end
-	for alert in pairs(Active) do SkinBar(alert) end
-	for alert in pairs(AlertPool) do SkinBar(alert) end
+	if not next(Active) and not next(BarPool) then return end
+	for bar in pairs(Active) do SkinBar(bar) end
+	for bar in pairs(BarPool) do SkinBar(bar) end
 	prototype:LayoutAlertStack(TopAlertStack, TopStackAnchor, pfl.TopGrowth)
 	prototype:LayoutAlertStack(CenterAlertStack, CenterStackAnchor, pfl.CenterGrowth)
 end
 
 local BarCount = 1
-local function CreateAlert()
+local function CreateBar()
 	local self = CreateFrame("Frame","DXEAlertBar"..BarCount,UIParent)
 
 	self.data = {}
@@ -837,7 +844,7 @@ local function CreateAlert()
 	local bar = CreateFrame("StatusBar",nil,self)
 	bar:SetMinMaxValues(0,1) 
 	bar:SetValue(0)
-	self.bar = bar
+	self.statusbar = bar
 
 	local border = CreateFrame("Frame",nil,self)
 	border:SetAllPoints(true)
@@ -877,15 +884,15 @@ local function CreateAlert()
 	return self
 end
 
-local function GetAlert()
-	local alert = next(AlertPool)
-	if alert then AlertPool[alert] = nil
-	else alert = CreateAlert() end
-	Active[alert] = true
+local function GetBar()
+	local bar = next(BarPool)
+	if bar then BarPool[bar] = nil
+	else bar = CreateBar() end
+	Active[bar] = true
 	UpdateFrame:Show()
-	alert:Show()
+	bar:Show()
 
-	return alert
+	return bar
 end
 
 ---------------------------------------
@@ -901,22 +908,22 @@ end
 ---------------------------------------
 
 function module:QuashAll()
-	for alert in pairs(Active) do alert:Destroy() end
+	for bar in pairs(Active) do bar:Destroy() end
 end
 
 local find = string.find
 function module:QuashByPattern(pattern)
-	for alert in pairs(Active) do
-		if alert.data.id and find(alert.data.id,pattern) then
-			alert:Destroy()
+	for bar in pairs(Active) do
+		if bar.data.id and find(bar.data.id,pattern) then
+			bar:Destroy()
 		end
 	end
 end
 
 function module:GetTimeleft(id)
-	for alert in pairs(Active) do
-		if alert.data.id == id then
-			return alert.data.timeleft
+	for bar in pairs(Active) do
+		if bar.data.id == id then
+			return bar.data.timeleft
 		end
 	end
 	return -1
@@ -925,56 +932,56 @@ end
 function module:Dropdown(id, text, totalTime, flashTime, sound, c1, c2, flashscreen, icon)
 	if pfl.DisableDropdowns then self:CenterPopup(id, text, totalTime, flashTime, sound, c1, c2, flashscreen, icon) return end
 	local soundFile,c1Data,c2Data = GetMedia(sound,c1,c2)
-	local alert = GetAlert()
-	alert:SetID(id)
-	alert:SetIcon(icon)
-	alert:SetTimeleft(totalTime)
-	alert:SetText(text) 
-	alert:SetFlashScreen(flashscreen)
-	alert:SetColor(c1Data,c2Data)
-	alert:SetSound(soundFile)
-	alert:Countdown(totalTime,flashTime)
-	alert:AnchorToTop()
+	local bar = GetBar()
+	bar:SetID(id)
+	bar:SetIcon(icon)
+	bar:SetTimeleft(totalTime)
+	bar:SetText(text) 
+	bar:SetFlashScreen(flashscreen)
+	bar:SetColor(c1Data,c2Data)
+	bar:SetSound(soundFile)
+	bar:Countdown(totalTime,flashTime)
+	bar:AnchorToTop()
 	if flashTime then 
 		local waitTime = totalTime - flashTime
-		if waitTime < 0 then alert:TranslateToCenter()
-		else alert:ScheduleTimer("TranslateToCenter",waitTime) end
+		if waitTime < 0 then bar:TranslateToCenter()
+		else bar:ScheduleTimer("TranslateToCenter",waitTime) end
 	end
-	alert:ScheduleTimer("Fade",totalTime)
-	return alert
+	bar:ScheduleTimer("Fade",totalTime)
+	return bar
 end
 
 function module:CenterPopup(id, text, totalTime, flashTime, sound, c1, c2, flashscreen, icon)
 	local soundFile,c1Data,c2Data = GetMedia(sound,c1,c2)
-	local alert = GetAlert()
-	alert:SetID(id)
-	alert:SetIcon(icon)
-	alert:SetTimeleft(totalTime)
-	alert:SetColor(c1Data,c2Data)
-	alert:SetText(text)
-	alert:Countdown(totalTime, flashTime)
-	alert:SetSound(soundFile)
-	alert:AnchorToCenter()
-	alert:ScheduleTimer("Fade",totalTime)
+	local bar = GetBar()
+	bar:SetID(id)
+	bar:SetIcon(icon)
+	bar:SetTimeleft(totalTime)
+	bar:SetColor(c1Data,c2Data)
+	bar:SetText(text)
+	bar:Countdown(totalTime, flashTime)
+	bar:SetSound(soundFile)
+	bar:AnchorToCenter()
+	bar:ScheduleTimer("Fade",totalTime)
 	if flashscreen then self:FlashScreen(c1Data) end
-	return alert
+	return bar
 end
 
 function module:Simple(text, totalTime, sound, c1, flashscreen, icon)
 	local soundFile,c1Data = GetMedia(sound,c1)
-	local alert = GetAlert()
+	local bar = GetBar()
 	if c1Data then 
-		alert:SetColor(c1Data)
-		alert.bar:SetValue(1)
+		bar:SetColor(c1Data)
+		bar.statusbar:SetValue(1)
 	end
-	alert:SetIcon(icon)
-	alert:SetText(text) 
-	alert.timer.frame:Hide()
-	alert:SetSound(soundFile)
-	alert:AnchorToCenter()
-	alert:ScheduleTimer("Fade",totalTime)
+	bar:SetIcon(icon)
+	bar:SetText(text) 
+	bar.timer.frame:Hide()
+	bar:SetSound(soundFile)
+	bar:AnchorToCenter()
+	bar:ScheduleTimer("Fade",totalTime)
 	if flashscreen then self:FlashScreen(c1Data) end
-	return alert
+	return bar
 end
 
 ---------------------------------------------
@@ -985,6 +992,10 @@ function module:BarTest()
 	self:CenterPopup("AlertTest1", "Decimating. Life Tap Now!", 10, 5, "DXE ALERT1", "DCYAN", nil, nil, addon.ST[28374])
 	self:Dropdown("AlertTest2", "Bigger City Opening", 20, 5, "DXE ALERT2", "BLUE", "ORANGE", nil, addon.ST[64813])
 	self:Simple("Just Kill It!",3,"DXE ALERT3","RED", nil, addon.ST[53351])
+end
+
+function module:BarTest2()
+	self:Dropdown("AlertTest", "Bigger City Opening", 7, 5, "DXE ALERT2", "BLUE", "ORANGE", nil, addon.ST[64813])
 end
 
 local lookup
