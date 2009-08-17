@@ -991,8 +991,9 @@ do
 	function addon:UpdatePaneVisibility()
 		if pfl.Pane.Show then
 			local op = 0
+			local isRaidInstance = select(2,IsInInstance()) == "raid"
 			op = op + (pfl.Pane.OnlyInRaid 		and (GetNumRaidMembers() > 0 	and 1 or 0) or 1)
-			op = op + (pfl.Pane.OnlyInInstance 	and (IsInInstance() 				and 2 or 0) or 2)
+			op = op + (pfl.Pane.OnlyInInstance 	and (isRaidInstance 				and 2 or 0) or 2)
 			op = op + (pfl.Pane.OnlyIfRunning 	and (self:IsRunning() 			and 4 or 0) or 4)
 			local show = op == 7
 			Pane[show and "Show" or "Hide"](Pane)

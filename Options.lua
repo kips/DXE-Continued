@@ -204,8 +204,8 @@ function addon:InitializeOptions()
 							OnlyInInstance = {
 								order = 250,
 								type = "toggle",
-								name = L["Only in instances"],
-								desc = L["Show the pane only in instances"],
+								name = L["Only in raid instances"],
+								desc = L["Show the pane only in raid instances"],
 								width = "full",
 							},
 							OnlyIfRunning = {
@@ -345,16 +345,16 @@ function addon:InitializeOptions()
 							misc_header = {
 								type = "header",
 								name = L["Miscellaneous"],
-								order = 1350,
+								order = 1200,
 							},
 							NeutralColor = {
-								order = 1200,
+								order = 1300,
 								type = "color",
 								name = L["Neutral Color"],
 								desc = L["The color of the health bar when first shown"],
 							},
 							LostColor = {
-								order = 1300,
+								order = 1400,
 								type = "color",
 								name = L["Lost Color"],
 								desc = L["The color of the health bar after losing the mob"],
