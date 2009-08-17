@@ -320,7 +320,7 @@ end
 
 function addon:BroadcastVersion(key)
 	if not EDB[key] and key ~= "addon" then return end
-	self:SendRaidComm("VersionBroadcast",key,key == "addon" and self.version or EDB[key].version)
+	self:SendRaidComm("VersionBroadcast",key,key == "addon" and addon.version or EDB[key].version)
 end
 
 ---------------------------------------------
@@ -350,7 +350,7 @@ end
 
 function CommHandler:OnCommRequestVersions(event,commType,sender,key)
 	if not EDB[key] and key ~= "addon" then return end
-	addon:SendWhisperComm(sender,"VersionBroadcast",key,EDB[key].version)
+	addon:SendWhisperComm(sender,"VersionBroadcast",key,key == "addon" and addon.version or EDB[key].version)
 end
 
 function CommHandler:OnCommRequestAddOnVersion()
