@@ -22,7 +22,7 @@ local defaults = {
 		CenterBarWidth = 275,
 		BarBackgroundColor = {0,0,0,0.8},
 		BarBorder = "Blizzard Tooltip",
-		BarBorderColor = {1,1,1},
+		BarBorderColor = {1,1,1,1},
 		BarFont = "Franklin Gothic Medium",
 		BarFontSize = 10,
 		BarFontColor = {1,1,1},
@@ -190,6 +190,7 @@ function module:InitializeOptions(area)
 								type = "color",
 								name = L["Bar Border Color"],
 								desc = L["Select a bar border color"],
+								hasAlpha = true,
 							},
 						},
 					},
@@ -805,10 +806,10 @@ local function SkinBar(bar)
 	end
 
 	BackdropBorder.edgeFile = SM:Fetch("border",pfl.BarBorder)
-	local r,g,b = unpack(pfl.BarBorderColor)
+	local r,g,b,a = unpack(pfl.BarBorderColor)
 	bar.border:SetBackdrop(BackdropBorder)
-	bar.border:SetBackdropBorderColor(r,g,b)
-	bar.iconf:SetBackdropBorderColor(r,g,b)
+	bar.border:SetBackdropBorderColor(r,g,b,a)
+	bar.iconf:SetBackdropBorderColor(r,g,b,a)
 
 	bar.text:SetFont(SM:Fetch("font",pfl.BarFont),pfl.BarFontSize)
 	bar.text:SetVertexColor(unpack(pfl.BarFontColor))
