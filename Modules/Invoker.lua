@@ -154,7 +154,8 @@ function module:OnStart(_,...)
 	-- Reset colors if not acquired
 	for i,hw in ipairs(HW) do
 		if hw:IsOpen() and not hw.tracer:First() then
-			hw:SetInfoBundle("",1,0,0,1)
+			hw:SetInfoBundle("",1)
+			hw:ApplyNeutralColor()
 		end
 	end
 end

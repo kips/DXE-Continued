@@ -158,7 +158,7 @@ end
 local function validateIsArray(tbl,errlvl,...)
 	errlvl = (errlvl or 0)+1
 	if #tbl < 1 then
-		err(": table should be an array - invalid array",errlvl,...)
+		err(": table should be an array - got an empty table",errlvl,...)
 	end
 	for k in pairs(tbl) do
 		if type(k) ~= "number" then

@@ -165,7 +165,10 @@ function addon:InitializeOptions()
 				name = L["Pane"],
 				inline = true,
 				order = 100,
-				get = function(info) return pfl.Pane[info[#info]] end,
+				get = function(info) 
+					local var = info[#info]
+					if var:find("Color") then return unpack(pfl.Pane[var])
+					else return pfl.Pane[var] end end,
 				set = function(info,v) pfl.Pane[info[#info]] = v end,
 				args = {
 					visibility_group = {
@@ -221,42 +224,142 @@ function addon:InitializeOptions()
 							},
 						},
 					},
-					Scale = {
+					skin_group = {
+						type = "group",
+						name = "",
 						order = 200,
-						type = "range",
-						name = L["Pane scale"],
-						desc = L["Adjust the scale of the pane"],
-						set = function(info,v)
-							pfl.Pane.Scale = v
-							addon:ScalePaneAndCenter()
+						inline = true,
+						set = function(info,v,v2,v3,v4)
+							local var = info[#info]
+							if var:find("Color") then pfl.Pane[var] = {v,v2,v3,v4}
+							else pfl.Pane[var] = v end
+							self:SkinPane()
 						end,
-						min = 0.1,
-						max = 2,
-						step = 0.1,
-					},
-					BarGrowth = {
-						order = 300,
-						type = "select",
-						name = L["Bar Growth"],
-						desc = L["Direction health watcher bars grow. If set to automatic, they grow based on where the pane is"],
-						values = {AUTOMATIC = L["Automatic"], UP = L["Up"], DOWN = L["Down"]},
-						set = function(info,v)
-							pfl.Pane.BarGrowth = v
-							addon:LayoutHealthWatchers()
-						end,
-						disabled = function() return not pfl.Pane.Show end,
-					},
-					BarTexture = {
-						order = 400,
-						type = "select",
-						name = L["Bar Texture"],
-						desc = L["Select a bar texture used on health watchers"],
-						set = function(info,v)
-							pfl.Pane.BarTexture = v
-							addon:SkinHealthWatchers()
-						end,
-						values = SM:HashTable("statusbar"),
-						dialogControl = "LSM30_Statusbar",
+						args = {
+							Scale = {
+								order = 100,
+								type = "range",
+								name = L["Scale"],
+								desc = L["Adjust the scale of the pane"],
+								set = function(info,v)
+									pfl.Pane.Scale = v
+									addon:ScalePaneAndCenter()
+								end,
+								min = 0.1,
+								max = 2,
+								step = 0.1,
+							},
+							BarGrowth = {
+								order = 200,
+								type = "select",
+								name = L["Bar Growth"],
+								desc = L["Direction health watcher bars grow. If set to automatic, they grow based on where the pane is"],
+								values = {AUTOMATIC = L["Automatic"], UP = L["Up"], DOWN = L["Down"]},
+								set = function(info,v)
+									pfl.Pane.BarGrowth = v
+									addon:LayoutHealthWatchers()
+								end,
+								disabled = function() return not pfl.Pane.Show end,
+							},
+							BarTexture = {
+								order = 300,
+								type = "select",
+								name = L["Bar Texture"],
+								desc = L["Select a bar texture used on health watchers"],
+								values = SM:HashTable("statusbar"),
+								dialogControl = "LSM30_Statusbar",
+							},
+							border_header = {
+								type = "header",
+								name = L["Border"],
+								order = 350,
+							},
+							Border = {
+								order = 400,
+								type = "select",
+								name = L["Border"],
+								desc = L["Select a border used on the pane and health watchers"],
+								values = SM:HashTable("border"),
+								dialogControl = "LSM30_Border",
+							},
+							BorderSize = {
+								order = 500,
+								type = "range",
+								name = L["Border Size"],
+								desc = L["Adjust the size of borders used on the pane and health watchers"],
+								min = 6,
+								max = 16,
+								step = 1,
+							},
+							BorderColor = {
+								order = 600,
+								type = "color",
+								name = L["Border Color"],
+								desc = L["Select a border color used on the pane and health watchers"],
+								hasAlpha = true,
+							},
+							BackgroundColor = {
+								order = 700,
+								type = "color",
+								name = L["Background Color"],
+								desc = L["Select a background color used on the pane and health watchers"],
+								hasAlpha = true,
+							},
+							font_header = {
+								type = "header",
+								name = L["Font"],
+								order = 750,
+							},
+							Font = {
+								order = 800,
+								type = "select",
+								name = L["Font"],
+								desc = L["Select a font used on the pane and health watchers"],
+								values = SM:HashTable("font"),
+								dialogControl = "LSM30_Font",
+							},
+							TitleFontSize = {
+								order = 900,
+								type = "range",
+								name = L["Title Font Size"],
+								desc = L["Select a font size used on health watchers"],
+								min = 8,
+								max = 20,
+								step = 1,
+							},
+							HealthFontSize = {
+								order = 1000,
+								type = "range",
+								name = L["Health Font Size"],
+								desc = L["Select a font size used on health watchers"],
+								min = 8,
+								max = 20,
+								step = 1,
+							},
+							FontColor = {
+								order = 1100,
+								type = "color",
+								name = L["Font Color"],
+								desc = L["Set a font color used on health watchers"],
+							},
+							misc_header = {
+								type = "header",
+								name = L["Miscellaneous"],
+								order = 1350,
+							},
+							NeutralColor = {
+								order = 1200,
+								type = "color",
+								name = L["Neutral Color"],
+								desc = L["The color of the health bar when first shown"],
+							},
+							LostColor = {
+								order = 1300,
+								type = "color",
+								name = L["Lost Color"],
+								desc = L["The color of the health bar after losing the mob"],
+							},
+						},
 					},
 				},
 			},

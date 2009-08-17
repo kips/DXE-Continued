@@ -15,10 +15,14 @@ local DEAD = DEAD:upper()
 do
 	local WidgetType = "DXE_HealthWatcher"
 	local WidgetVersion = 1
+	local GRAY = {0.66,0.66,0.66}
+	local BLUE = {0,0,1}
 	
 
 	local function OnAcquire(self) 
 		self.frame:SetParent(UIParent)
+		self.userdata.neutralcolor = BLUE
+		self.userdata.lostcolor = GRAY
 	end
 
 	local function OnRelease(self) 
@@ -30,11 +34,9 @@ do
 		self.tracer:Track(trackType,goal)
 	end
 
-	local function SetInfoBundle(self,health,perc,r,g,b)
+	local function SetInfoBundle(self,health,perc)
 		self.bar:SetValue(perc)
-		self.bar:SetStatusBarColor(r or (perc > 0.5 and ((1.0 - perc) * 2) or 1.0),
-											g or (perc > 0.5 and 1 or (perc * 2)),
-											b or 0.0)
+		self.bar:SetStatusBarColor(perc > 0.5 and ((1 - perc) * 2) or 1, perc > 0.5 and 1 or (perc * 2), 0)
 		self.health:SetText(health)
 	end
 
@@ -65,7 +67,7 @@ do
 	end
 
 	local function TRACER_LOST(self)
-		self.bar:SetStatusBarColor(0.66,0.66,0.66)
+		self:ApplyLostColor()
 	end
 
 	local function IsOpen(self)
@@ -91,6 +93,14 @@ do
 
 	local function OnWidthSet(self,width)
 		self.title:SetWidth(width*0.75)
+	end
+
+	local function ApplyNeutralColor(self)
+		self.bar:SetStatusBarColor(unpack(self.userdata.neutralcolor))
+	end
+
+	local function ApplyLostColor(self)
+		self.bar:SetStatusBarColor(unpack(self.userdata.lostcolor))
 	end
 
 	local backdrop = {
@@ -125,6 +135,7 @@ do
 		border:SetBackdrop(backdropborder)
 		border:SetBackdropBorderColor(0.33,0.33,0.33)
 		border:SetFrameLevel(bar:GetFrameLevel()+1)
+		self.border = border
 
 		-- Add title text
 		title = bar:CreateFontString(nil,"ARTWORK")
@@ -166,6 +177,10 @@ do
 		self.GetGoal = GetGoal
 		self.SetTitle = SetTitle
 		self.IsTitleSet = IsTitleSet
+		self.SetLostColor = SetLostColor
+		self.SetNeutralColor = SetNeutralColor
+		self.ApplyLostColor = ApplyLostColor
+		self.ApplyNeutralColor = ApplyNeutralColor
 		
 		self.frame = frame
 		frame.obj = self

@@ -37,6 +37,17 @@ local defaults = {
 			OnlyOnMouseover = false,
 			BarGrowth = "AUTOMATIC",
 			BarTexture = "Blizzard",
+
+			Font = "Franklin Gothic Medium",
+			FontColor = {1,1,1},
+			TitleFontSize = 10,
+			HealthFontSize = 12,
+			BackgroundColor = {0,0,0,0.8},
+			Border = "Blizzard Tooltip",
+			BorderColor = {0.33,0.33,0.33,1},
+			BorderSize = 8,
+			NeutralColor = {0,0,1},
+			LostColor = {0.66,0.66,0.66},
 		},
 	},
 }
@@ -47,7 +58,7 @@ local defaults = {
 
 local addon = LibStub("AceAddon-3.0"):NewAddon("DXE","AceEvent-3.0","AceTimer-3.0","AceConsole-3.0","AceComm-3.0","AceSerializer-3.0")
 _G.DXE = addon
-addon.version = 315
+addon.version = 316
 addon:SetDefaultModuleState(false)
 addon.callbacks = LibStub("CallbackHandler-1.0"):New(addon)
 addon.defaults = defaults
@@ -708,7 +719,7 @@ do
 		self:LoadAllPositions()
 		self.Pane:SetScale(pfl.Pane.Scale)
 		self:LayoutHealthWatchers()
-		self:SkinHealthWatchers()
+		self:SkinPane()
 		self:UpdatePaneVisibility()
 	end
 end
@@ -957,9 +968,9 @@ function addon:ToggleConfig()
 	ACD[ACD.OpenFrames.DXE and "Close" or "Open"](ACD,"DXE") 
 end
 
-local backdrop = {
-	bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
-   edgeFile="Interface\\Tooltips\\UI-Tooltip-Border", 
+local PaneBackdrop = {
+	bgFile = "Interface\\Tooltips\\UI-Tooltip-Background",
+   edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border", 
 	edgeSize = 8,             
 	insets = {left = 2, right = 2, top = 2, bottom = 2}
 }
@@ -1040,7 +1051,7 @@ function addon:CreatePane()
 	Pane:SetAlpha(0)
 	Pane:Hide()
 	Pane:SetClampedToScreen(true)
-	Pane:SetBackdrop(backdrop)
+	Pane:SetBackdrop(PaneBackdrop)
 	Pane:SetBackdropBorderColor(0.33,0.33,0.33)
 	Pane:SetWidth(220)
 	Pane:SetHeight(25)
@@ -1117,8 +1128,200 @@ function addon:CreatePane()
 	)
 
 	self:CreateHealthWatchers(Pane)
+	self:SkinPane()
 
 	self.CreatePane = nil
+end
+
+function addon:SkinPane()
+	local db = pfl.Pane
+
+	-- Pane
+	PaneBackdrop.edgeSize = db.BorderSize
+	PaneBackdrop.edgeFile = SM:Fetch("border",db.Border)
+	for k in pairs(PaneBackdrop.insets) do
+		PaneBackdrop.insets[k] = db.BorderSize/4
+	end
+	Pane:SetBackdrop(PaneBackdrop)
+	Pane:SetBackdropColor(unpack(db.BackgroundColor))
+	local borderR,borderG,borderB,borderA = unpack(db.BorderColor)
+	Pane:SetBackdropBorderColor(borderR,borderG,borderB,borderA)
+
+	-- Health watchers
+	for i,hw in ipairs(addon.HW) do
+		hw.bar:SetStatusBarTexture(SM:Fetch("statusbar",db.BarTexture))
+		hw:SetUserData("neutralcolor",db.NeutralColor)
+		hw:SetUserData("lostcolor",db.LostColor)
+		hw:ApplyNeutralColor()
+
+		local font = SM:Fetch("font",db.Font)
+		hw.title:SetFont(font,db.TitleFontSize)
+		hw.title:SetVertexColor(unpack(db.FontColor))
+		hw.health:SetFont(font,db.HealthFontSize)
+		hw.health:SetVertexColor(unpack(db.FontColor))
+
+		PaneBackdrop.edgeFile = nil
+		hw.frame:SetBackdrop(PaneBackdrop)
+		hw.frame:SetBackdropColor(unpack(db.BackgroundColor))
+
+		PaneBackdrop.edgeFile = SM:Fetch("border",db.Border)
+		PaneBackdrop.bgFile = nil
+		hw.border:SetBackdrop(PaneBackdrop)
+		hw.border:SetBackdropBorderColor(borderR,borderG,borderB,borderA)
+		PaneBackdrop.bgFile = "Interface\\Tooltips\\UI-Tooltip-Background"
+	end
+end
+
+---------------------------------------------
+-- HEALTH WATCHERS
+---------------------------------------------
+local HW = {}
+addon.HW = HW
+local DEAD = DEAD:upper()
+
+function addon:UNIT_DIED(_, _,eventtype, _, _, _, dstGUID)
+	if eventtype ~= "UNIT_DIED" then return end
+	for i,hw in ipairs(HW) do
+		if hw:IsOpen() and hw:GetGoal() == NID[dstGUID] then
+			hw:SetInfoBundle(DEAD,0)
+			break
+		end
+	end
+end
+
+-- Currently, only four are needed. We don't want to clutter the screen
+function addon:CreateHealthWatchers(Pane)
+	local function OnMouseDown() if IsShiftKeyDown() then Pane:StartMoving() end end
+	local function OnMouseUp() Pane:StopMovingOrSizing(); addon:SavePosition(Pane) end
+
+	local function OnAcquired(self,event,unit) 
+		local npcid = self:GetGoal()
+		if not self:IsTitleSet() then
+			-- Should only enter once per name
+			local name = UnitName(unit)
+			gbl.L_NPC[npcid] = name
+			self:SetTitle(name)
+		end
+		addon.callbacks:Fire("HW_TRACER_ACQUIRED",unit,npcid) 
+	end
+
+	for i=1,4 do 
+		local hw = AceGUI:Create("DXE_HealthWatcher")
+		self:AddTooltipText(hw.frame,"Pane",L["|cffffff00Shift + Click|r to move"])
+		hw.frame:HookScript("OnEnter",function(self) Pane.MouseIsOver = true; addon:UpdatePaneVisibility() end)
+		hw.frame:HookScript("OnLeave",function(self) Pane.MouseIsOver = false; addon:UpdatePaneVisibility()end)
+		hw.frame:SetScript("OnMouseDown",OnMouseDown)
+		hw.frame:SetScript("OnMouseUp",OnMouseUp)
+		hw.frame:SetParent(Pane)
+		hw:SetCallback("HW_TRACER_ACQUIRED",OnAcquired) 
+		HW[i] = hw
+	end
+
+	-- Only the main one sends updates
+	HW[1]:SetCallback("HW_TRACER_UPDATE",function(self,event,unit) addon:TRACER_UPDATE(unit) end)
+	HW[1]:EnableUpdates()
+	self.CreateHealthWatchers = nil
+end
+
+function addon:CloseAllHW()
+	for i=1,4 do HW[i]:Close(); HW[i].frame:Hide() end
+end
+
+function addon:ShowFirstHW()
+	if not HW[1]:IsShown() then
+		HW[1]:SetInfoBundle("",1)
+		HW[1]:ApplyNeutralColor()
+		HW[1]:SetTitle(CE.title)
+		HW[1].frame:Show()
+	end
+end
+
+function addon:SetTracing(npcids)
+	if not npcids then return end
+	local n = 0
+	for i,npcid in ipairs(npcids) do
+		-- Prevents overwriting
+		if HW[i]:GetGoal() ~= npcid then
+			HW[i]:SetTitle(gbl.L_NPC[npcid] or "...")
+			HW[i]:SetInfoBundle("",1)
+			HW[i]:ApplyNeutralColor()
+			HW[i]:Track("npcid",npcid)
+			HW[i]:Open()
+			HW[i].frame:Show()
+		end
+		n = n + 1
+	end
+	for i=n+1,4 do
+		HW[i]:Close()
+		HW[i].frame:Hide()
+	end
+	self:LayoutHealthWatchers()
+end
+
+function addon:LayoutHealthWatchers()
+	local anchor,point,relpoint = Pane
+	local growth = pfl.Pane.BarGrowth
+	if growth == "AUTOMATIC" then
+		local midY = (GetScreenHeight()/2)*UIParent:GetEffectiveScale()
+		local x,y = Pane:GetCenter()
+		local s = Pane:GetEffectiveScale()
+		x,y = x*s,y*s
+		point = y > midY and "TOP" or "BOTTOM"
+		relpoint = y > midY and "BOTTOM" or "TOP"
+	elseif growth == "UP" then
+		point,relpoint = "BOTTOM","TOP"
+	elseif growth == "DOWN" then
+		point,relpoint = "TOP","BOTTOM"
+	end
+	for i,hw in ipairs(self.HW) do
+		if hw.frame:IsShown() then
+			hw:ClearAllPoints()
+			hw:SetPoint(point,anchor,relpoint)
+			anchor = hw.frame
+		end
+	end
+end
+
+do
+	-- Throttling is needed because sometimes bosses pulsate in and out of combat at the start.
+	-- UnitAffectingCombat can return false at the start even if the boss is moving towards a player.
+
+	-- Lookup table so we don't have to concatenate every update
+	local targetof = {}
+	for i=1,40 do targetof["raid"..i.."target"] = "raid"..i.."targettarget" end
+	targetof["focus"] = "focustarget"
+	-- The time to wait (seconds) before it auto stops the encounter after auto starting
+	local throttle = 5
+	-- The last time the encounter was auto started + throttle time
+	local last = 0
+	function addon:TRACER_UPDATE(unit)
+		local time,running = GetTime(),self:IsRunning()
+		if self:IsTracerStart() and not running and UnitIsFriend(targetof[unit],"player") then
+			self:StartEncounter()
+			last = time + throttle
+		elseif (UnitIsDead(unit) or not UnitAffectingCombat(unit)) and self:IsTracerStop() and running and last < time then
+			self:StopEncounter() 
+		end
+	end
+end
+
+do
+	local AutoStart,AutoStop
+	function addon:SetTracerStart(val)
+		AutoStart = not not val
+	end
+
+	function addon:SetTracerStop(val)
+		AutoStop = not not val
+	end
+
+	function addon:IsTracerStart()
+		return AutoStart
+	end
+
+	function addon:IsTracerStop()
+		return AutoStop
+	end
 end
 
 ---------------------------------------------
@@ -1338,163 +1541,6 @@ do
 	function addon:ResetTimer()
 		elapsedTime = 0
 		self.Pane.timer:SetTime(0)
-	end
-end
-
----------------------------------------------
--- HEALTH WATCHERS
----------------------------------------------
-local HW = {}
-addon.HW = HW
-local DEAD = DEAD:upper()
-
-function addon:UNIT_DIED(_, _,eventtype, _, _, _, dstGUID)
-	if eventtype ~= "UNIT_DIED" then return end
-	for i,hw in ipairs(HW) do
-		if hw:IsOpen() and hw:GetGoal() == NID[dstGUID] then
-			hw:SetInfoBundle(DEAD,0)
-			break
-		end
-	end
-end
-
-function addon:SkinHealthWatchers()
-	for i,hw in ipairs(HW) do
-		hw.bar:SetStatusBarTexture(SM:Fetch("statusbar",pfl.Pane.BarTexture))
-	end
-end
-
--- Currently, only four are needed. We don't want to clutter the screen
-function addon:CreateHealthWatchers(Pane)
-	local function OnMouseDown() if IsShiftKeyDown() then Pane:StartMoving() end end
-	local function OnMouseUp() Pane:StopMovingOrSizing(); addon:SavePosition(Pane) end
-
-	local function OnAcquired(self,event,unit) 
-		local npcid = self:GetGoal()
-		if not self:IsTitleSet() then
-			-- Should only enter once per name
-			local name = UnitName(unit)
-			gbl.L_NPC[npcid] = name
-			self:SetTitle(name)
-		end
-		addon.callbacks:Fire("HW_TRACER_ACQUIRED",unit,npcid) 
-	end
-
-	for i=1,4 do 
-		local hw = AceGUI:Create("DXE_HealthWatcher")
-		self:AddTooltipText(hw.frame,"Pane",L["|cffffff00Shift + Click|r to move"])
-		hw.frame:HookScript("OnEnter",function(self) Pane.MouseIsOver = true; addon:UpdatePaneVisibility() end)
-		hw.frame:HookScript("OnLeave",function(self) Pane.MouseIsOver = false; addon:UpdatePaneVisibility()end)
-		hw.frame:SetScript("OnMouseDown",OnMouseDown)
-		hw.frame:SetScript("OnMouseUp",OnMouseUp)
-		hw.frame:SetParent(Pane)
-		hw:SetCallback("HW_TRACER_ACQUIRED",OnAcquired) 
-		HW[i] = hw
-	end
-
-	-- Only the main one sends updates
-	HW[1]:SetCallback("HW_TRACER_UPDATE",function(self,event,unit) addon:TRACER_UPDATE(unit) end)
-	HW[1]:EnableUpdates()
-	self:SkinHealthWatchers()
-	self.CreateHealthWatchers = nil
-end
-
-function addon:CloseAllHW()
-	for i=1,4 do HW[i]:Close(); HW[i].frame:Hide() end
-end
-
-function addon:ShowFirstHW()
-	if not HW[1]:IsShown() then
-		HW[1]:SetInfoBundle("",1,0,0,1)
-		HW[1]:SetTitle(CE.title)
-		HW[1].frame:Show()
-	end
-end
-
-function addon:SetTracing(npcids)
-	if not npcids then return end
-	local n = 0
-	for i,npcid in ipairs(npcids) do
-		-- Prevents overwriting
-		if HW[i]:GetGoal() ~= npcid then
-			HW[i]:SetTitle(gbl.L_NPC[npcid] or "...")
-			HW[i]:SetInfoBundle("",1,0,0,1)
-			HW[i]:Track("npcid",npcid)
-			HW[i]:Open()
-			HW[i].frame:Show()
-		end
-		n = n + 1
-	end
-	for i=n+1,4 do
-		HW[i]:Close()
-		HW[i].frame:Hide()
-	end
-	self:LayoutHealthWatchers()
-end
-
-function addon:LayoutHealthWatchers()
-	local anchor,point,relpoint = Pane
-	local growth = pfl.Pane.BarGrowth
-	if growth == "AUTOMATIC" then
-		local midY = (GetScreenHeight()/2)*UIParent:GetEffectiveScale()
-		local x,y = Pane:GetCenter()
-		local s = Pane:GetEffectiveScale()
-		x,y = x*s,y*s
-		point = y > midY and "TOP" or "BOTTOM"
-		relpoint = y > midY and "BOTTOM" or "TOP"
-	elseif growth == "UP" then
-		point,relpoint = "BOTTOM","TOP"
-	elseif growth == "DOWN" then
-		point,relpoint = "TOP","BOTTOM"
-	end
-	for i,hw in ipairs(self.HW) do
-		if hw.frame:IsShown() then
-			hw:ClearAllPoints()
-			hw:SetPoint(point,anchor,relpoint)
-			anchor = hw.frame
-		end
-	end
-end
-
-do
-	-- Throttling is needed because sometimes bosses pulsate in and out of combat at the start.
-	-- UnitAffectingCombat can return false at the start even if the boss is moving towards a player.
-
-	-- Lookup table so we don't have to concatenate every update
-	local targetof = {}
-	for i=1,40 do targetof["raid"..i.."target"] = "raid"..i.."targettarget" end
-	targetof["focus"] = "focustarget"
-	-- The time to wait (seconds) before it auto stops the encounter after auto starting
-	local throttle = 5
-	-- The last time the encounter was auto started + throttle time
-	local last = 0
-	function addon:TRACER_UPDATE(unit)
-		local time,running = GetTime(),self:IsRunning()
-		if self:IsTracerStart() and not running and UnitIsFriend(targetof[unit],"player") then
-			self:StartEncounter()
-			last = time + throttle
-		elseif (UnitIsDead(unit) or not UnitAffectingCombat(unit)) and self:IsTracerStop() and running and last < time then
-			self:StopEncounter() 
-		end
-	end
-end
-
-do
-	local AutoStart,AutoStop
-	function addon:SetTracerStart(val)
-		AutoStart = not not val
-	end
-
-	function addon:SetTracerStop(val)
-		AutoStop = not not val
-	end
-
-	function addon:IsTracerStart()
-		return AutoStart
-	end
-
-	function addon:IsTracerStop()
-		return AutoStop
 	end
 end
 
