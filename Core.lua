@@ -809,7 +809,6 @@ function addon:OnEnable()
 	self:EnableAllModules()
 	self:RegisterComm("DXE")
 	self:UpdatePaneVisibility()
-	self:RequestAddOnVersions()
 end
 
 function addon:OnDisable()

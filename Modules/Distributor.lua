@@ -297,7 +297,7 @@ function module:OnCommReceived(prefix, msg, dist, sender)
 			ul.declines = ul.declines + 1
 		end
 
-		ul.bar:SetPerc(format("%s: %d",L["Accepts"],ul.accepts))
+		ul.bar:SetPerc(format("%s: %d %s: %d",L["A"],ul.accepts,L["D"],ul.declines))
 
 		if ul.dest == ul.accepts + ul.declines then
 			self:CancelTimer(ul.timer,true)

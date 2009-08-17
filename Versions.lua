@@ -309,7 +309,7 @@ end
 addon:ThrottleFunc("BroadcastAllVersions",5,true)
 
 function addon:RequestVersions(key)
-	if not EDB[key] then return end
+	if not EDB[key] and key ~= "addon" then return end
 	self:SendRaidComm("RequestVersions",key)
 end
 addon:ThrottleFunc("RequestVersions",0.5,true)
@@ -349,7 +349,7 @@ function CommHandler:OnCommAllVersionsBroadcast(event,commType,sender,versionStr
 end
 
 function CommHandler:OnCommRequestVersions(event,commType,sender,key)
-	if not EDB[key] then return end
+	if not EDB[key] and key ~= "addon" then return end
 	addon:SendWhisperComm(sender,"VersionBroadcast",key,EDB[key].version)
 end
 
