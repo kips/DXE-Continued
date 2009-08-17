@@ -178,7 +178,7 @@ local function CreateWindow()
 		end
 		addon:RefreshVersionList() 
 	end)
-	addon:AddTooltipText(addonbutton,L["Usage"],L["|cffffff00Left Click|r to display AddOn versions. These are automatically refreshed"]
+	addon:AddTooltipText(addonbutton,L["Usage"],L["|cffffff00Left Click|r to display AddOn versions. Repeated clicks will refresh them"]
 	.."\n"..L["|cffffff00Right Click|r to display the selected versions. Repeated clicks will refresh them"])
 
 	dropdown = addon.AceGUI:Create("Dropdown")

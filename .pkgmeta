@@ -24,7 +24,6 @@ ignore:
     - Scripts
     - Docs
     - Encounters.xml
-    - .gitignore
 
 move-folders:
     DXE/Encounters/Ulduar: DXE_Ulduar
