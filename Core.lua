@@ -541,9 +541,11 @@ function addon:RAID_ROSTER_UPDATE()
 
 	--- Number of ONLINE raid member differences
 
+	--[[
 	if tmpOnline > numOnline then
 		self:BroadcastVersion("addon")
 	end
+	]]
 
 	if tmpOnline < numOnline then
 		self:CleanVersions()

@@ -169,6 +169,7 @@ local function CreateWindow()
 		if button == "LeftButton" then
 			SetHeaderText(L["AddOn"],addon.version)
 			value = "addon"
+			addon:RequestVersions("addon")
 		elseif button == "RightButton" then
 			if not dropdown.value then return end
 			SetHeaderText(list[dropdown.value],EDB[dropdown.value].version)
@@ -251,7 +252,7 @@ end
 ---------------------------------------------
 
 function addon:VersionCheck()
-	if value ~= "addon" then self:RequestVersions(value) end
+	self:RequestVersions(value)
 	if window then
 		window:Show()
 	else
@@ -294,16 +295,6 @@ function addon:GetVersionString()
 		work[#work+1] = format("%s,%s",data.key,data.version)
 	end
 	return concat(work,":")
-end
-
-function addon:GetNumWithAddOn()
-	local n = 0
-	for k,v in ipairs(RVS) do
-		if v.versions.addon then
-			n = n + 1
-		end
-	end
-	return n
 end
 
 function addon:RequestAllVersions()

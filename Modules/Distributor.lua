@@ -24,6 +24,8 @@ local UL_SUFFIX = "UL"
 local DL_SUFFIX = "DL"
 local DR_PTN = TRANSFER_PREFIX.."_([%w'%- ]+)" -- DownloadReceived
 local CMA_PTN = TRANSFER_PREFIX.."_([%w'%- ]+)(.*)" -- CHAT_MSG_ADDON
+local UL_TIMEOUT = 5
+local DL_TIMEOUT = 8
 
 ----------------------------------
 -- INITIALIZATION
@@ -172,7 +174,7 @@ function module:Distribute(key, dist, target)
 	bar:SetStatus(L["Waiting"])
 	bar:SetText(data.name)
 	bar:SetColor(Colors.GREY)
-	local dest = (dist == "WHISPER") and 1 or addon:GetNumWithAddOn()
+	local dest = (dist == "WHISPER") and 1 or -1
 
 	Uploads[key] = {
 		accepts = 0,
@@ -183,13 +185,13 @@ function module:Distribute(key, dist, target)
 		bar = bar,
 		dest = dest,
 		serialData = serialData,
-		timer = self:ScheduleTimer("StartUpload",30,key),
+		timer = self:ScheduleTimer("StartUpload",UL_TIMEOUT,key),
 		dist = dist,
 		target = target,
 	}
 
-	bar.userdata.timeleft = 30
-	bar.userdata.totaltime = 30
+	bar.userdata.timeleft = UL_TIMEOUT
+	bar.userdata.totaltime = UL_TIMEOUT
 	self:StartUpdating(key..UL_SUFFIX,bar)
 	
 	self:SendCommMessage(MAIN_PREFIX, message, dist, target)
@@ -221,8 +223,8 @@ function module:StartReceiving(key,length,sender,dist,name)
 	bar:SetText(name)
 	bar:SetPerc(0)
 	bar:SetColor(Colors.GREY)
-	bar.userdata.timeleft = 40
-	bar.userdata.totaltime = 40
+	bar.userdata.timeleft = DL_TIMEOUT
+	bar.userdata.totaltime = DL_TIMEOUT
 
 	Downloads[key] = {
 		key = key,
@@ -231,7 +233,7 @@ function module:StartReceiving(key,length,sender,dist,name)
 		received = 0,
 		length = length,
 		bar = bar,
-		timer = self:ScheduleTimer("DLTimeout",40,key),
+		timer = self:ScheduleTimer("DLTimeout",DL_TIMEOUT,key),
 		dist = dist,
 	}
 	
@@ -295,7 +297,7 @@ function module:OnCommReceived(prefix, msg, dist, sender)
 			ul.declines = ul.declines + 1
 		end
 
-		ul.bar:SetPerc(format("%d/%d",ul.accepts+ul.declines,ul.dest))
+		ul.bar:SetPerc(format("%s: %d",L["Accepts"],ul.accepts))
 
 		if ul.dest == ul.accepts + ul.declines then
 			self:CancelTimer(ul.timer,true)
