@@ -25,32 +25,22 @@
 local addon = DXE
 local L = addon.L
 
+local GetTime = GetTime
+local wipe = table.wipe
 local type,next,select = type,next,select
 local ipairs,pairs,unpack = ipairs,pairs,unpack
 local tostring,tonumber = tostring,tonumber
 local match,gmatch,gsub,find,split = string.match,string.gmatch,string.gsub,string.find,string.split
-local wipe = table.wipe
+local UnitGUID, UnitName, UnitExists, UnitIsUnit = UnitGUID, UnitName, UnitExists, UnitIsUnit
 
-local NID = addon.NID
 local name_to_unit = addon.Roster.name_to_unit
 local EncDB,CE,alerts,raidicons,arrows
+
 -- Temp variable environment
 local userdata = {}
 
----------------------------------------------
--- COMMAND LINE HANDLERS
----------------------------------------------
+-- Command line handlers
 local handlers = {}
-
---@debug@
-setmetatable(handlers,{
-	__newindex = function(t,k,v)
-		assert(type(k) == "string")
-		assert(type(v) == "function")
-		rawset(t,k,v)
-	end,
-})
---@end-debug@
 
 ---------------------------------------------
 -- TABLE POOL
@@ -87,12 +77,11 @@ local RaidIcons = addon.RaidIcons
 -- Hold event info
 local RegEvents,CombatEvents = {},{}
 
---@debug@
+--@debu@
 local debug
 
 local debugDefaults = {
 	-- Related to function names
-	SetUserData = false,
 	Alerts = false,
 	REG_EVENT = false,
 }
@@ -133,7 +122,6 @@ local function SetTuple(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10)
 	tuple['9']  = a9
 	tuple['10'] = a10
 end
-
 
 ---------------------------------------------
 -- CONTROLS
@@ -180,19 +168,105 @@ function module:OnStop()
 	self:RemoveThrottles()
 end
 
+---------------------------------------------
+-- REPLACES
+---------------------------------------------
+
+local ReplaceTokens
+
+do
+	local NID = addon.NID
+
+	local function tft()
+		return HW[1].tracer:First() and HW[1].tracer:First().."target" or ""
+	end
+
+	-- IMPORTANT - Return values should all be strings
+	local RepFuncs = {
+		playerguid = function() return addon.PGUID end,
+		playername = function() return addon.PNAME end,
+		vehicleguid  = function() return UnitGUID("vehicle") or "" end,
+		difficulty = function() return tostring(GetRaidDifficulty()) end,
+		-- First health watcher
+		tft = tft,
+		tft_unitexists = function() return tostring(UnitExists(tft())) end,
+		tft_isplayer = function() return tostring(UnitIsUnit(tft(),"player")) end,
+		tft_unitname = function() return tostring(UnitName(tft())) end,
+		--- Functions with passable arguments
+		-- Get's an alert's timeleft
+		timeleft = function(id,delta) return tostring(Alerts:GetTimeleft(id) + (tonumber(delta) or 0)) end,
+		npcid = function(guid) return NID[guid] or "" end,
+	}
+
+	-- Add funcs for the other health watchers
+	do
+		for i=2,4 do
+			local tft = function() return HW[i].tracer:First() and HW[i].tracer:First().."target" or "" end
+			local tft_unitexists = function() return tostring(UnitExists(tft())) end
+			local tft_isplayer = function() return tostring(UnitIsUnit(tft(),"player")) end
+			local tft_unitname = function() return tostring(UnitName(tft())) end
+			RepFuncs["tft"..i] = tft
+			RepFuncs["tft"..i.."_unitexists"] = tft_unitexists
+			RepFuncs["tft"..i.."_isplayer"] = tft_isplayer
+			RepFuncs["tft"..i.."_unitname"] = tft_unitname
+		end
+	end
+
+	--@debug@
+	function module:GetRepFuncs()
+		return RepFuncs
+	end
+	--@end-debug@
+
+	local replace_nums = tuple
+
+	local function replace_vars(str)
+		local val = userdata[str]
+		if type(val) == "table" then
+			local ix,n = str.."__index",#val
+			local i = userdata[ix]
+			if i > n and not val.loop then
+				i = n
+			else
+				i = ((i-1)%n)+1 -- Handles looping
+				userdata[ix] = userdata[ix] + 1
+			end
+			val = val[i]
+		end
+		return val
+	end
+
+	local function replace_funcs(str)
+		if find(str,"|") then
+			local func,args = match(str,"^([^|]+)|(.+)") 
+			return RepFuncs[func](split("|",args))
+		else
+			return RepFuncs[str]()
+		end
+	end
+
+	-- Replaces special tokens with values
+	-- IMPORTANT: replace_funcs goes last
+	function ReplaceTokens(str)
+		str = gsub(str,"#(.-)#",replace_nums)
+		str = gsub(str,"<(.-)>",replace_vars)
+		str = gsub(str,"&(.-)&",replace_funcs)
+		return str
+	end
+end
 
 ---------------------------------------------
 -- CONDITIONS
 -- Credits to PitBull4's debug for this idea
 ---------------------------------------------
 
-local ops = {}
-
-ops['=='] = function(a, b) return a == b end
-ops['~='] = function(a, b) return a ~= b end
-ops['find'] = function(a,b) return find(a,b) end
-
 do
+	local ops = {}
+
+	ops['=='] = function(a, b) return a == b end
+	ops['~='] = function(a, b) return a ~= b end
+	ops['find'] = function(a,b) return find(a,b) end
+
 	-- Intended to be used on numbers
 
 	ops['>'] = function(a, b)
@@ -218,9 +292,7 @@ do
 		if not a or not b then return false
 		else return a <= b end
 	end
-end
 
-do
 	local t = {}
 	for k, v in pairs(ops) do t[#t+1] = k end
 	for _, k in ipairs(t) do
@@ -228,306 +300,146 @@ do
 			return not ops[k](a, b)
 		end
 	end
-end
 
---@debug@
-function module:GetConditions()
-	return ops
-end
---@end-debug@
-
-local function expect(a, op, b)
-	return ops[op](a,b)
-end
-
----------------------------------------------
--- REPLACES
----------------------------------------------
-
-local UnitGUID, UnitName, UnitExists, UnitIsUnit = UnitGUID, UnitName, UnitExists, UnitIsUnit
-
-local function tft()
-	return HW[1].tracer:First() and HW[1].tracer:First().."target" or ""
-end
-
--- IMPORTANT - Return values should all be strings
-local RepFuncs = {
-	playerguid = function() return addon.PGUID end,
-	playername = function() return addon.PNAME end,
-	vehicleguid  = function() return UnitGUID("vehicle") or "" end,
-	difficulty = function() return tostring(GetRaidDifficulty()) end,
-	-- First health watcher
-	tft = tft,
-	tft_unitexists = function() return tostring(UnitExists(tft())) end,
-	tft_isplayer = function() return tostring(UnitIsUnit(tft(),"player")) end,
-	tft_unitname = function() return tostring(UnitName(tft())) end,
-	--- Functions with passable arguments
-	-- Get's an alert's timeleft
-	timeleft = function(id,delta) return tostring(Alerts:GetTimeleft(id) + (tonumber(delta) or 0)) end,
-	npcid = function(guid) return NID[guid] or "" end,
-}
-
--- Add funcs for the other health watchers
-do
-	for i=2,4 do
-		local tft = function() return HW[i].tracer:First() and HW[i].tracer:First().."target" or "" end
-		local tft_unitexists = function() return tostring(UnitExists(tft())) end
-		local tft_isplayer = function() return tostring(UnitIsUnit(tft(),"player")) end
-		local tft_unitname = function() return tostring(UnitName(tft())) end
-		RepFuncs["tft"..i] = tft
-		RepFuncs["tft"..i.."_unitexists"] = tft_unitexists
-		RepFuncs["tft"..i.."_isplayer"] = tft_isplayer
-		RepFuncs["tft"..i.."_unitname"] = tft_unitname
+	--@debug@
+	function module:GetConditions()
+		return ops
 	end
-end
+	--@end-debug@
 
---@debug@
-function module:GetRepFuncs()
-	return RepFuncs
-end
---@end-debug@
-
-local replace_nums = tuple
-
-local function replace_vars(str)
-	local val = userdata[str]
-	if type(val) == "table" then
-		local ix,n = str.."__index",#val
-		local i = userdata[ix]
-		if i > n and not val.loop then
-			i = n
-		else
-			i = ((i-1)%n)+1 -- Handles looping
-			userdata[ix] = userdata[ix] + 1
-		end
-		val = val[i]
+	-- @ADD TO HANDLERS
+	handlers.expect = function(info)
+		return ops[info[3]](ReplaceTokens(info[1]),ReplaceTokens(info[3]))
 	end
-	return val
-end
-
-local function replace_funcs(str)
-	if find(str,"|") then
-		local func,args = match(str,"^([^|]+)|(.+)") 
-		return RepFuncs[func](split("|",args))
-	else
-		return RepFuncs[str]()
-	end
-end
-
--- Replaces special tokens with values
--- IMPORTANT: replace_funcs goes last
-function ReplaceTokens(str)
-	str = gsub(str,"#(.-)#",replace_nums)
-	str = gsub(str,"<(.-)>",replace_vars)
-	str = gsub(str,"&(.-)&",replace_funcs)
-	return str
 end
 
 ---------------------------------------------
 -- USERDATA
 ---------------------------------------------
 
-function module:ResetUserData()
-	wipe(userdata)
-	if not CE.userdata then return end
-	-- Copy defaults into userdata
-	for k,v in pairs(CE.userdata) do
-		userdata[k] = v
-		if type(v) == "table" then
-			-- Indexing for series
-			userdata[k.."__index"] = 1
-		end
-	end
-end
-
-local function SetUserData(info)
-	for k,v in pairs(info) do
-		local flag = true
-		--@debug@
-		local before = userdata[k]
-		--@end-debug@
-		if type(v) == "string" then
-			-- Increment/Decrement support
-			if find(v,"^INCR") then
-				local delta = tonumber(match(v,"^INCR|(%d+)"))
-				userdata[k] = userdata[k] + delta
-				--@debug@
-				debug("SetUserData","INCR var: %s before: %s after: %s delta: %d",k,before,userdata[k],delta)
-				--@end-debug@
-				flag = false
-			elseif find(v,"^DECR") then
-				local delta = tonumber(match(v,"^DECR|(%d+)"))
-				userdata[k] = userdata[k] - delta
-				flag = false
-				--@debug@
-				debug("SetUserData","DECR var: %s before: %s after: %s delta: %d",k,before,userdata[k],delta)
-				--@end-debug@
-			else
-				v = ReplaceTokens(v)
+do
+	function module:ResetUserData()
+		wipe(userdata)
+		if not CE.userdata then return end
+		-- Copy defaults into userdata
+		for k,v in pairs(CE.userdata) do
+			userdata[k] = v
+			if type(v) == "table" then
+				-- Indexing for series
+				userdata[k.."__index"] = 1
 			end
 		end
-		if flag then 
-			--@debug@
-			debug("SetUserData","var: %s before: %s after: %s",k,userdata[k],v)
-			--@end-debug@
-			userdata[k] = v 
+	end
+
+	-- @ADD TO HANDLERS
+	handlers.set = function(info)
+		for k,v in pairs(info) do
+			local flag = true
+			if type(v) == "string" then
+				-- Increment/Decrement support
+				if find(v,"^INCR") then
+					local delta = tonumber(match(v,"^INCR|(%d+)"))
+					userdata[k] = userdata[k] + delta
+					flag = false
+				elseif find(v,"^DECR") then
+					local delta = tonumber(match(v,"^DECR|(%d+)"))
+					userdata[k] = userdata[k] - delta
+					flag = false
+				else
+					v = ReplaceTokens(v)
+				end
+			end
+			if flag then 
+				userdata[k] = v 
+			end
 		end
+		return true
 	end
 end
 
 ---------------------------------------------
 -- ALERTS
 ---------------------------------------------
-local Throttles = {}
 
-function module:RemoveThrottles()
-	wipe(Throttles)
-end
+do
+	local Throttles = {}
 
-local GetTime = GetTime
-local function StartAlert(id,stgs)
-	local info = alerts[id]
-	-- Sanity check
-	if not info then return true end
-	-- Throttling
-	if info.throttle then
-		-- Initialize to 0 if non-existant
-		Throttles[id] = Throttles[id] or 0
-		-- Check throttle
-		local t = GetTime()
-		if Throttles[id] + info.throttle < t then
-			Throttles[id] = t
-		else
-			-- Failed throttle, exit out
-			return
+	function module:RemoveThrottles()
+		wipe(Throttles)
+	end
+
+	-- @ADD TO HANDLERS
+	handlers.alert = function(info)
+		local stgs = EncDB[info]
+		if stgs.enabled then
+			local alertInfo = alerts[info]
+			-- Sanity check
+			if not alertInfo then return true end
+			-- Throttling
+			if alertInfo.throttle then
+				-- Initialize to 0 if non-existant
+				Throttles[info] = Throttles[info] or 0
+				-- Check throttle
+				local t = GetTime()
+				if Throttles[info] + alertInfo.throttle < t then
+					Throttles[info] = t
+				else
+					-- Failed throttle, exit out
+					return
+				end
+			end
+			-- Replace text
+			local text = ReplaceTokens(alertInfo.text)
+			-- Replace time
+			local time = alertInfo.time
+			if type(time) == "string" then
+				time = tonumber(ReplaceTokens(time))
+			end
+			--@debug@
+			debug("Alerts","id: %s text: %s time: %s flashtime: %s sound: %s color1: %s color2: %s",info,text,time,alertInfo.flashtime,stgs.sound,stgs.color1,stgs.color2)
+			--@end-debug@
+			-- Sanity check
+			if not time or time < 0 then return end
+			-- Pass in appropriate arguments
+			if alertInfo.type == "dropdown" then
+				Alerts:Dropdown(info,text,time,alertInfo.flashtime,stgs.sound,stgs.color1,stgs.color2,stgs.flashscreen,alertInfo.icon)
+			elseif alertInfo.type == "centerpopup" then
+				Alerts:CenterPopup(info,text,time,alertInfo.flashtime,stgs.sound,stgs.color1,stgs.color2,stgs.flashscreen,alertInfo.icon)
+			elseif alertInfo.type == "simple" then
+				Alerts:Simple(text,time,stgs.sound,stgs.color1,stgs.flashscreen,alertInfo.icon)
+			end
 		end
+		return true
 	end
-	-- Replace text
-	local text = ReplaceTokens(info.text)
-	-- Replace time
-	local time = info.time
-	if type(time) == "string" then
-		time = tonumber(ReplaceTokens(time))
-	end
-	--@debug@
-	debug("Alerts","id: %s text: %s time: %s flashtime: %s sound: %s color1: %s color2: %s",id,text,time,info.flashtime,stgs.sound,stgs.color1,stgs.color2)
-	--@end-debug@
-	-- Sanity check
-	if not time or time < 0 then return end
-	-- Pass in appropriate arguments
-	if info.type == "dropdown" then
-		Alerts:Dropdown(id,text,time,info.flashtime,stgs.sound,stgs.color1,stgs.color2,stgs.flashscreen,info.icon)
-	elseif info.type == "centerpopup" then
-		Alerts:CenterPopup(id,text,time,info.flashtime,stgs.sound,stgs.color1,stgs.color2,stgs.flashscreen,info.icon)
-	elseif info.type == "simple" then
-		Alerts:Simple(text,time,stgs.sound,stgs.color1,stgs.flashscreen,info.icon)
-	end
-end
 
----------------------------------------------
--- TIMERS
----------------------------------------------
-local Timers = {}
-
-local function canceltimer(name)
-	if Timers[name] then
-		module:CancelTimer(Timers[name].handle,true)
-		Timers[name].args = del(Timers[name].args)
-		Timers[name] = del(Timers[name])
-	end
-	return true
-end
-
-function module:RemoveAllTimers()
-	for name in pairs(Timers) do
-		canceltimer(name)
-	end
-	-- Just to be safe
-	self:CancelAllTimers()
-end
-
-function module:FireTimer(name)
-	-- Don't wipe Timers[name], it could be rescheduled
-	self:InvokeCommands(CE.timers[name],unpack(Timers[name].args))
-end
-
----------------------------------------------
--- Proximity Checking
----------------------------------------------
-
-local ProximityFuncs = addon:GetProximityFuncs() 
-
--- @param target Name/GUID of a unit
--- @param range Number of yards to check to see if player is in range of target.
--- 				 It must be a key in ProximityFuncs. Validator ensures this.
--- @return boolean 'true' if the player is in range of the target. 'false' otherwise.
-local function CheckProximity(unit,range)
-	return ProximityFuncs[range](unit)
-end
-
----------------------------------------------
--- Arrows
----------------------------------------------
-
-local function StartArrow(name,stgs)
-	local info = arrows[name]
-	local unit = ReplaceTokens(info.unit)
-	if not UnitExists(unit) then return end
-	Arrows:AddTarget(unit,info.persist,info.action,info.msg,info.spell,stgs.sound,info.fixed)
-end
-
----------------------------------------------
--- Raid Icons
----------------------------------------------
-
---[[
-    0 = no icon 
-    1 = Yellow 4-point Star 
-    2 = Orange Circle 
-    3 = Purple Diamond 
-    4 = Green Triangle 
-    5 = White Crescent Moon 
-    6 = Blue Square 
-    7 = Red "X" Cross 
-    8 = White Skull 
-]]
-
-local function SetRaidIcon(name,stgs)
-	local info = raidicons[name]
-	if not info then return end
-	if info.type == "FRIENDLY" then
-		local unit = ReplaceTokens(info.unit)
-		if not UnitExists(unit) then return end
-		RaidIcons:MarkFriendly(unit,stgs.icon,info.persist)
-	end
-end
-
----------------------------------------------
--- FUNCTIONS TABLE
----------------------------------------------
-
-local CommandHandlers = {
-	expect = function(info)
-		return expect(ReplaceTokens(info[1]),info[2],ReplaceTokens(info[3]))
-	end,
-
-	quash = function(info)
+	handlers.quash = function(info)
 		Alerts:QuashByPattern(info)
 		return true
-	end,
+	end
+end
 
-	set = function(info)
-		SetUserData(info)
-		return true
-	end,
+---------------------------------------------
+-- SCHEDULING
+---------------------------------------------
 
-	alert = function(info)
-		local stgs = EncDB[info]
-		if stgs.enabled then StartAlert(info,stgs) end
-		return true
-	end,
+do
+	local Timers = {}
 
-	scheduletimer = function(info)
+	function module:RemoveAllTimers()
+		for name in pairs(Timers) do
+			canceltimer(name)
+		end
+		-- Just to be safe
+		self:CancelAllTimers()
+	end
+
+	function module:FireTimer(name)
+		-- Don't wipe Timers[name], it could be rescheduled
+		self:InvokeCommands(CE.timers[name],unpack(Timers[name].args))
+	end
+
+	-- @ADD TO HANDLERS
+	handlers.scheduletimer = function(info)
 		local name,time = info[1],info[2]
 		-- Rescheduled Timers are overwritten
 		canceltimer(name)
@@ -540,46 +452,115 @@ local CommandHandlers = {
 
 		Timers[name].args = args
 		return true
-	end,
+	end
 
-	canceltimer = canceltimer,
-
-	resettimer = function(info)
-		addon:ResetTimer() 
-		return true
-	end,
-
-	tracing = function(info)
-		addon:SetTracing(info)
-		return true
-	end,
-
-	proximitycheck = function(info)
-		local target,range = info[1],info[2]
-		target = ReplaceTokens(target)
-		return CheckProximity(target,range)
-	end,
-
-	raidicon = function(info)
-		local stgs = EncDB[info]
-		if addon:IsPromoted() and stgs.enabled then
-			SetRaidIcon(info,stgs)
+	-- @ADD TO HANDLERS
+	handlers.canceltimer = function(info)
+		if Timers[info] then
+			module:CancelTimer(Timers[info].handle,true)
+			Timers[info].args = del(Timers[info].args)
+			Timers[info] = del(Timers[info])
 		end
 		return true
-	end,
+	end
+end
 
-	arrow = function(info)
-		local stgs = EncDB[info]
-		if stgs.enabled then StartArrow(info,stgs) end
+---------------------------------------------
+-- ENGAGE TIMER
+---------------------------------------------
+
+do
+	-- @ADD TO HANDLERS
+	handlers.resettimer = function(info)
+		addon:ResetTimer() 
 		return true
-	end,
+	end
+end
 
-	removearrow = function(info)
+---------------------------------------------
+-- TRACING
+---------------------------------------------
+
+do
+	-- @ADD TO HANDLERS
+	handlers.tracing = function(info)
+		addon:SetTracing(info)
+		return true
+	end
+end
+
+---------------------------------------------
+-- PROXIMITY CHECKING
+---------------------------------------------
+
+do
+	local ProximityFuncs = addon:GetProximityFuncs() 
+
+	-- @ADD TO HANDLERS
+	handlers.proximitycheck = function(info)
+		local target,range = info[1],info[2]
+		target = ReplaceTokens(target)
+		return ProximityFuncs[range](target)
+	end
+end
+
+---------------------------------------------
+-- ARROWS
+---------------------------------------------
+
+do
+	-- @ADD TO HANDLERS
+	handlers.arrow = function(info)
+		local stgs = EncDB[info]
+		if stgs.enabled then 
+			local arrowInfo = arrows[info]
+			local unit = ReplaceTokens(arrowInfo.unit)
+			if not UnitExists(unit) then return end
+			Arrows:AddTarget(unit,arrowInfo.persist,arrowInfo.action,arrowInfo.msg,arrowInfo.spell,stgs.sound,arrowInfo.fixed)
+		end
+		return true
+	end
+
+	-- @ADD TO HANDLERS
+	handlers.removearrow = function(info)
 		info = ReplaceTokens(info)
 		Arrows:RemoveTarget(info)
 		return true
-	end,
-}
+	end
+end
+
+---------------------------------------------
+-- RAID ICONS
+---------------------------------------------
+
+do
+	--[[
+		 0 = no icon 
+		 1 = Yellow 4-point Star 
+		 2 = Orange Circle 
+		 3 = Purple Diamond 
+		 4 = Green Triangle 
+		 5 = White Crescent Moon 
+		 6 = Blue Square 
+		 7 = Red "X" Cross 
+		 8 = White Skull 
+	]]
+
+	-- @ADD TO HANDLERS
+	handlers.raidicon = function(info)
+		local stgs = EncDB[info]
+		if addon:IsPromoted() and stgs.enabled then
+			local raidInfo = raidicons[info]
+			if not raidInfo then return end
+			if raidInfo.type == "FRIENDLY" then
+				local unit = ReplaceTokens(raidInfo.unit)
+				if not UnitExists(unit) then return end
+				RaidIcons:MarkFriendly(unit,stgs.icon,raidInfo.persist)
+			end
+		end
+		return true
+	end
+end
 
 ---------------------------------------------
 -- INVOKING
@@ -592,7 +573,7 @@ function module:InvokeCommands(bundle,...)
 	for _,list in ipairs(bundle) do
 		for _,line in ipairs(list) do
 			local type,info = next(line)
-			local handler = CommandHandlers[type]
+			local handler = handlers[type]
 			-- Make sure handler exists in case of an unsupported command
 			if handler and not handler(info) then break end
 		end
@@ -633,7 +614,7 @@ function module:AddEventData()
 	for _,info in ipairs(CE.events) do
 		if info.type == "combatevent" then
 			-- Register combat log event
-			CombatEvents[info.eventtype] = CombatEvents[info.eventtype] or new()
+			CombatEvents[info.eventtype] = CombatEvents[info.eventtype] or {}
 			if not info.spellid then
 				CombatEvents[info.eventtype]["*"] = info.execute
 			else
@@ -656,10 +637,7 @@ end
 
 function module:WipeEvents()
 	wipe(RegEvents)
-	for k,v in pairs(CombatEvents) do
-		if type(v) == "table" then del(v) end
-		CombatEvents[k] = nil
-	end
+	for k,v in pairs(CombatEvents) do CombatEvents[k] = nil end
 	self:UnregisterAllEvents()
 end
 
