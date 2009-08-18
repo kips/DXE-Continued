@@ -679,23 +679,27 @@ end
 
 ---------------------------------------------
 -- WARNING BLOCKS
+-- Credits: BigWigs
 ---------------------------------------------
 
 local forceBlockDisable
+addon.NPCNames = {}
 function addon:HookRaidNotice()
-	local RNA_Old = RaidNotice_AddMessage
-	local RaidWarningFrame = RaidWarningFrame
-	local RaidBossEmoteFrame = RaidBossEmoteFrame
+	local RaidNotice_AddMessage_Orig = _G.RaidNotice_AddMessage
+	local RaidWarningFrame = _G.RaidWarningFrame
+	local RaidBossEmoteFrame = _G.RaidBossEmoteFrame
+	for _,name in pairs(gbl.L_NPC) do self.NPCNames[name] = true end
 	_G.RaidNotice_AddMessage = function(frame,text,info)
 		if not forceBlockDisable then
 			if pfl.BlockRaidWarnings and frame == RaidWarningFrame 
-				and type(text) == "string" and find(text,"%*%*%*") then
+				and type(text) == "string" and find(text,"^%*%*%*") then
 				return
-			elseif pfl.BlockBossEmotes and frame == RaidBossEmoteFrame then
+			elseif pfl.BlockBossEmotes and frame == RaidBossEmoteFrame 
+				and type(arg2) == "string" and self.NPCNames[arg2] then
 				return
 			end
 		end
-		RNA_Old(frame,text,info)
+		RaidNotice_AddMessage_Orig(frame,text,info)
 	end
 	self.HookRaidNotice = nil
 end
@@ -1233,6 +1237,7 @@ function addon:CreateHealthWatchers(Pane)
 			-- Should only enter once per name
 			local name = UnitName(unit)
 			gbl.L_NPC[npcid] = name
+			addon.NPCNames[name] = true
 			self:SetTitle(name)
 		end
 		addon.callbacks:Fire("HW_TRACER_ACQUIRED",unit,npcid) 

@@ -236,18 +236,13 @@ function addon:InitializeOptions()
 							self:SkinPane()
 						end,
 						args = {
-							Scale = {
+							BarTexture = {
 								order = 100,
-								type = "range",
-								name = L["Scale"],
-								desc = L["Adjust the scale of the pane"],
-								set = function(info,v)
-									pfl.Pane.Scale = v
-									addon:ScalePaneAndCenter()
-								end,
-								min = 0.1,
-								max = 2,
-								step = 0.1,
+								type = "select",
+								name = L["Bar Texture"],
+								desc = L["Select a bar texture used on health watchers"],
+								values = SM:HashTable("statusbar"),
+								dialogControl = "LSM30_Statusbar",
 							},
 							BarGrowth = {
 								order = 200,
@@ -261,13 +256,18 @@ function addon:InitializeOptions()
 								end,
 								disabled = function() return not pfl.Pane.Show end,
 							},
-							BarTexture = {
+							Scale = {
 								order = 300,
-								type = "select",
-								name = L["Bar Texture"],
-								desc = L["Select a bar texture used on health watchers"],
-								values = SM:HashTable("statusbar"),
-								dialogControl = "LSM30_Statusbar",
+								type = "range",
+								name = L["Scale"],
+								desc = L["Adjust the scale of the pane"],
+								set = function(info,v)
+									pfl.Pane.Scale = v
+									addon:ScalePaneAndCenter()
+								end,
+								min = 0.1,
+								max = 2,
+								step = 0.1,
 							},
 							border_header = {
 								type = "header",
@@ -372,15 +372,17 @@ function addon:InitializeOptions()
 				args = {
 					BlockRaidWarnings = {
 						type = "toggle",
-						name = L["Block Raid Warnings"],
+						name = L["Block Boss Raid Warnings"],
 						desc = L["Block raid warnings from other boss mods"],
 						order = 100,
+						width = "full",
 					},
 					BlockBossEmotes = {
 						type = "toggle",
 						name = L["Block Boss Emotes"],
 						desc = L["Block boss emotes from mobs"],
 						order = 200,
+						width = "full",
 					},
 				},
 			},
