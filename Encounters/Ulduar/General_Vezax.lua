@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 301,
+		version = 302,
 		key = "generalvezax", 
 		zone = L["Ulduar"], 
 		name = L["General Vezax"], 
@@ -170,6 +170,13 @@ do
 				icon = 8,
 			},
 		},
+		announces = {
+			crashsay = {
+				varname = format(L["Say %s on self"],SN[62660]),
+				type = "SAY",
+				msg = format(L["%s on Me"],SN[62660]).."!",
+			},
+		},
 		timers = {
 			shadowcrash = {
 				{
@@ -179,6 +186,7 @@ do
 					{expect = {"&tft_unitexists& &tft_isplayer&","==","1 1"}},
 					{set = {shadowcrashmessage = format("%s: %s! %s!",L["Crash"],L["YOU"],L["MOVE"])}},
 					{alert = "shadowcrashwarn"},
+					{announce = "crashsay"},
 				},
 				{
 					{expect = {"&tft_unitexists& &tft_isplayer&","==","1 nil"}},

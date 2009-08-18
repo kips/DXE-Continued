@@ -48,6 +48,7 @@ local baseKeys = {
 	alerts = opttable,
 	arrows = opttable,
 	raidicons = opttable,
+	announces = opttable,
 	onactivate = opttable,
 	triggers = opttable,
 	category = optstring,
@@ -66,6 +67,7 @@ local baseLineKeys = {
 	raidicon = isstring,
 	arrow = isstring,
 	removearrow = isstring,
+	announce = isstring,
 }
 
 local alertBaseKeys = {
@@ -117,6 +119,15 @@ local raidIconTypeValues = {
 	--ENEMY = true,
 }
 
+local announceBaseKeys = {
+	varname = isstring,
+	type = isstring,
+	msg = isstring,
+}
+
+local announceTypeValues = {
+	SAY = true
+}
 
 local baseTables = {
 	triggers = {
@@ -425,6 +436,32 @@ local function validateRaidIcons(data,raidicons,errlvl,...)
 	end
 end
 
+local function validateAnnounce(data,info,errlvl,...)
+	errlvl=(errlvl or 0)+1
+	for k in pairs(info) do
+		if not announceBaseKeys[k] then
+			err(": unknown key '"..k.."'",errlvl,tostring(k),...)
+		end
+	end
+	for k,oktypes in pairs(announceBaseKeys) do
+		validateVal(info[k],oktypes,errlvl,k,...)
+		if info[k] then
+			-- check type
+			if k == "type" and not announceTypeValues[info[k]] then
+				err(": expected SAY - got '"..info[k].."'",errlvl,k,...)
+			end
+		end
+	end
+end
+
+local function validateAnnounces(data,announces,errlvl,...)
+	errlvl=(errlvl or 0)+1
+	for k,info in pairs(announces) do
+		validateVal(k,isstring,errlvl,...)
+		validateAnnounce(data,info,errlvl,k,...)
+	end
+end
+
 local function validateEvent(data,info,errlvl,...)
 	for k in pairs(info) do
 		if not eventBaseKeys[k] then
@@ -523,6 +560,11 @@ local function validate(data,errlvl,...)
 	-- Arrows
 	if data.arrows and util.tablesize(data.arrows) > 0 then
 		validateArrows(data,data.arrows,errlvl,"arrows",...)
+	end
+
+	-- Announces
+	if data.announces and util.tablesize(data.announces) > 0 then
+		validateAnnounces(data,data.announces,errlvl,"announces",...)
 	end
 
 	-- Events

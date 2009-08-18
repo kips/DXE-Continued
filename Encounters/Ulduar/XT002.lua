@@ -2,7 +2,7 @@ do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 
 	local data = {
-		version = 296,
+		version = 297,
 		key = "xt002", 
 		zone = L["Ulduar"], 
 		name = L["XT-002 Deconstructor"], 
@@ -124,6 +124,18 @@ do
 				},
 			},
 		},
+		announces = {
+			lightsay = {
+				varname = format(L["Say %s on self"],SN[63018]),
+				type = "SAY",
+				msg = format(L["%s on Me"],SN[63018]).."!",
+			},
+			gravitysay = {
+				varname = format(L["Say %s on self"],SN[63024]),
+				type = "SAY",
+				msg = format(L["%s on Me"],SN[63024]).."!",
+			},
+		},
 		events = {
 			-- Gravity Bomb
 			{
@@ -134,6 +146,7 @@ do
 					{
 						{expect = {"#4#", "==", "&playerguid&"}},
 						{alert = "gravitywarnself"},
+						{announce = "gravitysay"},
 					},
 					{
 						{expect = {"#4#", "~=", "&playerguid&"}},
@@ -150,6 +163,7 @@ do
 					{
 						{expect = {"#4#", "==", "&playerguid&"}},
 						{alert = "lightwarnself"},
+						{announce = "lightsay"},
 					},
 					{
 						{expect = {"#4#", "~=", "&playerguid&"}},

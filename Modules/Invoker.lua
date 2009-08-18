@@ -34,7 +34,7 @@ local match,gmatch,gsub,find,split = string.match,string.gmatch,string.gsub,stri
 local UnitGUID, UnitName, UnitExists, UnitIsUnit = UnitGUID, UnitName, UnitExists, UnitIsUnit
 
 local name_to_unit = addon.Roster.name_to_unit
-local EncDB,CE,alerts,raidicons,arrows
+local EncDB,CE,alerts,raidicons,arrows,announces
 
 -- Temp variable environment
 local userdata = {}
@@ -426,9 +426,7 @@ do
 	local Timers = {}
 
 	function module:RemoveAllTimers()
-		for name in pairs(Timers) do
-			canceltimer(name)
-		end
+		for name in pairs(Timers) do canceltimer(name) end
 		-- Just to be safe
 		self:CancelAllTimers()
 	end
@@ -563,6 +561,24 @@ do
 end
 
 ---------------------------------------------
+-- ANNOUNCES
+---------------------------------------------
+
+do
+	local SendChatMessage = SendChatMessage
+	handlers.announce = function(info)
+		local stgs = EncDB[info]
+		if stgs.enabled then
+			local announceInfo = announces[info]
+			if announceInfo.type == "SAY" then
+				SendChatMessage(announceInfo.msg,"SAY")
+			end
+		end
+		return true
+	end
+end
+
+---------------------------------------------
 -- INVOKING
 ---------------------------------------------
 
@@ -679,6 +695,7 @@ function module:OnSet(_,data)
 	arrows = CE.arrows
 	raidicons = CE.raidicons
 	alerts = CE.alerts
+	announces = CE.announces
 	-- Set db upvalues
 	EncDB = addon.db.profile.Encounters[CE.key]
 	-- Wipe events

@@ -687,6 +687,12 @@ local outputInfos = {
 			sound = "None",
 		},
 	},
+	announces = {
+		L = L["Announces"],
+		order = 400,
+		defaultEnabled = true,
+		defaults = {},
+	},
 }
 
 function ConfigHandler:GetSimpleEnable(info)

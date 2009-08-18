@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 308,
+		version = 309,
 		key = "jaraxxus", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -186,6 +186,13 @@ do
 				icon = 8,
 			},
 		},
+		announces = {
+			flamesay = {
+				varname = format(L["Say %s on self"],SN[68123]),
+				type = "SAY",
+				msg = format(L["%s on Me"],SN[68123]).."!",
+			},
+		},
 		events = {
 			-- Legion Flame Note: Use spellid with buff description 'Flame begins to spread from your body!'
 			{
@@ -205,6 +212,7 @@ do
 					{
 						{expect = {"#4#","==","&playerguid&"}},
 						{alert = "legionflameself"},
+						{announce = "flamesay"},
 					},
 					{
 						{expect = {"#4#","~=","&playerguid&"}},

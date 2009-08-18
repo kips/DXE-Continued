@@ -2,7 +2,7 @@ do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 
 	local data = {
-		version = 296,
+		version = 297,
 		key = "kelthuzad", 
 		zone = L["Naxxramas"], 
 		name = L["Kel'Thuzad"], 
@@ -79,6 +79,13 @@ do
 				icon = ST[4070],
 			},
 		},
+		announces = {
+			detonatesay = {
+				varname = format(L["Say %s on self"],SN[29870]),
+				type = "SAY",
+				msg = format(L["%s on Me"],SN[29870]).."!",
+			},
+		},
 		events = {
 			-- Fissure
 			{
@@ -110,7 +117,8 @@ do
 				execute = {
 					{
 						{expect = {"#4#","==","&playerguid&"}},
-						{alert = "detonatewarn"}, 
+						{alert = "detonatewarn"},
+						{announce = "detonatesay"},
 					},
 				},
 			},
