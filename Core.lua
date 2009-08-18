@@ -39,15 +39,15 @@ local defaults = {
 			BarTexture = "Blizzard",
 
 			Font = "Franklin Gothic Medium",
-			FontColor = {1,1,1},
+			FontColor = {1,1,1,1},
 			TitleFontSize = 10,
 			HealthFontSize = 12,
 			BackgroundColor = {0,0,0,0.8},
 			Border = "Blizzard Tooltip",
 			BorderColor = {0.33,0.33,0.33,1},
 			BorderSize = 8,
-			NeutralColor = {0,0,1},
-			LostColor = {0.66,0.66,0.66},
+			NeutralColor = {0,0,1,1},
+			LostColor = {0.66,0.66,0.66,1},
 		},
 	},
 }
@@ -58,7 +58,7 @@ local defaults = {
 
 local addon = LibStub("AceAddon-3.0"):NewAddon("DXE","AceEvent-3.0","AceTimer-3.0","AceConsole-3.0","AceComm-3.0","AceSerializer-3.0")
 _G.DXE = addon
-addon.version = 317 
+addon.version = 318
 addon:SetDefaultModuleState(false)
 addon.callbacks = LibStub("CallbackHandler-1.0"):New(addon)
 addon.defaults = defaults

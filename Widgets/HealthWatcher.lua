@@ -6,9 +6,8 @@
 ]]
 
 local AceGUI = LibStub("AceGUI-3.0")
-local UnitHealth,UnitHealthMax=UnitHealth,UnitHealthMax
-local UnitIsFriend,UnitIsDead=UnitIsFriend,UnitIsDead
-local UnitName = UnitName
+local UnitHealth,UnitHealthMax = UnitHealth,UnitHealthMax
+local UnitIsDead = UnitIsDead
 local format = string.format
 local DEAD = DEAD:upper()
 
@@ -177,8 +176,6 @@ do
 		self.GetGoal = GetGoal
 		self.SetTitle = SetTitle
 		self.IsTitleSet = IsTitleSet
-		self.SetLostColor = SetLostColor
-		self.SetNeutralColor = SetNeutralColor
 		self.ApplyLostColor = ApplyLostColor
 		self.ApplyNeutralColor = ApplyNeutralColor
 		
