@@ -58,7 +58,7 @@ local defaults = {
 
 local addon = LibStub("AceAddon-3.0"):NewAddon("DXE","AceEvent-3.0","AceTimer-3.0","AceConsole-3.0","AceComm-3.0","AceSerializer-3.0")
 _G.DXE = addon
-addon.version = 318
+addon.version = 319
 addon:SetDefaultModuleState(false)
 addon.callbacks = LibStub("CallbackHandler-1.0"):New(addon)
 addon.defaults = defaults
@@ -794,6 +794,7 @@ function addon:OnInitialize()
 end
 
 function addon:OnEnable()
+	self:SkinPane()
 	self:SetPlayerConstants()
 	self:UpdateTriggers()
 	self:UpdateLock()
@@ -1130,7 +1131,6 @@ function addon:CreatePane()
 	)
 
 	self:CreateHealthWatchers(Pane)
-	self:SkinPane()
 
 	self.CreatePane = nil
 end
