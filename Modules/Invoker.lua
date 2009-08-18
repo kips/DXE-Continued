@@ -566,6 +566,8 @@ end
 
 do
 	local SendChatMessage = SendChatMessage
+
+	-- @ADD TO HANDLERS
 	handlers.announce = function(info)
 		local stgs = EncDB[info]
 		if stgs.enabled then

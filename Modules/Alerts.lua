@@ -100,7 +100,7 @@ function module:InitializeOptions(area)
 				type = "group",
 				name = L["Bars"],
 				order = 100,
-				inline = true,
+				--inline = true,
 				args = {
 					BarTest = {
 						type = "execute",
@@ -109,20 +109,27 @@ function module:InitializeOptions(area)
 						order = 100,
 						func = "BarTest",
 					},
+					--[[
 					general_group = {
 						type = "group",
 						name = L["General"],
 						order = 200,
 						args = {
+						]]
+						general_header = {
+							type = "header",
+							name = L["General"],
+							order = 105,
+						},
 							BarStyle = {
-								order = 100,
+								order = 110,
 								type = "select",
 								name = L["Bar Style"],
 								desc = L["Select a bar style"],
 								values = {RDX = "RDX", BIGWIGS = "BigWigs"},
 							},
 							BarTexture = {
-								order = 200,
+								order = 120,
 								type = "select",
 								name = L["Bar Texture"],
 								desc = L["Select a bar texture"],
@@ -130,7 +137,7 @@ function module:InitializeOptions(area)
 								dialogControl = "LSM30_Statusbar",
 							},
 							BarFillDirection = {
-								order = 250,
+								order = 130,
 								type = "select",
 								name = L["Bar Fill Direction"],
 								desc = L["The direction bars fill"],
@@ -140,28 +147,30 @@ function module:InitializeOptions(area)
 								},
 							},
 							BarBackgroundColor = {
-								order = 300,
+								order = 140,
 								type = "color",
 								name = L["Bar Background Color"],
 								desc = L["Select a bar background color"],
 								hasAlpha = true,
 							},
 							DisableDropdowns = {
-								order = 400,
+								order = 150,
 								type = "toggle",
 								name = L["Disable Dropdowns"],
 								desc = L["Anchor bars onto the center anchor only"],
 								set = SetNoRefresh,
 							},
 							DisableSounds = {
-								order = 500,
+								order = 160,
 								type = "toggle",
 								name = L["Disable Sounds"],
 								desc = L["Turns off all alert sounds"],
 								set = SetNoRefresh,
 							},
+							--[[
 						},
 					},
+					]]
 					border_group = {
 						type = "group",
 						order = 300,
@@ -356,7 +365,7 @@ function module:InitializeOptions(area)
 				type = "group",
 				name = L["Screen Flash"],
 				order = 200,
-				inline = true,
+				--inline = true,
 				args = {
 					flash_desc = {
 						type = "description",
@@ -375,6 +384,7 @@ function module:InitializeOptions(area)
 						name = "",
 						type = "group",
 						order = 100,
+						inline = true,
 						disabled = function() return pfl.DisableScreenFlash end,
 						args = {
 							FlashTest = {
