@@ -37,7 +37,6 @@ local defaults = {
 			OnlyOnMouseover = false,
 			BarGrowth = "AUTOMATIC",
 			BarTexture = "Blizzard",
-
 			Font = "Franklin Gothic Medium",
 			FontColor = {1,1,1,1},
 			TitleFontSize = 10,
@@ -49,6 +48,10 @@ local defaults = {
 			NeutralColor = {0,0,1,1},
 			LostColor = {0.66,0.66,0.66,1},
 		},
+		Misc = {
+			BlockRaidWarnings = false,
+			BlockBossEmotes = false,
+		},
 	},
 }
 
@@ -58,7 +61,7 @@ local defaults = {
 
 local addon = LibStub("AceAddon-3.0"):NewAddon("DXE","AceEvent-3.0","AceTimer-3.0","AceConsole-3.0","AceComm-3.0","AceSerializer-3.0")
 _G.DXE = addon
-addon.version = 319
+addon.version = 320
 addon:SetDefaultModuleState(false)
 addon.callbacks = LibStub("CallbackHandler-1.0"):New(addon)
 addon.defaults = defaults
@@ -675,6 +678,30 @@ function addon:PLAYER_ENTERING_WORLD()
 end
 
 ---------------------------------------------
+-- WARNING BLOCKS
+---------------------------------------------
+
+local forceBlockDisable
+function addon:HookRaidNotice()
+	local RNA_Old = RaidNotice_AddMessage
+	local RaidWarningFrame = RaidWarningFrame
+	local RaidBossEmoteFrame = RaidBossEmoteFrame
+	_G.RaidNotice_AddMessage = function(frame,text,info)
+		if not forceBlockDisable then
+			if pfl.BlockRaidWarnings and frame == RaidWarningFrame 
+				and type(text) == "string" and find(text,"%*%*%*") then
+				return
+			elseif pfl.BlockBossEmotes and frame == RaidBossEmoteFrame then
+				return
+			end
+		end
+		RNA_Old(frame,text,info)
+	end
+	self.HookRaidNotice = nil
+end
+
+
+---------------------------------------------
 -- MAIN
 ---------------------------------------------
 
@@ -788,12 +815,15 @@ function addon:OnInitialize()
 	-- Minimap
 	self:SetupMinimapIcon()
 
+	self:HookRaidNotice()
+
 	self:SetEnabledState(gbl.Enabled)
 	self:Print(L["Type |cffffff00/dxe|r for slash commands"])
 	self.OnInitialize = nil
 end
 
 function addon:OnEnable()
+	forceBlockDisable = false
 	self:SkinPane()
 	self:SetPlayerConstants()
 	self:UpdateTriggers()
@@ -813,6 +843,7 @@ function addon:OnEnable()
 end
 
 function addon:OnDisable()
+	forceBlockDisable = true
 	self:UpdateLockedFrames("Hide")
 	self:StopEncounter()
 	self:SetActiveEncounter("default")

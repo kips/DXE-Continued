@@ -163,7 +163,7 @@ function addon:InitializeOptions()
 			pane_group = {
 				type = "group",
 				name = L["Pane"],
-				inline = true,
+				--inline = true,
 				order = 100,
 				get = function(info) 
 					local var = info[#info]
@@ -360,6 +360,27 @@ function addon:InitializeOptions()
 								desc = L["The color of the health bar after losing the mob"],
 							},
 						},
+					},
+				},
+			},
+			misc_group = {
+				type = "group",
+				name = L["Miscellaneous"],
+				get = function(info) return pfl[info[#info]] end,
+				set = function(info,v) pfl[info[#info]] = v end,
+				order = 200,
+				args = {
+					BlockRaidWarnings = {
+						type = "toggle",
+						name = L["Block Raid Warnings"],
+						desc = L["Block raid warnings from other boss mods"],
+						order = 100,
+					},
+					BlockBossEmotes = {
+						type = "toggle",
+						name = L["Block Boss Emotes"],
+						desc = L["Block boss emotes from mobs"],
+						order = 200,
 					},
 				},
 			},
