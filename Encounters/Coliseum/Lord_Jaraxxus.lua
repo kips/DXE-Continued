@@ -18,10 +18,10 @@ do
 			combatstop = true,
 		},
 		userdata = {
-			eruptiontime = {81,120, loop = false},
-			portaltime = {21,120, loop = false},
+			eruptiontime = {80,120, loop = false},
+			portaltime = {20,120, loop = false},
 			fleshtime = {14, 21, loop = false},
-			flametime = {10, 30, loop = false},
+			flametime = {9, 30, loop = false},
 		},
 		onstart = {
 			{
@@ -36,8 +36,8 @@ do
 				varname = format(L["%s on self"],SN[68123]),
 				text = format("%s: %s!",SN[68123],L["YOU"]),
 				type = "centerpopup",
-				time = 6,
-				flashtime = 6,
+				time = 8, -- +2 seconds because it falls off and then reapplies
+				flashtime = 8,
 				color1 = "GREEN",
 				color2 = "MAGENTA",
 				flashscreen = true,
@@ -199,10 +199,10 @@ do
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
 				spellid = {
-					68123,
 					68125,
+					68124,
 					66197, -- 10 normal
-					68124, -- ??
+					68123, -- 25 normal
 				},
 				execute = {
 					{
@@ -227,10 +227,10 @@ do
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
 				spellid = {
-					67049,
 					67050,
 					67051,
-					66237 -- 10 normal
+					66237, -- 10 normal
+					67049, -- 25 normal
 				},
 				execute = {
 					{
@@ -251,10 +251,10 @@ do
 				type = "combatevent",
 				eventtype = "SPELL_AURA_REMOVED",
 				spellid = {
-					67049,
 					67050,
 					67051,
 					66237, -- 10 normal
+					67049, -- 25 normal
 				},
 				execute = {
 					{
@@ -272,9 +272,9 @@ do
 				type = "combatevent",
 				eventtype = "SPELL_CAST_SUCCESS",
 				spellid = {
-					67901,
 					67903,
 					66258, -- 10 normal
+					67901, -- 25 normal
 				},
 				execute = {
 					{
@@ -288,8 +288,8 @@ do
 				eventtype = "SPELL_CAST_SUCCESS",
 				spellid = {
 					67900,
-					67898,
-					66269 -- 10 normal
+					66269, -- 10 normal
+					67898, -- 25 normal
 				},
 				execute = {
 					{
@@ -302,7 +302,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_SUCCESS",
-				spellid = 67009, -- 10 man
+				spellid = 67009, -- 10/25 normal
 				execute = {
 					{
 						{alert = "netherpowerwarn"},
