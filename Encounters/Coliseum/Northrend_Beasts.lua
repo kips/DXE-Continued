@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 309,
+		version = 310,
 		key = "northrendbeasts", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -191,8 +191,8 @@ do
 				varname = format(L["%s Timer"],L["Phase One"]),
 				type = "centerpopup",
 				text = format(L["%s Begins"],L["Phase One"]),
-				time = 25,
-				flashtime = 25,
+				time = 22,
+				flashtime = 22,
 				color1 = "MIDGREY",
 				icon = ST[3648],
 			},

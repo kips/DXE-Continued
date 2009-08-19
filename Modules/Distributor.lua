@@ -419,7 +419,14 @@ function module:LoadCompleted(key,loadInfo,text,color,func) -- func = RemoveDL|R
 	bar:SetColor(color)
 	bar:SetValue(1)
 	self:FadeBar(bar)
-	self:ScheduleTimer(func,4,key)
+	self:CancelTimer(loadInfo.timer,true)
+	if loadInfo.prefix then self:UnregisterComm(loadInfo.prefix) end
+	self:RemoveFromUpdating(key..UL_SUFFIX)
+	self:RemoveFromUpdating(key..DL_SUFFIX)
+	self:ScheduleTimer(func,2,key)
+	if not next(Uploads) and not next(Downloads) then
+		self:UnregisterEvent("CHAT_MSG_ADDON")
+	end
 end
 
 function module:RemoveDL(key)
@@ -431,21 +438,14 @@ function module:RemoveUL(key)
 end
 
 function module:RemoveLoad(loadTable,key)
-	self:RemoveFromUpdating(key..UL_SUFFIX)
-	self:RemoveFromUpdating(key..DL_SUFFIX)
 	local loadInfo = loadTable[key]
-	if loadInfo.prefix then self:UnregisterComm(loadInfo.prefix) end
-	self:CancelTimer(loadInfo.timer,true)
 	self:RemoveProgressBar(loadInfo.bar)
 	addon.AceGUI:Release(loadInfo.bar)
 	loadTable[key] = nil
-	if not next(Uploads) and not next(Downloads) then
-		self:UnregisterEvent("CHAT_MSG_ADDON")
-	end
 end
 
 function module:FadeBar(bar)
-	UIFrameFadeOut(bar.frame,4,bar.frame:GetAlpha(),0)
+	UIFrameFadeOut(bar.frame,2,bar.frame:GetAlpha(),0)
 end
 
 ----------------------------------
