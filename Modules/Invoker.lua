@@ -426,7 +426,7 @@ do
 	local Timers = {}
 
 	function module:RemoveAllTimers()
-		for name in pairs(Timers) do canceltimer(name) end
+		for name in pairs(Timers) do handlers.canceltimer(name) end
 		-- Just to be safe
 		self:CancelAllTimers()
 	end
