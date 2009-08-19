@@ -370,18 +370,28 @@ function addon:InitializeOptions()
 				set = function(info,v) pfl.Misc[info[#info]] = v end,
 				order = 200,
 				args = {
-					BlockRaidWarnings = {
+					BlockRaidWarningFrame = {
 						type = "toggle",
-						name = L["Block Boss Raid Warnings"],
-						desc = L["Block raid warnings from other boss mods"],
+						name = L["Block raid warning frame messages from other boss mods"],
 						order = 100,
 						width = "full",
 					},
-					BlockBossEmotes = {
+					BlockRaidWarningMessages = {
 						type = "toggle",
-						name = L["Block Boss Emotes"],
-						desc = L["Block boss emotes from mobs"],
+						name = L["Block raid warning messages, in the chat log, from other boss mods"],
 						order = 200,
+						width = "full",
+					},
+					BlockBossEmoteFrame = {
+						type = "toggle",
+						name = L["Block boss emote frame messages"],
+						order = 300,
+						width = "full",
+					},
+					BlockBossEmoteMessages = {
+						type = "toggle",
+						name = L["Block boss emote messages in the chat log"],
+						order = 400,
 						width = "full",
 					},
 				},

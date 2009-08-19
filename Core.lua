@@ -50,8 +50,10 @@ local defaults = {
 			LostColor = {0.66,0.66,0.66,1},
 		},
 		Misc = {
-			BlockRaidWarnings = false,
-			BlockBossEmotes = false,
+			BlockRaidWarningFrame = false,
+			BlockRaidWarningMessages = false,
+			BlockBossEmoteFrame = false,
+			BlockBossEmoteMessages = false,
 		},
 	},
 }
@@ -685,29 +687,56 @@ end
 
 local forceBlockDisable
 addon.NPCNames = {}
-function addon:HookRaidNotice()
-	local RaidNotice_AddMessage_Orig = _G.RaidNotice_AddMessage
-	local RaidWarningFrame = _G.RaidWarningFrame
-	local RaidBossEmoteFrame = _G.RaidBossEmoteFrame
-	for _,name in pairs(gbl.L_NPC) do self.NPCNames[name] = true end
-	_G.RaidNotice_AddMessage = function(frame,text,info)
-		if not forceBlockDisable then
-			if pfl.Misc.BlockRaidWarnings and frame == RaidWarningFrame 
-				and type(text) == "string" and find(text,"^%*%*%*") then
-				return
-			elseif pfl.Misc.BlockBossEmotes and frame == RaidBossEmoteFrame 
-				and type(arg2) == "string" and self.NPCNames[arg2] then
-				--@debug@
-				debug("BlockBossEmotes","arg2: %s",arg2)
-				--@end-debug@
-				return
-			end
-		end
-		RaidNotice_AddMessage_Orig(frame,text,info)
-	end
-	self.HookRaidNotice = nil
-end
 
+function addon:AddMessageFilters()
+	local OTHER_BOSS_MOD_PTN = "%*%*%*"
+
+	for _,name in pairs(gbl.L_NPC) do self.NPCNames[name] = true end
+
+	local RaidWarningFrame_OnEvent = RaidWarningFrame:GetScript("OnEvent")
+	RaidWarningFrame:SetScript("OnEvent", function(self,event,msg,...)
+		if not forceBlockDisable and pfl.Misc.BlockRaidWarningFrame and 
+			type(msg) == "string" and find(msg,OTHER_BOSS_MOD_PTN) then
+			-- Do nothing
+		else
+			return RaidWarningFrame_OnEvent(self,event,msg,...)
+		end
+	end)
+
+	local RaidBossEmoteFrame_OnEvent = RaidBossEmoteFrame:GetScript("OnEvent")
+	RaidBossEmoteFrame:SetScript("OnEvent", function(self,event,msg,name,...)
+		if not forceBlockDisable and pfl.Misc.BlockBossEmoteFrame
+			and self.NPCNames[name] then
+			-- Do nothing
+		else
+			return RaidBossEmoteFrame_OnEvent(self,event,msg,name,...)
+		end
+	end)
+
+	local function OTHER_BOSS_MOD_FILTER(self,event,msg)
+		if not forceBlockDisable and pfl.Misc.BlockRaidWarningMessages
+			and type(msg) == "string" and find(msg,OTHER_BOSS_MOD_PTN) then 
+			return true 
+		end
+	end
+
+	ChatFrame_AddMessageEventFilter("CHAT_MSG_WHISPER", OTHER_BOSS_MOD_FILTER)
+	ChatFrame_AddMessageEventFilter("CHAT_MSG_RAID", OTHER_BOSS_MOD_FILTER)
+	ChatFrame_AddMessageEventFilter("CHAT_MSG_RAID_WARNING", OTHER_BOSS_MOD_FILTER)
+	ChatFrame_AddMessageEventFilter("CHAT_MSG_RAID_LEADER", OTHER_BOSS_MOD_FILTER)
+
+	local function RAID_BOSS_FILTER(self,event,msg,name)
+		if not forceBlockDisable and pfl.Misc.BlockBossEmoteMessages
+			and self.NPCNames[name] then
+			return true
+		end
+	end
+
+	ChatFrame_AddMessageEventFilter("CHAT_MSG_RAID_BOSS_EMOTE",RAID_BOSS_FILTER)
+	ChatFrame_AddMessageEventFilter("CHAT_MSG_RAID_BOSS_WHISPER",RAID_BOSS_FILTER)
+
+	self.AddMessageFilters = nil
+end
 
 ---------------------------------------------
 -- MAIN
@@ -820,10 +849,10 @@ function addon:OnInitialize()
 
 	RegisterQueue = nil
 
+	self:AddMessageFilters()
+
 	-- Minimap
 	self:SetupMinimapIcon()
-
-	self:HookRaidNotice()
 
 	self:SetEnabledState(gbl.Enabled)
 	self:Print(L["Type |cffffff00/dxe|r for slash commands"])
