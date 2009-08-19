@@ -366,8 +366,8 @@ function addon:InitializeOptions()
 			misc_group = {
 				type = "group",
 				name = L["Miscellaneous"],
-				get = function(info) return pfl[info[#info]] end,
-				set = function(info,v) pfl[info[#info]] = v end,
+				get = function(info) return pfl.Misc[info[#info]] end,
+				set = function(info,v) pfl.Misc[info[#info]] = v end,
 				order = 200,
 				args = {
 					BlockRaidWarnings = {

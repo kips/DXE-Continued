@@ -12,7 +12,7 @@ do
 			}, 
 		},
 		onactivate = {
-			tracing = {--[[todo]]},
+			tracing = {--[[todo]]}, -- Up to 10 mobs =(
 			combatstop = true,
 		},
 		userdata = {},

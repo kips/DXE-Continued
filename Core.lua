@@ -62,7 +62,7 @@ local defaults = {
 
 local addon = LibStub("AceAddon-3.0"):NewAddon("DXE","AceEvent-3.0","AceTimer-3.0","AceConsole-3.0","AceComm-3.0","AceSerializer-3.0")
 _G.DXE = addon
-addon.version = 320
+addon.version = 321
 addon:SetDefaultModuleState(false)
 addon.callbacks = LibStub("CallbackHandler-1.0"):New(addon)
 addon.defaults = defaults
@@ -692,10 +692,10 @@ function addon:HookRaidNotice()
 	for _,name in pairs(gbl.L_NPC) do self.NPCNames[name] = true end
 	_G.RaidNotice_AddMessage = function(frame,text,info)
 		if not forceBlockDisable then
-			if pfl.BlockRaidWarnings and frame == RaidWarningFrame 
+			if pfl.Misc.BlockRaidWarnings and frame == RaidWarningFrame 
 				and type(text) == "string" and find(text,"^%*%*%*") then
 				return
-			elseif pfl.BlockBossEmotes and frame == RaidBossEmoteFrame 
+			elseif pfl.Misc.BlockBossEmotes and frame == RaidBossEmoteFrame 
 				and type(arg2) == "string" and self.NPCNames[arg2] then
 				--@debug@
 				debug("BlockBossEmotes","arg2: %s",arg2)
