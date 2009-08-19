@@ -109,74 +109,68 @@ function module:InitializeOptions(area)
 						order = 100,
 						func = "BarTest",
 					},
-					--[[
-					general_group = {
-						type = "group",
+					general_header = {
+						type = "header",
 						name = L["General"],
-						order = 200,
-						args = {
-						]]
-						general_header = {
-							type = "header",
-							name = L["General"],
-							order = 105,
-						},
-							BarStyle = {
-								order = 110,
-								type = "select",
-								name = L["Bar Style"],
-								desc = L["Select a bar style"],
-								values = {RDX = "RDX", BIGWIGS = "BigWigs"},
-							},
-							BarTexture = {
-								order = 120,
-								type = "select",
-								name = L["Bar Texture"],
-								desc = L["Select a bar texture"],
-								values = SM:HashTable("statusbar"),
-								dialogControl = "LSM30_Statusbar",
-							},
-							BarFillDirection = {
-								order = 130,
-								type = "select",
-								name = L["Bar Fill Direction"],
-								desc = L["The direction bars fill"],
-								values = {
-									FILL = L["Left to Right"],
-									DEPLETE = L["Right to Left"],
-								},
-							},
-							BarBackgroundColor = {
-								order = 140,
-								type = "color",
-								name = L["Bar Background Color"],
-								desc = L["Select a bar background color"],
-								hasAlpha = true,
-							},
-							DisableDropdowns = {
-								order = 150,
-								type = "toggle",
-								name = L["Disable Dropdowns"],
-								desc = L["Anchor bars onto the center anchor only"],
-								set = SetNoRefresh,
-							},
-							DisableSounds = {
-								order = 160,
-								type = "toggle",
-								name = L["Disable Sounds"],
-								desc = L["Turns off all alert sounds"],
-								set = SetNoRefresh,
-							},
-							--[[
+						order = 105,
+					},
+					BarStyle = {
+						order = 110,
+						type = "select",
+						name = L["Bar Style"],
+						desc = L["Select a bar style"],
+						values = {RDX = "RDX", BIGWIGS = "BigWigs"},
+					},
+					BarTexture = {
+						order = 120,
+						type = "select",
+						name = L["Bar Texture"],
+						desc = L["Select a bar texture"],
+						values = SM:HashTable("statusbar"),
+						dialogControl = "LSM30_Statusbar",
+					},
+					BarFillDirection = {
+						order = 130,
+						type = "select",
+						name = L["Bar Fill Direction"],
+						desc = L["The direction bars fill"],
+						values = {
+							FILL = L["Left to Right"],
+							DEPLETE = L["Right to Left"],
 						},
 					},
-					]]
+					BarBackgroundColor = {
+						order = 140,
+						type = "color",
+						name = L["Bar Background Color"],
+						desc = L["Select a bar background color"],
+						hasAlpha = true,
+					},
+					DisableDropdowns = {
+						order = 150,
+						type = "toggle",
+						name = L["Disable Dropdowns"],
+						desc = L["Anchor bars onto the center anchor only"],
+						set = SetNoRefresh,
+					},
+					DisableSounds = {
+						order = 160,
+						type = "toggle",
+						name = L["Disable Sounds"],
+						desc = L["Turns off all alert sounds"],
+						set = SetNoRefresh,
+					},
 					border_group = {
 						type = "group",
 						order = 300,
 						name = L["Border"],
 						disabled = function() return pfl.BarStyle == "BIGWIGS" end,
 						args = {
+							border_desc = {
+								type = "header",
+								name = L["Adjust the border used on timer bars"].."\n",
+								order = 1,
+							},
 							BarBorder = {
 								order = 100,
 								type = "select",
@@ -209,6 +203,11 @@ function module:InitializeOptions(area)
 						name = L["Font"],
 						order = 400,
 						args = {
+							font_desc = {
+								type = "header",
+								name = L["Adjust the font used on timer bars"].."\n",
+								order = 1,
+							},
 							BarFont = {
 								order = 100,
 								type = "select",
@@ -239,6 +238,11 @@ function module:InitializeOptions(area)
 						name = L["Icon"],
 						order = 500,
 						args = {
+							icon_desc = {
+								type = "header",
+								name = L["Adjust the spell icon on timer bars"].."\n",
+								order = 1,
+							},
 							HideIcons = {
 								order = 100,
 								type = "toggle",
@@ -273,8 +277,8 @@ function module:InitializeOptions(area)
 						disabled = function() return pfl.DisableDropdowns end,
 						args = {
 							top_desc = {
-								type = "description",
-								name = L["Adjust settings related to the top anchor"],
+								type = "header",
+								name = L["Adjust settings related to the top anchor"].."\n",
 								order = 1,
 							},
 							TopScale = {
@@ -319,8 +323,8 @@ function module:InitializeOptions(area)
 						order = 700,
 						args = {
 							center_desc = {
-								type = "description",
-								name = L["Adjust settings related to the center anchor"],
+								type = "header",
+								name = L["Adjust settings related to the center anchor"].."\n",
 								order = 1,
 							},
 							CenterScale = {
@@ -369,7 +373,7 @@ function module:InitializeOptions(area)
 				args = {
 					flash_desc = {
 						type = "description",
-						name = L["The color of the flash becomes the main color of the alert. Colors for each alert are set in the Encounters section. If the color is set to 'Clear' it defaults to black"],
+						name = L["The color of the flash becomes the main color of the alert. Colors for each alert are set in the Encounters section. If the color is set to 'Clear' it defaults to black"].."\n",
 						order = 50,
 					},
 					DisableScreenFlash = {

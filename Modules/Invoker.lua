@@ -309,7 +309,7 @@ do
 
 	-- @ADD TO HANDLERS
 	handlers.expect = function(info)
-		return ops[info[3]](ReplaceTokens(info[1]),ReplaceTokens(info[3]))
+		return ops[info[2]](ReplaceTokens(info[1]),ReplaceTokens(info[3]))
 	end
 end
 
