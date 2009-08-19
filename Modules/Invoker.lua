@@ -440,7 +440,7 @@ do
 	handlers.scheduletimer = function(info)
 		local name,time = info[1],info[2]
 		-- Rescheduled Timers are overwritten
-		canceltimer(name)
+		handlers.canceltimer(name)
 		Timers[name] = new()
 		Timers[name].handle = module:ScheduleTimer("FireTimer",time,name)
 		local args = new()
