@@ -25,7 +25,7 @@ local DL_SUFFIX = "DL"
 local DR_PTN = TRANSFER_PREFIX.."_([%w'%- ]+)" -- DownloadReceived
 local CMA_PTN = TRANSFER_PREFIX.."_([%w'%- ]+)(.*)" -- CHAT_MSG_ADDON
 local UL_TIMEOUT = 5
-local DL_TIMEOUT = 15
+local DL_TIMEOUT = 20
 
 ----------------------------------
 -- INITIALIZATION
@@ -228,6 +228,7 @@ function module:StartReceiving(key,length,sender,dist,name)
 
 	Downloads[key] = {
 		key = key,
+		prefix = prefix,
 		name = name,
 		sender = sender,
 		received = 0,
@@ -366,7 +367,6 @@ function module:QueueNextUL()
 end
 
 function module:DownloadReceived(prefix, msg, dist, sender)
-	self:UnregisterComm(prefix)
 	local key = match(prefix, DR_PTN)
 
 	local dl = Downloads[key]
@@ -434,6 +434,7 @@ function module:RemoveLoad(loadTable,key)
 	self:RemoveFromUpdating(key..UL_SUFFIX)
 	self:RemoveFromUpdating(key..DL_SUFFIX)
 	local loadInfo = loadTable[key]
+	if loadInfo.prefix then self:UnregisterComm(loadInfo.prefix) end
 	self:CancelTimer(loadInfo.timer,true)
 	self:RemoveProgressBar(loadInfo.bar)
 	addon.AceGUI:Release(loadInfo.bar)
