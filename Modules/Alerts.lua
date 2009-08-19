@@ -729,7 +729,7 @@ do
 	end
 
 	function prototype:SetText(text)
-		text = gsub(text,"(.+: )(%w+)",colorname)
+		text = gsub(text,"(.+: )([^!.]+)",colorname)
 		self.text:SetText(text)
 	end
 end

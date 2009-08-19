@@ -10,6 +10,7 @@ local debugDefaults = {
 	CombatStop = false,
 	CHAT_MSG_MONSTER_YELL = false,
 	RAID_ROSTER_UPDATE = false,
+	BlockBossEmotes = false,
 }
 --@end-debug@
 
@@ -696,6 +697,9 @@ function addon:HookRaidNotice()
 				return
 			elseif pfl.BlockBossEmotes and frame == RaidBossEmoteFrame 
 				and type(arg2) == "string" and self.NPCNames[arg2] then
+				--@debug@
+				debug("BlockBossEmotes","arg2: %s",arg2)
+				--@end-debug@
 				return
 			end
 		end
