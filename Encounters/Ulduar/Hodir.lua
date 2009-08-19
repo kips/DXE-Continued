@@ -97,6 +97,13 @@ do
 				icon = ST[65133],
 			},
 		},
+		announces = {
+			stormcloudsay = {
+				varname = format(L["Say %s on self"],SN[65133]),
+				type = "SAY",
+				msg = format(L["%s on Me"],SN[65133]).."!",
+			},
+		},
 		events = {
 			-- Flash Freeze cast
 			{
@@ -130,6 +137,7 @@ do
 					{
 						{expect = {"#4#","==","&playerguid&"}},
 						{alert = "stormcloudwarnself"},
+						{announce = "stormcloudsay"},
 					},
 					{
 						{expect = {"#4#","~=","&playerguid&"}},
