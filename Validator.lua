@@ -138,7 +138,9 @@ local baseTables = {
 		tracerstart = optboolean,
 		tracerstop = optboolean,
 		combatstop = optboolean,
+		combatstart = optboolean,
 		tracing = opttable,
+		sortedtracing = opttable,
 	},
 }
 
@@ -233,6 +235,17 @@ local function validateTracing(tbl,errlvl,...)
 	end
 	for k,v in ipairs(tbl) do
 		validateVal(v,isnumber,errlvl,"tracing",...)
+	end
+end
+
+local function validateSortedTracing(tbl,errlvl,...)
+	errlvl=(errlvl or 0)+1
+	validateIsArray(tbl,errlvl,"sortedtracing",...)
+	if #tbl == 0 then
+		err(": got an empty array",errlvl,"sortedtracing",...)
+	end
+	for k,v in ipairs(tbl) do
+		validateVal(v,isnumber,errlvl,"sortedtracing",...)
 	end
 end
 
@@ -541,6 +554,11 @@ local function validate(data,errlvl,...)
 				if tblName == "onactivate" then
 					if k == "tracing" and data.onactivate.tracing then
 						validateTracing(data.onactivate.tracing,errlvl,tblName,...)
+					elseif k == "sortedtracing" and data.onactivate.sortedtracing then
+						validateSortedTracing(data.onactivate.sortedtracing,errlvl,tblName,...)
+					end
+					if data.onactivate.tracing and data.onactivate.sortedtracing then
+						err(": cannot have tracing and sortedtracing at the same time",errlvl,tblName,...)
 					end
 				end
 			end

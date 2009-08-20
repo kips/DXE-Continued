@@ -1,40 +1,45 @@
 do
 	local faction = UnitFactionGroup("player")
-	local NID_DK, NID_DRUID_CASTER, NID_DRUID_HEALER, NID_HUNTER, NID_MAGE, NID_PALADIN_HEALER, NID_PALADIN_RET
-	local NID_PRIEST_HEALER, NID_PRIEST_SHADOW, NID_ROGUE, NID_SHAMAN_CASTER, NID_SHAMAN_ENH, NID_WARLOCK, NID_WARRIOR
+	local npc_list
+	
 	if faction == "Alliance" then
-		NID_DK = 				34458 -- Gorgrim
-		NID_DRUID_CASTER = 	34451 -- Birina 
-		NID_DRUID_HEALER = 	34459 -- Erin
-		NID_HUNTER = 			34448 -- Ruj'kah
-		NID_MAGE = 				34449 -- Ginselle
-		NID_PALADIN_HEALER = 34445 -- Liandra
-		NID_PALADIN_RET = 	34456 -- Malithas
-		NID_PRIEST_HEALER = 	34447 -- Caiphus
-		NID_PRIEST_SHADOW = 	34441 -- Vivviene
-		NID_ROGUE = 			34454 -- Maz'dinah
-		NID_SHAMAN_CASTER =	34444 -- Thrakgar
-		NID_SHAMAN_ENH =		34455 -- Broln
-		NID_WARLOCK = 			34450 -- Harkzog
-		NID_WARRIOR = 			34453 -- Narrhok
+		npc_list = {
+			34458, -- Gorgrim	  DK
+			34451, -- Birina	  DRUID_CASTER
+			34459, -- Erin		  DRUID_HEALER
+			34448, -- Ruj'kah	  HUNTER
+			34449, -- Ginselle  MAGE
+			34445, -- Liandra	  PALADIN_HEALER
+			34456, -- Malithas  PALADIN_RET
+			34447, -- Caiphus   PRIEST_HEALER
+			34441, -- Vivviene  PRIEST_SHADOW
+			34454, -- Maz'dinah ROGUE
+			34444, -- Thrakgar  SHAMAN_CASTER
+			34455, -- Broln	  SHAMAN_ENH
+			34450, -- Harkzog   WARLOCK
+			34453, -- Narrhok   WARRIOR
+		}
 	elseif faction == "Horde" then
-		NID_DK = 				34461 -- Tyrius
-		NID_DRUID_CASTER = 	34460 -- Kavina
-		NID_DRUID_HEALER = 	34469 -- Melador
-		NID_HUNTER = 			34467 -- Alyssia
-		NID_MAGE =  			99999 -- Noozle (INCOMPLETE)
-		NID_PALADIN_HEALER = 34465 -- Velanaa
-		NID_PALADIN_RET = 	99999 -- Baelnor (INCOMPLETE)
-		NID_PRIEST_HEALER = 	99999 -- Anthar (INCOMPLETE)
-		NID_PRIEST_SHADOW = 	34473 -- Brienna
-		NID_ROGUE =  			34472 -- Irieth
-		NID_SHAMAN_CASTER = 	34470 -- Saamul
-		NID_SHAMAN_ENH = 		99999 -- Shaabad (INCOMPLETE)
-		NID_WARLOCK = 			34474 -- Serissa
-		NID_WARRIOR = 			34475 -- Shocuul
+		npc_list = {
+			34461, -- Tyrius 	DK
+			34460, -- Kavina 	DRUID_CASTER
+			34469, -- Melador DRUID_HEALER
+			34467, -- Alyssia HUNTER
+			99999, -- Noozle 	MAGE				 (INCOMPLETE)
+			34465, -- Velanaa PALADIN_HEALER
+			99999, -- Baelnor PALADIN_RET 	 (INCOMPLETE)
+			99999, -- Anthar 	PRIEST_HEALER   (INCOMPLETE)
+			34473, -- Brienna	PRIEST_SHADOW
+			34472, -- Irieth 	ROGUE
+			34470, -- Saamul 	SHAMAN_CASTER
+			99999, -- Shaabad SHAMAN_ENH      (INCOMPLETE)
+			34474, -- Serissa WARLOCK
+			34475, -- Shocuul WARRIOR
+		}
 	else
 		error("DXE_Coliseum Faction Champions: faction upvalue missing") 
 	end
+
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
 		version = 322,
@@ -44,32 +49,17 @@ do
 		name = L["Faction Champions"], 
 		title = L["Faction Champions"],
 		triggers = {
-			scan = {
-				NID_DK,
-				NID_DRUID_CASTER,
-				NID_DRUID_HEALER,
-				NID_HUNTER,
-				NID_MAGE,
-				NID_PALADIN_HEALER,
-				NID_PALADIN_RET,
-				NID_PRIEST_HEALER,
-				NID_PRIEST_SHADOW,
-				NID_ROGUE,
-				NID_SHAMAN_CASTER,
-				NID_SHAMAN_ENH,
-				NID_WARLOCK,
-				NID_WARRIOR,
-			}, 
+			scan = npc_list,
 		},
 		onactivate = {
+			combatstart = true,
 			combatstop = true,
+			sortedtracing = npc_list,
 		},
-		userdata = {},
 		--[[
 		onstart = {
 		},
 		alerts = {
-
 		},
 		events = { 
 		},
@@ -78,3 +68,4 @@ do
 
 	DXE:RegisterEncounter(data)
 end
+

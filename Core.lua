@@ -64,7 +64,7 @@ local defaults = {
 
 local addon = LibStub("AceAddon-3.0"):NewAddon("DXE","AceEvent-3.0","AceTimer-3.0","AceConsole-3.0","AceComm-3.0","AceSerializer-3.0")
 _G.DXE = addon
-addon.version = 322
+addon.version = 323
 addon:SetDefaultModuleState(false)
 addon.callbacks = LibStub("CallbackHandler-1.0"):New(addon)
 addon.defaults = defaults
@@ -73,13 +73,13 @@ addon.defaults = defaults
 -- UPVALUES
 ---------------------------------------------
 
-local wipe,remove = table.wipe,table.remove
+local wipe,remove,sort = table.wipe,table.remove,table.sort
 local match,find,gmatch,sub = string.match,string.find,string.gmatch,string.sub
 local _G,select,tostring,type,tonumber = _G,select,tostring,type,tonumber
 local GetTime,GetNumRaidMembers,GetRaidRosterInfo = GetTime,GetNumRaidMembers,GetRaidRosterInfo
-local UnitName,UnitGUID,UnitIsEnemy,UnitClass,UnitAffectingCombat,UnitHealth,UnitIsFriend,UnitIsDead = 
-		UnitName,UnitGUID,UnitIsEnemy,UnitClass,UnitAffectingCombat,UnitHealth,UnitIsFriend,UnitIsDead
-local rawget = rawget
+local UnitName,UnitGUID,UnitIsEnemy,UnitClass,UnitAffectingCombat,UnitHealth,UnitHealthMax,UnitIsFriend,UnitIsDead = 
+		UnitName,UnitGUID,UnitIsEnemy,UnitClass,UnitAffectingCombat,UnitHealth,UnitHealthMax,UnitIsFriend,UnitIsDead
+local rawget,unpack = rawget,unpack
 
 local db,gbl,pfl
 
@@ -437,15 +437,21 @@ function addon:SetActiveEncounter(key)
 	self.Pane.SetFolderValue(key)
 
 	self:CloseAllHW()
+	self:ResetSortedTracing()
 	if CE.onactivate then
 		local oa = CE.onactivate
 		self:SetTracerStart(oa.tracerstart)
 		self:SetTracerStop(oa.tracerstop)
+
+		-- Either could exist but not both
+		self:SetSortedTracing(oa.sortedtracing)
 		self:SetTracing(oa.tracing)
+
 		self:SetCombat(oa.combatstop,"PLAYER_REGEN_ENABLED","CombatStop")
+		self:SetCombat(oa.combatstart,"PLAYER_REGEN_DISABLED","CombatStart")
 	end
 	-- For the empty encounter
-	if key == "default" then self:ShowFirstHW() end
+	self:ShowFirstHW()
 	self:LayoutHealthWatchers()
 	self.callbacks:Fire("SetActiveEncounter",CE)
 end
@@ -456,6 +462,7 @@ function addon:StartEncounter(...)
 	self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED","UNIT_DIED")
 	self.callbacks:Fire("StartEncounter",...)
 	self:StartTimer()
+	self:StartSortedTracing()
 	self:UpdatePaneVisibility()
 end
 
@@ -464,6 +471,8 @@ function addon:StopEncounter()
 	if not self:IsRunning() then return end
 	self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 	self.callbacks:Fire("StopEncounter")
+	self:ClearSortedTracing()
+	self:StopSortedTracing()
 	self:StopTimer()
 	self:UpdatePaneVisibility()
 end
@@ -498,6 +507,9 @@ local refreshFuncs = {
 	-- Remember to iterate using pairs
 	index_to_unit = function(t,i,id) 
 		t[i] = id
+	end,
+	index_to_unittarget = function(t,i,id) 
+		t[i] = rIDtarget[i]
 	end,
 }
 
@@ -1249,11 +1261,22 @@ local HW = {}
 addon.HW = HW
 local DEAD = DEAD:upper()
 
+-- Holds a list of tables
+-- Each table t has three values
+-- t[1] = npcid
+-- t[2] = last known health
+-- t[3] = last known max health
+local SortedCache = {}
+local SeenNIDS = {}
+
 function addon:UNIT_DIED(_, _,eventtype, _, _, _, dstGUID)
 	if eventtype ~= "UNIT_DIED" then return end
 	for i,hw in ipairs(HW) do
-		if hw:IsOpen() and hw:GetGoal() == NID[dstGUID] then
+		local npcid = NID[dstGUID]
+		if hw:IsOpen() and hw:GetGoal() == npcid then
 			hw:SetInfoBundle(DEAD,0)
+			local k = search(SortedCache,npcid,1)
+			if k then SortedCache[k][2] = 0 end
 			break
 		end
 	end
@@ -1307,18 +1330,122 @@ function addon:ShowFirstHW()
 	end
 end
 
+do
+	local n = 0
+	local handle
+
+	local function SortAsc(a,b)
+		local v1 = a[2] or 999999999
+		local v2 = b[2] or 999999999
+		v1 = v1 == 0 and 999999999 or v1
+		v2 = v2 == 0 and 999999999 or v2
+		return v1 < v2
+	end
+
+	local function Execute()
+		for i,unit in pairs(Roster.index_to_unittarget) do
+			if UnitExists(unit) then
+				local npcid = NID[UnitGUID(unit)]
+				if npcid then 
+					SeenNIDS[npcid] = true
+					local k = search(SortedCache,npcid,1)
+					if k then
+						SortedCache[k][2] = UnitHealth(unit)
+						SortedCache[k][3] = UnitHealthMax(unit)
+					end
+				end
+			end
+		end
+
+		sort(SortedCache,SortAsc)
+
+		local flag
+
+		for i=1,n do
+			if i <= 4 then
+				local hw,info = HW[i],SortedCache[i]
+				local npcid,h,hm = info[1],info[2],info[3]
+				if hw:GetGoal() ~= npcid and SeenNIDS[npcid] then
+					hw:SetTitle(gbl.L_NPC[npcid] or "...")
+					if h and hm then
+						local perc = h/hm
+						if perc > 0 then
+							hw:SetInfoBundle(format("%0.0f%%", perc*100), perc)
+							hw:ApplyLostColor()
+						else
+							hw:SetInfoBundle(DEAD,0)
+						end
+					else
+						hw:SetInfoBundle("",1)
+						hw:ApplyNeutralColor()
+					end
+					hw:Track("npcid",npcid)
+					hw:Open()
+					if not hw.frame:IsShown() then 
+						hw.frame:Show()
+						flag = true
+					end
+				end
+			else break end
+		end
+		if flag then addon:LayoutHealthWatchers() end
+	end
+
+	function addon:StartSortedTracing()
+		if handle then return end
+		handle = self:ScheduleRepeatingTimer(Execute,0.2)
+	end
+
+	function addon:StopSortedTracing()
+		if not handle then return end
+		self:CancelTimer(handle,true)
+		handle = nil
+	end
+
+	function addon:ClearSortedTracing()
+		wipe(SeenNIDS)
+		for i in ipairs(SortedCache) do
+			SortedCache[i][2] = nil
+			SortedCache[i][3] = nil
+		end
+	end
+
+	function addon:ResetSortedTracing()
+		wipe(SeenNIDS)
+		self:StopSortedTracing()
+		for i in ipairs(SortedCache) do
+			SortedCache[i][1] = nil
+			SortedCache[i][2] = nil
+			SortedCache[i][3] = nil
+		end
+		n = 0
+	end
+
+	function addon:SetSortedTracing(npcids)
+		if not npcids then return end
+		n = #npcids
+		for i,npcid in ipairs(npcids) do 
+			SortedCache[i] = SortedCache[i] or {}
+			SortedCache[i][1] = npcid
+			SortedCache[i][2] = nil
+			SortedCache[i][3] = nil
+		end
+	end
+end
+
 function addon:SetTracing(npcids)
 	if not npcids then return end
 	local n = 0
 	for i,npcid in ipairs(npcids) do
 		-- Prevents overwriting
-		if HW[i]:GetGoal() ~= npcid then
-			HW[i]:SetTitle(gbl.L_NPC[npcid] or "...")
-			HW[i]:SetInfoBundle("",1)
-			HW[i]:ApplyNeutralColor()
-			HW[i]:Track("npcid",npcid)
-			HW[i]:Open()
-			HW[i].frame:Show()
+		local hw = HW[i]
+		if hw:GetGoal() ~= npcid then
+			hw:SetTitle(gbl.L_NPC[npcid] or "...")
+			hw:SetInfoBundle("",1)
+			hw:ApplyNeutralColor()
+			hw:Track("npcid",npcid)
+			hw:Open()
+			hw.frame:Show()
 		end
 		n = n + 1
 	end
@@ -1518,7 +1645,7 @@ do
 				list[#list+1] = cat
 			end
 
-			table.sort(list)
+			sort(list)
 
 			for _,cat in ipairs(list) do
 				info = UIDropDownMenu_CreateInfo()
@@ -1546,7 +1673,7 @@ do
 				end
 			end
 
-			table.sort(list)
+			sort(list)
 
 			for _,name in ipairs(list) do
 				info = UIDropDownMenu_CreateInfo()
@@ -1640,6 +1767,15 @@ function addon:CombatStop()
 	elseif UnitIsDead("player") then
 		dead = true
 		self:ScheduleTimer("CombatStop",2)
+	end
+end
+
+function addon:CombatStart()
+	local key = self:Scan()
+	if key then 
+		self:StartEncounter()
+	elseif UnitAffectingCombat("player") then
+		self:ScheduleTimer("CombatStart", 0.2)
 	end
 end
 

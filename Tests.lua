@@ -58,3 +58,33 @@ function addon:AlertsDouble()
 	self.Alerts:Dropdown("AlertTest2", "Bigger City Opening", 10, 5, "None", "BLUE")
 	self.Alerts:Dropdown("AlertTest2", "Bigger City Opening", 15, 10, "None", "BLUE")
 end
+
+do
+	local SN,ST = DXE.SN,DXE.ST
+	local data = {
+		version = 1,
+		key = "testencounter", 
+		zone = "Crystalsong Forest", 
+		category = "Tests",
+		name = "Test Encounter", 
+		title = "Test",
+		triggers = {
+			scan = {31228, 31233, 33422},
+		},
+		onactivate = {
+			combatstart = true,
+			combatstop = true,
+			sortedtracing = {31228,31233,33422}, -- Grove Walker, Sinewy Wolf
+		},
+		--[[
+		onstart = {
+		},
+		alerts = {
+		},
+		events = { 
+		},
+		]]
+	}
+
+	DXE:RegisterEncounter(data)
+end

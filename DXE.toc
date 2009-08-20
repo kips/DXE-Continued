@@ -28,7 +28,7 @@ Versions.lua
 
 #@debug@
 Debug.lua
-Tests.lua
 Validator.lua
+Tests.lua
 Encounters.xml
 #@end-debug@
