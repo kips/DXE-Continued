@@ -69,12 +69,12 @@ do
 		name = "Test Encounter", 
 		title = "Test",
 		triggers = {
-			scan = {31228, 31233, 33422},
+			scan = {31228, 31233, 33422, 31229, 31236},
 		},
 		onactivate = {
 			combatstart = true,
 			combatstop = true,
-			sortedtracing = {31228,31233,33422}, -- Grove Walker, Sinewy Wolf
+			sortedtracing = {31228,31233,33422, 31229, 31236}, -- Grove Walker, Sinewy Wolf
 		},
 		--[[
 		onstart = {

@@ -1264,10 +1264,13 @@ local DEAD = DEAD:upper()
 -- Holds a list of tables
 -- Each table t has three values
 -- t[1] = npcid
--- t[2] = last known health
--- t[3] = last known max health
+-- t[2] = last known perc
 local SortedCache = {}
 local SeenNIDS = {}
+--@debug@
+addon.SortedCache = SortedCache
+addon.SeenNIDS = SeenNIDS
+--@end-debug@
 
 function addon:UNIT_DIED(_, _,eventtype, _, _, _, dstGUID)
 	if eventtype ~= "UNIT_DIED" then return end
@@ -1333,13 +1336,25 @@ end
 do
 	local n = 0
 	local handle
+	local e = 1e-10
+	local UNACQUIRED = 1
 
-	local function SortAsc(a,b)
-		local v1 = a[2] or 999999999
-		local v2 = b[2] or 999999999
-		v1 = v1 == 0 and 999999999 or v1
-		v2 = v2 == 0 and 999999999 or v2
-		return v1 < v2
+	--[[
+	Convert percentages to negatives so we can achieve something like
+		HW[4] => Neutral color
+		HW[3] => DEAD
+		HW[2] => DEAD
+		HW[1] => 56%
+	]]
+
+	local function sortFunc(a,b)
+		local v1,v2 = a[2],b[2]
+		-- When comparing two percentages we convert back to positives
+		if v1 < 0 and v2 < 0 then
+			return -v1 < - v2
+		else
+			return v1 < v2
+		end
 	end
 
 	local function Execute()
@@ -1350,27 +1365,27 @@ do
 					SeenNIDS[npcid] = true
 					local k = search(SortedCache,npcid,1)
 					if k then
-						SortedCache[k][2] = UnitHealth(unit)
-						SortedCache[k][3] = UnitHealthMax(unit)
+						local h,hm = UnitHealth(unit),UnitHealthMax(unit)
+						if hm == 0 then hm = 1 end
+						SortedCache[k][2] = -(h / hm)
 					end
 				end
 			end
 		end
 
-		sort(SortedCache,SortAsc)
+		sort(SortedCache,sortFunc)
 
 		local flag
 
 		for i=1,n do
 			if i <= 4 then
 				local hw,info = HW[i],SortedCache[i]
-				local npcid,h,hm = info[1],info[2],info[3]
-				if hw:GetGoal() ~= npcid and SeenNIDS[npcid] then
+				local npcid,perc = info[1],info[2]
+				if perc ~= UNACQUIRED and hw:GetGoal() ~= npcid and SeenNIDS[npcid] then
 					hw:SetTitle(gbl.L_NPC[npcid] or "...")
-					if h and hm then
-						local perc = h/hm
-						if perc > 0 then
-							hw:SetInfoBundle(format("%0.0f%%", perc*100), perc)
+					if perc then
+						if perc < 0 then
+							hw:SetInfoBundle(format("%0.0f%%", -perc*100), -perc)
 							hw:ApplyLostColor()
 						else
 							hw:SetInfoBundle(DEAD,0)
@@ -1405,8 +1420,7 @@ do
 	function addon:ClearSortedTracing()
 		wipe(SeenNIDS)
 		for i in ipairs(SortedCache) do
-			SortedCache[i][2] = nil
-			SortedCache[i][3] = nil
+			SortedCache[i][2] = UNACQUIRED
 		end
 	end
 
@@ -1415,8 +1429,7 @@ do
 		self:StopSortedTracing()
 		for i in ipairs(SortedCache) do
 			SortedCache[i][1] = nil
-			SortedCache[i][2] = nil
-			SortedCache[i][3] = nil
+			SortedCache[i][2] = UNACQUIRED
 		end
 		n = 0
 	end
@@ -1427,14 +1440,14 @@ do
 		for i,npcid in ipairs(npcids) do 
 			SortedCache[i] = SortedCache[i] or {}
 			SortedCache[i][1] = npcid
-			SortedCache[i][2] = nil
-			SortedCache[i][3] = nil
+			SortedCache[i][2] = UNACQUIRED
 		end
 	end
 end
 
 function addon:SetTracing(npcids)
 	if not npcids then return end
+	self:ResetSortedTracing()
 	local n = 0
 	for i,npcid in ipairs(npcids) do
 		-- Prevents overwriting
