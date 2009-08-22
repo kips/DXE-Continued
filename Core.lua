@@ -33,6 +33,7 @@ local defaults = {
 			Show = true,
 			Scale = 1, 
 			OnlyInRaid = false, 
+			OnlyInParty = false,
 			OnlyInRaidInstance = false,
 			OnlyInPartyInstance = false,
 			OnlyIfRunning = false,
@@ -1098,11 +1099,12 @@ do
 		if pfl.Pane.Show then
 			local op = 0
 			local instanceType = select(2,IsInInstance())
-			op = op + (pfl.Pane.OnlyInRaid 				and (GetNumRaidMembers() > 0 	and 1 or 0) or 1)
-			op = op + (pfl.Pane.OnlyInRaidInstance 	and (instanceType == "raid"	and 2 or 0) or 2)
-			op = op + (pfl.Pane.OnlyInPartyInstance	and (instanceType == "party"	and 4 or 0) or 4)
-			op = op + (pfl.Pane.OnlyIfRunning 			and (self:IsRunning() 			and 8 or 0) or 8)
-			local show = op == 15
+			op = op + (pfl.Pane.OnlyInRaid and (addon.GroupType == "RAID"	and 1  or 0) or 1)
+			op = op + (pfl.Pane.OnlyInParty and ((addon.GroupType == "PARTY" or addon.GroupType == "RAID") and 2 or 0) or  2)
+			op = op + (pfl.Pane.OnlyInRaidInstance	and (instanceType == "raid" and 4  or 0) or 4)
+			op = op + (pfl.Pane.OnlyInPartyInstance and (instanceType == "party"	and 8  or 0) or 8)
+			op = op + (pfl.Pane.OnlyIfRunning and (self:IsRunning() and 16 or 0) or 16)
+			local show = op == 31
 			Pane[show and "Show" or "Hide"](Pane)
 
 			-- Fading
