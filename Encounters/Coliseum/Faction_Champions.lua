@@ -259,7 +259,7 @@ do
 					},
 				},
 			},
-			-- Divine Shield
+			-- Divine Shield removal
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_REMOVED",

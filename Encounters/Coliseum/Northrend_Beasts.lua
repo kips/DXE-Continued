@@ -230,7 +230,7 @@ do
 			toxinarrow = {
 				varname = SN[66823],
 				unit = "<lasttoxin>",
-				persist = 60,
+				persist = 15,
 				action = "TOWARD",
 				msg = L["MOVE TOWARD"],
 				spell = L["Toxin"],
@@ -239,7 +239,7 @@ do
 			bilearrow = {
 				varname = SN[66870],
 				unit = "<lastbile>",
-				persist = 24,
+				persist = 15,
 				action = "TOWARD",
 				msg = L["MOVE TOWARD"],
 				spell = L["Bile"],
