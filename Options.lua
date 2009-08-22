@@ -201,11 +201,18 @@ function addon:InitializeOptions()
 								desc = L["Show the pane only in raids"],
 								width = "full",
 							},
-							OnlyInInstance = {
+							OnlyInRaidInstance = {
 								order = 250,
 								type = "toggle",
 								name = L["Only in raid instances"],
 								desc = L["Show the pane only in raid instances"],
+								width = "full",
+							},
+							OnlyInPartyInstance = {
+								order = 255,
+								type = "toggle",
+								name = L["Only in party instances"],
+								desc = L["Show the pane only in party instances"],
 								width = "full",
 							},
 							OnlyIfRunning = {

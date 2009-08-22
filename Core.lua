@@ -33,7 +33,8 @@ local defaults = {
 			Show = true,
 			Scale = 1, 
 			OnlyInRaid = false, 
-			OnlyInInstance = false,
+			OnlyInRaidInstance = false,
+			OnlyInPartyInstance = false,
 			OnlyIfRunning = false,
 			OnlyOnMouseover = false,
 			BarGrowth = "AUTOMATIC",
@@ -76,7 +77,7 @@ addon.defaults = defaults
 local wipe,remove,sort = table.wipe,table.remove,table.sort
 local match,find,gmatch,sub = string.match,string.find,string.gmatch,string.sub
 local _G,select,tostring,type,tonumber = _G,select,tostring,type,tonumber
-local GetTime,GetNumRaidMembers,GetRaidRosterInfo = GetTime,GetNumRaidMembers,GetRaidRosterInfo
+local GetTime,GetNumRaidMembers,GetNumPartyMembers,GetRaidRosterInfo = GetTime,GetNumRaidMembers,GetNumPartyMembers,GetRaidRosterInfo
 local UnitName,UnitGUID,UnitIsEnemy,UnitClass,UnitAffectingCombat,UnitHealth,UnitHealthMax,UnitIsFriend,UnitIsDead,UnitIsConnected = 
 		UnitName,UnitGUID,UnitIsEnemy,UnitClass,UnitAffectingCombat,UnitHealth,UnitHealthMax,UnitIsFriend,UnitIsDead,UnitIsConnected
 local rawget,unpack = rawget,unpack
@@ -1096,11 +1097,12 @@ do
 	function addon:UpdatePaneVisibility()
 		if pfl.Pane.Show then
 			local op = 0
-			local isRaidInstance = select(2,IsInInstance()) == "raid"
-			op = op + (pfl.Pane.OnlyInRaid 		and (GetNumRaidMembers() > 0 	and 1 or 0) or 1)
-			op = op + (pfl.Pane.OnlyInInstance 	and (isRaidInstance 				and 2 or 0) or 2)
-			op = op + (pfl.Pane.OnlyIfRunning 	and (self:IsRunning() 			and 4 or 0) or 4)
-			local show = op == 7
+			local instanceType = select(2,IsInInstance())
+			op = op + (pfl.Pane.OnlyInRaid 				and (GetNumRaidMembers() > 0 	and 1 or 0) or 1)
+			op = op + (pfl.Pane.OnlyInRaidInstance 	and (instanceType == "raid"	and 2 or 0) or 2)
+			op = op + (pfl.Pane.OnlyInPartyInstance	and (instanceType == "party"	and 4 or 0) or 4)
+			op = op + (pfl.Pane.OnlyIfRunning 			and (self:IsRunning() 			and 8 or 0) or 8)
+			local show = op == 15
 			Pane[show and "Show" or "Hide"](Pane)
 
 			-- Fading
