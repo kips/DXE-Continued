@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 310,
+		version = 311,
 		key = "northrendbeasts", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -25,6 +25,9 @@ do
 			jormunactivated = 0,
 			lasttoxin = "NONE",
 			lastbile = "NONE",
+			hastoxin = 0,
+			hasbile = 0,
+			tmp = "",
 		},
 		onstart = {
 			{
@@ -230,7 +233,7 @@ do
 			toxinarrow = {
 				varname = SN[66823],
 				unit = "<lasttoxin>",
-				persist = 15,
+				persist = 10,
 				action = "TOWARD",
 				msg = L["MOVE TOWARD"],
 				spell = L["Toxin"],
@@ -239,7 +242,7 @@ do
 			bilearrow = {
 				varname = SN[66870],
 				unit = "<lastbile>",
-				persist = 15,
+				persist = 10,
 				action = "TOWARD",
 				msg = L["MOVE TOWARD"],
 				spell = L["Bile"],
@@ -305,12 +308,19 @@ do
 					{
 						{expect = {"#4#","==","&playerguid&"}},
 						{alert = "toxinonself"},
+						{set = {hastoxin = 1}},
 						{expect = {"<lastbile>","~=","NONE"}},
 						{arrow = "bilearrow"},
 					},
 					{
 						{expect = {"#4#","~=","&playerguid&"}},
 						{set = {lasttoxin = "#5#"}},
+						{expect = {"<hastoxin>","==","1"}},
+						-- Fires bilearrow using #5#
+						{set = {tmp = "<lastbile>"}},
+						{set = {lastbile = "#5#"}},
+						{arrow = "bilearrow"},
+						{set = {lastbile = "<tmp>"}},
 					},
 				},
 			},
@@ -323,10 +333,13 @@ do
 					{
 						{expect = {"#4#","==","&playerguid&"}},
 						{quash = "toxinonself"},
+						{set = {hastoxin = 0}},
+						{removeallarrows = true},
 					},
 					{
-						{expect = {"#4# #5#","~=","&playerguid& <lasttoxin>"}},
+						{expect = {"#4#","~=","&playerguid&"}},
 						{removearrow = "#5#"},
+						{expect = {"#5#","==","<lasttoxin>"}},
 						{set = {lasttoxin = "NONE"}},
 					},
 				},
@@ -340,12 +353,19 @@ do
 					{
 						{expect = {"#4#","==","&playerguid&"}},
 						{alert = "bileonself"},
+						{set = {hasbile = 1}},
 						{expect = {"<lasttoxin>","~=","NONE"}},
 						{arrow = "toxinarrow"},
 					},
 					{
 						{expect = {"#4#","~=","&playerguid&"}},
 						{set = {lastbile = "#5#"}},
+						{expect = {"<hasbile>","==","1"}},
+						-- Fires toxinarrow using #5#
+						{set = {tmp = "<lasttoxin>"}},
+						{set = {lasttoxin = "#5#"}},
+						{arrow = "toxinarrow"},
+						{set = {lasttoxin = "<tmp>"}},
 					},
 				},
 			},
@@ -358,10 +378,13 @@ do
 					{
 						{expect = {"#4#","==","&playerguid&"}},
 						{quash = "bileonself"},
+						{removeallarrows = true},
+						{set = {hasbile = 0}},
 					},
 					{
-						{expect = {"#4# #5#","~=","&playerguid& <lastbile>"}},
+						{expect = {"#4#","~=","&playerguid&"}},
 						{removearrow = "#5#"},
+						{expect = {"#5#","==","<lastbile>"}},
 						{set = {lastbile = "NONE"}},
 					},
 				},

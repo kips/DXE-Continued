@@ -67,6 +67,7 @@ local baseLineKeys = {
 	raidicon = isstring,
 	arrow = isstring,
 	removearrow = isstring,
+	removeallarrows = isboolean,
 	announce = isstring,
 }
 

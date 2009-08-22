@@ -20,6 +20,7 @@
 		raidicon 			= "<raidicon>"
 		arrow 				= "<arrow>"
 		removearrow 		= "<token>"
+		removeallarrows	= [BOOLEAN]
 ]]
 
 local addon = DXE
@@ -523,6 +524,12 @@ do
 	handlers.removearrow = function(info)
 		info = ReplaceTokens(info)
 		Arrows:RemoveTarget(info)
+		return true
+	end
+
+	-- @ADD TO HANDLERS
+	handlers.removeallarrows = function(info)
+		Arrows:RemoveAll()
 		return true
 	end
 end
