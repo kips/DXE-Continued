@@ -600,7 +600,6 @@ function addon:IsPromoted()
 	return IsRaidLeader() or IsRaidOfficer()
 end
 
-
 ---------------------------------------------
 -- TRIGGERING
 ---------------------------------------------

@@ -5,14 +5,14 @@ do
 	if faction == "Alliance" then
 		npc_list = {
 			34458, -- Gorgrim	  DK
-			34451, -- Birina	  DRUID_CASTER
+			34451, -- Birana	  DRUID_CASTER
 			34459, -- Erin		  DRUID_HEALER
 			34448, -- Ruj'kah	  HUNTER
 			34449, -- Ginselle  MAGE
 			34445, -- Liandra	  PALADIN_HEALER
 			34456, -- Malithas  PALADIN_RET
 			34447, -- Caiphus   PRIEST_HEALER
-			34441, -- Vivviene  PRIEST_SHADOW
+			34441, -- Vivienne  PRIEST_SHADOW
 			34454, -- Maz'dinah ROGUE
 			34444, -- Thrakgar  SHAMAN_CASTER
 			34455, -- Broln	  SHAMAN_ENH
@@ -25,14 +25,14 @@ do
 			34460, -- Kavina 	DRUID_CASTER
 			34469, -- Melador DRUID_HEALER
 			34467, -- Alyssia HUNTER
-			99999, -- Noozle 	MAGE				 (INCOMPLETE)
+			34468, -- Noozle 	MAGE
 			34465, -- Velanaa PALADIN_HEALER
-			99999, -- Baelnor PALADIN_RET 	 (INCOMPLETE)
-			99999, -- Anthar 	PRIEST_HEALER   (INCOMPLETE)
+			34471, -- Baelnor PALADIN_RET
+			34466, -- Anthar 	PRIEST_HEALER
 			34473, -- Brienna	PRIEST_SHADOW
 			34472, -- Irieth 	ROGUE
 			34470, -- Saamul 	SHAMAN_CASTER
-			99999, -- Shaabad SHAMAN_ENH      (INCOMPLETE)
+			34463, -- Shaabad SHAMAN_ENH
 			34474, -- Serissa WARLOCK
 			34475, -- Shocuul WARRIOR
 		}
@@ -68,4 +68,3 @@ do
 
 	DXE:RegisterEncounter(data)
 end
-
