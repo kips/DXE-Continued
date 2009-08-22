@@ -1,8 +1,8 @@
 -- Based off RDX's HOT
 
 local addon = DXE
-local index_to_unit = addon.Roster.index_to_unit
 local NID = addon.NID
+local unit_to_unittarget = addon.Roster.unit_to_unittarget
 
 local pairs = pairs
 local UnitExists,UnitGUID = UnitExists,UnitGUID
@@ -35,21 +35,18 @@ end
 ----------------------------------
 -- PROTOTYPE
 ----------------------------------
-local rIDtarget = {}
-for i=1,40 do rIDtarget["raid"..i] = "raid"..i.."target" end
 
-function prototype:Test(proto_unit)
-	local unit = rIDtarget[proto_unit]
+function prototype:Test(unit)
 	if not UnitExists(unit) then return end
 	if self.attribute(unit) == self.goal then
-		return unit
+		return true
 	end
 end
 
 function prototype:TestFocus()
 	if not UnitExists("focus") then return end
 	if self.attribute("focus") == self.goal then
-		return "focus"
+		return true
 	end
 end
 
@@ -68,9 +65,8 @@ function prototype:Execute()
 	self.first = nil
 
 	-- Raid unit tests
-	for _,proto_unit in pairs(index_to_unit) do
-		local unit = self:Test(proto_unit)
-		if unit then
+	for _,unit in pairs(unit_to_unittarget) do
+		if self:Test(unit) then
 			self.first,flag = unit,true
 			break
 		end
@@ -78,9 +74,8 @@ function prototype:Execute()
 
 	-- Focus test
 	if not self.first then
-		local unit = self:TestFocus()
-		if unit then 
-			self.first,flag = unit,true
+		if self:TestFocus() then 
+			self.first,flag = "focus",true
 		end
 	end
 

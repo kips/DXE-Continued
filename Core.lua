@@ -77,8 +77,8 @@ local wipe,remove,sort = table.wipe,table.remove,table.sort
 local match,find,gmatch,sub = string.match,string.find,string.gmatch,string.sub
 local _G,select,tostring,type,tonumber = _G,select,tostring,type,tonumber
 local GetTime,GetNumRaidMembers,GetRaidRosterInfo = GetTime,GetNumRaidMembers,GetRaidRosterInfo
-local UnitName,UnitGUID,UnitIsEnemy,UnitClass,UnitAffectingCombat,UnitHealth,UnitHealthMax,UnitIsFriend,UnitIsDead = 
-		UnitName,UnitGUID,UnitIsEnemy,UnitClass,UnitAffectingCombat,UnitHealth,UnitHealthMax,UnitIsFriend,UnitIsDead
+local UnitName,UnitGUID,UnitIsEnemy,UnitClass,UnitAffectingCombat,UnitHealth,UnitHealthMax,UnitIsFriend,UnitIsDead,UnitIsConnected = 
+		UnitName,UnitGUID,UnitIsEnemy,UnitClass,UnitAffectingCombat,UnitHealth,UnitHealthMax,UnitIsFriend,UnitIsDead,UnitIsConnected
 local rawget,unpack = rawget,unpack
 
 local db,gbl,pfl
@@ -270,16 +270,6 @@ do
 	function addon:GetProximityFuncs()
 		return ProximityFuncs
 	end
-end
-
----------------------------------------------
--- UNIT IDS
----------------------------------------------
-
-local rID,rIDtarget = {},{}
-for i=1,40 do
-	rID[i] = "raid"..i
-	rIDtarget[i] = "raid"..i.."target" 
 end
 
 ---------------------------------------------
@@ -489,27 +479,37 @@ do
 	end
 end
 
-
 ---------------------------------------------
 -- ROSTER
 ---------------------------------------------
-
 local Roster = {}
 addon.Roster = Roster
 
+local rID,pID = {},{}
+for i=1,40 do
+	rID[i] = "raid"..i
+	if i <= 4 then
+		pID[i] = "party"..i
+	end
+end
+
+local targetof = setmetatable({},{
+	__index = function(t,k)
+		if type(k) ~= "string" then return end
+		t[k] = k.."target"
+		return t[k]
+	end
+})
+
 local refreshFuncs = {
-	name_to_unit = function(t,i,id) 
+	name_to_unit = function(t,id) 
 		t[UnitName(id)] = id
 	end,
-	guid_to_unit = function(t,i,id) 
+	guid_to_unit = function(t,id) 
 		t[UnitGUID(id)] = id
 	end,
-	-- Remember to iterate using pairs
-	index_to_unit = function(t,i,id) 
-		t[i] = id
-	end,
-	index_to_unittarget = function(t,i,id) 
-		t[i] = rIDtarget[i]
+	unit_to_unittarget = function(t,id)
+		t[id] = targetof[id]
 	end,
 }
 
@@ -519,14 +519,20 @@ end
 
 local numOnline = 0
 local numMembers = 0
-local tmpOnline,tmpMembers
 local RosterHandle
+addon.GroupType = "NONE"
 function addon:RAID_ROSTER_UPDATE()
 	--@debug@
 	debug("RAID_ROSTER_UPDATE","Invoked")
 	--@end-debug@
 
-	tmpOnline,tmpMembers = 0,GetNumRaidMembers()
+	local tmpOnline,tmpMembers = 0,GetNumRaidMembers()
+	if tmpMembers > 0 then
+		addon.GroupType = "RAID"
+	else
+		tmpMembers = GetNumPartyMembers()
+		addon.GroupType = tmpMembers > 0 and "PARTY" or "NONE"
+	end
 
 	if not RosterHandle and tmpMembers > 0 then
 		-- Refresh roster tables every half minute to detect offline players
@@ -536,19 +542,36 @@ function addon:RAID_ROSTER_UPDATE()
 		RosterHandle = nil
 	end
 
-	for name,t in pairs (Roster) do wipe(t) end
-	for i=1,tmpMembers do
-		local name, rank, _, _, _, _, _, online = GetRaidRosterInfo(i)
-		local unit = rID[i]
-		if online then
-			tmpOnline = tmpOnline + 1
-			for k,t in pairs(Roster) do
-				refreshFuncs[k](t,i,unit)
+	for k,t in pairs(Roster) do 
+		wipe(t) 
+		refreshFuncs[k](t,"player")
+	end
+
+	if addon.GroupType == "RAID" then
+		for i=1,tmpMembers do
+			local name, rank, _, _, _, _, _, online = GetRaidRosterInfo(i)
+			if online then
+				local unit = rID[i]
+				tmpOnline = tmpOnline + 1
+				for k,t in pairs(Roster) do
+					refreshFuncs[k](t,unit)
+				end
+			end
+		end
+	elseif addon.GroupType == "PARTY" then
+		for i=1,tmpMembers do
+			local name,online = UnitName(pID[i]),UnitIsConnected(pID[i])
+			if online then
+				local unit = pID[i]
+				tmpOnline = tmpOnline + 1
+				for k,t in pairs(Roster) do
+					refreshFuncs[k](t,unit)
+				end
 			end
 		end
 	end
 
-	--- Number of raid member differences
+	--- Number of member differences
 
 	if tmpMembers ~= numMembers then
 		self:UpdatePaneVisibility()
@@ -557,11 +580,10 @@ function addon:RAID_ROSTER_UPDATE()
 
 	numMembers = tmpMembers
 
-	--- Number of ONLINE raid member differences
+	--- Number of ONLINE member differences
 
 	--[[
 	if tmpOnline > numOnline then
-		self:BroadcastVersion("addon")
 	end
 	]]
 
@@ -649,12 +671,11 @@ function addon:CHAT_MSG_MONSTER_YELL(_,msg,...)
 end
 
 function addon:Scan()
-	for i,unit in pairs(Roster.index_to_unit) do
-		local target = rIDtarget[i]
-		local guid = UnitGUID(target)
-		if guid then
+	for _,unit in pairs(Roster.unit_to_unittarget) do
+		if UnitExists(unit) then
+			local guid = UnitGUID(unit)
 			local npcid = NID[guid]
-			if TRGS_NPCID[npcid] and not UnitIsDead(target) then
+			if TRGS_NPCID[npcid] and not UnitIsDead(unit) then
 				return TRGS_NPCID[npcid]
 			end
 		end
@@ -678,6 +699,7 @@ end
 
 function addon:SetPlayerConstants()
 	self.PGUID = UnitGUID("player")
+	-- Just to be safe
 	if not self.PGUID then self:ScheduleTimer("SetPGUID",1,5) end
 	self.PNAME = UnitName("player")
 end
@@ -881,6 +903,7 @@ function addon:OnEnable()
 
 	-- Events
 	self:RegisterEvent("RAID_ROSTER_UPDATE")
+	self:RegisterEvent("PARTY_MEMBERS_CHANGED","RAID_ROSTER_UPDATE")
 	self:RAID_ROSTER_UPDATE()
 	self:RegisterEvent("ZONE_CHANGED_NEW_AREA","UpdateTriggers")
 	self:RegisterEvent("PLAYER_ENTERING_WORLD")
@@ -1350,15 +1373,13 @@ do
 	local function sortFunc(a,b)
 		local v1,v2 = a[2],b[2]
 		-- When comparing two percentages we convert back to positives
-		if v1 < 0 and v2 < 0 then
-			return -v1 < - v2
-		else
-			return v1 < v2
-		end
+		if v1 < 0 and v2 < 0 then return -v1 < - v2
+		else return v1 < v2 end
 	end
 
 	local function Execute()
-		for i,unit in pairs(Roster.index_to_unittarget) do
+		for _,unit in pairs(Roster.unit_to_unittarget) do
+			-- unit could not exist and still return a valid guid
 			if UnitExists(unit) then
 				local npcid = NID[UnitGUID(unit)]
 				if npcid then 
@@ -1375,14 +1396,15 @@ do
 
 		sort(SortedCache,sortFunc)
 
-		local flag
-
+		local flag -- Whether or not we should layout health watchers
 		for i=1,n do
 			if i <= 4 then
 				local hw,info = HW[i],SortedCache[i]
 				local npcid,perc = info[1],info[2]
+				-- Conditional is entered sparsely during a fight
 				if perc ~= UNACQUIRED and hw:GetGoal() ~= npcid and SeenNIDS[npcid] then
 					hw:SetTitle(gbl.L_NPC[npcid] or "...")
+					-- Has been acquired
 					if perc then
 						if perc < 0 then
 							hw:SetInfoBundle(format("%0.0f%%", -perc*100), -perc)
@@ -1390,6 +1412,7 @@ do
 						else
 							hw:SetInfoBundle(DEAD,0)
 						end
+					-- Hasn't been acquired
 					else
 						hw:SetInfoBundle("",1)
 						hw:ApplyNeutralColor()
@@ -1497,10 +1520,6 @@ do
 	-- Throttling is needed because sometimes bosses pulsate in and out of combat at the start.
 	-- UnitAffectingCombat can return false at the start even if the boss is moving towards a player.
 
-	-- Lookup table so we don't have to concatenate every update
-	local targetof = {}
-	for i=1,40 do targetof["raid"..i.."target"] = "raid"..i.."targettarget" end
-	targetof["focus"] = "focustarget"
 	-- The time to wait (seconds) before it auto stops the encounter after auto starting
 	local throttle = 5
 	-- The last time the encounter was auto started + throttle time
@@ -1808,11 +1827,12 @@ function addon:SendRaidComm(commType,...)
 	--@debug@
 	assert(type(commType) == "string")
 	--@end-debug@
-	self:SendCommMessage("DXE",self:Serialize(commType,...),"RAID")
+	if addon.GroupType == "NONE" then return end
+	self:SendCommMessage("DXE",self:Serialize(commType,...),addon.GroupType)
 end
 
 function addon:OnCommReceived(prefix, msg, dist, sender)
-	if (dist ~= "RAID" and dist ~= "WHISPER") or sender == self.PNAME then return end
+	if (dist ~= "RAID" and dist ~= "PARTY" and dist ~= "WHISPER") or sender == self.PNAME then return end
 	self:DispatchComm(sender, self:Deserialize(msg))
 end
 
