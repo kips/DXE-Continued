@@ -10,6 +10,7 @@ local debugDefaults = {
 	CombatStop = false,
 	CHAT_MSG_MONSTER_YELL = false,
 	RAID_ROSTER_UPDATE = false,
+	PARTY_MEMBERS_CHANGED = false,
 	BlockBossEmotes = false,
 }
 --@end-debug@
@@ -507,8 +508,9 @@ local refreshFuncs = {
 	name_to_unit = function(t,id) 
 		t[UnitName(id)] = id
 	end,
-	guid_to_unit = function(t,id) 
-		t[UnitGUID(id)] = id
+	guid_to_unit = function(t,id)
+		local guid = id == "player" and addon.PGUID or UnitGUID(id)
+		t[guid] = id
 	end,
 	unit_to_unittarget = function(t,id)
 		t[id] = targetof[id]
@@ -545,7 +547,7 @@ function addon:RAID_ROSTER_UPDATE()
 	end
 
 	for k,t in pairs(Roster) do 
-		wipe(t) 
+		wipe(t)
 		refreshFuncs[k](t,"player")
 	end
 
@@ -565,6 +567,9 @@ function addon:RAID_ROSTER_UPDATE()
 			local name,online = UnitName(pID[i]),UnitIsConnected(pID[i])
 			if online then
 				local unit = pID[i]
+				--@debug@
+				debug("PARTY_MEMBERS_CHANGED","name: %s unit: %s guid: %s",name,unit,UnitGUID(unit))
+				--@end-debug@
 				tmpOnline = tmpOnline + 1
 				for k,t in pairs(Roster) do
 					refreshFuncs[k](t,unit)
