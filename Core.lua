@@ -1434,7 +1434,7 @@ do
 
 	function addon:StartSortedTracing()
 		if handle then return end
-		handle = self:ScheduleRepeatingTimer(Execute,0.2)
+		handle = self:ScheduleRepeatingTimer(Execute,0.5)
 	end
 
 	function addon:StopSortedTracing()
