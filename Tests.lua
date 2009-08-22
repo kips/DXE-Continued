@@ -1,5 +1,6 @@
 local addon = DXE
 
+--[[
 function addon:YOGGTEST()
 	self:SetActiveEncounter("yoggsaron")
 	self:StopEncounter()
@@ -59,6 +60,9 @@ function addon:AlertsDouble()
 	self.Alerts:Dropdown("AlertTest2", "Bigger City Opening", 15, 10, "None", "BLUE")
 end
 
+]]
+
+--[=[
 do
 	local SN,ST = DXE.SN,DXE.ST
 	local data = {
@@ -88,3 +92,4 @@ do
 
 	DXE:RegisterEncounter(data)
 end
+]]
