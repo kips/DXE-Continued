@@ -50,7 +50,7 @@ do
 
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 1,
+		version = 2,
 		key = "factionchampions", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -427,7 +427,7 @@ do
 					},
 					{
 						{expect = {"&npcid|#4#&","==",NID_MAGE}}, -- Mage (Ginselle|Noozle)
-						{quash = "spelllockcd"},
+						{quash = "counterspellcd"},
 					},
 				},
 			},
