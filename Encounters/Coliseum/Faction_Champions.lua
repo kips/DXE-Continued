@@ -1,6 +1,8 @@
 do
 	local faction = UnitFactionGroup("player")
 	local npc_list
+
+	local NID_MAGE
 	
 	if faction == "Alliance" then
 		-- Horde npcs
@@ -20,6 +22,7 @@ do
 			34450, -- Harkzog   	WARLOCK
 			34453, -- Narrhok   	WARRIOR
 		}
+		NID_MAGE = "34449"
 	elseif faction == "Horde" then
 		-- Alliance npcs
 		npc_list = {
@@ -38,11 +41,12 @@ do
 			34474, -- Serissa 	WARLOCK
 			34475, -- Shocuul 	WARRIOR
 		}
+		NID_MAGE = "34468"
 	else
 		error("DXE_Coliseum Faction Champions: Unable to detect faction. Please report this bug.") 
 	end
-	npc_list[#npc_list+1] = 35465 -- Zhaagrym (Felhunter)
-	npc_list[#npc_list+1] = 35610 -- Cat (Pet)
+	npc_list[#npc_list+1] = 35465 -- Zhaagrym (Warlock Felhunter pet)
+	npc_list[#npc_list+1] = 35610 -- Cat (Hunter pet)
 
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
@@ -410,6 +414,21 @@ do
 					{
 						{alert = "spelllockcd"},
 					}
+				},
+			},
+			-- Unit Deaths
+			{
+				type = "combatevent",
+				eventtype = "UNIT_DIED",
+				execute = {
+					{
+						{expect = {"&npcid|#4#&","==","35465"}}, -- Zhaargrym
+						{quash = "spelllockcd"},
+					},
+					{
+						{expect = {"&npcid|#4#&","==",NID_MAGE}}, -- Mage (Ginselle|Noozle)
+						{quash = "spelllockcd"},
+					},
 				},
 			},
 		},

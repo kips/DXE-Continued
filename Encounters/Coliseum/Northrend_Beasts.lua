@@ -23,6 +23,8 @@ do
 			acidmawdead = 0,
 			dreadscaledead = 0,
 			jormunactivated = 0,
+			lasttoxin = "NONE",
+			lastbile = "NONE",
 		},
 		onstart = {
 			{
@@ -225,6 +227,24 @@ do
 				spell = SN[66734],
 				fixed = true,
 			},
+			toxinarrow = {
+				varname = SN[66823],
+				unit = "<lasttoxin>",
+				persist = 60,
+				action = "TOWARD",
+				msg = L["MOVE TOWARD"],
+				spell = L["Toxin"],
+				sound = "ALERT3",
+			},
+			bilearrow = {
+				varname = SN[66870],
+				unit = "<lastbile>",
+				persist = 24,
+				action = "TOWARD",
+				msg = L["MOVE TOWARD"],
+				spell = L["Bile"],
+				sound = "ALERT5",
+			},
 		},
 		raidicons = {
 			tramplemark = {
@@ -285,6 +305,12 @@ do
 					{
 						{expect = {"#4#","==","&playerguid&"}},
 						{alert = "toxinonself"},
+						{expect = {"<lastbile>","~=","NONE"}},
+						{arrow = "bilearrow"},
+					},
+					{
+						{expect = {"#4#","~=","&playerguid&"}},
+						{set = {lasttoxin = "#5#"}},
 					},
 				},
 			},
@@ -298,6 +324,11 @@ do
 						{expect = {"#4#","==","&playerguid&"}},
 						{quash = "toxinonself"},
 					},
+					{
+						{expect = {"#4# #5#","~=","&playerguid& <lasttoxin>"}},
+						{removearrow = "#5#"},
+						{set = {lasttoxin = "NONE"}},
+					},
 				},
 			},
 			-- Burning Bile - Jormungars - Dreadmaw 
@@ -309,6 +340,12 @@ do
 					{
 						{expect = {"#4#","==","&playerguid&"}},
 						{alert = "bileonself"},
+						{expect = {"<lasttoxin>","~=","NONE"}},
+						{arrow = "toxinarrow"},
+					},
+					{
+						{expect = {"#4#","~=","&playerguid&"}},
+						{set = {lastbile = "#5#"}},
 					},
 				},
 			},
@@ -321,6 +358,11 @@ do
 					{
 						{expect = {"#4#","==","&playerguid&"}},
 						{quash = "bileonself"},
+					},
+					{
+						{expect = {"#4# #5#","~=","&playerguid& <lastbile>"}},
+						{removearrow = "#5#"},
+						{set = {lastbile = "NONE"}},
 					},
 				},
 			},
