@@ -86,7 +86,7 @@ do
 			divineshielddur = {
 				varname = format(L["%s Duration"],SN[66010]),
 				type = "centerpopup",
-				text = format("%s: #5#! %s!",SN[66010],L["DISPEL"]).."!",
+				text = format("%s: #5#!",SN[66010]),
 				time = 12,
 				flashtime = 12,
 				sound = "ALERT4",
@@ -96,7 +96,7 @@ do
 			avengwrathdur = {
 				varname = format(L["%s Duration"],SN[66011]),
 				type = "centerpopup",
-				text = format("%s: #2#! %s!",SN[66011],L["DISPEL"]).."!",
+				text = format("%s: #2#!",SN[66011]),
 				time = 20,
 				flashtime = 20,
 				sound = "ALERT7",
@@ -126,7 +126,7 @@ do
 			hopdur = {
 				varname = format(L["%s Duration"],SN[66009]),
 				type = "centerpopup",
-				text = format("%s: #5#! %s!",SN[66009],L["DISPEL"]).."!",
+				text = format("%s: #5#!",SN[66009]),
 				time = 10,
 				flashtime = 10,
 				sound = "ALERT5",
@@ -136,7 +136,7 @@ do
 			hofdur = {
 				varname = format(L["%s Duration"],SN[66115]),
 				type = "centerpopup",
-				text = format("%s: #5#! %s!",SN[66115],L["DISPEL"]).."!",
+				text = format("%s: #5#!",SN[66115]),
 				time = 10,
 				flashtime = 10,
 				sound = "ALERT6",
@@ -175,7 +175,7 @@ do
 			retalself = {
 				varname = format(L["%s on self"],SN[65934]),
 				type = "simple",
-				text = format("%s: %s! %s!",SN[65934],L["YOU"],L["CAREFUL"]),
+				text = format("%s: %s!",SN[65934],L["YOU"]),
 				time = 3,
 				throttle = 3,
 				sound = "ALERT3",
