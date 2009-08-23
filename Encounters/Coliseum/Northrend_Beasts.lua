@@ -89,7 +89,7 @@ do
 			-- Jormungars
 			bileonself = {
 				varname = format(L["%s on self"],SN[66870]),
-				type = "dropdown",
+				type = "centerpopup",
 				text = format("%s: %s",SN[66870],L["YOU"]).."!",
 				time = 24,
 				flashtime = 24,
@@ -101,7 +101,7 @@ do
 			},
 			toxinonself = {
 				varname = format(L["%s on self"],SN[66823]),
-				type = "dropdown",
+				type = "centerpopup",
 				text = format("%s: %s",SN[66823],L["YOU"]).."!",
 				time = 60,
 				flashtime = 60,
@@ -315,12 +315,12 @@ do
 					{
 						{expect = {"#4#","~=","&playerguid&"}},
 						{set = {lasttoxin = "#5#"}},
-						{expect = {"<hastoxin>","==","1"}},
-						-- Fires bilearrow using #5#
-						{set = {tmp = "<lastbile>"}},
-						{set = {lastbile = "#5#"}},
-						{arrow = "bilearrow"},
-						{set = {lastbile = "<tmp>"}},
+						{expect = {"<hasbile>","==","1"}},
+						-- Fires toxinarrow using #5#
+						{set = {tmp = "<lasttoxin>"}},
+						{set = {lasttoxin = "#5#"}},
+						{arrow = "toxinarrow"},
+						{set = {lasttoxin = "<tmp>"}},
 					},
 				},
 			},
@@ -360,12 +360,12 @@ do
 					{
 						{expect = {"#4#","~=","&playerguid&"}},
 						{set = {lastbile = "#5#"}},
-						{expect = {"<hasbile>","==","1"}},
-						-- Fires toxinarrow using #5#
-						{set = {tmp = "<lasttoxin>"}},
-						{set = {lasttoxin = "#5#"}},
-						{arrow = "toxinarrow"},
-						{set = {lasttoxin = "<tmp>"}},
+						{expect = {"<hastoxin>","==","1"}},
+						-- Fires bilearrow using #5#
+						{set = {tmp = "<lastbile>"}},
+						{set = {lastbile = "#5#"}},
+						{arrow = "bilearrow"},
+						{set = {lastbile = "<tmp>"}},
 					},
 				},
 			},

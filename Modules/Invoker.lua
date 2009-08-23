@@ -85,6 +85,7 @@ local debugDefaults = {
 	-- Related to function names
 	Alerts = false,
 	REG_EVENT = false,
+	["handlers.set"] = false,
 }
 
 --@end-debug@
@@ -351,6 +352,9 @@ do
 				end
 			end
 			if flag then 
+				--@debug@
+				debug("handlers.set","var: <%s> before: %s after: %s",k,userdata[k],v)
+				--@end-debug@
 				userdata[k] = v 
 			end
 		end

@@ -47,9 +47,6 @@ function addon:KOLOGARNTEST2()
 	self.Invoker:COMBAT_EVENT(nil,nil,"UNIT_DIED",nil,nil,nil,"0xF1300080A5006972")
 end
 
-function addon:TestArrowOnTarget()
-	addon.Arrows:AddTarget("target",10,"TOWARD","MOVE","Crash","None",false)
-end
 
 function addon:GORMOKTEST()
 	self.Invoker:COMBAT_EVENT(nil,nil,"UNIT_DIED",nil,nil,nil,"0xF1500087EC0014CE")
@@ -60,7 +57,46 @@ function addon:AlertsDouble()
 	self.Alerts:Dropdown("AlertTest2", "Bigger City Opening", 15, 10, "None", "BLUE")
 end
 
+
+function addon:TestArrowOnTarget()
+	addon.Arrows:AddTarget("target",10,"TOWARD","MOVE","Crash","None",false)
+end
 ]]
+
+-- Northrend Beasts Burning Bile test
+do
+	local target = "Nichts"
+
+	local selfSPELLID = 66869 -- Burning Bile
+	local targetSPELLID = 67618 -- Toxin
+
+	function addon:BEASTSBILETEST()
+		self:SetActiveEncounter("northrendbeasts")
+		self:StartEncounter()
+
+		--[[
+		-- target gets toxin first, I get bile after
+		addon.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_APPLIED",nil,nil,nil,"",target,nil,targetSPELLID)
+		addon.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_APPLIED",nil,nil,nil,"0x0280000001B62984","Kollektiv",nil,selfSPELLID)
+		addon:ScheduleTimer(function() addon.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_REMOVED",nil,nil,nil,"",target,nil,targetSPELLID) end,5)
+		addon:ScheduleTimer(function() addon.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_REMOVED",nil,nil,nil,"0x0280000001B62984","Kollektiv",nil,selfSPELLID) end,8)
+		]]
+
+		-- i get bile first, target gets toxin after 
+		addon.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_APPLIED",nil,nil,nil,"0x0280000001B62984","Kollektiv",nil,selfSPELLID)
+		addon.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_APPLIED",nil,nil,nil,"",target,nil,targetSPELLID)
+		addon:ScheduleTimer(function() addon.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_REMOVED",nil,nil,nil,"",target,nil,targetSPELLID) end,5)
+		addon:ScheduleTimer(function() addon.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_REMOVED",nil,nil,nil,"0x0280000001B62984","Kollektiv",nil,selfSPELLID) end,8)
+
+
+		--[[
+		addon:ScheduleTimer(function () addon.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_REMOVED",nil,nil,nil,"0x0280000001B62984","Kollektiv",nil,selfSPELLID) end,6.5)
+		addon:ScheduleTimer(function () addon.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_APPLIED",nil,nil,nil,"",target,nil,targetSPELLID) end, 7)
+		addon:ScheduleTimer(function () addon.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_APPLIED",nil,nil,nil,"0x0280000001B62984","Kollektiv",nil,selfSPELLID) end,8)
+		addon:ScheduleTimer(function () addon.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_APPLIED",nil,nil,nil,"",target,nil,targetSPELLID) end, 20)
+		]]
+	end
+end
 
 --[=[
 do

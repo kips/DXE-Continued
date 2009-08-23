@@ -14,7 +14,9 @@ function addon:GetPlayerMapPosition(unit)
 	end
 	return x,y
 end
-
+--@debug@
+local backup = {w = 1000, h = 1000}
+--@end-debug
 -- Computes the distance between the player and unit in game yards
 -- Intended to be used when the player and unit are in the same map
 -- Supported: Ulduar, Naxxramas, The Eye of Eternity, The Obsidian Sanctum, Trial of the Crusader
@@ -28,7 +30,17 @@ function addon:GetDistanceToUnit(unit,fx2,fy2)
 		x2,y2 = self:GetPlayerMapPosition(unit)
 	end
 
+	--[===[@non-debug@
 	local dims = MapDims[GetMapInfo()][GetCurrentMapDungeonLevel()]
+	--@end-non-debug@]===]
+	--@debug@
+	local dims = MapDims[GetMapInfo()]
+	if not dims then 
+		dims = backup
+	else
+		dims = dims[GetCurrentMapDungeonLevel()]
+	end
+	--@end-debug@
 	local dx = (x2 - x1) * dims.w
 	local dy = (y2 - y1) * dims.h
 
