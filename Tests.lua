@@ -63,6 +63,7 @@ function addon:TestArrowOnTarget()
 end
 ]]
 
+--[==[
 -- Northrend Beasts Burning Bile test
 do
 	local target = "Nichts"
@@ -74,7 +75,6 @@ do
 		self:SetActiveEncounter("northrendbeasts")
 		self:StartEncounter()
 
-		--[[
 		-- target gets toxin first, I get bile after
 		addon.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_APPLIED",nil,nil,nil,"",target,nil,targetSPELLID)
 		addon.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_APPLIED",nil,nil,nil,"0x0280000001B62984","Kollektiv",nil,selfSPELLID)
@@ -89,7 +89,6 @@ do
 		addon:ScheduleTimer(function() addon.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_REMOVED",nil,nil,nil,"0x0280000001B62984","Kollektiv",nil,selfSPELLID) end,8)
 
 
-		--[[
 		addon:ScheduleTimer(function () addon.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_REMOVED",nil,nil,nil,"0x0280000001B62984","Kollektiv",nil,selfSPELLID) end,6.5)
 		addon:ScheduleTimer(function () addon.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_APPLIED",nil,nil,nil,"",target,nil,targetSPELLID) end, 7)
 		addon:ScheduleTimer(function () addon.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_APPLIED",nil,nil,nil,"0x0280000001B62984","Kollektiv",nil,selfSPELLID) end,8)
@@ -97,8 +96,10 @@ do
 		]]
 	end
 end
+]==]
 
---[=[
+--[===[
+
 do
 	local SN,ST = DXE.SN,DXE.ST
 	local data = {
@@ -116,16 +117,23 @@ do
 			combatstop = true,
 			sortedtracing = {31228,31233,33422, 31229, 31236}, -- Grove Walker, Sinewy Wolf
 		},
-		--[[
 		onstart = {
+			{
+				{expect = {"&playerbuff|Water Shield&","==","true"}},
+				{alert = "wswarn"},
+			},
 		},
 		alerts = {
+			wswarn = {
+				type = "simple",
+				varname = "water shield warning",
+				time = 3,
+				color1 = "BLUE",
+				text = "Water Shield!",
+			},
 		},
-		events = { 
-		},
-		]]
 	}
 
 	DXE:RegisterEncounter(data)
 end
-]=]
+]===]

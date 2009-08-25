@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 1,
+		version = 2,
 		key = "twinvalkyr", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -57,7 +57,7 @@ do
 			},
 			darkpactwarn = {
 				varname = L["Eydis"].." "..format(L["%s Cast"],SN[67308]),
-				varname = SN[67308].."!",
+				text = SN[67308].."!",
 				type = "centerpopup",
 				time = 15,
 				flashtime = 15,
@@ -79,8 +79,8 @@ do
 		events = {
 			-- Dark Vortex
 			{
-				eventtype = "combatevent",
-				combatevent = "SPELL_CAST_START",
+				type = "combatevent",
+				eventtype = "SPELL_CAST_START",
 				spellid = {
 					67182, 
 					66058,
@@ -95,8 +95,8 @@ do
 			},
 			-- Light Vortex
 			{
-				eventtype = "combatevent",
-				combatevent = "SPELL_CAST_START",
+				type = "combatevent",
+				eventtype = "SPELL_CAST_START",
 				spellid = {
 					67206,
 					66046,
@@ -111,8 +111,8 @@ do
 			},
 			-- Twin's Pact - Eydis - Dark
 			{
-				eventtype = "combatevent",
-				combatevent = "SPELL_CAST_START",
+				type = "combatevent",
+				eventtype = "SPELL_CAST_START",
 				spellid = {
 					67303,
 					65875,
@@ -127,8 +127,8 @@ do
 			},
 			-- Twin's Pact - Eydis - Dark Removal
 			{
-				eventtype = "combatevent",
-				combatevent = "SPELL_AURA_REMOVED",
+				type = "combatevent",
+				eventtype = "SPELL_AURA_REMOVED",
 				spellid = {
 					67303,
 					65875,
@@ -143,8 +143,8 @@ do
 			},
 			-- Twin's Pact - Fjola - Light
 			{
-				eventtype = "combatevent",
-				combatevent = "SPELL_CAST_START",
+				type = "combatevent",
+				eventtype = "SPELL_CAST_START",
 				spellid = {
 					65876,
 					67306,
@@ -159,8 +159,8 @@ do
 			},
 			-- Twin's Pact - Fjola - Light Removal
 			{
-				eventtype = "combatevent",
-				combatevent = "SPELL_AURA_REMOVED",
+				type = "combatevent",
+				eventtype = "SPELL_AURA_REMOVED",
 				spellid = {
 					65876,
 					67306,

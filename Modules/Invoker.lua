@@ -33,6 +33,7 @@ local ipairs,pairs,unpack = ipairs,pairs,unpack
 local tostring,tonumber = tostring,tonumber
 local match,gmatch,gsub,find,split = string.match,string.gmatch,string.gsub,string.find,string.split
 local UnitGUID, UnitName, UnitExists, UnitIsUnit = UnitGUID, UnitName, UnitExists, UnitIsUnit
+local UnitBuff,UnitDebuff = UnitBuff,UnitDebuff
 
 local name_to_unit = addon.Roster.name_to_unit
 local EncDB,CE,alerts,raidicons,arrows,announces
