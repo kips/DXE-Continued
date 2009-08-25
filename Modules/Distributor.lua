@@ -15,7 +15,7 @@ local db,pfl
 -- CONSTANTS
 ----------------------------------
 -- IMPORTANT: Change if previous encounters are incompatible with Invoker
-local VERSION = 4
+local VERSION = 5
 
 local FIRST_MULTIPART, NEXT_MULTIPART, LAST_MULTIPART = "\001", "\002", "\003"
 local MAIN_PREFIX = "DXE_Dist"..VERSION
