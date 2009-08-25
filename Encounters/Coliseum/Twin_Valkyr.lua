@@ -1,25 +1,29 @@
---[=[
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 0,
+		version = 1,
 		key = "twinvalkyr", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
 		name = L["Twin Val'kyr"], 
 		triggers = {
 			scan = {
+				34496, -- Eydis Darkbane
+				34497, -- Fjola Lightbane
 			}, 
 		},
 		onactivate = {
-			tracing = {--[[todo]]},
+			tracing = {
+				34496, -- Eydis Darkbane
+				34497, -- Fjola Lightbane
+			},
+			tracerstart = true,
 			combatstop = true,
 		},
 		userdata = {},
 		onstart = {
 		},
 		alerts = {
-
 		},
 		events = { 
 		},
@@ -27,4 +31,3 @@ do
 
 	DXE:RegisterEncounter(data)
 end
-]=]

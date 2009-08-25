@@ -36,7 +36,7 @@ function addon:GetDistanceToUnit(unit,fx2,fy2)
 	local dims = MapDims[map]
 	if not dims then 
 		if not fired[map] then
-			geterrorhandler()("DXE Coords: Unable to get MapDims for "..map..". Please report this error")
+			geterrorhandler()("DXE Coords.lua: Unable to get MapDims for "..map..". Please report this error")
 			fired[map] = true
 		end
 		dims = backup

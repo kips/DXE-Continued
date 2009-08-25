@@ -25,6 +25,7 @@ do
 		},
 		onstart = {
 			{
+				{alert = "enragecd"},
 				{alert = "portalcd"},
 				{alert = "legionflamecd"},
 				{alert = "eruptioncd"},
@@ -32,6 +33,14 @@ do
 			},
 		},
 		alerts = {
+			enragecd = {
+				varname = L["Enrage"],
+				text = L["Enrage"],
+				type = "dropdown",
+				time = 600,
+				flashtime = 10,
+				color1 = "RED",
+			},
 			legionflameself = {
 				varname = format(L["%s on self"],SN[68123]),
 				text = format("%s: %s!",SN[68123],L["YOU"]),
