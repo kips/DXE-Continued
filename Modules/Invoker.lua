@@ -245,11 +245,11 @@ do
 		if find(str,"|") then
 			local func,args = match(str,"^([^|]+)|(.+)") 
 			func = RepFuncs[func]
-			if not func then return "&"..str.."&" end
+			if not func then return end
 			return func(split("|",args))
 		else
 			local func = RepFuncs[str]
-			if not func then return "&"..str.."&" end
+			if not func then return end
 			return func()
 		end
 	end
