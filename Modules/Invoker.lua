@@ -198,6 +198,8 @@ do
 		-- Get's an alert's timeleft
 		timeleft = function(id,delta) return tostring(Alerts:GetTimeleft(id) + (tonumber(delta) or 0)) end,
 		npcid = function(guid) return NID[guid] or "" end,
+		playerdebuff = function(debuff) return tostring(not not UnitDebuff("player",debuff)) end,
+		playerbuff = function(buff) return tostring(not not UnitBuff("player",buff)) end,
 	}
 
 	-- Add funcs for the other health watchers

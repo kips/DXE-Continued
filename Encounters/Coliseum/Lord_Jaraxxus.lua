@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 309,
+		version = 310,
 		key = "jaraxxus", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -40,6 +40,7 @@ do
 				time = 600,
 				flashtime = 10,
 				color1 = "RED",
+				icon = ST[12317],
 			},
 			legionflameself = {
 				varname = format(L["%s on self"],SN[68123]),
