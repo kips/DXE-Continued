@@ -243,9 +243,13 @@ do
 	local function replace_funcs(str)
 		if find(str,"|") then
 			local func,args = match(str,"^([^|]+)|(.+)") 
-			return RepFuncs[func](split("|",args))
+			func = RepFuncs[func]
+			if not func then return "&"..str.."&" end
+			return func(split("|",args))
 		else
-			return RepFuncs[str]()
+			local func = RepFuncs[str]
+			if not func then return "&"..str.."&" end
+			return func()
 		end
 	end
 
