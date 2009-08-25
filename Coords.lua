@@ -17,6 +17,8 @@ end
 
 local backup = {w = 750, h = 750}
 
+local fired = {}
+
 -- Computes the distance between the player and unit in game yards
 -- Intended to be used when the player and unit are in the same map
 -- Supported: Ulduar, Naxxramas, The Eye of Eternity, The Obsidian Sanctum, Trial of the Crusader
@@ -30,18 +32,21 @@ function addon:GetDistanceToUnit(unit,fx2,fy2)
 		x2,y2 = self:GetPlayerMapPosition(unit)
 	end
 
-	local dims = MapDims[GetMapInfo()]
+	local map,level = GetMapInfo(),GetCurrentMapDungeonLevel()
+	local dims = MapDims[map]
 	if not dims then 
-		--@debug@
-		addon:Print("Unable to get MapDims for "..GetMapInfo())
-		--@end-debug@
+		if not fired[map] then
+			geterrorhandler()("DXE Coords: Unable to get MapDims for "..map..". Please report this error")
+			fired[map] = true
+		end
 		dims = backup
 	else
-		dims = dims[GetCurrentMapDungeonLevel()]
+		dims = dims[level]
 		if not dims then 
-			--@debug@
-			addon:Print("Unable to get MapDims for "..GetMapInfo().." at dungeon level "..GetCurrentMapDungeonLevel())
-			--@end-debug@
+			if not fired[map..level] then
+				geterrorhandler()("DXE Coords.lua: Unable to get MapDims for "..map.." at dungeon level "..level..". Please report this error")
+				fired[map..level] = true
+			end
 			dims = backup 
 		end
 	end
@@ -64,7 +69,7 @@ MapDims= {
 		[3] = {w = 1238.37427179,   h = 823.90183235628}, 	-- Conservatory of Life
 		[4] = {w = 848.38069183829, h = 564.6688835337}, 	-- Prison of Yogg-Saron
 		[5] = {w = 1460.4694647684, h = 974.65312886234},  -- Spark of Imagination
-		[6] = {w = 848, h = 564},  -- Under Yogg TODO: FINISH
+		[6] = {w = 576.71549337896, h = 384.46653291368},  -- The Mind's Eye (Under Yogg)
 	},
 	Naxxramas = {
 		[1] = {w = 1018.3655494957, h = 679.40523953718}, -- Construct
