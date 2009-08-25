@@ -1,7 +1,11 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
+
+	local DE = SN[67176]
+	local LE = SN[67223]
+
 	local data = {
-		version = 2,
+		version = 3,
 		key = "twinvalkyr", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -41,7 +45,7 @@ do
 				type = "centerpopup",
 				time = 8,
 				flashtime = 8,
-				color1 = "BLUE",
+				color1 = "BROWN",
 				sound = "ALERT1",
 				icon = ST[67184],
 			},
@@ -75,6 +79,26 @@ do
 				color1 = "YELLOW",
 				icon = ST[65876],
 			},
+			switchtodarkwarn = {
+				varname = format(L["%s Warning"],format(L["Switch to %s"],DE)),
+				text = format(L["Switch to %s"],DE):upper().."!",
+				type = "simple",
+				time = 3,
+				color1 = "BLACK",
+				flashscreen = true,
+				sound = "ALERT5",
+				icon = ST[67176],
+			},
+			switchtolightwarn = {
+				varname = format(L["%s Warning"],format(L["Switch to %s"],LE)),
+				text = format(L["Switch to %s"],LE):upper().."!",
+				type = "simple",
+				time = 3,
+				color1 = "WHITE",
+				flashscreen = true,
+				sound = "ALERT6",
+				icon = ST[67223],
+			},
 		},
 		events = {
 			-- Dark Vortex
@@ -90,6 +114,8 @@ do
 				execute = {
 					{
 						{alert = "darkvortexwarn"},
+						{expect = {"&playerdebuff|"..LE.."&","==","true"}},
+						{alert = "switchtodarkwarn"},
 					},
 				},
 			},
@@ -106,6 +132,8 @@ do
 				execute = {
 					{
 						{alert = "lightvortexwarn"},
+						{expect = {"&playerdebuff|"..DE.."&","==","true"}},
+						{alert = "switchtolightwarn"},
 					},
 				},
 			},
@@ -178,3 +206,4 @@ do
 
 	DXE:RegisterEncounter(data)
 end
+
