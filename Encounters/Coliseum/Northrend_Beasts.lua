@@ -141,6 +141,16 @@ do
 				time = "<moltenspewtime>",
 				color1 = "MAGENTA",
 				flashtime = 5,
+				icon = ST[66821],
+			},
+			moltenspewwarn = {
+				varname = format(L["%s Cast"],SN[66821]),
+				type = "centerpopup",
+				text = format(L["%s Cast"],SN[66821]),
+				time = 3.5,
+				flashtime = 3.5,
+				color1 = "MAGENTA",
+				color2 = "GREY",
 				sound = "ALERT7",
 				icon = ST[66821],
 			},
@@ -151,6 +161,16 @@ do
 				time = "<acidicspewtime>",
 				flashtime = 5,
 				color1 = "TEAL",
+				icon = ST[66818],
+			},
+			acidicspewwarn = {
+				varname = format(L["%s Cast"],SN[66818]),
+				type = "centerpopup",
+				text = format(L["%s Cast"],SN[66818]),
+				time = 3.5,
+				flashtime = 3.5,
+				color1 = "TEAL",
+				color2 = "GREY",
 				sound = "ALERT7",
 				icon = ST[66818],
 			},
@@ -457,6 +477,10 @@ do
 				spellid = 66818,
 				execute = {
 					{
+						{quash = "acidicspewcd"},
+						{alert = "acidicspewwarn"},
+					},
+					{
 						{expect = {"<fireacidiccd>","==","0"}},
 						{alert = "moltenspewcd"},
 						{set = {firemoltencd = 1}},
@@ -474,6 +498,10 @@ do
 				eventtype = "SPELL_CAST_START",
 				spellid = 66821,
 				execute = {
+					{
+						{quash = "moltenspewcd"},
+						{alert = "moltenspewwarn"},
+					},
 					{
 						{expect = {"<firemoltencd>","==","0"}},
 						{alert = "acidicspewcd"},
