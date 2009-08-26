@@ -5,7 +5,7 @@ do
 	local LE = SN[67223]
 
 	local data = {
-		version = 3,
+		version = 4,
 		key = "twinvalkyr", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -59,25 +59,25 @@ do
 				sound = "ALERT2",
 				icon = ST[67208],
 			},
-			darkpactwarn = {
-				varname = L["Eydis"].." "..format(L["%s Cast"],SN[67308]),
-				text = SN[67308].."!",
+			shieldofdarknessdur = {
+				varname = format(L["%s Duration"],SN[67256]),
+				text = format("%s: #5#!",SN[67256]),
 				type = "centerpopup",
 				time = 15,
 				flashtime = 15,
 				color1 = "INDIGO",
 				sound = "ALERT3",
-				icon = ST[65875],
+				icon = ST[67256],
 			},
-			lightpactwarn = {
-				varname = L["Fjola"].." "..format(L["%s Cast"],SN[67308]),
-				text = SN[67308].."!",
+			shieldoflightdur = {
+				varname = format(L["%s Duration"],SN[67259]),
+				text = format("%s: #5#!",SN[67259]),
 				type = "centerpopup",
 				time = 15,
 				flashtime = 15,
 				sound = "ALERT4",
 				color1 = "YELLOW",
-				icon = ST[65876],
+				icon = ST[67259],
 			},
 			switchtodarkwarn = {
 				varname = format(L["%s Warning"],format(L["Switch to %s"],DE)),
@@ -99,6 +99,16 @@ do
 				sound = "ALERT6",
 				icon = ST[67223],
 			},
+			shieldvortexcd = {
+				varname = format(L["%s Cooldown"],SN[56105].."/"..L["Shield"]),
+				text = format(L["Next %s"],SN[56105].."/"..L["Shield"]),
+				type = "dropdown",
+				time = 45,
+				flashtime = 10,
+				color1 = "TEAL",
+				sound = "ALERT7",
+				icon = ST[56105],
+			},
 		},
 		events = {
 			-- Dark Vortex
@@ -106,7 +116,7 @@ do
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
 				spellid = {
-					67182, 
+					67182, -- 25 normal
 					66058,
 					67183,
 					67184,
@@ -114,6 +124,7 @@ do
 				execute = {
 					{
 						{alert = "darkvortexwarn"},
+						{alert = "shieldvortexcd"},
 						{expect = {"&playerdebuff|"..LE.."&","==","true"}},
 						{alert = "switchtodarkwarn"},
 					},
@@ -124,7 +135,7 @@ do
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
 				spellid = {
-					67206,
+					67206, -- 25 normal
 					66046,
 					67207,
 					67208,
@@ -132,72 +143,75 @@ do
 				execute = {
 					{
 						{alert = "lightvortexwarn"},
+						{alert = "shieldvortexcd"},
 						{expect = {"&playerdebuff|"..DE.."&","==","true"}},
 						{alert = "switchtolightwarn"},
 					},
 				},
 			},
-			-- Twin's Pact - Eydis - Dark
+			-- Shield of Darkness 
 			{
 				type = "combatevent",
-				eventtype = "SPELL_CAST_START",
+				eventtype = "SPELL_AURA_APPLIED",
 				spellid = {
-					67303,
-					65875,
-					67304,
-					67305,
+					67256, -- 25 normal
+					65874,
+					67257,
+					67258,
 				},
 				execute = {
 					{
-						{alert = "darkpactwarn"},
+						{alert = "shieldofdarknessdur"},
+						{alert = "shieldvortexcd"},
 					},
 				},
 			},
-			-- Twin's Pact - Eydis - Dark Removal
+			-- Shield of Darkness Removal
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_REMOVED",
 				spellid = {
-					67303,
-					65875,
-					67304,
-					67305,
+					67256, -- 25 normal
+					65874,
+					67257,
+					67258,
 				},
 				execute = {
 					{
-						{quash = "darkpactwarn"},
+						{quash = "shieldofdarknessdur"},
 					},
 				},
 			},
-			-- Twin's Pact - Fjola - Light
+			-- Shield of Lights
 			{
 				type = "combatevent",
-				eventtype = "SPELL_CAST_START",
+				eventtype = "SPELL_AURA_APPLIED",
 				spellid = {
-					65876,
-					67306,
-					67307,
-					67308,
+					67259, -- 25 normal
+					65858,
+					67260,
+					67261,
 				},
 				execute = {
 					{
-						{alert = "lightpactwarn"},
+						{alert = "shieldoflightdur"},
+						{alert = "shieldvortexcd"},
 					},
 				},
 			},
-			-- Twin's Pact - Fjola - Light Removal
+			-- Shield of Lights Removal
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_REMOVED",
 				spellid = {
-					65876,
-					67306,
-					67307,
-					67308,
+					67259, -- 25 normal
+					65858,
+					67260,
+					67261,
 				},
 				execute = {
 					{
-						{quash = "lightpactwarn"},
+						{quash = "shieldoflightdur"},
 					},
 				},
 			},
