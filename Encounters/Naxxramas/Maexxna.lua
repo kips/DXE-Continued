@@ -2,7 +2,7 @@ do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 
 	local data = {
-		version = 296,
+		version = 297,
 		key = "maexxna", 
 		zone = L["Naxxramas"], 
 		name = L["Maexxna"], 
@@ -18,8 +18,8 @@ do
 		userdata = {},
 		onstart = {
 			{
-				{alert = "spraycd"},
-				{alert = "spidercd"},
+				"alert","spraycd",
+				"alert","spidercd",
 			}
 		},
 		alerts = {
@@ -60,8 +60,8 @@ do
 				spellid = {29484,54125}, 
 				execute = {
 					{
-						{alert = "spraycd"}, 
-						{alert = "spidercd"},
+						"alert","spraycd", 
+						"alert","spidercd",
 					},
 				},
 			},
@@ -72,7 +72,7 @@ do
 				spellid = {54123,54124},
 				execute = {
 					{
-						{alert = "enragewarn"},
+						"alert","enragewarn",
 					},
 				},
 			},

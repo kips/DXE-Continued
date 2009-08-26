@@ -2,7 +2,7 @@ do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 
 	local data = {
-		version = 296,
+		version = 297,
 		key = "sapphiron", 
 		zone = L["Naxxramas"], 
 		name = L["Sapphiron"], 
@@ -18,7 +18,7 @@ do
 		userdata = {},
 		onstart = {
 			{
-				{alert = "enragecd"},
+				"alert","enragecd",
 			},
 		},
 		alerts = {
@@ -72,7 +72,7 @@ do
 				spellid = {28542,55665}, 
 				execute = {
 					{
-						{alert = "lifedraincd"}, 
+						"alert","lifedraincd", 
 					},
 				},
 			},
@@ -82,14 +82,14 @@ do
 				event = "CHAT_MSG_RAID_BOSS_EMOTE", 
 				execute = {
 					{
-						{expect = {"#1#","find",L["lifts"]}},
-						{alert = "airphasedur"}, 
-						{quash = "lifedraincd"},
+						"expect",{"#1#","find",L["lifts"]},
+						"alert","airphasedur", 
+						"quash","lifedraincd",
 					},
 					{
-						{expect = {"#1#","find",L["deep"]}},
-						{quash = "airphasedur"},
-						{alert = "deepbreathwarn"}, 
+						"expect",{"#1#","find",L["deep"]},
+						"quash","airphasedur",
+						"alert","deepbreathwarn", 
 					},
 				},
 			},

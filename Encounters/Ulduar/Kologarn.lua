@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 296,
+		version = 297,
 		key = "kologarn", 
 		zone = "Ulduar", 
 		name = L["Kologarn"], 
@@ -20,8 +20,8 @@ do
 		},
 		onstart = {
 			{
-				{expect = {"&difficulty&","==","1"}},
-				{set = {armrespawntime = 40}},
+				"expect",{"&difficulty&","==","1"},
+				"set",{armrespawntime = 40},
 			},
 		},
 		alerts = {
@@ -83,8 +83,8 @@ do
 				spellid = {64290,64292},
 				execute = {
 					{
-						{expect = {"#4#","~=","&playerguid&"}},
-						{alert = "stonegripwarnothers"},
+						"expect",{"#4#","~=","&playerguid&"},
+						"alert","stonegripwarnothers",
 					},
 				},
 			},
@@ -94,8 +94,8 @@ do
 				execute = {
 					-- Shockwave
 					{
-						{expect = {"#1#","find","^OBLIVION"}},
-						{alert = "shockwavecd"},
+						"expect",{"#1#","find","^OBLIVION"},
+						"alert","shockwavecd",
 					},
 				},
 			},
@@ -106,7 +106,7 @@ do
 				spellid = {63766,63983},
 				execute = {
 					{
-						{alert = "armsweepcd"},
+						"alert","armsweepcd",
 					},
 				},
 			},
@@ -116,13 +116,13 @@ do
 				eventtype = "UNIT_DIED",
 				execute = {
 					{
-						{expect = {"&npcid|#4#&","==","32934"}}, -- Right Arm
-						{alert = "rightarmcd"},
+						"expect",{"&npcid|#4#&","==","32934"}, -- Right Arm
+						"alert","rightarmcd",
 					},
 					{
-						{expect = {"&npcid|#4#&","==","32933"}}, -- Left Arm
-						{quash = "shockwavecd"},
-						{alert = "leftarmcd"},
+						"expect",{"&npcid|#4#&","==","32933"}, -- Left Arm
+						"quash","shockwavecd",
+						"alert","leftarmcd",
 					},
 				},
 			},

@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 296,
+		version = 297,
 		key = "flameleviathan", 
 		zone = "Ulduar", 
 		name = L["Flame Leviathan"], 
@@ -70,7 +70,7 @@ do
 				spellid = 62396, 
 				execute = {
 					{
-						{alert = "flameventdur"},
+						"alert","flameventdur",
 					},
 				},
 			},
@@ -81,7 +81,7 @@ do
 				spellid = 62396,
 				execute = {
 					{
-						{quash = "flameventdur"},
+						"quash","flameventdur",
 					},
 				},
 			},
@@ -92,7 +92,7 @@ do
 				spellid = 62475, 
 				execute = {
 					{
-						{alert = "overloaddur"},
+						"alert","overloaddur",
 					},
 				},
 			},
@@ -102,14 +102,14 @@ do
 				event = "EMOTE",
 				execute = {
 					{
-						{expect = {"#1#","find",L["pursues"]}},
-						{expect = {"#5#","==","&playername&"}},
-						{alert = "pursuedurself"},
+						"expect",{"#1#","find",L["pursues"]},
+						"expect",{"#5#","==","&playername&"},
+						"alert","pursuedurself",
 					},
 					{
-						{expect = {"#1#","find",L["pursues"]}},
-						{expect = {"#5#","~=","&playername&"}},
-						{alert = "pursuedurother"},
+						"expect",{"#1#","find",L["pursues"]},
+						"expect",{"#5#","~=","&playername&"},
+						"alert","pursuedurother",
 					},
 				},
 			},

@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 296,
+		version = 297,
 		key = "malygos", 
 		zone = L["The Eye of Eternity"], 
 		category = L["Northrend"],
@@ -26,7 +26,7 @@ do
 		},
 		onstart = {
 			{
-				{alert = "vortexcd"},
+				"alert","vortexcd",
 			}
 		},
 		alerts = {
@@ -108,10 +108,10 @@ do
 				spellid = 56105, 
 				execute = {
 					{
-						{alert = "vortexdur"}, 
-						{alert = "vortexcd"}, 
-						{quash = "powerspark"},
-						{alert = "powerspark"},
+						"alert","vortexdur", 
+						"alert","vortexcd", 
+						"quash","powerspark",
+						"alert","powerspark",
 					},
 				},
 			},
@@ -122,9 +122,9 @@ do
 				spellid = {57407, 60936}, 
 				execute = {
 					{
-						{expect = {"#4#","==","&vehicleguid&"}},
-						{quash = "presurgewarn"},
-						{alert = "surgewarn"},
+						"expect",{"#4#","==","&vehicleguid&"},
+						"quash","presurgewarn",
+						"alert","surgewarn",
 					},
 				},
 			},
@@ -135,7 +135,7 @@ do
 				spellid = 57430, 
 				execute = {
 					{
-						{alert = "staticfieldwarn"},
+						"alert","staticfieldwarn",
 					},
 				},
 			},
@@ -145,17 +145,17 @@ do
 				event = "CHAT_MSG_MONSTER_YELL", 
 				execute = {
 					{
-						{expect = {"#1#","find",L["I had hoped to end your lives quickly"]}},
-						{quash = "vortexdur"},
-						{quash = "vortexcd"},
-						{quash = "powerspark"},
-						{set = {phase = 2}},
-						{alert = "deepbreath"},
+						"expect",{"#1#","find",L["I had hoped to end your lives quickly"]},
+						"quash","vortexdur",
+						"quash","vortexcd",
+						"quash","powerspark",
+						"set",{phase = 2},
+						"alert","deepbreath",
 					},
 					{
-						{expect = {"#1#", "find", L["ENOUGH!"]}},
-						{quash = "deepbreath"},
-						{set = {phase = 3}},
+						"expect",{"#1#", "find", L["ENOUGH!"]},
+						"quash","deepbreath",
+						"set",{phase = 3},
 					},
 				},
 			},
@@ -165,13 +165,13 @@ do
 				event = "CHAT_MSG_RAID_BOSS_EMOTE", 
 				execute = {
 					{
-						{expect = {"<phase>","==","1"}},
-						{quash = "powerspark"},
-						{alert = "powerspark"},
+						"expect",{"<phase>","==","1"},
+						"quash","powerspark",
+						"alert","powerspark",
 					},
 					{
-						{expect = {"<phase>","==","2"}},
-						{alert = "deepbreath"},
+						"expect",{"<phase>","==","2"},
+						"alert","deepbreath",
 					},
 				},
 			},
@@ -181,8 +181,8 @@ do
 				event = "WHISPER",
 				execute = {
 					{
-						{expect = {"#1#","find",L["fixes his eyes on you!$"]}},
-						{alert = "presurgewarn"},
+						"expect",{"#1#","find",L["fixes his eyes on you!$"]},
+						"alert","presurgewarn",
 					},
 				},
 			},

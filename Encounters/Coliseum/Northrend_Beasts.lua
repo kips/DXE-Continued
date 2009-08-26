@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 313,
+		version = 314,
 		key = "northrendbeasts", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -35,8 +35,8 @@ do
 		},
 		onstart = {
 			{
-				{alert = "enragecd"},
-				{alert = "zerotoone"},
+				"alert","enragecd",
+				"alert","zerotoone",
 			},
 		},
 		alerts = {
@@ -312,12 +312,12 @@ do
 		},
 		timers = {
 			reset = {
-				{{resettimer = true}},
+				{"resettimer",true},
 			},
 			firemolten = {
 				{
-					{alert = "moltenspewcd"},
-					{set = {moltenspewtime = {27,21,loop = true}}},
+					"alert","moltenspewcd",
+					"set",{moltenspewtime = {27,21,loop = true}},
 				},
 			},
 		},
@@ -329,8 +329,8 @@ do
 				spellid = {67472,66320},
 				execute = {
 					{
-						{expect = {"#4#","==","&playerguid&"}},
-						{alert = "firebombwarnself"},
+						"expect",{"#4#","==","&playerguid&"},
+						"alert","firebombwarnself",
 					}
 				},
 			},
@@ -341,7 +341,7 @@ do
 				spellid = {67477,66331},
 				execute = {
 					{
-						{alert = "impalecd"},
+						"alert","impalecd",
 					},
 				},
 			},
@@ -352,8 +352,8 @@ do
 				spellid = {67647,66330},
 				execute = {
 					{
-						{alert = "stompwarn"},
-						{alert = "stompcd"},
+						"alert","stompwarn",
+						"alert","stompcd",
 					},
 				},
 			},
@@ -364,21 +364,21 @@ do
 				spellid = {67618,66823},
 				execute = {
 					{
-						{expect = {"#4#","==","&playerguid&"}},
-						{alert = "toxinonself"},
-						{set = {hastoxin = 1}},
-						{expect = {"<lastbile>","~=","NONE"}},
-						{arrow = "bilearrow"},
+						"expect",{"#4#","==","&playerguid&"},
+						"alert","toxinonself",
+						"set",{hastoxin = 1},
+						"expect",{"<lastbile>","~=","NONE"},
+						"arrow","bilearrow",
 					},
 					{
-						{expect = {"#4#","~=","&playerguid&"}},
-						{set = {lasttoxin = "#5#"}},
-						{expect = {"<hasbile>","==","1"}},
+						"expect",{"#4#","~=","&playerguid&"},
+						"set",{lasttoxin = "#5#"},
+						"expect",{"<hasbile>","==","1"},
 						-- Fires toxinarrow using #5#
-						{set = {tmp = "<lasttoxin>"}},
-						{set = {lasttoxin = "#5#"}},
-						{arrow = "toxinarrow"},
-						{set = {lasttoxin = "<tmp>"}},
+						"set",{tmp = "<lasttoxin>"},
+						"set",{lasttoxin = "#5#"},
+						"arrow","toxinarrow",
+						"set",{lasttoxin = "<tmp>"},
 					},
 				},
 			},
@@ -389,16 +389,16 @@ do
 				spellid = {67618,66823},
 				execute = {
 					{
-						{expect = {"#4#","==","&playerguid&"}},
-						{quash = "toxinonself"},
-						{set = {hastoxin = 0}},
-						{removeallarrows = true},
+						"expect",{"#4#","==","&playerguid&"},
+						"quash","toxinonself",
+						"set",{hastoxin = 0},
+						"removeallarrows",true,
 					},
 					{
-						{expect = {"#4#","~=","&playerguid&"}},
-						{removearrow = "#5#"},
-						{expect = {"#5#","==","<lasttoxin>"}},
-						{set = {lasttoxin = "NONE"}},
+						"expect",{"#4#","~=","&playerguid&"},
+						"removearrow","#5#",
+						"expect",{"#5#","==","<lasttoxin>"},
+						"set",{lasttoxin = "NONE"},
 					},
 				},
 			},
@@ -409,21 +409,21 @@ do
 				spellid = 66869,
 				execute = {
 					{
-						{expect = {"#4#","==","&playerguid&"}},
-						{alert = "bileonself"},
-						{set = {hasbile = 1}},
-						{expect = {"<lasttoxin>","~=","NONE"}},
-						{arrow = "toxinarrow"},
+						"expect",{"#4#","==","&playerguid&"},
+						"alert","bileonself",
+						"set",{hasbile = 1},
+						"expect",{"<lasttoxin>","~=","NONE"},
+						"arrow","toxinarrow",
 					},
 					{
-						{expect = {"#4#","~=","&playerguid&"}},
-						{set = {lastbile = "#5#"}},
-						{expect = {"<hastoxin>","==","1"}},
+						"expect",{"#4#","~=","&playerguid&"},
+						"set",{lastbile = "#5#"},
+						"expect",{"<hastoxin>","==","1"},
 						-- Fires bilearrow using #5#
-						{set = {tmp = "<lastbile>"}},
-						{set = {lastbile = "#5#"}},
-						{arrow = "bilearrow"},
-						{set = {lastbile = "<tmp>"}},
+						"set",{tmp = "<lastbile>"},
+						"set",{lastbile = "#5#"},
+						"arrow","bilearrow",
+						"set",{lastbile = "<tmp>"},
 					},
 				},
 			},
@@ -434,16 +434,16 @@ do
 				spellid = 66869,
 				execute = {
 					{
-						{expect = {"#4#","==","&playerguid&"}},
-						{quash = "bileonself"},
-						{removeallarrows = true},
-						{set = {hasbile = 0}},
+						"expect",{"#4#","==","&playerguid&"},
+						"quash","bileonself",
+						"removeallarrows",true,
+						"set",{hasbile = 0},
 					},
 					{
-						{expect = {"#4#","~=","&playerguid&"}},
-						{removearrow = "#5#"},
-						{expect = {"#5#","==","<lastbile>"}},
-						{set = {lastbile = "NONE"}},
+						"expect",{"#4#","~=","&playerguid&"},
+						"removearrow","#5#",
+						"expect",{"#5#","==","<lastbile>"},
+						"set",{lastbile = "NONE"},
 					},
 				},
 			},
@@ -454,8 +454,8 @@ do
 				spellid = {66881,67638},
 				execute = {
 					{
-						{expect = {"#4#","==","&playerguid&"}},
-						{alert = "slimepoolself"},
+						"expect",{"#4#","==","&playerguid&"},
+						"alert","slimepoolself",
 					},
 				},
 			},
@@ -466,7 +466,7 @@ do
 				spellid = 68335,
 				execute = {
 					{
-						{alert = "enragewarn"},
+						"alert","enragewarn",
 					},
 				},
 			},
@@ -477,18 +477,18 @@ do
 				spellid = 66818,
 				execute = {
 					{
-						{quash = "acidicspewcd"},
-						{alert = "acidicspewwarn"},
+						"quash","acidicspewcd",
+						"alert","acidicspewwarn",
 					},
 					{
-						{expect = {"<fireacidiccd>","==","0"}},
-						{alert = "moltenspewcd"},
-						{set = {firemoltencd = 1}},
+						"expect",{"<fireacidiccd>","==","0"},
+						"alert","moltenspewcd",
+						"set",{firemoltencd = 1},
 					},
 					{
-						{expect = {"<fireacidiccd>","==","1"}},
-						{alert = "acidicspewcd"},
-						{set = {fireacidiccd = 0}},
+						"expect",{"<fireacidiccd>","==","1"},
+						"alert","acidicspewcd",
+						"set",{fireacidiccd = 0},
 					},
 				},
 			},
@@ -499,18 +499,18 @@ do
 				spellid = 66821,
 				execute = {
 					{
-						{quash = "moltenspewcd"},
-						{alert = "moltenspewwarn"},
+						"quash","moltenspewcd",
+						"alert","moltenspewwarn",
 					},
 					{
-						{expect = {"<firemoltencd>","==","0"}},
-						{alert = "acidicspewcd"},
-						{set = {fireacidiccd = 1}},
+						"expect",{"<firemoltencd>","==","0"},
+						"alert","acidicspewcd",
+						"set",{fireacidiccd = 1},
 					},
 					{
-						{expect = {"<firemoltencd>","==","1"}},
-						{alert = "moltenspewcd"},
-						{set = {firemoltencd = 0}},
+						"expect",{"<firemoltencd>","==","1"},
+						"alert","moltenspewcd",
+						"set",{firemoltencd = 0},
 					},
 				},
 			},
@@ -521,7 +521,7 @@ do
 				spellid = {67650,66689},
 				execute = {
 					{
-						{alert = "breathwarn"},
+						"alert","breathwarn",
 					},
 				},
 			},
@@ -532,7 +532,7 @@ do
 				spellid = 67657,
 				execute = {
 					{
-						{alert = "ragewarn"},
+						"alert","ragewarn",
 					},
 				},
 			},
@@ -543,7 +543,7 @@ do
 				spellid = 67657,
 				execute = {
 					{
-						{quash = "ragewarn"},
+						"quash","ragewarn",
 					},
 				},
 			},
@@ -554,7 +554,7 @@ do
 				spellid = 66758,
 				execute = {
 					{
-						{alert = "dazedur"},
+						"alert","dazedur",
 					},
 				},
 			},
@@ -565,8 +565,8 @@ do
 				spellid = {67660,66683},
 				execute = {
 					{
-						{alert = "crashcast"},
-						{alert = "crashcd"},
+						"alert","crashcast",
+						"alert","crashcd",
 					},
 				},
 			},
@@ -576,20 +576,20 @@ do
 				event = "EMOTE",
 				execute = {
 					{
-						{expect = {"#1#","find",L["lets out a bellowing roar!$"]}},
-						{expect = {"#5#","~=","&playername&"}},
-						{proximitycheck = {"#5#",18}},
-						{alert = "tramplewarnothers"},
-						{arrow = "tramplearrow"},
+						"expect",{"#1#","find",L["lets out a bellowing roar!$"]},
+						"expect",{"#5#","~=","&playername&"},
+						"proximitycheck",{"#5#",18},
+						"alert","tramplewarnothers",
+						"arrow","tramplearrow",
 					},
 					{
-						{expect = {"#1#","find",L["lets out a bellowing roar!$"]}},
-						{expect = {"#5#","==","&playername&"}},
-						{alert = "tramplewarnself"},
+						"expect",{"#1#","find",L["lets out a bellowing roar!$"]},
+						"expect",{"#5#","==","&playername&"},
+						"alert","tramplewarnself",
 					},
 					{
-						{expect = {"#1#","find",L["lets out a bellowing roar!$"]}},
-						{raidicon = "tramplemark"},
+						"expect",{"#1#","find",L["lets out a bellowing roar!$"]},
+						"raidicon","tramplemark",
 					},
 				},
 			},
@@ -599,32 +599,32 @@ do
 				eventtype = "UNIT_DIED",
 				execute = {
 					{
-						{expect = {"&npcid|#4#&","==","34796"}}, -- Gormok
-						{tracing = {35144,34799}},
-						{quash = "impalecd"},
-						{quash = "stompcd"},
-						{alert = "onetotwo"},
-						{scheduletimer = {"reset",15}},
-						{scheduletimer = {"firemolten",15}},
+						"expect",{"&npcid|#4#&","==","34796"}, -- Gormok
+						"tracing",{35144,34799},
+						"quash","impalecd",
+						"quash","stompcd",
+						"alert","onetotwo",
+						"scheduletimer",{"reset",15},
+						"scheduletimer",{"firemolten",15},
 					},
 					{
-						{expect = {"&npcid|#4#&","==","35144"}}, -- Acidmaw
-						{quash = "moltenspewcd"},
-						{quash = "acidicspewcd"},
-						{set = {acidmawdead = 1}}
+						"expect",{"&npcid|#4#&","==","35144"}, -- Acidmaw
+						"quash","moltenspewcd",
+						"quash","acidicspewcd",
+						"set",{acidmawdead = 1},
 					},
 					{
-						{expect = {"&npcid|#4#&","==","34799"}}, -- Dreadscale
-						{quash = "moltenspewcd"},
-						{quash = "acidicspewcd"},
-						{set = {dreadscaledead = 1}}
+						"expect",{"&npcid|#4#&","==","34799"}, -- Dreadscale
+						"quash","moltenspewcd",
+						"quash","acidicspewcd",
+						"set",{dreadscaledead = 1},
 					},
 					{
-						{expect = {"<acidmawdead> <dreadscaledead> <jormunactivated>","==","1 1 0"}},
-						{set = {jormunactivated = 1}},
-						{tracing = {34797}}, -- Icehowl
-						{alert = "twotothree"},
-						{scheduletimer = {"reset",10}},
+						"expect",{"<acidmawdead> <dreadscaledead> <jormunactivated>","==","1 1 0"},
+						"set",{jormunactivated = 1},
+						"tracing",{34797}, -- Icehowl
+						"alert","twotothree",
+						"scheduletimer",{"reset",10},
 					},
 				},
 			},

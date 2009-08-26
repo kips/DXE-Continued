@@ -2,7 +2,7 @@ do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local L_Gluth = L["Gluth"]
 	local data = {
-		version = 296,
+		version = 297,
 		key = "gluth",
 		zone = L["Naxxramas"],
 		name = L_Gluth,
@@ -18,7 +18,7 @@ do
 		userdata = {},
 		onstart = {
 			{
-				{alert = "decimatecd"},
+				"alert","decimatecd",
 			}
 		},
 		alerts = {
@@ -50,7 +50,7 @@ do
 				spellid = {28375,54426},
 				execute = {
 					{
-						{alert = "decimatecd"},
+						"alert","decimatecd",
 					},
 				},
 			},
@@ -61,7 +61,7 @@ do
 				spellid = {28375,54426},
 				execute = {
 					{
-						{alert = "decimatecd"},
+						"alert","decimatecd",
 					},
 				},
 			},
@@ -72,7 +72,7 @@ do
 				spellid = {28371,54427},
 				execute = {
 					{
-						{alert = "enragewarn"}, 
+						"alert","enragewarn", 
 					},
 				},
 			},

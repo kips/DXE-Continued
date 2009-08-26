@@ -2,7 +2,7 @@ do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 
 	local data = {
-		version = 296,
+		version = 297,
 		key = "freya", 
 		zone = L["Ulduar"], 
 		name = L["Freya"], 
@@ -27,8 +27,8 @@ do
 		},
 		onstart = {
 			{
-				{alert = "spawncd"},
-				{alert = "enragecd"},
+				"alert","spawncd",
+				"alert","enragecd",
 			},
 		},
 		alerts = {
@@ -153,23 +153,23 @@ do
 				execute = {
 					-- Ancient Conservator
 					{
-						{expect = {"#1#","find",L["^Eonar, your servant"]}},
-						{tracing = {32906,33203}}, -- Freya, Ancient Conservator
-						{quash = "spawncd"},
-						{alert = "spawncd"},
+						"expect",{"#1#","find",L["^Eonar, your servant"]},
+						"tracing",{32906,33203}, -- Freya, Ancient Conservator
+						"quash","spawncd",
+						"alert","spawncd",
 					},
 					-- Detonating Lashers
 					{
-						{expect = {"#1#","find",L["^The swarm of the elements"]}},
-						{quash = "spawncd"},
-						{alert = "spawncd"},
+						"expect",{"#1#","find",L["^The swarm of the elements"]},
+						"quash","spawncd",
+						"alert","spawncd",
 					},
 					-- Elementals
 					{
-						{expect = {"#1#","find",L["^Children, assist"]}},
-						{tracing = {32906,33202,32919,32916}}, -- Freya, Ancient Water Spirit, Storm Lasher, Snap Lasher
-						{quash = "spawncd"},
-						{alert = "spawncd"},
+						"expect",{"#1#","find",L["^Children, assist"]},
+						"tracing",{32906,33202,32919,32916}, -- Freya, Ancient Water Spirit, Storm Lasher, Snap Lasher
+						"quash","spawncd",
+						"alert","spawncd",
 					},	
 				},
 			},
@@ -179,8 +179,8 @@ do
 				event = "EMOTE",
 				execute = {
 					{
-						{expect = {"#1#","find",L["begins to grow!$"]}},
-						{alert = "giftwarn"},
+						"expect",{"#1#","find",L["begins to grow!$"]},
+						"alert","giftwarn",
 					},
 				},
 			},
@@ -191,13 +191,13 @@ do
 				spellid = {62589,63571},
 				execute = {
 					{
-						{expect = {"#4#","==","&playerguid&"}},
-						{alert = "naturesfuryself"},
+						"expect",{"#4#","==","&playerguid&"},
+						"alert","naturesfuryself",
 					},
 					{
-						{expect = {"#4#","~=","&playerguid&"}},
-						{proximitycheck = {"#5#",11}},
-						{alert = "naturesfuryproximitywarn"},
+						"expect",{"#4#","~=","&playerguid&"},
+						"proximitycheck",{"#5#",11},
+						"alert","naturesfuryproximitywarn",
 					},
 				},
 			},
@@ -208,8 +208,8 @@ do
 				spellid = 62519,
 				execute = {
 					{
-						{quash = "spawncd"},
-						{alert = "attunedwarn"},
+						"quash","spawncd",
+						"alert","attunedwarn",
 					},
 				},
 			},
@@ -220,8 +220,8 @@ do
 				spellid = 62532,
 				execute = {
 					{
-						{expect = {"#4#","==","&playerguid&"}},
-						{alert = "gripwarn"},
+						"expect",{"#4#","==","&playerguid&"},
+						"alert","gripwarn",
 					},
 				},
 			},
@@ -232,8 +232,8 @@ do
 				spellid = {62437,62859},
 				execute = {
 					{
-						{alert = "groundtremorwarn"},
-						{alert = "groundtremorcd"},
+						"alert","groundtremorwarn",
+						"alert","groundtremorcd",
 					},
 				},
 			},
@@ -244,8 +244,8 @@ do
 				spellid = {62865,62451},
 				execute = {
 					{
-						{expect = {"#4#","==","&playerguid&"}},
-						{alert = "unstablewarnself"},
+						"expect",{"#4#","==","&playerguid&"},
+						"alert","unstablewarnself",
 					},
 				},
 			},
@@ -256,8 +256,8 @@ do
 				spellid = {62589,63571},
 				execute = {
 					{
-						{expect = {"#4#","==","&playerguid&"}},
-						{quash = "naturesfuryself"},
+						"expect",{"#4#","==","&playerguid&"},
+						"quash","naturesfuryself",
 					},
 				},
 			},
@@ -268,8 +268,8 @@ do
 				spellid = {62861,62930,62283,62438},
 				execute = {
 					{
-						{expect = {"#4#","~=","&playerguid&"}},
-						{arrow = "rootarrow"},
+						"expect",{"#4#","~=","&playerguid&"},
+						"arrow","rootarrow",
 					},
 				},
 			},
@@ -280,8 +280,8 @@ do
 				spellid = {62861,62930,62283,62438},
 				execute = {
 					{
-						{expect = {"#4#","~=","&playerguid&"}},
-						{removearrow = "#5#"},
+						"expect",{"#4#","~=","&playerguid&"},
+						"removearrow","#5#",
 					},
 				},
 			},

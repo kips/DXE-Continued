@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 310,
+		version = 311,
 		key = "jaraxxus", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -25,11 +25,11 @@ do
 		},
 		onstart = {
 			{
-				{alert = "enragecd"},
-				{alert = "portalcd"},
-				{alert = "legionflamecd"},
-				{alert = "eruptioncd"},
-				{alert = "fleshcd"},
+				"alert","enragecd",
+				"alert","portalcd",
+				"alert","legionflamecd",
+				"alert","eruptioncd",
+				"alert","fleshcd",
 			},
 		},
 		alerts = {
@@ -216,19 +216,19 @@ do
 				},
 				execute = {
 					{
-						{alert = "legionflamecd"},
-						{raidicon = "legionflamemark"},
+						"alert","legionflamecd",
+						"raidicon","legionflamemark",
 					},
 					{
-						{expect = {"#4#","==","&playerguid&"}},
-						{alert = "legionflameself"},
-						{announce = "flamesay"},
+						"expect",{"#4#","==","&playerguid&"},
+						"alert","legionflameself",
+						"announce","flamesay",
 					},
 					{
-						{expect = {"#4#","~=","&playerguid&"}},
-						{proximitycheck = {"#5#",11}},
-						{alert = "legionflameproximitywarn"},
-						{arrow = "flamearrow"},
+						"expect",{"#4#","~=","&playerguid&"},
+						"proximitycheck",{"#5#",11},
+						"alert","legionflameproximitywarn",
+						"arrow","flamearrow",
 					},
 				},
 			},
@@ -244,15 +244,15 @@ do
 				},
 				execute = {
 					{
-						{alert = "fleshcd"},
+						"alert","fleshcd",
 					},
 					{
-						{expect = {"#4#","==","&playerguid&"}},
-						{alert = "fleshself"},
+						"expect",{"#4#","==","&playerguid&"},
+						"alert","fleshself",
 					},
 					{
-						{expect = {"#4#","~=","&playerguid&"}},
-						{alert = "fleshothers"},
+						"expect",{"#4#","~=","&playerguid&"},
+						"alert","fleshothers",
 					},
 				},
 			},
@@ -268,12 +268,12 @@ do
 				},
 				execute = {
 					{
-						{expect = {"#4#","==","&playerguid&"}},
-						{quash = "fleshself"},
+						"expect",{"#4#","==","&playerguid&"},
+						"quash","fleshself",
 					},
 					{
-						{expect = {"#4#","~=","&playerguid&"}},
-						{quash = "fleshothers"},
+						"expect",{"#4#","~=","&playerguid&"},
+						"quash","fleshothers",
 					},
 				},
 			},
@@ -288,7 +288,7 @@ do
 				},
 				execute = {
 					{
-						{alert = "eruptioncd"},
+						"alert","eruptioncd",
 					},
 				},
 			},
@@ -303,8 +303,8 @@ do
 				},
 				execute = {
 					{
-						{alert = "portalcd"},
-						{alert = "mistresstimer"},
+						"alert","portalcd",
+						"alert","mistresstimer",
 					},
 				},
 			},
@@ -315,7 +315,7 @@ do
 				spellid = 67009, -- 10/25 normal
 				execute = {
 					{
-						{alert = "netherpowerwarn"},
+						"alert","netherpowerwarn",
 					},
 				},
 			},
@@ -326,17 +326,17 @@ do
 				spellid = 66209,
 				execute = {
 					{
-						{raidicon = "touchmark"},
+						"raidicon","touchmark",
 					},
 					{
-						{expect = {"#4#","==","&playerguid&"}},
-						{alert = "touchself"},
+						"expect",{"#4#","==","&playerguid&"},
+						"alert","touchself",
 					},
 					{
-						{expect = {"#4#","~=","&playerguid&"}},
-						{proximitycheck = {"#5#",11}},
-						{alert = "touchproximitywarn"},
-						{arrow = "toucharrow"},
+						"expect",{"#4#","~=","&playerguid&"},
+						"proximitycheck",{"#5#",11},
+						"alert","touchproximitywarn",
+						"arrow","toucharrow",
 					},
 				},
 			},
@@ -347,8 +347,8 @@ do
 				spellid = 66209,
 				execute = {
 					{
-						{expect = {"#4#","==","&playerguid&"}},
-						{quash = "touchself"},
+						"expect",{"#4#","==","&playerguid&"},
+						"quash","touchself",
 					},
 				},
 			},

@@ -2,7 +2,7 @@ do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 
 	local data = {
-		version = 297,
+		version = 298,
 		key = "kelthuzad", 
 		zone = L["Naxxramas"], 
 		name = L["Kel'Thuzad"], 
@@ -26,7 +26,7 @@ do
 		userdata = {},
 		onstart = {
 			{
-				{alert = "ktarrives"},
+				"alert","ktarrives",
 			}
 		},
 		alerts = {
@@ -94,7 +94,7 @@ do
 				spellid = 27810, 
 				execute = {
 					{
-						{alert = "fissurewarn"}, 
+						"alert","fissurewarn", 
 					},
 				},
 			},
@@ -105,7 +105,7 @@ do
 				spellid = 27808, 
 				execute = {
 					{
-						{alert = "frostblastwarn"}, 
+						"alert","frostblastwarn", 
 					},
 				},
 			},
@@ -116,9 +116,9 @@ do
 				spellid = 27819, 
 				execute = {
 					{
-						{expect = {"#4#","==","&playerguid&"}},
-						{alert = "detonatewarn"},
-						{announce = "detonatesay"},
+						"expect",{"#4#","==","&playerguid&"},
+						"alert","detonatewarn",
+						"announce","detonatesay",
 					},
 				},
 			},
@@ -128,8 +128,8 @@ do
 				event = "CHAT_MSG_MONSTER_YELL", 
 				execute = {
 					{
-						{expect = {"#1#","find",L["^Very well. Warriors of the frozen wastes, rise up!"]}},
-						{alert = "guardianswarn"}, 
+						"expect",{"#1#","find",L["^Very well. Warriors of the frozen wastes, rise up!"]},
+						"alert","guardianswarn", 
 					},
 				},
 			},

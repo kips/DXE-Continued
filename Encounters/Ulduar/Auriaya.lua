@@ -2,7 +2,7 @@ do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 
 	local data = {
-		version = 296,
+		version = 297,
 		key = "auriaya", 
 		zone = L["Ulduar"], 
 		name = L["Auriaya"], 
@@ -28,10 +28,10 @@ do
 		},
 		onstart = {
 			{
-				{alert = "enragecd"},
-				{alert = "feraldefenderspawn"},
-				{alert = "screechcd"},
-				{set = {screechtime = 35}},
+				"alert","enragecd",
+				"alert","feraldefenderspawn",
+				"alert","screechcd",
+				"set",{screechtime = 35},
 			},
 		},
 		alerts = {
@@ -133,8 +133,8 @@ do
 				spellid = 64386,
 				execute = {
 					{
-						{alert = "screechcd"},
-						{alert = "screechwarn"},
+						"alert","screechcd",
+						"alert","screechwarn",
 					}	
 				},
 			},
@@ -145,7 +145,7 @@ do
 				spellid = {64389,64678},
 				execute = {
 					{
-						{alert = "sentinelwarn"},
+						"alert","sentinelwarn",
 					},
 				},
 			},
@@ -155,8 +155,8 @@ do
 				eventtype = "SPELL_INTERRUPT",
 				execute = {
 					{
-						{expect = {"&npcid|#4#&","==","33515"}}, -- Auriaya
-						{quash = "sentinelwarn"},
+						"expect",{"&npcid|#4#&","==","33515"}, -- Auriaya
+						"quash","sentinelwarn",
 					},
 				},
 			},
@@ -167,9 +167,9 @@ do
 				spellid = {64422,64688},
 				execute = {
 					{
-						{alert = "sonicscreechwarn"},
-						{quash = "sonicscreechcd"},
-						{alert = "sonicscreechcd"},
+						"alert","sonicscreechwarn",
+						"quash","sonicscreechcd",
+						"alert","sonicscreechcd",
 					},
 				},
 			},
@@ -180,16 +180,16 @@ do
 				spellid = 64396,
 				execute = {
 					{
-						{expect = {"&playerguid&","==","#4#"}},
-						{set = {guardianswarmtext = L["YOU"].."!"}},
+						"expect",{"&playerguid&","==","#4#"},
+						"set",{guardianswarmtext = L["YOU"].."!"},
 					},
 					{
-						{expect = {"&playerguid&","~=","#4#"}},
-						{set = {guardianswarmtext = "#5#"}},
+						"expect",{"&playerguid&","~=","#4#"},
+						"set",{guardianswarmtext = "#5#"},
 					},
 					{
-						{alert = "guardianswarmcd"},
-						{alert = "guardianswarmwarn"},
+						"alert","guardianswarmcd",
+						"alert","guardianswarmwarn",
 					},
 				},
 			},

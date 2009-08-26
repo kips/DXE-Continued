@@ -2,7 +2,7 @@ do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 
 	local data = {
-		version = 296,
+		version = 297,
 		key = "loatheb", 
 		zone = L["Naxxramas"], 
 		name = L["Loatheb"], 
@@ -21,9 +21,9 @@ do
 		},
 		onstart = {
 			{
-				{alert = "sporespawn"},
-				{expect = {"&difficulty&","==","1"}},
-				{set = {sporetimer = 30}}
+				"alert","sporespawn",
+				"expect",{"&difficulty&","==","1"},
+				"set",{sporetimer = 30},
 			}
 		},
 		alerts = {
@@ -60,8 +60,8 @@ do
 		timers = {
 			healtime = {
 				{
-					{quash = "necroaura"},
-					{alert = "openheals"},
+					"quash","necroaura",
+					"alert","openheals",
 				},
 			},
 		},
@@ -73,8 +73,8 @@ do
 				spellid = 55593, 
 				execute = {
 					{
-						{alert = "necroaura"}, 
-						{scheduletimer = {"healtime", 17}},
+						"alert","necroaura", 
+						"scheduletimer",{"healtime", 17},
 					},
 				},
 			},
@@ -85,8 +85,8 @@ do
 				spellid = 29234, 
 				execute = {
 					{
-						{set = {sporecount = "INCR|1"}},
-						{alert = "sporespawn"}, 
+						"set",{sporecount = "INCR|1"},
+						"alert","sporespawn", 
 					},
 				},
 			},

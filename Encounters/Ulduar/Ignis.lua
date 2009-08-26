@@ -2,7 +2,7 @@ do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 
 	local data = {
-		version = 308,
+		version = 309,
 		key = "ignis", 
 		zone = L["Ulduar"], 
 		name = L["Ignis the Furnace Master"], 
@@ -21,8 +21,8 @@ do
 		},
 		onstart = {
 			{
-				{alert = "flamejetscd"},
-				{alert = "hardmodeends"},
+				"alert","flamejetscd",
+				"alert","hardmodeends",
 			},
 		},
 		alerts = {
@@ -93,7 +93,7 @@ do
 		timers = {
 			flamejet = {
 				{
-					{alert = "flamejetscd"},
+					"alert","flamejetscd",
 				},
 			},
 		},
@@ -105,7 +105,7 @@ do
 				spellid = {62546, 63474},
 				execute = {
 					{
-						{alert = "scorchcd"},
+						"alert","scorchcd",
 					},
 				},
 			},
@@ -116,8 +116,8 @@ do
 				spellid = {62548, 63475},
 				execute = {
 					{
-						{expect = {"#4#","==","&playerguid&"},},
-						{alert = "scorchwarnself"},
+						"expect",{"#4#","==","&playerguid&"},
+						"alert","scorchwarnself",
 					},
 				},
 			},
@@ -128,15 +128,15 @@ do
 				spellid = {62717, 63477},
 				execute = {
 					{
-						{expect = {"#4#","==","&playerguid&"}},
-						{set = {slagpotmessage = format("%s: %s!",SN[62717],L["YOU"])}},
+						"expect",{"#4#","==","&playerguid&"},
+						"set",{slagpotmessage = format("%s: %s!",SN[62717],L["YOU"])},
 					},
 					{
-						{expect = {"#4#","~=","&playerguid&"}},
-						{set = {slagpotmessage = format("%s: #5#",SN[62717])}},
+						"expect",{"#4#","~=","&playerguid&"},
+						"set",{slagpotmessage = format("%s: #5#",SN[62717])},
 					},
 					{
-						{alert = "slagpotdur"},
+						"alert","slagpotdur",
 					},
 				},
 			},
@@ -147,9 +147,9 @@ do
 				spellid = {63472,62680},
 				execute = {
 					{
-						{quash = "flamejetscd"},
-						{alert = "flamejetswarn",},
-						{scheduletimer = {"flamejet",2.7}},
+						"quash","flamejetscd",
+						"alert","flamejetswarn",
+						"scheduletimer",{"flamejet",2.7},
 					},
 				},
 			},

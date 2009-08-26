@@ -2,7 +2,7 @@ do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 
 	local data = {
-		version = 297,
+		version = 298,
 		key = "xt002", 
 		zone = L["Ulduar"], 
 		name = L["XT-002 Deconstructor"], 
@@ -20,7 +20,7 @@ do
 		},
 		onstart = {
 			{
-				{alert = "enragecd"},
+				"alert","enragecd",
 			},
 		},
 		alerts = {
@@ -120,7 +120,7 @@ do
 		timers = {
 			heartunexposed = {
 				{
-					{tracing = {33293}},
+					"tracing",{33293},
 				},
 			},
 		},
@@ -144,13 +144,13 @@ do
 				spellid = {63024, 64234},
 				execute = {
 					{
-						{expect = {"#4#", "==", "&playerguid&"}},
-						{alert = "gravitywarnself"},
-						{announce = "gravitysay"},
+						"expect",{"#4#", "==", "&playerguid&"},
+						"alert","gravitywarnself",
+						"announce","gravitysay",
 					},
 					{
-						{expect = {"#4#", "~=", "&playerguid&"}},
-						{alert = "gravitywarnother"},
+						"expect",{"#4#", "~=", "&playerguid&"},
+						"alert","gravitywarnother",
 					},
 				},
 			},
@@ -161,13 +161,13 @@ do
 				spellid = {63018,65121},
 				execute = {
 					{
-						{expect = {"#4#", "==", "&playerguid&"}},
-						{alert = "lightwarnself"},
-						{announce = "lightsay"},
+						"expect",{"#4#", "==", "&playerguid&"},
+						"alert","lightwarnself",
+						"announce","lightsay",
 					},
 					{
-						{expect = {"#4#", "~=", "&playerguid&"}},
-						{alert = "lightwarnother"},
+						"expect",{"#4#", "~=", "&playerguid&"},
+						"alert","lightwarnother",
 					},
 				},
 			},
@@ -178,9 +178,9 @@ do
 				spellid = {62776},
 				execute = {
 					{
-						{alert = "tympanicwarn"},
-						{expect = {"<heartbroken>","==","1"}},
-						{alert = "tympaniccd"},
+						"alert","tympanicwarn",
+						"expect",{"<heartbroken>","==","1"},
+						"alert","tympaniccd",
 					},
 				},
 			},
@@ -191,9 +191,9 @@ do
 				spellid = 63849,
 				execute = {
 					{
-						{alert = "exposedwarn"},
-						{scheduletimer = {"heartunexposed", 30}},
-						{tracing = {33293,33329}}, -- XT-002, Heart of the Deconstructor
+						"alert","exposedwarn",
+						"scheduletimer",{"heartunexposed", 30},
+						"tracing",{33293,33329}, -- XT-002, Heart of the Deconstructor
 					},
 				},
 			},
@@ -204,11 +204,11 @@ do
 				spellid = {64193,65737},
 				execute = {
 					{
-						{quash = "exposedwarn"},
-						{canceltimer = "heartunexposed"},
-						{tracing = {33293}},
-						{alert = "hardmodealert"},
-						{set = {heartbroken = "1"}},
+						"quash","exposedwarn",
+						"canceltimer","heartunexposed",
+						"tracing",{33293},
+						"alert","hardmodealert",
+						"set",{heartbroken = "1"},
 					},
 				},
 			},

@@ -2,7 +2,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 308,
+		version = 309,
 		key = "mimiron", 
 		zone = L["Ulduar"], 
 		name = L["Mimiron"], 
@@ -31,55 +31,55 @@ do
 		onstart = {
 			-- Phase 1
 			{
-				{alert = "plasmablastcd"},
+				"alert","plasmablastcd",
 			},
 			-- Hard mode activation
 			{
-				{expect = {"#1#","find",L["^Self%-destruct sequence initiated"]}},
-				{alert = "hardmodetimer"},
-				{alert = "flamesuppressantcd"},
-				{alert = "flamecd"},
-				{set = {flametime = 27.5}},
-				{scheduletimer = {"flames",6.5}},
+				"expect",{"#1#","find",L["^Self%-destruct sequence initiated"]},
+				"alert","hardmodetimer",
+				"alert","flamesuppressantcd",
+				"alert","flamecd",
+				"set",{flametime = 27.5},
+				"scheduletimer",{"flames",6.5},
 			},
 		},
 		timers = {
 			flames = {
 				{
-					{expect = {"<phase>","~=","4"}},
-					{alert = "flamecd"},
-					{scheduletimer = {"flames",27.5}},
+					"expect",{"<phase>","~=","4"},
+					"alert","flamecd",
+					"scheduletimer",{"flames",27.5},
 				},
 				{
-					{expect = {"<phase>","==","4"}},
-					{alert = "flamecd"},
-					{scheduletimer = {"flames",18}},
+					"expect",{"<phase>","==","4"},
+					"alert","flamecd",
+					"scheduletimer",{"flames",18},
 				},
 			},
 			startbarragedur = {
 				{
-					{alert = "laserbarragedur"},
-					{quash = "spinupwarn"},
+					"alert","laserbarragedur",
+					"quash","spinupwarn",
 				},
 			},
 			startbarragecd = {
 				{
-					{alert = "laserbarragecd"},
+					"alert","laserbarragecd",
 				},
 			},
 			startblastcd = {
 				{
-					{alert = "shockblastcd"},
+					"alert","shockblastcd",
 				},
 			},
 			startfrostbombexplodes = {
 				{
-					{alert = "frostbombexplodes"},
+					"alert","frostbombexplodes",
 				},
 			},
 			startplasmablastdur = {
 				{
-					{alert = "plasmablastdur"},
+					"alert","plasmablastdur",
 				},
 			},
 		},
@@ -281,40 +281,40 @@ do
 				execute = {
 					-- Transition from Phase 1 to Phase 2
 					{
-						{expect = {"#1#","find",L["^WONDERFUL! Positively"]}},
-						{set = {phase = "2"}},
-						{quash = "plasmablastcd"},
-						{quash = "flamesuppressantcd"},
-						{quash = "shockblastcd"},
-						{canceltimer = "startblastcd"},
-						{canceltimer = "startplasmablastdur"},
-						{scheduletimer = {"startbarragecd",40}},
-						{tracing = {33651}}, -- VX-001
-						{alert = "onetotwo"},
+						"expect",{"#1#","find",L["^WONDERFUL! Positively"]},
+						"set",{phase = "2"},
+						"quash","plasmablastcd",
+						"quash","flamesuppressantcd",
+						"quash","shockblastcd",
+						"canceltimer","startblastcd",
+						"canceltimer","startplasmablastdur",
+						"scheduletimer",{"startbarragecd",40},
+						"tracing",{33651}, -- VX-001
+						"alert","onetotwo",
 					},
 					-- Transition from Phase 2 to Phase 3
 					{
-						{expect = {"#1#","find",L["^Thank you, friends!"]}},
-						{set = {phase = "3"}},
-						{tracing = {33670}}, -- Aerial Command Unit
-						{quash = "laserbarragecd"},
-						{quash = "laserbarragedur"},
-						{quash = "spinupwarn"},
-						{canceltimer = "startbarragedur"},
-						{canceltimer = "startbarragecd"},
-						{canceltimer = "startfrostbombexplodes"},
-						{alert = "twotothree"},
+						"expect",{"#1#","find",L["^Thank you, friends!"]},
+						"set",{phase = "3"},
+						"tracing",{33670}, -- Aerial Command Unit
+						"quash","laserbarragecd",
+						"quash","laserbarragedur",
+						"quash","spinupwarn",
+						"canceltimer","startbarragedur",
+						"canceltimer","startbarragecd",
+						"canceltimer","startfrostbombexplodes",
+						"alert","twotothree",
 					},
 					-- Transition from Phase 3 to Phase 4
 					{
-						{expect = {"#1#","find",L["^Preliminary testing phase complete"]}},
-						{quash = "weakeneddur"},
-						{set = {phase = "4"}},
-						{set = {flametime = 18}},
-						{tracing = {33432,33651,33670}}, -- Leviathan Mk II, VX-001, Aerial Command Unit
-						{scheduletimer = {"startbarragecd",14}},
-						{scheduletimer = {"startblastcd",25}},
-						{alert = "threetofour"},
+						"expect",{"#1#","find",L["^Preliminary testing phase complete"]},
+						"quash","weakeneddur",
+						"set",{phase = "4"},
+						"set",{flametime = 18},
+						"tracing",{33432,33651,33670}, -- Leviathan Mk II, VX-001, Aerial Command Unit
+						"scheduletimer",{"startbarragecd",14},
+						"scheduletimer",{"startblastcd",25},
+						"alert","threetofour",
 					},
 				},
 			},
@@ -326,9 +326,9 @@ do
 				spellid = {62997,64529},
 				execute = {
 					{
-						{alert = "plasmablastwarn"},
-						{alert = "plasmablastcd"},
-						{scheduletimer = {"startplasmablastdur",3}},
+						"alert","plasmablastwarn",
+						"alert","plasmablastcd",
+						"scheduletimer",{"startplasmablastdur",3},
 					},	
 				},
 			},
@@ -339,9 +339,9 @@ do
 				spellid = 63631,
 				execute = {
 					{
-						{quash = "shockblastcd"},
-						{alert = "shockblastwarn"},
-						{scheduletimer = {"startblastcd",4}},
+						"quash","shockblastcd",
+						"alert","shockblastwarn",
+						"scheduletimer",{"startblastcd",4},
 					},	
 				},
 			},
@@ -353,9 +353,9 @@ do
 				spellid = 63414,
 				execute = {
 					{
-						{alert = "spinupwarn"},
-						{scheduletimer = {"startbarragedur",4}},
-						{scheduletimer = {"startbarragecd",14}},
+						"alert","spinupwarn",
+						"scheduletimer",{"startbarragedur",4},
+						"scheduletimer",{"startbarragecd",14},
 					},
 				},
 			},
@@ -366,8 +366,8 @@ do
 				spellid = 64570,
 				execute = {
 					{
-						{alert = "flamesuppressantwarn"},
-						{alert = "flamesuppressantcd"},
+						"alert","flamesuppressantwarn",
+						"alert","flamesuppressantcd",
 					},
 				},
 			},
@@ -378,8 +378,8 @@ do
 				spellid = 64623,
 				execute = {
 					{
-						{alert = "frostbombwarn"},
-						{scheduletimer = {"startfrostbombexplodes",2}},
+						"alert","frostbombwarn",
+						"scheduletimer",{"startfrostbombexplodes",2},
 					},
 				},
 			},
@@ -390,7 +390,7 @@ do
 				spellid = 63811,
 				execute = {
 					{
-						{alert = "bombbotwarn"},
+						"alert","bombbotwarn",
 					},	
 				},
 			},
@@ -401,7 +401,7 @@ do
 				spellid = 64444,
 				execute = {
 					{
-						{alert = "weakeneddur"},
+						"alert","weakeneddur",
 					},
 				},
 			},

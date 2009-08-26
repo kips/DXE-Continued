@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 296,
+		version = 297,
 		key = "hodir", 
 		zone = L["Ulduar"], 
 		name = L["Hodir"], 
@@ -17,9 +17,9 @@ do
 		userdata = {},
 		onstart = {
 			{
-				{alert = "enragecd"},
-				{alert = "flashfreezecd"},
-				{alert = "hardmodeends"},
+				"alert","enragecd",
+				"alert","flashfreezecd",
+				"alert","hardmodeends",
 			},
 		},
 		alerts = {
@@ -112,8 +112,8 @@ do
 				spellid = 61968, 
 				execute = {
 					{
-						{alert = "flashfreezewarn"},
-						{alert = "flashfreezecd"},
+						"alert","flashfreezewarn",
+						"alert","flashfreezecd",
 					},
 				},
 			},
@@ -124,7 +124,7 @@ do
 				spellid = {62478,63512},
 				execute = {
 					{
-						{alert = "frozenblowdur"},
+						"alert","frozenblowdur",
 					},
 				},
 			},
@@ -135,13 +135,13 @@ do
 				spellid = {65133,65123},
 				execute = {
 					{
-						{expect = {"#4#","==","&playerguid&"}},
-						{alert = "stormcloudwarnself"},
-						{announce = "stormcloudsay"},
+						"expect",{"#4#","==","&playerguid&"},
+						"alert","stormcloudwarnself",
+						"announce","stormcloudsay",
 					},
 					{
-						{expect = {"#4#","~=","&playerguid&"}},
-						{alert = "stormcloudwarnother"},
+						"expect",{"#4#","~=","&playerguid&"},
+						"alert","stormcloudwarnother",
 					},
 				},
 			},

@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 296,
+		version = 297,
 		key = "archavon", 
 		zone = L["Vault of Archavon"],
 		category = L["Northrend"],
@@ -18,8 +18,8 @@ do
 		userdata = {},
 		onstart = {
 			{
-				{alert = "enragecd"},
-				{alert = "stompcd"},
+				"alert","enragecd",
+				"alert","stompcd",
 			}
 		},
 		alerts = {
@@ -83,12 +83,12 @@ do
 		timers = {
 			shards = {
 				{
-					{expect = {"&tft_unitexists& &tft_isplayer&","==","1 1"}},
-					{alert = "shardswarnself"},
+					"expect",{"&tft_unitexists& &tft_isplayer&","==","1 1"},
+					"alert","shardswarnself",
 				},
 				{
-					{expect = {"&tft_unitexists& &tft_isplayer&","==","1 nil"}},
-					{alert = "shardswarnother"},
+					"expect",{"&tft_unitexists& &tft_isplayer&","==","1 nil"},
+					"alert","shardswarnother",
 				},
 			},
 		},
@@ -100,7 +100,7 @@ do
 				spellid = {58663, 60880}, 
 				execute = {
 					{
-						{alert = "stompcd"}, 
+						"alert","stompcd", 
 					},
 				},
 			},
@@ -111,7 +111,7 @@ do
 				spellid = 58678,
 				execute = {
 					{
-						{scheduletimer = {"shards",0.2}},
+						"scheduletimer",{"shards",0.2},
 					}
 				},
 			},
@@ -122,8 +122,8 @@ do
 				spellid = {58965, 61672},
 				execute = {
 					{
-						{expect = {"#4#","==","&playerguid&"}},
-						{alert = "cloudwarn"},
+						"expect",{"#4#","==","&playerguid&"},
+						"alert","cloudwarn",
 					},
 				},
 			},
@@ -133,7 +133,7 @@ do
 				event = "CHAT_MSG_MONSTER_EMOTE",
 				execute = {
 					{
-						{alert = "chargewarn"},
+						"alert","chargewarn",
 					},
 				},
 			},

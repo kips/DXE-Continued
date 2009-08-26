@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 296,
+		version = 297,
 		key = "razorscale", 
 		zone = L["Ulduar"], 
 		name = L["Razorscale"], 
@@ -20,7 +20,7 @@ do
 		},
 		onstart = {
 			{
-				{alert = "enragecd"},
+				"alert","enragecd",
 			},
 		},
 		userdata = {},
@@ -84,8 +84,8 @@ do
 				spellid = {63236,64704,64733},
 				execute = {
 					{
-						{expect = {"#4#","==","&playerguid&"}},
-						{alert = "devourwarnself"},
+						"expect",{"#4#","==","&playerguid&"},
+						"alert","devourwarnself",
 					},
 				},
 			},
@@ -95,13 +95,13 @@ do
 				execute = {
 					-- Razorscale gets chained
 					{
-						{expect = {"#1#","find",L["^Move quickly"]}},
-						{alert = "chaindur"},
+						"expect",{"#1#","find",L["^Move quickly"]},
+						"alert","chaindur",
 					},
 					-- Razorscale lifts off
 					{
-						{expect = {"#1#","find",L["^Give us a moment to"]}},
-						{quash = "chaindur"},
+						"expect",{"#1#","find",L["^Give us a moment to"]},
+						"quash","chaindur",
 					},
 				},
 			},
@@ -110,13 +110,13 @@ do
 				event = "EMOTE",
 				execute = {
 					{
-						{expect = {"#1#","find",L["deep breath...$"]}},
-						{alert = "breathwarn"},
+						"expect",{"#1#","find",L["deep breath...$"]},
+						"alert","breathwarn",
 					},
 					{
-						{expect = {"#1#","find",L["grounded permanently!$"]}},
-						{quash = "chaindur"},
-						{alert = "permlandwarn"},
+						"expect",{"#1#","find",L["grounded permanently!$"]},
+						"quash","chaindur",
+						"alert","permlandwarn",
 					},
 				},
 			},

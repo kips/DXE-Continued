@@ -2,7 +2,7 @@ do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 
 	local data = {
-		version = 296,
+		version = 297,
 		key = "patchwerk", 
 		zone = L["Naxxramas"], 
 		name = L["Patchwerk"], 
@@ -18,7 +18,7 @@ do
 		userdata = {},
 		onstart = {
 			{
-				{alert = "enragecd"},
+				"alert","enragecd",
 			}
 		},
 		alerts = {
@@ -49,8 +49,8 @@ do
 				spellid = 28131, 
 				execute = {
 					{
-						{alert = "enragewarn"}, 
-						{quash = "enragecd"},
+						"alert","enragewarn", 
+						"quash","enragecd",
 					},
 				},
 			},

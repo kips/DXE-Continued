@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 296,
+		version = 297,
 		key = "thorim", 
 		zone = L["Ulduar"], 
 		name = L["Thorim"], 
@@ -25,14 +25,14 @@ do
 		},
 		onstart = {
 			{
-				{alert = "hardmodecd"},
-				{scheduletimer = {"hardmodefailed", 180}},
+				"alert","hardmodecd",
+				"scheduletimer",{"hardmodefailed", 180},
 			},
 		},
 		timers = {
 			hardmodefailed = {
 				{
-					{alert = "enrage2cd"},
+					"alert","enrage2cd",
 				},
 			},
 		},
@@ -116,18 +116,18 @@ do
 				execute = {
 					-- Phase 3
 					{
-						{expect = {"#1#","find",L["^Impertinent"]}},
-						{quash = "hardmodecd"},
-						{quash = "enrage2cd"},
-						{canceltimer = "hardmodefailed"},
-						{tracing = {32865}}, -- Thorim
-						{alert = "chargecd"},
-						{set = {chargetime = 15}},
+						"expect",{"#1#","find",L["^Impertinent"]},
+						"quash","hardmodecd",
+						"quash","enrage2cd",
+						"canceltimer","hardmodefailed",
+						"tracing",{32865}, -- Thorim
+						"alert","chargecd",
+						"set",{chargetime = 15},
 					},
 					-- Hard mode activation
 					{
-						{expect = {"#1#","find",L["^Impossible!"]}},
-						{alert = "hardmodeactivation"},
+						"expect",{"#1#","find",L["^Impossible!"]},
+						"alert","hardmodeactivation",
 					},
 				},
 			},
@@ -138,8 +138,8 @@ do
 				spellid = 62279, 
 				execute = {
 					{
-						{set = {chargecount = "INCR|1"}},
-						{alert = "chargecd"},
+						"set",{chargecount = "INCR|1"},
+						"alert","chargecd",
 					},
 				},
 			},
@@ -150,7 +150,7 @@ do
 				spellid = {64390,62131},
 				execute = {
 					{
-						{alert = "chainlightningcd"},
+						"alert","chainlightningcd",
 					},
 				},
 			},
@@ -161,7 +161,7 @@ do
 				spellid = {62605,62597},
 				execute = {
 					{
-						{alert = "frostnovacast"},
+						"alert","frostnovacast",
 					},
 				},
 			},
@@ -172,7 +172,7 @@ do
 				spellid = 62130,
 				execute = {
 					{
-						{alert = "strikecd"},
+						"alert","strikecd",
 					},
 				},
 			},

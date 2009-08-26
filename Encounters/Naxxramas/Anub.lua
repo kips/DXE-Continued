@@ -4,7 +4,7 @@ do
 	local L_AnubRekhan = L["Anub'Rekhan"]
 
 	local data = {
-		version = 296,
+		version = 297,
 		key = "anubrekhan", 
 		zone = L["Naxxramas"], 
 		name = L_AnubRekhan, 
@@ -22,11 +22,11 @@ do
 		},
 		onstart = {
 			{
-				{expect = {"&difficulty&","==","1"}},
-				{set = {swarmcd = {102,85,loop = false}}},
+				"expect",{"&difficulty&","==","1"},
+				"set",{swarmcd = {102,85,loop = false}},
 			},
 			{
-				{alert = "locustswarmcd"},
+				"alert","locustswarmcd",
 			},
 		},
 		alerts = {
@@ -67,10 +67,10 @@ do
 				spellid = {28785,54021}, 
 				execute = {
 					{
-						{expect = {"&npcid|#4#&","==","15956"}}, -- Anub'Rekhan
-						{alert = "locustswarmgain"},
-						{quash = "locustswarmcd"},
-						{alert = "locustswarmcd"}, 
+						"expect",{"&npcid|#4#&","==","15956"}, -- Anub'Rekhan
+						"alert","locustswarmgain",
+						"quash","locustswarmcd",
+						"alert","locustswarmcd", 
 					},
 				},
 			},
@@ -81,7 +81,7 @@ do
 				spellid = {28785,54021}, 
 				execute = {
 					{
-						{alert = "locustswarmcast"},
+						"alert","locustswarmcast",
 					},
 				},
 			},

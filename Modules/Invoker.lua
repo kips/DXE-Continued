@@ -3,7 +3,7 @@
 
 	Terminology:
 	
-	A command line is a hash table with one key (the command) and a value
+	A command line is every sequential pair of values (1,2), (3,4), (5,6), etc. in a command list
 	A command list is an array of command lines
 	A command bundle is an array of command lists
 
@@ -607,8 +607,8 @@ end
 function module:InvokeCommands(bundle,...)
 	SetTuple(...)
 	for _,list in ipairs(bundle) do
-		for _,line in ipairs(list) do
-			local type,info = next(line)
+		for i=1,#list,2 do
+			local type,info = list[i],list[i+1]
 			local handler = handlers[type]
 			-- Make sure handler exists in case of an unsupported command
 			if handler and not handler(info) then break end

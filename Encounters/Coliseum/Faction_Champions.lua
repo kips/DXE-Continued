@@ -50,7 +50,7 @@ do
 
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 2,
+		version = 3,
 		key = "factionchampions", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -210,7 +210,7 @@ do
 				spellid = 65980,
 				execute = {
 					{
-						{alert = "bloodlustwarn"},
+						"alert","bloodlustwarn",
 					},
 				},
 			},
@@ -221,7 +221,7 @@ do
 				spellid = 65983,
 				execute = {
 					{
-						{alert = "heroismwarn"},
+						"alert","heroismwarn",
 					},
 				},
 			},
@@ -232,7 +232,7 @@ do
 				spellid = {65816,68145},
 				execute = {
 					{
-						{alert = "hellfirewarn"},
+						"alert","hellfirewarn",
 					},
 				},
 			},
@@ -243,8 +243,8 @@ do
 				spellid = 65817,
 				execute = {
 					{
-						{expect = {"#4#","==","&playerguid&"}},
-						{alert = "hellfireself"},
+						"expect",{"#4#","==","&playerguid&"},
+						"alert","hellfireself",
 					},
 				},
 			},
@@ -255,7 +255,7 @@ do
 				spellid = 66010,
 				execute = {
 					{
-						{alert = "divineshielddur"},
+						"alert","divineshielddur",
 					},
 				},
 			},
@@ -266,7 +266,7 @@ do
 				spellid = 66010,
 				execute = {
 					{
-						{quash = "divineshielddur"},
+						"quash","divineshielddur",
 					},
 				},
 			},
@@ -277,7 +277,7 @@ do
 				spellid = 66009,
 				execute = {
 					{
-						{alert = "hopdur"},
+						"alert","hopdur",
 					},
 				},
 			},
@@ -288,7 +288,7 @@ do
 				spellid = 66009,
 				execute = {
 					{
-						{quash = "hopdur"},
+						"quash","hopdur",
 					},
 				},
 			},
@@ -299,7 +299,7 @@ do
 				spellid = {66115,68756},
 				execute = {
 					{
-						{alert = "hofdur"},
+						"alert","hofdur",
 					},
 				},
 			},
@@ -310,7 +310,7 @@ do
 				spellid = {66115,68756},
 				execute = {
 					{
-						{quash = "hofdur"},
+						"quash","hofdur",
 					},
 				},
 			},
@@ -321,7 +321,7 @@ do
 				spellid = 66011,
 				execute = {
 					{
-						{alert = "avengwrathdur"},
+						"alert","avengwrathdur",
 					},
 				},
 			},
@@ -332,7 +332,7 @@ do
 				spellid = 66011,
 				execute = {
 					{
-						{quash = "avengwrathdur"},
+						"quash","avengwrathdur",
 					},
 				},
 			},
@@ -344,7 +344,7 @@ do
 				spellid = 65947,
 				execute = {
 					{
-						{alert = "bladestormdur"},
+						"alert","bladestormdur",
 					},
 				},
 			},
@@ -355,8 +355,8 @@ do
 				spellid = 65946,
 				execute = {
 					{
-						{expect = {"#4#","==","&playerguid&"}},
-						{alert = "bladestormself"},
+						"expect",{"#4#","==","&playerguid&"},
+						"alert","bladestormself",
 					},
 				},
 			},
@@ -367,7 +367,7 @@ do
 				spellid = 65932,
 				execute ={
 					{
-						{alert = "retaldur"},
+						"alert","retaldur",
 					},
 				},
 			},
@@ -378,7 +378,7 @@ do
 				spellid = 65932,
 				execute ={
 					{
-						{quash = "retaldur"},
+						"quash","retaldur",
 					},
 				},
 			},
@@ -389,8 +389,8 @@ do
 				spellid = 65934,
 				execute = {
 					{
-						{expect = {"#4#","==","&playerguid&"}},
-						{alert = "retalself"},
+						"expect",{"#4#","==","&playerguid&"},
+						"alert","retalself",
 					}
 				},
 			},
@@ -401,7 +401,7 @@ do
 				spellid = 65790,
 				execute = {
 					{
-						{alert = "counterspellcd"},
+						"alert","counterspellcd",
 					}
 				},
 			},
@@ -412,7 +412,7 @@ do
 				spellid = 67519,
 				execute = {
 					{
-						{alert = "spelllockcd"},
+						"alert","spelllockcd",
 					}
 				},
 			},
@@ -422,12 +422,12 @@ do
 				eventtype = "UNIT_DIED",
 				execute = {
 					{
-						{expect = {"&npcid|#4#&","==","35465"}}, -- Zhaargrym
-						{quash = "spelllockcd"},
+						"expect",{"&npcid|#4#&","==","35465"}, -- Zhaargrym
+						"quash","spelllockcd",
 					},
 					{
-						{expect = {"&npcid|#4#&","==",NID_MAGE}}, -- Mage (Ginselle|Noozle)
-						{quash = "counterspellcd"},
+						"expect",{"&npcid|#4#&","==",NID_MAGE}, -- Mage (Ginselle|Noozle)
+						"quash","counterspellcd",
 					},
 				},
 			},

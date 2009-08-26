@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 296,
+		version = 297,
 		key = "emalon", 
 		zone = L["Vault of Archavon"], 
 		category = L["Northrend"],
@@ -22,7 +22,7 @@ do
 		userdata = {},
 		onstart = {
 			{
-				{alert = "overchargecd"},
+				"alert","overchargecd",
 			}
 		},
 		alerts = {
@@ -79,8 +79,8 @@ do
 				spellid = {64216,65279},
 				execute = {
 					{
-						{alert = "novacd"},
-						{alert = "novawarn"},
+						"alert","novacd",
+						"alert","novawarn",
 					},
 				},
 			},
@@ -91,8 +91,8 @@ do
 				spellid = 64218,
 				execute = {
 					{
-						{alert = "overchargecd"},
-						{alert = "overchargedblastdur"},
+						"alert","overchargecd",
+						"alert","overchargedblastdur",
 					},
 				},
 			},
@@ -103,7 +103,7 @@ do
 				spellid = 64217,
 				execute = {
 					{
-						{quash = "overchargedblastdur"},
+						"quash","overchargedblastdur",
 					},
 				},
 			},

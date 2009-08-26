@@ -4,7 +4,7 @@ do
 	local L_Grobbulus = L["Grobbulus"]
 
 	local data = {
-		version = 296,
+		version = 297,
 		key = "grobbulus",
 		zone = L["Naxxramas"],
 		name = L_Grobbulus,
@@ -20,7 +20,7 @@ do
 		userdata = {},
 		onstart = {
 			{
-				{alert = "enragecd"},
+				"alert","enragecd",
 			}
 		},
 		alerts = {
@@ -71,12 +71,12 @@ do
 				spellid = 28169,
 				execute = {
 					{
-						{expect = {"#4#", "==", "&playerguid&"}},
-						{alert = "injectionwarnself"},
+						"expect",{"#4#", "==", "&playerguid&"},
+						"alert","injectionwarnself",
 					},
 					{
-						{expect = {"#4#", "~=", "&playerguid&"}},
-						{alert = "injectionwarnother"},
+						"expect",{"#4#", "~=", "&playerguid&"},
+						"alert","injectionwarnother",
 					},
 				},
 			},
@@ -87,7 +87,7 @@ do
 				spellid = 28240,
 				execute = {
 					{
-						{alert = "cloudcd"},
+						"alert","cloudcd",
 					},
 				},
 			},

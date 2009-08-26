@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 296,
+		version = 297,
 		key = "algalon", 
 		zone = L["Ulduar"], 
 		name = L["Algalon the Observer"], 
@@ -20,9 +20,9 @@ do
 		},
 		onstart = {
 			{
-				{alert = "cosmicsmashcd"},
-				{alert = "bigbangcd"},
-				{alert = "enragecd"},
+				"alert","cosmicsmashcd",
+				"alert","bigbangcd",
+				"alert","enragecd",
 			},
 		},
 		alerts = {
@@ -102,9 +102,9 @@ do
 				spellid = {64443,64584},
 				execute = {
 					{
-						{quash = "bigbangcd"},
-						{alert = "bigbangwarn"},
-						{alert = "bigbangcd"},
+						"quash","bigbangcd",
+						"alert","bigbangwarn",
+						"alert","bigbangcd",
 					},
 				},
 			},
@@ -115,9 +115,9 @@ do
 				spellid = {62301,64598},
 				execute = {
 					{
-						{quash = "cosmicsmashcd"},
-						{alert = "cosmicsmashwarn"},
-						{alert = "cosmicsmashcd"},
+						"quash","cosmicsmashcd",
+						"alert","cosmicsmashwarn",
+						"alert","cosmicsmashcd",
 					}
 				},
 			},
@@ -128,7 +128,7 @@ do
 				spellid = 64412,
 				execute = {
 					{
-						{alert = "punchcd"},
+						"alert","punchcd",
 					}	
 				},
 			},

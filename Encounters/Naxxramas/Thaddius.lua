@@ -2,7 +2,7 @@ do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 
 	local data = {
-		version = 296,
+		version = 297,
 		key = "thaddius", 
 		zone = L["Naxxramas"], 
 		name = L["Thaddius"], 
@@ -30,18 +30,18 @@ do
 		onacquired = {
 			[15928] = { -- Thaddius
 				{
-					{resettimer = true},
-					{alert = "enragecd"},
-					{quash = "tankthrowcd"},
-					{canceltimer = "tankthrow"},
-					{tracing = {15928}}, -- Thaddius
+					"resettimer",true,
+					"alert","enragecd",
+					"quash","tankthrowcd",
+					"canceltimer","tankthrow",
+					"tracing",{15928}, -- Thaddius
 				},
 			},
 		},
 		onstart = {
 			{
-				{alert = "tankthrowcd"},
-				{scheduletimer = {"tankthrow", 20.6}},
+				"alert","tankthrowcd",
+				"scheduletimer",{"tankthrow", 20.6},
 			},
 		},
 		alerts = {
@@ -80,8 +80,8 @@ do
 		timers = {
 			tankthrow = {
 				{
-					{alert = "tankthrowcd"},
-					{scheduletimer = {"tankthrow", 20.6}},
+					"alert","tankthrowcd",
+					"scheduletimer",{"tankthrow", 20.6},
 				},
 			},
 		},
@@ -93,7 +93,7 @@ do
 				spellid = 28089, 
 				execute = {
 					{
-						{alert = "polarityshiftwarn"}, 
+						"alert","polarityshiftwarn", 
 					},
 				},
 			},
@@ -103,12 +103,12 @@ do
 				event = "CHAT_MSG_RAID_BOSS_EMOTE", 
 				execute = {
 					{
-						{expect = {"#1#","find",L["overloads"]}},
-						{set = {dead = "INCR|1"}},
-						{expect = {"<dead>",">=","2"}},
-						{quash = "tankthrowcd"},
-						{canceltimer = "tankthrow"},
-						{tracing = {15928}}, -- Thaddius
+						"expect",{"#1#","find",L["overloads"]},
+						"set",{dead = "INCR|1"},
+						"expect",{"<dead>",">=","2"},
+						"quash","tankthrowcd",
+						"canceltimer","tankthrow",
+						"tracing",{15928}, -- Thaddius
 					},
 				},
 			},

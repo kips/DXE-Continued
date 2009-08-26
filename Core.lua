@@ -1263,8 +1263,8 @@ function addon:SkinPane()
 	-- Health watchers
 	for i,hw in ipairs(addon.HW) do
 		hw.bar:SetStatusBarTexture(SM:Fetch("statusbar",db.BarTexture))
-		hw:SetUserData("neutralcolor",db.NeutralColor)
-		hw:SetUserData("lostcolor",db.LostColor)
+		hw:SetNeutralColor(db.NeutralColor)
+		hw:SetLostColor(db.LostColor)
 		hw:ApplyNeutralColor()
 
 		local font = SM:Fetch("font",db.Font)
@@ -1760,10 +1760,6 @@ do
 		return isRunning
 	end
 
-	function addon:SetRunning(val)
-		isRunning = val
-	end
-
 	local function OnUpdate(self,elapsed)
 		elapsedTime = elapsedTime + elapsed
 		self.obj:SetTime(elapsedTime)
@@ -1773,13 +1769,13 @@ do
 	function addon:StartTimer()
 		elapsedTime = 0
 		self.Pane.timer.frame:SetScript("OnUpdate",OnUpdate)
-		self:SetRunning(true)
+		isRunning = true
 	end
 
 	--- Stops the Pane timer
 	function addon:StopTimer()
 		self.Pane.timer.frame:SetScript("OnUpdate",nil)
-		self:SetRunning(false)
+		isRunning = false
 	end
 
 	--- Resets the Pane timer

@@ -20,8 +20,8 @@ do
 
 	local function OnAcquire(self) 
 		self.frame:SetParent(UIParent)
-		self.userdata.neutralcolor = BLUE
-		self.userdata.lostcolor = GRAY
+		self:SetNeutralColor(BLUE)
+		self:SetLostColor(GRAY)
 	end
 
 	local function OnRelease(self) 
@@ -94,12 +94,24 @@ do
 		self.title:SetWidth(width*0.75)
 	end
 
+	local function SetNeutralColor(self,color)
+		local ud = self.userdata
+		ud.nr,ud.ng,ud.nb = unpack(color)
+	end
+
+	local function SetLostColor(self,color)
+		local ud = self.userdata
+		ud.lr,ud.lg,ud.lb = unpack(color)
+	end
+
 	local function ApplyNeutralColor(self)
-		self.bar:SetStatusBarColor(unpack(self.userdata.neutralcolor))
+		local ud = self.userdata
+		self.bar:SetStatusBarColor(ud.nr,ud.ng,ud.nb)
 	end
 
 	local function ApplyLostColor(self)
-		self.bar:SetStatusBarColor(unpack(self.userdata.lostcolor))
+		local ud = self.userdata
+		self.bar:SetStatusBarColor(ud.lr,ud.lg,ud.lb)
 	end
 
 	local backdrop = {
@@ -178,6 +190,8 @@ do
 		self.IsTitleSet = IsTitleSet
 		self.ApplyLostColor = ApplyLostColor
 		self.ApplyNeutralColor = ApplyNeutralColor
+		self.SetNeutralColor = SetNeutralColor
+		self.SetLostColor = SetLostColor
 		
 		self.frame = frame
 		frame.obj = self

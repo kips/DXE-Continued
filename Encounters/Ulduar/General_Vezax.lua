@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 302,
+		version = 303,
 		key = "generalvezax", 
 		zone = L["Ulduar"], 
 		name = L["General Vezax"], 
@@ -20,11 +20,11 @@ do
 		},
 		onstart = {
 			{
-				{alert = "darknesscd"},
-				{alert = "vaporcd"},
-				{alert = "enragecd"},
-				{alert = "animuscd"},
-				{set = {saronitecount = "INCR|1"}},
+				"alert","darknesscd",
+				"alert","vaporcd",
+				"alert","enragecd",
+				"alert","animuscd",
+				"set",{saronitecount = "INCR|1"},
 			},
 		},
 		alerts = {
@@ -180,25 +180,25 @@ do
 		timers = {
 			shadowcrash = {
 				{
-					{raidicon = "crashmark"},
+					"raidicon","crashmark",
 				},
 				{
-					{expect = {"&tft_unitexists& &tft_isplayer&","==","1 1"}},
-					{set = {shadowcrashmessage = format("%s: %s! %s!",L["Crash"],L["YOU"],L["MOVE"])}},
-					{alert = "shadowcrashwarn"},
-					{announce = "crashsay"},
+					"expect",{"&tft_unitexists& &tft_isplayer&","==","1 1"},
+					"set",{shadowcrashmessage = format("%s: %s! %s!",L["Crash"],L["YOU"],L["MOVE"])},
+					"alert","shadowcrashwarn",
+					"announce","crashsay",
 				},
 				{
-					{expect = {"&tft_unitexists& &tft_isplayer&","==","1 nil"}},
-					{proximitycheck = {"&tft_unitname&",28}},
-					{set = {shadowcrashmessage = format("%s: %s! %s!",L["Crash"],"&tft_unitname&",L["CAREFUL"])}},
-					{alert = "shadowcrashwarn"},
-					{arrow = "crasharrow"},
+					"expect",{"&tft_unitexists& &tft_isplayer&","==","1 nil"},
+					"proximitycheck",{"&tft_unitname&",28},
+					"set",{shadowcrashmessage = format("%s: %s! %s!",L["Crash"],"&tft_unitname&",L["CAREFUL"])},
+					"alert","shadowcrashwarn",
+					"arrow","crasharrow",
 				},
 				{
-					{expect = {"&tft_unitexists&","==","nil"}},
-					{set = {shadowcrashmessage = format("%s: %s!",L["Crash"],UNKNOWN:upper())}},
-					{alert = "shadowcrashwarn"},
+					"expect",{"&tft_unitexists&","==","nil"},
+					"set",{shadowcrashmessage = format("%s: %s!",L["Crash"],UNKNOWN:upper())},
+					"alert","shadowcrashwarn",
 				},
 			},
 		},
@@ -210,7 +210,7 @@ do
 				spellid = 62661,
 				execute = {
 					{
-						{alert = "searingflamewarn"},
+						"alert","searingflamewarn",
 					},
 				},
 			},
@@ -220,8 +220,8 @@ do
 				eventtype = "SPELL_INTERRUPT",
 				execute = {
 					{
-						{expect = {"&npcid|#4#&","==","33271"}},
-						{quash = "searingflamewarn"},
+						"expect",{"&npcid|#4#&","==","33271"},
+						"quash","searingflamewarn",
 					},
 				},
 			},
@@ -232,9 +232,9 @@ do
 				spellid = 62662,
 				execute = {
 					{
-						{quash = "darknesscd"},
-						{alert = "darknesswarn"},
-						{alert = "darknesscd"},
+						"quash","darknesscd",
+						"alert","darknesswarn",
+						"alert","darknesscd",
 					},
 				},
 			},
@@ -245,8 +245,8 @@ do
 				spellid = 62662,
 				execute = {
 					{
-						{quash = "darknesswarn"},
-						{alert = "darknessdur"},
+						"quash","darknesswarn",
+						"alert","darknessdur",
 					},
 				},
 			},
@@ -257,7 +257,7 @@ do
 				spellid = {60835,62660},
 				execute = {
 					{
-						{scheduletimer = {"shadowcrash",0.1}},
+						"scheduletimer",{"shadowcrash",0.1},
 					},
 				},
 			},
@@ -268,18 +268,18 @@ do
 				spellid = 63276,
 				execute = {
 					{
-						{raidicon = "facelessmark"},
+						"raidicon","facelessmark",
 					},
 					{
-						{expect = {"#4#","==","&playerguid&"}},
-						{alert = "facelessdurself"},
+						"expect",{"#4#","==","&playerguid&"},
+						"alert","facelessdurself",
 					},
 					{
-						{expect = {"#4#","~=","&playerguid&"}},
-						{alert = "facelessdurothers"},
-						{proximitycheck = {"#5#",18}},
-						{alert = "facelessproxwarn"},
-						{arrow = "facelessarrow"},
+						"expect",{"#4#","~=","&playerguid&"},
+						"alert","facelessdurothers",
+						"proximitycheck",{"#5#",18},
+						"alert","facelessproxwarn",
+						"arrow","facelessarrow",
 					},
 				},
 			},
@@ -289,9 +289,9 @@ do
 				event = "EMOTE",
 				execute = {
 					{
-						{expect = {"#1#","find",L["^A cloud of saronite vapors"]}},
-						{alert = "vaporcd"},
-						{set = {saronitecount = "INCR|1"}},
+						"expect",{"#1#","find",L["^A cloud of saronite vapors"]},
+						"alert","vaporcd",
+						"set",{saronitecount = "INCR|1"},
 					},
 				},
 			},
@@ -302,7 +302,7 @@ do
 				spellid = 63364,
 				execute = {
 					{
-						{tracing = {33271,33524}}, -- Vezax, Saronite Animus
+						"tracing",{33271,33524}, -- Vezax, Saronite Animus
 					},
 				},
 			},
@@ -312,12 +312,12 @@ do
 				eventtype = "UNIT_DIED",
 				execute = {
 					{
-						{expect = {"&npcid|#4#&","==","33524"}}, -- Saronite Animus
-						{tracing = {33271}},
+						"expect",{"&npcid|#4#&","==","33524"}, -- Saronite Animus
+						"tracing",{33271},
 					},
 					{
-						{expect = {"&npcid|#4#&","==","33488"}}, -- Saronite Vapor
-						{quash = "animuscd"},
+						"expect",{"&npcid|#4#&","==","33488"}, -- Saronite Vapor
+						"quash","animuscd",
 					},
 				},
 			},

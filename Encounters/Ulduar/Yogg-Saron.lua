@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 301,
+		version = 302,
 		key = "yoggsaron", 
 		zone = L["Ulduar"], 
 		name = L["Yogg-Saron"], 
@@ -29,7 +29,7 @@ do
 		},
 		onstart = {
 			{
-				{alert = "enragecd"},
+				"alert","enragecd",
 			},
 		},
 		alerts = {
@@ -221,8 +221,8 @@ do
 				spellid = 63138,
 				execute = {
 					{
-						{expect = {"#4#","==","&playerguid&"}},
-						{alert = "fervorwarn"},
+						"expect",{"#4#","==","&playerguid&"},
+						"alert","fervorwarn",
 					},
 				},
 			},
@@ -233,8 +233,8 @@ do
 				spellid = 63134,
 				execute = {
 					{
-						{expect = {"#4#","==","&playerguid&"}},
-						{alert = "blessingwarn"},
+						"expect",{"#4#","==","&playerguid&"},
+						"alert","blessingwarn",
 					},
 				},
 			},
@@ -245,8 +245,8 @@ do
 				spellid = {64163,64164},
 				execute = {
 					{
-						{alert = "lunaticgazewarn"},
-						{alert = "lunaticgazecd"},
+						"alert","lunaticgazewarn",
+						"alert","lunaticgazecd",
 					},
 				},
 			},
@@ -257,8 +257,8 @@ do
 				spellid = 63802,
 				execute = {
 					{
-						{expect = {"#4#","==","&playerguid&"}},
-						{alert = "brainlinkdur"},
+						"expect",{"#4#","==","&playerguid&"},
+						"alert","brainlinkdur",
 					},
 				},
 			},
@@ -268,22 +268,22 @@ do
 				execute = {
 					-- Phase 2
 					{
-						{expect = {"#1#","find",L["^I am the lucid dream"]}},
-						{tracing = {33288,33890}}, -- Yogg-Saron, Brain of Yogg-Saron
-						{alert = "portalcd"},
-						{alert = "crushertentaclespawn"},
-						{set = {phase = "2"}},
+						"expect",{"#1#","find",L["^I am the lucid dream"]},
+						"tracing",{33288,33890}, -- Yogg-Saron, Brain of Yogg-Saron
+						"alert","portalcd",
+						"alert","crushertentaclespawn",
+						"set",{phase = "2"},
 					},
 					-- Phase 3
 					{
-						{expect = {"#1#","find",L["^Look upon the true face"]}},
-						{tracing = {33288}}, -- Yogg-Saron
-						{quash = "crushertentaclespawn"},
-						{quash = "inducewarn"},
-						{quash = "portalcd"},
-						{quash = "weakeneddur"},
-						{alert = "shadowbeaconcd"},
-						{set = {phase = "3"}},
+						"expect",{"#1#","find",L["^Look upon the true face"]},
+						"tracing",{33288}, -- Yogg-Saron
+						"quash","crushertentaclespawn",
+						"quash","inducewarn",
+						"quash","portalcd",
+						"quash","weakeneddur",
+						"alert","shadowbeaconcd",
+						"set",{phase = "3"},
 					},
 				},
 			},
@@ -293,19 +293,19 @@ do
 				execute = {
 					-- Portal
 					{
-						{expect = {"#1#","find",L["^Portals open"]}},
-						{alert = "portalcd"},
+						"expect",{"#1#","find",L["^Portals open"]},
+						"alert","portalcd",
 					},
 					-- Weakened
 					{
-						{expect = {"#1#","find",L["^The illusion shatters and a path"]}},
-						{alert = "weakeneddur"},
-						{quash = "inducewarn"},
+						"expect",{"#1#","find",L["^The illusion shatters and a path"]},
+						"alert","weakeneddur",
+						"quash","inducewarn",
 
-						{expect = {"&timeleft|weakeneddur&",">","&timeleft|crushertentaclespawn&"}},
-						{set = {crushertime = "&timeleft|weakeneddur|1&"}},
-						{quash = "crushertentaclespawn"},
-						{alert = "crushertentaclespawn"},
+						"expect",{"&timeleft|weakeneddur&",">","&timeleft|crushertentaclespawn&"},
+						"set",{crushertime = "&timeleft|weakeneddur|1&"},
+						"quash","crushertentaclespawn",
+						"alert","crushertentaclespawn",
 					},
 				},
 			},
@@ -316,8 +316,8 @@ do
 				spellid = {64126,64125},
 				execute = {
 					{
-						{expect = {"#4#","~=","&playerguid&"}},
-						{alert = "squeezewarn"},
+						"expect",{"#4#","~=","&playerguid&"},
+						"alert","squeezewarn",
 					},
 				},
 			},
@@ -328,13 +328,13 @@ do
 				spellid = {63830,63881},
 				execute = {
 					{
-						{raidicon = "maladymark"},
+						"raidicon","maladymark",
 					},
 					{
-						{expect = {"#4#","~=","&playerguid&"}},
-						{proximitycheck = {"#5#",28}},
-						{alert = "maladywarn"},
-						{arrow = "maladyarrow"},
+						"expect",{"#4#","~=","&playerguid&"},
+						"proximitycheck",{"#5#",28},
+						"alert","maladywarn",
+						"arrow","maladyarrow",
 					},
 				},
 			}, 
@@ -345,7 +345,7 @@ do
 				spellid = 64059,
 				execute = {
 					{
-						{alert = "inducewarn"},
+						"alert","inducewarn",
 					},
 				},
 			},
@@ -356,8 +356,8 @@ do
 				spellid = {63802,63803,63804},
 				execute = {
 					{
-						{expect = {"#4#","==","&playerguid&"}},
-						{quash = "brainlinkdur"},
+						"expect",{"#4#","==","&playerguid&"},
+						"quash","brainlinkdur",
 					},
 				},
 			},
@@ -368,11 +368,11 @@ do
 				spellid = {57688,57689},
 				execute = {
 					{
-						--{expect = {"&timeleft|crushertentaclespawn&","<","0.5"}},
-						{expect = {"<phase>","==","2"}},
-						--{set = {crushertime = 55}},
-						{quash = "crushertentaclespawn"},
-						{alert = "crushertentaclespawn"},
+						--"expect",{"&timeleft|crushertentaclespawn&","<","0.5"},
+						"expect",{"<phase>","==","2"},
+						--"set",{crushertime = 55},
+						"quash","crushertentaclespawn",
+						"alert","crushertentaclespawn",
 					},
 				},
 			},
@@ -383,9 +383,9 @@ do
 				spellid = 64189,
 				execute = {
 					{
-						{quash = "deafeningcd"},
-						{alert = "deafeningcast"},
-						{alert = "deafeningcd"},
+						"quash","deafeningcd",
+						"alert","deafeningcast",
+						"alert","deafeningcd",
 					},
 				},
 			},
@@ -396,9 +396,9 @@ do
 				spellid = 64465,
 				execute = {
 					{
-						{quash = "shadowbeaconcd"},
-						{alert = "shadowbeaconcd"},
-						{alert = "empoweringshadowscd"},
+						"quash","shadowbeaconcd",
+						"alert","shadowbeaconcd",
+						"alert","empoweringshadowscd",
 					},
 				},
 			},

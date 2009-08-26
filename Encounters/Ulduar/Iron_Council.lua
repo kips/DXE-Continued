@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 296,
+		version = 297,
 		key = "ironcouncil", 
 		zone = "Ulduar", 
 		name = L["The Iron Council"], 
@@ -27,9 +27,9 @@ do
 		},
 		onstart = {
 			{
-				{alert = "enragecd"},
-				{expect = {"&difficulty&","==","1"}},
-				{set = {overwhelmtime = 60}},
+				"alert","enragecd",
+				"expect",{"&difficulty&","==","1"},
+				"set",{overwhelmtime = 60},
 			},
 		},
 		alerts = {
@@ -168,26 +168,26 @@ do
 		timers = {
 			canceltendril = {
 				{
-					{canceltimer = "tendriltargets"},
-					{set = {previoustarget = ""}},
+					"canceltimer","tendriltargets",
+					"set",{previoustarget = ""},
 				},
 			},
 			-- tft3 = Stormcaller Brundir's Target
 			tendriltargets = {
 				{
-					{expect = {"&tft3_unitexists& &tft3_isplayer&","==","1 1"}},
-					{expect = {"&tft3_unitname&","~=","<previoustarget>"}},
-					{set = {previoustarget = "&tft3_unitname&"}},
-					{alert = "tendrilswarnself"},
+					"expect",{"&tft3_unitexists& &tft3_isplayer&","==","1 1"},
+					"expect",{"&tft3_unitname&","~=","<previoustarget>"},
+					"set",{previoustarget = "&tft3_unitname&"},
+					"alert","tendrilswarnself",
 				},
 				{
-					{expect = {"&tft3_unitexists& &tft3_isplayer&","==","1 nil"}},
-					{expect = {"&tft3_unitname&","~=","<previoustarget>"}},
-					{set = {previoustarget = "&tft3_unitname&"}},
-					{alert = "tendrilswarnother"},
+					"expect",{"&tft3_unitexists& &tft3_isplayer&","==","1 nil"},
+					"expect",{"&tft3_unitname&","~=","<previoustarget>"},
+					"set",{previoustarget = "&tft3_unitname&"},
+					"alert","tendrilswarnother",
 				},
 				{
-					{scheduletimer = {"tendriltargets",0.2}},
+					"scheduletimer",{"tendriltargets",0.2},
 				},
 			},
 		},
@@ -199,8 +199,8 @@ do
 				spellid = {61869, 63481},
 				execute = {
 					{
-						{alert = "overloadwarn"},
-						{alert = "overloadcd"},
+						"alert","overloadwarn",
+						"alert","overloadcd",
 					},
 				},
 			},
@@ -211,7 +211,7 @@ do
 				spellid = {63483,61915},
 				execute = {
 					{
-						{alert = "whirlwarn"},
+						"alert","whirlwarn",
 					},
 				},
 			},
@@ -221,12 +221,12 @@ do
 				eventtype = "SPELL_INTERRUPT",
 				execute = {
 					{
-						{expect = {"#10#","==","63483"}},
-						{quash = "whirlwarn"},
+						"expect",{"#10#","==","63483"},
+						"quash","whirlwarn",
 					},
 					{
-						{expect = {"#10#","==","61915"}},
-						{quash = "whirlwarn"},
+						"expect",{"#10#","==","61915"},
+						"quash","whirlwarn",
 					},
 				},
 			},
@@ -237,9 +237,9 @@ do
 				spellid = {61887, 63486}, 
 				execute = {
 					{
-						{alert = "tendrilsdur"},
-						{scheduletimer = {"tendriltargets",0}},
-						{scheduletimer = {"canceltendril",35}},
+						"alert","tendrilsdur",
+						"scheduletimer",{"tendriltargets",0},
+						"scheduletimer",{"canceltendril",35},
 					},
 				},
 			},
@@ -250,7 +250,7 @@ do
 				spellid = {61974,61973},
 				execute = {
 					{
-						{alert = "runeofpowerwarn"},
+						"alert","runeofpowerwarn",
 					},
 				},
 			},
@@ -261,8 +261,8 @@ do
 				spellid = {62269, 63490},
 				execute = {
 					{
-						{expect = {"&playerguid&","==","#4#"}},
-						{alert = "runeofdeathwarn"},
+						"expect",{"&playerguid&","==","#4#"},
+						"alert","runeofdeathwarn",
 					},
 				},
 			},
@@ -273,7 +273,7 @@ do
 				spellid = 62273,
 				execute = {
 					{
-						{alert = "runeofsummoningwarn"},
+						"alert","runeofsummoningwarn",
 					},
 				},
 			},
@@ -284,12 +284,12 @@ do
 				eventtype = "SPELL_AURA_APPLIED",
 				execute = {
 					{
-						{expect = {"&playerguid&","==","#4#"}},
-						{alert = "overwhelmdurself"},
+						"expect",{"&playerguid&","==","#4#"},
+						"alert","overwhelmdurself",
 					},
 					{
-						{expect = {"&playerguid&","~=","#4#"}},
-						{alert = "overwhelmdurother"},
+						"expect",{"&playerguid&","~=","#4#"},
+						"alert","overwhelmdurother",
 					},
 				},
 			},
@@ -300,8 +300,8 @@ do
 				spellid = {63493,61903},
 				execute = {
 					{
-						{alert = "fusionpunchcd"},
-						{alert = "fusionpunchcast",},
+						"alert","fusionpunchcd",
+						"alert","fusionpunchcast",
 					},
 				},
 			},
@@ -311,14 +311,14 @@ do
 				eventtype = "UNIT_DIED",
 				execute = {
 					{
-						{expect = {"&npcid|#4#&","==","32867"}}, -- Steelbreaker
-						{quash = "fusionpunchcd"},
-						{quash = "fusionpunchcast"},
+						"expect",{"&npcid|#4#&","==","32867"}, -- Steelbreaker
+						"quash","fusionpunchcd",
+						"quash","fusionpunchcast",
 					},
 					{
-						{expect = {"&npcid|#4#&","==","32857"}}, -- Stormcaller Brundir
-						{quash = "overloadcd"},
-						{quash = "overloadwarn"},
+						"expect",{"&npcid|#4#&","==","32857"}, -- Stormcaller Brundir
+						"quash","overloadcd",
+						"quash","overloadwarn",
 					},
 				},
 			},

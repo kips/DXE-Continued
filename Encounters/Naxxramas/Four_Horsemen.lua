@@ -2,7 +2,7 @@ do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 
 	local data = {
-		version = 296,
+		version = 297,
 		key = "fourhorsemen", 
 		zone = L["Naxxramas"], 
 		name = L["The Four Horsemen"],
@@ -60,7 +60,7 @@ do
 				spellid = {28863,57463},
 				execute = {
 					{
-						{alert = "voidzonecd"},
+						"alert","voidzonecd",
 					},
 				},
 			},
@@ -71,7 +71,7 @@ do
 				spellid = {28884,57467},
 				execute = {
 					{
-						{alert = "meteorcd"},
+						"alert","meteorcd",
 					},
 				},
 			},
@@ -82,7 +82,7 @@ do
 				spellid = {28883,57466},
 				execute = {
 					{
-						{alert = "wrathcd"},
+						"alert","wrathcd",
 					},
 				},
 			},
@@ -92,16 +92,16 @@ do
 				eventtype = "UNIT_DIED",
 				execute = {
 					{
-						{expect = {"&npcid|#4#&","==","16063"}},
-						{quash = "wrathcd"},
+						"expect",{"&npcid|#4#&","==","16063"},
+						"quash","wrathcd",
 					},
 					{
-						{expect = {"&npcid|#4#&","==","16064"}},
-						{quash = "meteorcd"},
+						"expect",{"&npcid|#4#&","==","16064"},
+						"quash","meteorcd",
 					},
 					{
-						{expect = {"&npcid|#4#&","==","16065"}},
-						{quash = "voidzonecd"},
+						"expect",{"&npcid|#4#&","==","16065"},
+						"quash","voidzonecd",
 					},
 				},
 			},

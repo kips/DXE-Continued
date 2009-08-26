@@ -2,7 +2,7 @@ do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 
 	local data = {
-		version = 296,
+		version = 297,
 		key = "instructorrazuvious", 
 		zone = L["Naxxramas"], 
 		name = L["Instructor Razuvious"], 
@@ -21,7 +21,7 @@ do
 		userdata = {},
 		onstart = {
 			{
-				{alert = "shoutcd"},
+				"alert","shoutcd",
 			}
 		},
 		alerts = {
@@ -64,7 +64,7 @@ do
 				spellid = {29107,55543}, 
 				execute = {
 					{
-						{alert = "shoutcd"}, 
+						"alert","shoutcd", 
 					},
 				},
 			},
@@ -76,7 +76,7 @@ do
 				execute = {
 					{
 						
-						{alert = "tauntdur"}, 
+						"alert","tauntdur", 
 					},
 				},
 			},
@@ -87,7 +87,7 @@ do
 				spellid = 29061, 
 				execute = {
 					{
-						{alert = "shieldwalldur"}, 
+						"alert","shieldwalldur", 
 					},
 				},
 			},

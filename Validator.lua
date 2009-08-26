@@ -19,6 +19,7 @@ local util = addon.util
 
 local isstring = {["string"] = true, _ = "string"}
 local isstringtable = {["string"] = true, ["table"] = true, _ = "string or table"}
+local isstringtableboolean = {["string"] = true, ["table"] = true, ["boolean"] = true, _ = "string, table, boolean"}
 local isnumber = {["number"] = true, _ = "number"}
 local isboolean = {["boolean"] = true, _ = "boolean"}
 local istable = {["table"] = true, _ = "table"}
@@ -250,8 +251,8 @@ local function validateSortedTracing(tbl,errlvl,...)
 	end
 end
 
-local function validateCommandLine(data,line,errlvl,...)
-	local type,info = next(line)
+local function validateCommandLine(data,type,info,errlvl,...)
+	--local type,info = next(line)
 	local oktype = baseLineKeys[type]
 	if not oktype then
 		err(": unknown command line type",errlvl,...)
@@ -328,13 +329,10 @@ local function validateCommandLine(data,line,errlvl,...)
 end
 
 local function validateCommandList(data,list,errlvl,...)
-	for k,line in ipairs(list) do
-		validateVal(line,istable,errlvl,k,...)
-		local size = util.tablesize(line)
-		if size ~= 1 then
-			err(": command line should only have one key",errlvl,k,...)
-		end
-		validateCommandLine(data,line,errlvl,k,...)
+	for k=1,#list,2 do
+		validateVal(list[1],isstring,errlvl,k,...)
+		validateVal(list[2],isstringtableboolean,errlvl,k,...)
+		validateCommandLine(data,list[1],list[2],errlvl,k,...)
 	end
 end
 
@@ -344,6 +342,9 @@ local function validateCommandBundle(data,bundle,errlvl,...)
 	for k,list in ipairs(bundle) do
 		validateVal(list,istable,errlvl,k,...)
 		validateIsArray(list,errlvl,k,...)
+		if #list < 2 or #list % 2 == 1 then
+			err(": command list size is < 2 or size is odd",errlvl,k,...)
+		end
 		validateCommandList(data,list,errlvl,k,...)
 	end
 end

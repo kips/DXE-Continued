@@ -2,7 +2,7 @@ do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 
 	local data = {
-		version = 296,
+		version = 297,
 		key = "noththeplaguebringer", 
 		zone = L["Naxxramas"], 
 		name = L["Noth the Plaguebringer"], 
@@ -25,9 +25,9 @@ do
 		},
 		onstart = {
 			{
-				{alert = "teleportbalc"},
-				{expect = {"&difficulty&","==","2"}},
-				{alert = "blinkcd"},
+				"alert","teleportbalc",
+				"expect",{"&difficulty&","==","2"},
+				"alert","blinkcd",
 			}
 		},
 		alerts = {
@@ -78,7 +78,7 @@ do
 				spellid = {29213,54835}, 
 				execute = {
 					{
-						{alert = "cursewarn"}, 
+						"alert","cursewarn", 
 					},
 				},
 			},
@@ -88,17 +88,17 @@ do
 				event = "CHAT_MSG_RAID_BOSS_EMOTE", 
 				execute = {
 					{
-						{expect = {"#1#","find",L["blinks away"]}},
-						{alert = "blinkcd"}, 
+						"expect",{"#1#","find",L["blinks away"]},
+						"alert","blinkcd", 
 					},
 					{
-						{expect = {"#1#","find",L["teleports to the balcony"]}},
-						{quash = "blinkcd"},
-						{alert = "teleportroom"}, 
+						"expect",{"#1#","find",L["teleports to the balcony"]},
+						"quash","blinkcd",
+						"alert","teleportroom", 
 					},
 					{
-						{expect = {"#1#","find",L["teleports back into battle"]}},
-						{alert = "teleportbalc"}, 
+						"expect",{"#1#","find",L["teleports back into battle"]},
+						"alert","teleportbalc", 
 					},
 				},
 			},

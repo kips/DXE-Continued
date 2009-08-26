@@ -2,7 +2,7 @@ do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 
 	local data = {
-		version = 296,
+		version = 297,
 		key = "heigantheunclean", 
 		zone = L["Naxxramas"], 
 		name = L["Heigan the Unclean"], 
@@ -18,7 +18,7 @@ do
 		userdata = {},
 		onstart = {
 			{
-				{alert = "dancebegins"},
+				"alert","dancebegins",
 			}
 		},
 		alerts = {
@@ -46,7 +46,7 @@ do
 		timers = {
 			backonfloor = {
 				{
-					{alert = "dancebegins"},
+					"alert","dancebegins",
 				}
 			}
 		},
@@ -57,9 +57,9 @@ do
 				event = "CHAT_MSG_MONSTER_YELL", 
 				execute = {
 					{
-						{expect = {"#1#","find",L["^The end is upon you"]}},
-						{alert = "danceends"}, 
-						{scheduletimer = {"backonfloor", 45}},
+						"expect",{"#1#","find",L["^The end is upon you"]},
+						"alert","danceends", 
+						"scheduletimer",{"backonfloor", 45},
 					},
 				},
 			},

@@ -7,7 +7,7 @@ do
 	local L_Tenebron = L["Tenebron"]
 
 	local data = {
-		version = 296,
+		version = 297,
 		key = "sartharion", 
 		zone = L["The Obsidian Sanctum"], 
 		category = L["Northrend"],
@@ -36,39 +36,39 @@ do
 		},
 		onstart = {
 			{
-				{alert = "lavawallcd"},
+				"alert","lavawallcd",
 			}
 		},
 		timers = {
 			updatetracers = {
 				-- Tenebron, Shadron, Vesperon
 				{
-					{expect = {"<tenebronarrived> <shadronarrived> <vesperonarrived>","==","0 0 1"}},
-					{tracing = {28860,30449}}, -- Sartharion, Vesperon
+					"expect",{"<tenebronarrived> <shadronarrived> <vesperonarrived>","==","0 0 1"},
+					"tracing",{28860,30449}, -- Sartharion, Vesperon
 				},
 				{
-					{expect = {"<tenebronarrived> <shadronarrived> <vesperonarrived>","==","0 1 0"}},
-					{tracing = {28860,30451}}, -- Sartharion, Shadron
+					"expect",{"<tenebronarrived> <shadronarrived> <vesperonarrived>","==","0 1 0"},
+					"tracing",{28860,30451}, -- Sartharion, Shadron
 				},
 				{
-					{expect = {"<tenebronarrived> <shadronarrived> <vesperonarrived>","==","0 1 1"}},
-					{tracing = {28860,30451,30449}}, -- Sartharion, Shadron, Vesperon
+					"expect",{"<tenebronarrived> <shadronarrived> <vesperonarrived>","==","0 1 1"},
+					"tracing",{28860,30451,30449}, -- Sartharion, Shadron, Vesperon
 				},
 				{
-					{expect = {"<tenebronarrived> <shadronarrived> <vesperonarrived>","==","1 0 0"}},
-					{tracing = {28860,30452}}, -- Sartharion, Tenebron
+					"expect",{"<tenebronarrived> <shadronarrived> <vesperonarrived>","==","1 0 0"},
+					"tracing",{28860,30452}, -- Sartharion, Tenebron
 				},
 				{
-					{expect = {"<tenebronarrived> <shadronarrived> <vesperonarrived>","==","1 0 1"}},
-					{tracing = {28860,30452,30449}}, -- Sartharion, Tenebron, Vesperon
+					"expect",{"<tenebronarrived> <shadronarrived> <vesperonarrived>","==","1 0 1"},
+					"tracing",{28860,30452,30449}, -- Sartharion, Tenebron, Vesperon
 				},
 				{
-					{expect = {"<tenebronarrived> <shadronarrived> <vesperonarrived>","==","1 1 0"}},
-					{tracing = {28860,30452,30451}}, -- Sartharion, Tenebron, Shadron
+					"expect",{"<tenebronarrived> <shadronarrived> <vesperonarrived>","==","1 1 0"},
+					"tracing",{28860,30452,30451}, -- Sartharion, Tenebron, Shadron
 				},
 				{
-					{expect = {"<tenebronarrived> <shadronarrived> <vesperonarrived>","==","1 1 1"}},
-					{tracing = {28860,30452,30451,30449}}, -- Sartharion, Tenebron, Shadron, Vesperon
+					"expect",{"<tenebronarrived> <shadronarrived> <vesperonarrived>","==","1 1 1"},
+					"tracing",{28860,30452,30451,30449}, -- Sartharion, Tenebron, Shadron, Vesperon
 				},
 			},
 		},
@@ -145,7 +145,7 @@ do
 				spellid = {59127,57579}, 
 				execute = {
 					{
-						{alert = "shadowfissurewarn"}, 
+						"alert","shadowfissurewarn", 
 					},
 				},
 			},
@@ -155,9 +155,9 @@ do
 				event = "CHAT_MSG_RAID_BOSS_EMOTE", 
 				execute = {
 					{
-						{expect = {"#1#","find",L["lava surrounding"]}},
-						{alert = "lavawallwarn"},
-						{alert = "lavawallcd"}, 
+						"expect",{"#1#","find",L["lava surrounding"]},
+						"alert","lavawallwarn",
+						"alert","lavawallcd", 
 					},
 				},
 			},
@@ -167,21 +167,21 @@ do
 				execute = {
 					-- Tenebron
 					{
-						{expect = {"#1#","find",L["It is amusing to watch you struggle. Very well, witness how it is done."]}},
-						{set = {tenebronarrived = 1}},
-						{scheduletimer = {"updatetracers",0}},
+						"expect",{"#1#","find",L["It is amusing to watch you struggle. Very well, witness how it is done."]},
+						"set",{tenebronarrived = 1},
+						"scheduletimer",{"updatetracers",0},
 					},
 					-- Shadron
 					{
-						{expect = {"#1#","find",L["I will take pity on you, Sartharion, just this once"]}},
-						{set = {shadronarrived = 1}},
-						{scheduletimer = {"updatetracers",0}},
+						"expect",{"#1#","find",L["I will take pity on you, Sartharion, just this once"]},
+						"set",{shadronarrived = 1},
+						"scheduletimer",{"updatetracers",0},
 					},
 					-- Vesperon
 					{
-						{expect = {"#1#","find",L["Father was right about you, Sartharion, you ARE a weakling."]}},
-						{set = {vesperonarrived = 1}},
-						{scheduletimer = {"updatetracers",0}},
+						"expect",{"#1#","find",L["Father was right about you, Sartharion, you ARE a weakling."]},
+						"set",{vesperonarrived = 1},
+						"scheduletimer",{"updatetracers",0},
 					},
 				},
 			},
@@ -192,7 +192,7 @@ do
 				spellid = {56908,58956},
 				execute = {
 					{
-						{alert = "flamebreathwarn"},
+						"alert","flamebreathwarn",
 					},
 				},
 			},
@@ -204,21 +204,21 @@ do
 				execute = {
 					{
 						-- Shadron
-						{expect = {"#7# <shadrontimer>","==","58105 0"}},
-						{set = {shadrontimer = 1}},
-						{alert = "shadronarrives"},
+						"expect",{"#7# <shadrontimer>","==","58105 0"},
+						"set",{shadrontimer = 1},
+						"alert","shadronarrives",
 					},
 					{
 						-- Tenebron
-						{expect = {"#7# <tenebrontimer>","==","61248 0"}},
-						{set = {tenebrontimer = 1}},
-						{alert = "tenebronarrives"},
+						"expect",{"#7# <tenebrontimer>","==","61248 0"},
+						"set",{tenebrontimer = 1},
+						"alert","tenebronarrives",
 					},
 					{
 						-- Vesperon
-						{expect = {"#7# <vesperontimer>","==","61251 0"}},
-						{set = {vesperontimer = 1}},
-						{alert = "vesperonarrives"},
+						"expect",{"#7# <vesperontimer>","==","61251 0"},
+						"set",{vesperontimer = 1},
+						"alert","vesperonarrives",
 					},
 				},
 			},

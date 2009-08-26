@@ -5,7 +5,7 @@ do
 	local LE = SN[67223] -- Light Essence
 
 	local data = {
-		version = 5,
+		version = 6,
 		key = "twinvalkyr", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -26,8 +26,8 @@ do
 		},
 		onstart = {
 			{
-				{alert = "enragecd"},
-				{alert = "shieldvortexcd"},
+				"alert","enragecd",
+				"alert","shieldvortexcd",
 			},
 		},
 		alerts = {
@@ -124,10 +124,10 @@ do
 				},
 				execute = {
 					{
-						{alert = "darkvortexwarn"},
-						{alert = "shieldvortexcd"},
-						{expect = {"&playerdebuff|"..LE.."&","==","true"}},
-						{alert = "switchtodarkwarn"},
+						"alert","darkvortexwarn",
+						"alert","shieldvortexcd",
+						"expect",{"&playerdebuff|"..LE.."&","==","true"},
+						"alert","switchtodarkwarn",
 					},
 				},
 			},
@@ -143,10 +143,10 @@ do
 				},
 				execute = {
 					{
-						{alert = "lightvortexwarn"},
-						{alert = "shieldvortexcd"},
-						{expect = {"&playerdebuff|"..DE.."&","==","true"}},
-						{alert = "switchtolightwarn"},
+						"alert","lightvortexwarn",
+						"alert","shieldvortexcd",
+						"expect",{"&playerdebuff|"..DE.."&","==","true"},
+						"alert","switchtolightwarn",
 					},
 				},
 			},
@@ -162,8 +162,8 @@ do
 				},
 				execute = {
 					{
-						{alert = "shieldofdarknessdur"},
-						{alert = "shieldvortexcd"},
+						"alert","shieldofdarknessdur",
+						"alert","shieldvortexcd",
 					},
 				},
 			},
@@ -179,7 +179,7 @@ do
 				},
 				execute = {
 					{
-						{quash = "shieldofdarknessdur"},
+						"quash","shieldofdarknessdur",
 					},
 				},
 			},
@@ -195,8 +195,8 @@ do
 				},
 				execute = {
 					{
-						{alert = "shieldoflightdur"},
-						{alert = "shieldvortexcd"},
+						"alert","shieldoflightdur",
+						"alert","shieldvortexcd",
 					},
 				},
 			},
@@ -212,7 +212,7 @@ do
 				},
 				execute = {
 					{
-						{quash = "shieldoflightdur"},
+						"quash","shieldoflightdur",
 					},
 				},
 			},

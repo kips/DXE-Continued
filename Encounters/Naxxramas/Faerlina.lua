@@ -2,7 +2,7 @@ do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST 
 
 	local data = {
-		version = 296,
+		version = 297,
 		key = "grandwidowfaerlina", 
 		zone = L["Naxxramas"], 
 		name = L["Grand Widow Faerlina"],
@@ -20,7 +20,7 @@ do
 		},
 		onstart = {
 			{
-				{alert = "enragecd"},
+				"alert","enragecd",
 			}
 		},
 		alerts = {
@@ -71,12 +71,12 @@ do
 				spellid = {28732,54097}, 
 				execute = {
 					{
-						{expect = {"&npcid|#4#&","==","15953"}}, -- Grand Widow Faerlina
-						{expect = {"$enraged$","==","true"}},
-						{set = {enraged = "false"}}, 
-						{alert = "enragecd"}, 
-						{quash = "silencedur"},
-						{alert = "silencedur"}, 
+						"expect",{"&npcid|#4#&","==","15953"}, -- Grand Widow Faerlina
+						"expect",{"$enraged$","==","true"},
+						"set",{enraged = "false"}, 
+						"alert","enragecd", 
+						"quash","silencedur",
+						"alert","silencedur", 
 					},
 				},
 			},
@@ -87,8 +87,8 @@ do
 				spellid = 54099,
 				execute = {
 					{
-						{expect = {"#4#","==","&playerguid&"}},
-						{alert = "rainwarn"},
+						"expect",{"#4#","==","&playerguid&"},
+						"alert","rainwarn",
 					}
 				},
 			},
@@ -99,10 +99,10 @@ do
 				spellid = 54100,
 				execute = {
 					{
-						{expect = {"&npcid|#4#&","==","15953"}}, -- Grand Widow Faerlina
-						{quash = "enragecd"},
-						{set = {enraged = "true"}}, 
-						{alert = "enragewarn"},
+						"expect",{"&npcid|#4#&","==","15953"}, -- Grand Widow Faerlina
+						"quash","enragecd",
+						"set",{enraged = "true"}, 
+						"alert","enragewarn",
 					},
 				},
 			},

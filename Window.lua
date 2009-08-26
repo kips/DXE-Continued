@@ -21,20 +21,20 @@ local contentInset = 7
 -- SCRIPT HANDLERS
 ---------------------------------------
 
-local function onMouseDown(self)
+local function OnMouseDown(self)
 	if IsShiftKeyDown() then
 		self.window:StartMoving()
 	end
 end
 
-local function onMouseUp(self)
+local function OnMouseUp(self)
 	self.window:StopMovingOrSizing()
 	addon:SavePosition(self.window)
 end
 
-local function onLeave(self) self:GetNormalTexture():SetVertexColor(1,1,1) end
+local function OnLeave(self) self:GetNormalTexture():SetVertexColor(1,1,1) end
 
-local function onEnter(self) self:GetNormalTexture():SetVertexColor(0,1,0) end
+local function OnEnter(self) self:GetNormalTexture():SetVertexColor(0,1,0) end
 
 ---------------------------------------
 -- API
@@ -52,8 +52,8 @@ local function AddTitleButton(self,texture,onClick)
 	button:SetPoint("RIGHT",self.anchorButton,"LEFT",-2.5,0)
 	button:SetScript("OnClick",onClick)
 	button:SetNormalTexture(texture)
-	button:SetScript("OnEnter",onEnter)
-	button:SetScript("OnLeave",onLeave)
+	button:SetScript("OnEnter",OnEnter)
+	button:SetScript("OnLeave",OnLeave)
 	button:SetFrameLevel(button:GetFrameLevel()+5)
 	self.anchorButton = button
 end
@@ -84,8 +84,8 @@ function addon:CreateWindow(name,width,height)
 	titleBar:SetPoint("BOTTOMRIGHT",window,"TOPRIGHT",-inset, -(titleHeight+inset))
 	titleBar:EnableMouse(true)
 	titleBar:SetMovable(true)
-	titleBar:SetScript("OnMouseDown",onMouseDown)
-	titleBar:SetScript("OnMouseUp",onMouseUp)
+	titleBar:SetScript("OnMouseDown",OnMouseDown)
+	titleBar:SetScript("OnMouseUp",OnMouseUp)
 	titleBar.window = window
 
 	local gradient = titleBar:CreateTexture(nil,"ARTWORK")
@@ -104,8 +104,8 @@ function addon:CreateWindow(name,width,height)
 	close:SetFrameLevel(close:GetFrameLevel()+5)
 	close:SetScript("OnClick",function() window:Hide() end)
 	close:SetNormalTexture("Interface\\Addons\\DXE\\Textures\\Window\\X.tga")
-	close:SetScript("OnEnter",onEnter)
-	close:SetScript("OnLeave",onLeave)
+	close:SetScript("OnEnter",OnEnter)
+	close:SetScript("OnLeave",OnLeave)
 	close:SetWidth(buttonSize)
 	close:SetHeight(buttonSize)
 	close:SetPoint("RIGHT",titleBar,"RIGHT",-2,0)
@@ -165,9 +165,9 @@ do
 	end
 
 	function addon:CreateWindowsDropDown()
-		local dialogs = CreateFrame("Frame", "DXEPaneWindows", UIParent, "UIDropDownMenuTemplate") 
-		UIDropDownMenu_Initialize(dialogs, Initialize, "MENU")
-		return dialogs
+		local windows = CreateFrame("Frame", "DXEPaneWindows", UIParent, "UIDropDownMenuTemplate") 
+		UIDropDownMenu_Initialize(windows, Initialize, "MENU")
+		return windows
 	end
 end
 
