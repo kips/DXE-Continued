@@ -113,7 +113,7 @@ end
 
 local tuple = {}
 
-local function SetTuple(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10)
+local function SetTuple(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11)
 	tuple['1']  = a1
 	tuple['2']  = a2
 	tuple['3']  = a3
@@ -124,6 +124,7 @@ local function SetTuple(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10)
 	tuple['8']  = a8
 	tuple['9']  = a9
 	tuple['10'] = a10
+	tuple['11'] = a11
 end
 
 ---------------------------------------------
@@ -157,18 +158,12 @@ function module:OnStop()
 	for event in pairs(RegEvents) do
 		self:UnregisterEvent(event)
 	end
-	-- Reset userdata
 	self:ResetUserData()
-	-- Quashes all alerts
 	Alerts:QuashAll()
-	-- Removes Arrows
 	Arrows:RemoveAll()
-	-- Remove Icons
 	RaidIcons:RemoveAll()
-	-- Remove Timers
 	self:RemoveAllTimers()
-	-- Remove Throttles
-	self:RemoveThrottles()
+	self:ResetAlertData()
 end
 
 ---------------------------------------------
@@ -201,6 +196,8 @@ do
 		npcid = function(guid) return NID[guid] or "" end,
 		playerdebuff = function(debuff) return tostring(not not UnitDebuff("player",debuff)) end,
 		playerbuff = function(buff) return tostring(not not UnitBuff("player",buff)) end,
+		debuffstacks = function(unit,debuff) local c = select(4,UnitDebuff(unit,debuff)) return tostring(c) end,
+		buffstacks = function(unit,buff) local c = select(4,UnitBuff(unit,buff)) return tostring(c) end,
 	}
 
 	-- Add funcs for the other health watchers
@@ -375,9 +372,11 @@ end
 
 do
 	local Throttles = {}
+	local Counters = {}
 
-	function module:RemoveThrottles()
+	function module:ResetAlertData()
 		wipe(Throttles)
+		wipe(Counters)
 	end
 
 	-- @ADD TO HANDLERS

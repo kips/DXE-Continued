@@ -117,8 +117,15 @@ do
 end
 ]==]
 
---[==[
+--[[
+function addon:BEASTSIMPALETEST()
+		addon.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_APPLIED_DOSE",nil,nil,nil,"","Nokaru",nil,66331,nil,nil,nil,3)
+		addon.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_APPLIED_DOSE",nil,nil,nil,UnitGUID("player"),"Kollektiv",nil,66331,nil,nil,nil,5)
+end
 
+]]
+
+--[===[
 do
 	local SN,ST = DXE.SN,DXE.ST
 	local data = {
@@ -136,6 +143,12 @@ do
 			combatstop = true,
 			sortedtracing = {31228,31233,33422, 31229, 31236}, -- Grove Walker, Sinewy Wolf
 		},
+		onstart = {
+			{
+				"expect",{"&buffstacks|player|Water Shield&",">=","3"},
+				"alert","wswarn",
+			},
+		},
 		alerts = {
 			wswarn = {
 				type = "simple",
@@ -145,8 +158,21 @@ do
 				text = "Water Shield!",
 			},
 		},
+		events = {
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellid = 57960,
+				execute = {
+					{
+						"expect",{"&buffstacks|#5#|Water Shield&",">=","5"},
+						"alert","wswarn",
+					},
+				},
+			},
+		},
 	}
 
 	DXE:RegisterEncounter(data)
 end
-]==]
+]===]

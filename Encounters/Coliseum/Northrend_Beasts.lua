@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 314,
+		version = 315,
 		key = "northrendbeasts", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -27,6 +27,7 @@ do
 			acidicspewtime = {27,21,loop = true},
 			firemoltencd = 1,
 			fireacidiccd = 1,
+			impaletext = "",
 			lasttoxin = "NONE",
 			lastbile = "NONE",
 			hastoxin = 0,
@@ -69,6 +70,14 @@ do
 				flashtime = 5,
 				color1 = "PURPLE",
 				icon = ST[66331],
+			},
+			impalewarn = {
+				varname = format(L["%s Warning"],SN[66331]).." "..format(L["%s Stacks"],">= 3"),
+				type = "simple",
+				text = "<impaletext>",
+				time = 3,
+				icon = ST[66331],
+				sound = "ALERT1",
 			},
 			stompwarn = {
 				varname = format(L["%s Cast"],SN[66330]),
@@ -342,6 +351,26 @@ do
 				execute = {
 					{
 						"alert","impalecd",
+					},
+				},
+			},
+			-- Impale Stacks - Gormok
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED_DOSE",
+				spellid = {67477,66331},
+				execute = {
+					{
+						"expect",{"#4#","==","&playerguid&"},
+						"expect",{"#11#",">=","3"},
+						"set",{impaletext = format("%s: %s! %s!",SN[66331],L["YOU"],format(L["%s Stacks"],"#11#"))},
+						"alert","impalewarn",
+					},
+					{
+						"expect",{"#4#","~=","&playerguid&"},
+						"expect",{"#11#",">=","3"},
+						"set",{impaletext = format("%s: #5#! %s!",SN[66331],format(L["%s Stacks"],"#11#")) },
+						"alert","impalewarn",
 					},
 				},
 			},

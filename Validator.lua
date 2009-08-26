@@ -205,8 +205,8 @@ local function validateReplaceNums(data,text,errlvl,...)
 	errlvl=(errlvl or 0)+1
 	for var in gmatch(text,"%b##") do 
 		local key = tonumber(match(var,"#(%d+)#"))
-		if not key or key < 1 or key > 10 then
-			err(": replace num is invalid. it should be [1,10] - got '"..var.."'",errlvl,...)
+		if not key or key < 1 or key > 11 then
+			err(": replace num is invalid. it should be [1,11] - got '"..var.."'",errlvl,...)
 		end
 	end
 end
@@ -252,7 +252,6 @@ local function validateSortedTracing(tbl,errlvl,...)
 end
 
 local function validateCommandLine(data,type,info,errlvl,...)
-	--local type,info = next(line)
 	local oktype = baseLineKeys[type]
 	if not oktype then
 		err(": unknown command line type",errlvl,...)
@@ -275,6 +274,9 @@ local function validateCommandLine(data,type,info,errlvl,...)
 		for var,value in pairs(info) do
 			if not data.userdata or not data.userdata[var] then
 				err(": setting a non-existent userdata variable '"..var.."'",errlvl,type,...)
+			end
+			if _G.type(value) == "string" then
+				validateReplaces(data,value,errlvl,var,type,...)
 			end
 		end
 	elseif type == "alert" or type == "quash" then
@@ -330,9 +332,9 @@ end
 
 local function validateCommandList(data,list,errlvl,...)
 	for k=1,#list,2 do
-		validateVal(list[1],isstring,errlvl,k,...)
-		validateVal(list[2],isstringtableboolean,errlvl,k,...)
-		validateCommandLine(data,list[1],list[2],errlvl,k,...)
+		validateVal(list[k],isstring,errlvl,k,...)
+		validateVal(list[k+1],isstringtableboolean,errlvl,k+1,...)
+		validateCommandLine(data,list[k],list[k+1],errlvl,k,...)
 	end
 end
 
