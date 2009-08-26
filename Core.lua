@@ -1378,11 +1378,23 @@ do
 		HW[1] => 56%
 	]]
 
+	--[[
 	local function sortFunc(a,b)
 		local v1,v2 = a[2],b[2]
-		-- When comparing two percentages we convert back to positives
 		if v1 < 0 and v2 < 0 then return -v1 < - v2
 		else return v1 < v2 end
+	end
+	]]
+
+	-- Stable sort by comparing npc ids
+	-- When comparing two percentages we convert back to positives
+	local function sortFunc(a,b)
+		local id1,v1,id2,v2 = a[1],a[2],b[1],b[2]
+		if v1 < 0 and v2 < 0 then 
+			return v1 == v2 and id1 < id2 or -v1 < -v2
+		else 
+			return v1 == v2 and id1 < id2 or v1 < v2 
+		end
 	end
 
 	local function Execute()
