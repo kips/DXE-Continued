@@ -19,7 +19,7 @@ local function AddZoneModule(name,zone,...)
 	zone = L[zone:trim()]
 	ZMS[zone] = ZMS[zone] or {}
 	ZMS[zone][name] = true
-	AddZoneModule(name,...)
+	return AddZoneModule(name,...)
 end
 
 function module:OnInitialize()
@@ -108,6 +108,9 @@ function module:ZONE_CHANGED_NEW_AREA()
 	local zone = GetRealZoneText()
 	if ZMS[zone] then
 		for name in pairs(ZMS[zone]) do
+			if not select(4,GetAddOnInfo(name)) then
+				EnableAddOn(name)
+			end
 			LoadAddOn(name)
 		end
 	end
