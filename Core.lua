@@ -67,7 +67,7 @@ local defaults = {
 
 local addon = LibStub("AceAddon-3.0"):NewAddon("DXE","AceEvent-3.0","AceTimer-3.0","AceConsole-3.0","AceComm-3.0","AceSerializer-3.0")
 _G.DXE = addon
-addon.version = 332
+addon.version = 333
 addon:SetDefaultModuleState(false)
 addon.callbacks = LibStub("CallbackHandler-1.0"):New(addon)
 addon.defaults = defaults
@@ -1378,22 +1378,16 @@ do
 		HW[1] => 56%
 	]]
 
-	--[[
-	local function sortFunc(a,b)
-		local v1,v2 = a[2],b[2]
-		if v1 < 0 and v2 < 0 then return -v1 < - v2
-		else return v1 < v2 end
-	end
-	]]
-
 	-- Stable sort by comparing npc ids
 	-- When comparing two percentages we convert back to positives
 	local function sortFunc(a,b)
 		local id1,v1,id2,v2 = a[1],a[2],b[1],b[2]
-		if v1 < 0 and v2 < 0 then 
-			return v1 == v2 and id1 < id2 or -v1 < -v2
+		if v1 == v2 then
+			return id1 < id2
+		elseif v1 < 0 and v2 < 0 then 
+			return -v1 < -v2
 		else 
-			return v1 == v2 and id1 < id2 or v1 < v2 
+			return v1 < v2 
 		end
 	end
 
@@ -1485,6 +1479,7 @@ do
 			SortedCache[i][1] = npcid
 			SortedCache[i][2] = UNACQUIRED
 		end
+		for i=n+1,#SortedCache do SortedCache[i] = nil end
 	end
 end
 
