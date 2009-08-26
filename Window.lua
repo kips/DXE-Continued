@@ -141,6 +141,7 @@ end
 
 do
 	local UIDropDownMenu_CreateInfo = UIDropDownMenu_CreateInfo
+	local info
 
 	local function Initialize(self,level)
 		level = 1

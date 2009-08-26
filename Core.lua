@@ -67,7 +67,7 @@ local defaults = {
 
 local addon = LibStub("AceAddon-3.0"):NewAddon("DXE","AceEvent-3.0","AceTimer-3.0","AceConsole-3.0","AceComm-3.0","AceSerializer-3.0")
 _G.DXE = addon
-addon.version = 333
+addon.version = 334
 addon:SetDefaultModuleState(false)
 addon.callbacks = LibStub("CallbackHandler-1.0"):New(addon)
 addon.defaults = defaults
@@ -1381,9 +1381,9 @@ do
 	-- Stable sort by comparing npc ids
 	-- When comparing two percentages we convert back to positives
 	local function sortFunc(a,b)
-		local id1,v1,id2,v2 = a[1],a[2],b[1],b[2]
+		local v1,v2 = a[2],b[2] -- health perc
 		if v1 == v2 then
-			return id1 < id2
+			return a[1] < b[1] -- npc ids
 		elseif v1 < 0 and v2 < 0 then 
 			return -v1 < -v2
 		else 
