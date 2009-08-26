@@ -63,6 +63,23 @@ function addon:TestArrowOnTarget()
 end
 ]]
 
+-- Northrend Molten/Acidic Spew test
+
+function addon:BEASTSSPEWTEST()
+	self:SetActiveEncounter("northrendbeasts")
+	self:StartEncounter()
+	self.Invoker:COMBAT_EVENT(nil,nil,"UNIT_DIED",nil,nil,nil,"0xF1500087EC00196D")
+	DXE.Alerts:QuashByPattern("zerotoone")
+
+	self:ScheduleTimer(function() addon.Invoker:COMBAT_EVENT(nil,nil,"SPELL_CAST_START",nil,nil,nil,nil,nil,nil,66821) end, 25)
+	self:ScheduleTimer(function() addon.Invoker:COMBAT_EVENT(nil,nil,"SPELL_CAST_START",nil,nil,nil,nil,nil,nil,66821) end, 46)
+	self:ScheduleTimer(function() addon.Invoker:COMBAT_EVENT(nil,nil,"SPELL_CAST_START",nil,nil,nil,nil,nil,nil,66818) end, 73)
+	self:ScheduleTimer(function() addon.Invoker:COMBAT_EVENT(nil,nil,"SPELL_CAST_START",nil,nil,nil,nil,nil,nil,66818) end, 94)
+	self:ScheduleTimer(function() addon.Invoker:COMBAT_EVENT(nil,nil,"SPELL_CAST_START",nil,nil,nil,nil,nil,nil,66821) end, 121)
+	self:ScheduleTimer(function() addon.Invoker:COMBAT_EVENT(nil,nil,"SPELL_CAST_START",nil,nil,nil,nil,nil,nil,66821) end, 142)
+	
+end
+
 --[==[
 -- Northrend Beasts Burning Bile test
 do

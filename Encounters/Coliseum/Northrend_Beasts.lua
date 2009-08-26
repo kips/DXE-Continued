@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 312,
+		version = 313,
 		key = "northrendbeasts", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -23,6 +23,10 @@ do
 			acidmawdead = 0,
 			dreadscaledead = 0,
 			jormunactivated = 0,
+			moltenspewtime = {10,21,loop = false},
+			acidicspewtime = {27,21,loop = true},
+			firemoltencd = 1,
+			fireacidiccd = 1,
 			lasttoxin = "NONE",
 			lastbile = "NONE",
 			hastoxin = 0,
@@ -121,6 +125,34 @@ do
 				icon = ST[67638],
 				throttle = 3,
 				flashscreen = true,
+			},
+			enragewarn = {
+				varname = format(L["%s Warning"],SN[5229]),
+				type = "simple",
+				text = format("%s: #5#!",SN[5229]),
+				time = 3,
+				sound = "ALERT5",
+				icon = ST[68335],
+			},
+			moltenspewcd = {
+				varname = format(L["%s Cooldown"],SN[66821]),
+				type = "dropdown",
+				text = format(L["%s Cooldown"],SN[66821]),
+				time = "<moltenspewtime>",
+				color1 = "MAGENTA",
+				flashtime = 5,
+				sound = "ALERT7",
+				icon = ST[66821],
+			},
+			acidicspewcd = {
+				varname = format(L["%s Cooldown"],SN[66818]),
+				type = "dropdown",
+				text = format(L["%s Cooldown"],SN[66818]),
+				time = "<acidicspewtime>",
+				flashtime = 5,
+				color1 = "TEAL",
+				sound = "ALERT7",
+				icon = ST[66818],
 			},
 			-- Icehowl
 			breathwarn = {
@@ -262,6 +294,12 @@ do
 			reset = {
 				{{resettimer = true}},
 			},
+			firemolten = {
+				{
+					{alert = "moltenspewcd"},
+					{set = {moltenspewtime = {27,21,loop = true}}},
+				},
+			},
 		},
 		events = { 
 			-- Fire Bomb on self - Gormok
@@ -401,6 +439,53 @@ do
 					},
 				},
 			},
+			-- Enrage - Jormungars
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellid = 68335,
+				execute = {
+					{
+						{alert = "enragewarn"},
+					},
+				},
+			},
+			-- Acidic Spew - Acidmaw
+			{
+				type = "combatevent",
+				eventtype = "SPELL_CAST_START",
+				spellid = 66818,
+				execute = {
+					{
+						{expect = {"<fireacidiccd>","==","0"}},
+						{alert = "moltenspewcd"},
+						{set = {firemoltencd = 1}},
+					},
+					{
+						{expect = {"<fireacidiccd>","==","1"}},
+						{alert = "acidicspewcd"},
+						{set = {fireacidiccd = 0}},
+					},
+				},
+			},
+			-- Molten Spew - Dreadscale
+			{
+				type = "combatevent",
+				eventtype = "SPELL_CAST_START",
+				spellid = 66821,
+				execute = {
+					{
+						{expect = {"<firemoltencd>","==","0"}},
+						{alert = "acidicspewcd"},
+						{set = {fireacidiccd = 1}},
+					},
+					{
+						{expect = {"<firemoltencd>","==","1"}},
+						{alert = "moltenspewcd"},
+						{set = {firemoltencd = 0}},
+					},
+				},
+			},
 			-- Arctic Breath - Icehowl
 			{
 				type = "combatevent",
@@ -492,13 +577,18 @@ do
 						{quash = "stompcd"},
 						{alert = "onetotwo"},
 						{scheduletimer = {"reset",15}},
+						{scheduletimer = {"firemolten",15}},
 					},
 					{
 						{expect = {"&npcid|#4#&","==","35144"}}, -- Acidmaw
+						{quash = "moltenspewcd"},
+						{quash = "acidicspewcd"},
 						{set = {acidmawdead = 1}}
 					},
 					{
 						{expect = {"&npcid|#4#&","==","34799"}}, -- Dreadscale
+						{quash = "moltenspewcd"},
+						{quash = "acidicspewcd"},
 						{set = {dreadscaledead = 1}}
 					},
 					{

@@ -1,8 +1,8 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 
-	local DE = SN[67176]
-	local LE = SN[67223]
+	local DE = SN[67176] -- Dark Essence
+	local LE = SN[67223] -- Light Essence
 
 	local data = {
 		version = 4,
