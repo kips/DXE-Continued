@@ -65,6 +65,7 @@ end
 
 -- Northrend Molten/Acidic Spew test
 
+--[[
 function addon:BEASTSSPEWTEST()
 	self:SetActiveEncounter("northrendbeasts")
 	self:StartEncounter()
@@ -79,6 +80,7 @@ function addon:BEASTSSPEWTEST()
 	self:ScheduleTimer(function() addon.Invoker:COMBAT_EVENT(nil,nil,"SPELL_CAST_START",nil,nil,nil,nil,nil,nil,66821) end, 142)
 	
 end
+]]
 
 --[==[
 -- Northrend Beasts Burning Bile test
@@ -115,7 +117,7 @@ do
 end
 ]==]
 
---[===[
+--[==[
 
 do
 	local SN,ST = DXE.SN,DXE.ST
@@ -134,12 +136,6 @@ do
 			combatstop = true,
 			sortedtracing = {31228,31233,33422, 31229, 31236}, -- Grove Walker, Sinewy Wolf
 		},
-		onstart = {
-			{
-				{expect = {"&playerbuff|Water Shield&","==","true"}},
-				{alert = "wswarn"},
-			},
-		},
 		alerts = {
 			wswarn = {
 				type = "simple",
@@ -153,4 +149,4 @@ do
 
 	DXE:RegisterEncounter(data)
 end
-]===]
+]==]

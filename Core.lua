@@ -746,7 +746,7 @@ function addon:AddMessageFilters()
 	local RaidBossEmoteFrame_OnEvent = RaidBossEmoteFrame:GetScript("OnEvent")
 	RaidBossEmoteFrame:SetScript("OnEvent", function(self,event,msg,name,...)
 		if not forceBlockDisable and pfl.Misc.BlockBossEmoteFrame
-			and self.NPCNames[name] then
+			and type(name) == "string" and self.NPCNames[name] then
 			-- Do nothing
 		else
 			return RaidBossEmoteFrame_OnEvent(self,event,msg,name,...)
@@ -767,7 +767,7 @@ function addon:AddMessageFilters()
 
 	local function RAID_BOSS_FILTER(self,event,msg,name)
 		if not forceBlockDisable and pfl.Misc.BlockBossEmoteMessages
-			and self.NPCNames[name] then
+			and type(name) == "string" and self.NPCNames[name] then
 			return true
 		end
 	end
@@ -1444,7 +1444,7 @@ do
 	end
 
 	function addon:StartSortedTracing()
-		if handle then return end
+		if n == 0 or handle then return end
 		handle = self:ScheduleRepeatingTimer(Execute,0.5)
 	end
 
