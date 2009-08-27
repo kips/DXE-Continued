@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 298,
+		version = 299,
 		key = "thorim", 
 		zone = L["Ulduar"], 
 		name = L["Thorim"], 
@@ -21,26 +21,20 @@ do
 		},
 		userdata = {
 			chargetime = 34,
+			enragetime = {369,300,loop = false},
 		},
 		onstart = {
 			{
 				"alert","hardmodecd",
-				"scheduletimer",{"hardmodefailed", 180},
-			},
-		},
-		timers = {
-			hardmodefailed = {
-				{
-					"alert","enrage2cd",
-				},
+				"alert","enragecd",
 			},
 		},
 		alerts = {
-			enrage2cd = {
+			enragecd = {
 				varname = L["Enrage"], 
 				type = "dropdown", 
 				text = L["Enrage"], 
-				time = 120, 
+				time = "<enragetime>",
 				flashtime = 5, 
 				sound = "ALERT1", 
 				color1 = "RED",
@@ -50,7 +44,7 @@ do
 				varname = format(L["%s Timeleft"],L["Hard Mode"]),
 				type = "dropdown", 
 				text = format(L["%s Ends"],L["Hard Mode"]),
-				time = 180, 
+				time = 172.5, 
 				flashtime = 5, 
 				color1 = "RED",
 				sound = "ALERT1", 
@@ -114,12 +108,12 @@ do
 				type = "event",
 				event = "CHAT_MSG_MONSTER_YELL",
 				execute = {
-					-- Phase 3
+					-- Phase 2
 					{
 						"expect",{"#1#","find",L["^Impertinent"]},
 						"quash","hardmodecd",
-						"quash","enrage2cd",
-						"canceltimer","hardmodefailed",
+						"quash","enragecd",
+						"alert","enragecd",
 						"tracing",{32865}, -- Thorim
 						"alert","chargecd",
 						"set",{chargetime = 15},
