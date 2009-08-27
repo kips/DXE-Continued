@@ -401,6 +401,13 @@ do
 			end
 			-- Replace text
 			local text = ReplaceTokens(alertInfo.text)
+			-- Counters
+			if alertInfo.counter then
+				local c = Counters[info] or 0
+				c = c + 1
+				text = text.." "..c
+				Counters[info] = c
+			end
 			-- Replace time
 			local time = alertInfo.time
 			if type(time) == "string" then

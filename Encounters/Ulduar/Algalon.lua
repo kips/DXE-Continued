@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 297,
+		version = 299,
 		key = "algalon", 
 		zone = L["Ulduar"], 
 		name = L["Algalon the Observer"], 
@@ -17,6 +17,7 @@ do
 		userdata = {
 			cosmicsmashtime = 25,
 			bigbangtime = 90,
+			punchtext = "",
 		},
 		onstart = {
 			{
@@ -92,6 +93,15 @@ do
 				color1 = "PURPLE",
 				color2 = "PURPLE",
 				icon = ST[64412],
+				counter = true,
+			},
+			punchwarn = {
+				varname = format(L["%s Warning"],SN[64412]).." "..format(L["%s Stacks"],">= 4"),
+				type = "simple",
+				text = "<punchtext>",
+				time = 3,
+				icon = ST[64412],
+				sound = "ALERT7",
 			},
 		},
 		events = {
@@ -130,6 +140,26 @@ do
 					{
 						"alert","punchcd",
 					}	
+				},
+			},
+			-- Phase Punch Stacks
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED_DOSE",
+				spellid = 64412,
+				execute = {
+					{
+						"expect",{"#4#","==","&playerguid&"},
+						"expect",{"#11#",">=","4"},
+						"set",{punchtext = format("%s: %s! %s!",SN[64412],L["YOU"],format(L["%s Stacks"],"#11#"))},
+						"alert","punchwarn",
+					},
+					{
+						"expect",{"#4#","~=","&playerguid&"},
+						"expect",{"#11#",">=","4"},
+						"set",{punchtext = format("%s: #5#! %s!",SN[64412],format(L["%s Stacks"],"#11#")) },
+						"alert","punchwarn",
+					},
 				},
 			},
 		}

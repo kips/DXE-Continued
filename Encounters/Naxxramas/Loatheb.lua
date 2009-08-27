@@ -2,7 +2,7 @@ do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 
 	local data = {
-		version = 297,
+		version = 298,
 		key = "loatheb", 
 		zone = L["Naxxramas"], 
 		name = L["Loatheb"], 
@@ -16,7 +16,6 @@ do
 			combatstop = true,
 		},
 		userdata = { 
-			sporecount = 1,
 			sporetimer = 15,
 		},
 		onstart = {
@@ -49,12 +48,13 @@ do
 			sporespawn = {
 				varname = format(L["%s Timer"],SN[29234]),
 				type = "dropdown", 
-				text = format("%s: <sporecount>",SN[29234]),
+				text = SN[29234],
 				time = "<sporetimer>", 
 				flashtime = 5, 
 				sound = "ALERT1", 
 				color1 = "ORANGE", 
 				icon = ST[35336],
+				counter = true,
 			},
 		},
 		timers = {
@@ -85,7 +85,6 @@ do
 				spellid = 29234, 
 				execute = {
 					{
-						"set",{sporecount = "INCR|1"},
 						"alert","sporespawn", 
 					},
 				},

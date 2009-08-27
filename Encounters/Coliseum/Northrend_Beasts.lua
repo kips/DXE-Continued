@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 316,
+		version = 317,
 		key = "northrendbeasts", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -72,6 +72,7 @@ do
 				flashtime = 5,
 				color1 = "PURPLE",
 				icon = ST[66331],
+				counter = true,
 			},
 			impalewarn = {
 				varname = format(L["%s Warning"],SN[66331]).." "..format(L["%s Stacks"],">= 3"),

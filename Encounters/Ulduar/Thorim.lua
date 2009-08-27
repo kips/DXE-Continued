@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 297,
+		version = 298,
 		key = "thorim", 
 		zone = L["Ulduar"], 
 		name = L["Thorim"], 
@@ -20,7 +20,6 @@ do
 			combatstop = true,
 		},
 		userdata = {
-			chargecount = 1,
 			chargetime = 34,
 		},
 		onstart = {
@@ -68,12 +67,13 @@ do
 			chargecd = {
 				varname = format(L["%s Cooldown"],SN[62279]),
 				type = "dropdown", 
-				text = format(L["Next %s"],SN[62279]).." <chargecount>",
+				text = format(L["Next %s"],SN[62279]),
 				time = "<chargetime>", 
 				flashtime = 7, 
 				sound = "ALERT2",
 				color1 = "VIOLET",
 				icon = ST[62279],
+				counter = true,
 			},
 			chainlightningcd = {
 				varname = format(L["%s Cooldown"],SN[62131]),
@@ -138,7 +138,6 @@ do
 				spellid = 62279, 
 				execute = {
 					{
-						"set",{chargecount = "INCR|1"},
 						"alert","chargecd",
 					},
 				},

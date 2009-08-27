@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 303,
+		version = 304,
 		key = "generalvezax", 
 		zone = L["Ulduar"], 
 		name = L["General Vezax"], 
@@ -16,7 +16,6 @@ do
 		},
 		userdata = {
 			shadowcrashmessage = "",
-			saronitecount = 1,
 		},
 		onstart = {
 			{
@@ -24,7 +23,6 @@ do
 				"alert","vaporcd",
 				"alert","enragecd",
 				"alert","animuscd",
-				"set",{saronitecount = "INCR|1"},
 			},
 		},
 		alerts = {
@@ -47,6 +45,7 @@ do
 				color1 = "ORANGE",
 				sound = "ALERT1",
 				icon = ST[62661],
+				counter = true,
 			},
 			darknesswarn = {
 				varname = format(L["%s Cast"],SN[62662]),
@@ -90,11 +89,12 @@ do
 			vaporcd = {
 				varname = format(L["%s Cooldown"],L["Saronite Vapor"]),
 				type = "dropdown",
-				text = format(L["Next %s"],L["Saronite Vapor"]).." <saronitecount>",
+				text = format(L["Next %s"],L["Saronite Vapor"]),
 				time = 30,
 				flashtime = 5,
 				color1 = "GREEN",
 				icon = ST[63337],
+				counter = true,
 			},
 			shadowcrashwarn = {
 				varname = format(L["%s Warning"],SN[62660]),
@@ -291,7 +291,6 @@ do
 					{
 						"expect",{"#1#","find",L["^A cloud of saronite vapors"]},
 						"alert","vaporcd",
-						"set",{saronitecount = "INCR|1"},
 					},
 				},
 			},
