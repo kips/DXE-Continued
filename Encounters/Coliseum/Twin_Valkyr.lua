@@ -118,7 +118,7 @@ do
 				eventtype = "SPELL_CAST_START",
 				spellid = {
 					67182, -- 25 normal
-					66058,
+					66058, -- 10 normal
 					67183,
 					67184,
 				},
@@ -137,7 +137,7 @@ do
 				eventtype = "SPELL_CAST_START",
 				spellid = {
 					67206, -- 25 normal
-					66046,
+					66046, -- 10 normal
 					67207,
 					67208,
 				},
@@ -189,7 +189,7 @@ do
 				eventtype = "SPELL_AURA_APPLIED",
 				spellid = {
 					67259, -- 25 normal
-					65858,
+					65858, -- 10 normal
 					67260,
 					67261,
 				},
@@ -206,7 +206,7 @@ do
 				eventtype = "SPELL_AURA_REMOVED",
 				spellid = {
 					67259, -- 25 normal
-					65858,
+					65858, -- 10 normal
 					67260,
 					67261,
 				},

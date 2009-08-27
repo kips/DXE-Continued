@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 315,
+		version = 316,
 		key = "northrendbeasts", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -33,6 +33,8 @@ do
 			hastoxin = 0,
 			hasbile = 0,
 			tmp = "",
+			crashtext = {format(L["Next %s"],SN[66683]),format(L["%s Cooldown"],SN[66683]),loop = false},
+			crashtime = {36,55,loop = false},
 		},
 		onstart = {
 			{
@@ -224,8 +226,8 @@ do
 			crashcd = {
 				varname = format(L["%s Cooldown"],SN[66683]),
 				type = "dropdown",
-				text = format(L["%s Cooldown"],SN[66683]),
-				time = 56,
+				text = "<crashtext>",
+				time = "<crashtime>",
 				flashtime = 10,
 				color1 = "YELLOW",
 				icon = ST[66683],
@@ -327,6 +329,11 @@ do
 				{
 					"alert","moltenspewcd",
 					"set",{moltenspewtime = {27,21,loop = true}},
+				},
+			},
+			firecrash = {
+				{
+					"alert","crashcd",
 				},
 			},
 		},
@@ -654,6 +661,7 @@ do
 						"tracing",{34797}, -- Icehowl
 						"alert","twotothree",
 						"scheduletimer",{"reset",10},
+						"scheduletimer",{"firecrash",10},
 					},
 				},
 			},
