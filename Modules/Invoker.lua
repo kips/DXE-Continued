@@ -402,7 +402,7 @@ do
 			-- Replace text
 			local text = ReplaceTokens(alertInfo.text)
 			-- Counters
-			if alertInfo.counter then
+			if stgs.counter then
 				local c = Counters[info] or 0
 				c = c + 1
 				text = text.." "..c

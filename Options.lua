@@ -10,7 +10,8 @@ local EDB = addon.EDB
 --local DEFAULT_WIDTH = 890
 local DEFAULT_WIDTH = 723
 --local DEFAULT_HEIGHT = 575
-local DEFAULT_HEIGHT = 607
+--local DEFAULT_HEIGHT = 607
+local DEFAULT_HEIGHT = 650
 
 -- Usage: t[<module>] = <func>
 -- func is passed a table the module can add option groups to
@@ -560,21 +561,27 @@ local Items = {
 				values = addon.SM:HashTable("sound"),
 				dialogControl = "LSM30_Sound",
 			},
+			blank = addon.genblank(350),
 			flashscreen = {
 				type = "toggle",
 				name = L["Flash screen"],
 				order = 400,
 			},
+			counter = {
+				type = "toggle",
+				name = L["Counter"],
+				order = 500,
+			},
 			test = {
 				type = "execute",
 				name = L["Test"],
-				order = 500,
+				order = 600,
 				func = "TestAlert",
 			},
 			reset = {
 				type = "execute",
 				name = L["Reset"],
-				order = 600,
+				order = 700,
 				func = function(info)
 					local key,var = info[3],info[5]
 					local defaults = addon.defaults.profile.Encounters[key][var]
@@ -693,6 +700,7 @@ local outputInfos = {
 			color2 = "Off",
 			sound = "None",
 			flashscreen = false,
+			counter = false,
 		},
 	},
 	raidicons = { 
