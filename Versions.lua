@@ -151,6 +151,7 @@ end
 local function CreateWindow()
 	window = addon:CreateWindow("Version Check",220,295)
 	window:SetScript("OnShow",OnShow)
+	window:SetContentInset(7)
 	--@debug@
 	window:AddTitleButton("Interface\\Addons\\DXE\\Textures\\Window\\Sync.tga",
 									function() addon:RequestAllVersions() end)

@@ -12,10 +12,10 @@ local backdropBorder = {
 	insets = {left = 2, right = 2, top = 2, bottom = 2}
 }
 
+local windows = {}
 local buttonSize = 12
-local titleHeight = 15
-local inset = 2
-local contentInset = 7
+local titleHeight = 12
+local titleBarInset = 2
 
 ---------------------------------------
 -- SCRIPT HANDLERS
@@ -58,6 +58,12 @@ local function AddTitleButton(self,texture,onClick)
 	self.anchorButton = button
 end
 
+local function SetContentInset(self,inset)
+	self.content:ClearAllPoints()
+	self.content:SetPoint("TOPLEFT",self.container,"TOPLEFT",inset,-inset)
+	self.content:SetPoint("BOTTOMRIGHT",self.container,"BOTTOMRIGHT",-inset,inset)
+end
+
 function addon:CreateWindow(name,width,height)
 	--@debug@
 	assert(type(name) == "string")
@@ -80,8 +86,8 @@ function addon:CreateWindow(name,width,height)
 	border:SetBackdropBorderColor(0.33,0.33,0.33)
 
 	local titleBar = CreateFrame("Frame",nil,window)
-	titleBar:SetPoint("TOPLEFT",window,"TOPLEFT",inset,-inset)
-	titleBar:SetPoint("BOTTOMRIGHT",window,"TOPRIGHT",-inset, -(titleHeight+inset))
+	titleBar:SetPoint("TOPLEFT",window,"TOPLEFT",titleBarInset,-titleBarInset)
+	titleBar:SetPoint("BOTTOMRIGHT",window,"TOPRIGHT",-titleBarInset, -(titleHeight+titleBarInset))
 	titleBar:EnableMouse(true)
 	titleBar:SetMovable(true)
 	titleBar:SetScript("OnMouseDown",OnMouseDown)
@@ -114,12 +120,24 @@ function addon:CreateWindow(name,width,height)
 
 	window.AddTitleButton = AddTitleButton
 
-	local content = CreateFrame("Frame",nil,window)
-	content:SetPoint("TOPLEFT",window,"TOPLEFT",contentInset,-(titleHeight + contentInset))
-	content:SetPoint("BOTTOMRIGHT",window,"BOTTOMRIGHT",-contentInset,contentInset)
+	local container = CreateFrame("Frame",nil,window)
+	container:SetPoint("TOPLEFT",window,"TOPLEFT",1,-titleHeight-titleBarInset)
+	container:SetPoint("BOTTOMRIGHT",window,"BOTTOMRIGHT",-1,1)
+	window.container = container
+
+	local content = CreateFrame("Frame",nil,container)
+	content:SetPoint("TOPLEFT",container,"TOPLEFT")
+	content:SetPoint("BOTTOMRIGHT",container,"BOTTOMRIGHT")
 	window.content = content
 
+	window.SetContentInset = SetContentInset
+
+	windows[window] = true
 	return window
+end
+
+function addon:CloseAllWindows()
+	for w in pairs(windows) do w:Hide() end
 end
 
 ---------------------------------------

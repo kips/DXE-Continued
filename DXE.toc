@@ -25,6 +25,7 @@ Window.lua
 Modules.xml
 Options.lua
 Versions.lua
+Proximity.lua
 
 #@debug@
 Debug.lua
