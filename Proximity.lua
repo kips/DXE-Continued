@@ -4,10 +4,10 @@ local name_to_unit= addon.Roster.name_to_unit
 local window
 
 local rows = 5
-local delay = 0.2
+local delay = 0.5
 
 local function CreateWindow()
-	window = addon:CreateWindow("Proximity",110,100)
+	window = addon:CreateWindow(L["Proximity"],110,100)
 	window:Hide()
 	window:SetContentInset(1)
 	local content = window.content
@@ -51,7 +51,7 @@ local function CreateWindow()
 				n = n + 1
 				local label = labels[n]
 				if not label then break
-				else label.curr ~= name then
+				elseif label.curr ~= name then
 					label.curr = name
 					label.fs:SetText(CN[name])
 					label.icon:SetTexCoord(unpack(ICON_COORDS[select(2,UnitClass(name))]))
@@ -89,4 +89,5 @@ function addon:Proximity()
 		CreateWindow()
 	end
 end
+
 addon:RegisterWindow(L["Proximity"],function() addon:Proximity() end)

@@ -149,7 +149,7 @@ local function OnShow(self)
 end
 
 local function CreateWindow()
-	window = addon:CreateWindow("Version Check",220,295)
+	window = addon:CreateWindow(L["Version Check"],220,295)
 	window:SetScript("OnShow",OnShow)
 	window:SetContentInset(7)
 	--@debug@
