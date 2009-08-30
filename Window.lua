@@ -122,7 +122,7 @@ function addon:CreateWindow(name,width,height)
 	corner.t = corner:CreateTexture(nil,"ARTWORK")
 	corner.t:SetAllPoints(true)
 	corner.t:SetTexture("Interface\\Addons\\DXE\\Textures\\ResizeGrip.tga")
-	addon:AddTooltipText(corner,L["Click and drag to resize"])
+	addon:AddTooltipText(corner,L["Click to resize"])
 	corner.anchor = anchor
 
 	-- Border
@@ -138,6 +138,7 @@ function addon:CreateWindow(name,width,height)
 	titleBar:SetPoint("BOTTOMRIGHT",frame,"TOPRIGHT",-titleBarInset, -(titleHeight+titleBarInset))
 	titleBar:EnableMouse(true)
 	titleBar:SetMovable(true)
+	addon:AddTooltipText(titleBar,L["Shift + Click to move"])
 	self:RegisterMoveSaving(titleBar,"CENTER","UIParent","CENTER",0,0,true,anchor,true)
 
 	local gradient = titleBar:CreateTexture(nil,"ARTWORK")
