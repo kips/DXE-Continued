@@ -935,97 +935,121 @@ function addon:RefreshDefaults()
 end
 
 ---------------------------------------------
--- POSITIONING
+-- POSITIONING + DIMENSIONS
 ---------------------------------------------
 
-local frameNames = {}
-
-function addon:SavePosition(f)
-	local point, relativeTo, relativePoint, xOfs, yOfs = f:GetPoint()
-	local name = f:GetName()
-	pfl.Positions[name].point = point
-	pfl.Positions[name].relativeTo = relativeTo and relativeTo:GetName()
-	pfl.Positions[name].relativePoint = relativePoint
-	pfl.Positions[name].xOfs = xOfs
-	pfl.Positions[name].yOfs = yOfs
-end
-
--- Used after the profile is changed
-function addon:LoadAllPositions()
-	for name in pairs(frameNames) do
-		self:LoadPosition(name)
-	end
-end
-
-function addon:LoadPosition(name)
-	local f = _G[name]
-	if not f then return end
-	frameNames[name] = true
-	f:ClearAllPoints()
-	local pos = pfl.Positions[name]
-	if not pos then
-		f:SetPoint("CENTER",UIParent,"CENTER",0,0)
-		pfl.Positions[name] = {
-			point = "CENTER",
-			relativeTo = "UIParent",
-			relativePoint = "CENTER",
-			xOfs = 0,
-			yOfs = 0,
-		}
-	else
-		f:SetPoint(pos.point,_G[pos.relativeTo] or UIParent,pos.relativePoint,pos.xOfs,pos.yOfs)
-	end
-end
-
 do
-	local function startMovingShift(self)
+	local frameNames = {}
+
+	function addon:SavePosition(f,dims)
+		local point, relativeTo, relativePoint, xOfs, yOfs = f:GetPoint()
+		local name = f:GetName()
+		local pos = pfl.Positions[name]
+		pos.point = point
+		pos.relativeTo = relativeTo and relativeTo:GetName()
+		pos.relativePoint = relativePoint
+		pos.xOfs = xOfs
+		pos.yOfs = yOfs
+		if dims then
+			pos.width = f:GetWidth()
+			pos.height = f:GetHeight()
+		end
+	end
+
+	-- Used after the profile is changed
+	function addon:LoadAllPositions()
+		for name in pairs(frameNames) do
+			self:LoadPosition(name)
+		end
+	end
+
+	function addon:LoadPosition(name)
+		local f = _G[name]
+		if not f then return end
+		frameNames[name] = true
+		f:ClearAllPoints()
+		local pos = pfl.Positions[name]
+		if not pos then
+			f:SetPoint("CENTER",UIParent,"CENTER",0,0)
+			pfl.Positions[name] = {
+				point = "CENTER",
+				relativeTo = "UIParent",
+				relativePoint = "CENTER",
+				xOfs = 0,
+				yOfs = 0,
+			}
+		else
+			f:SetPoint(pos.point,_G[pos.relativeTo] or UIParent,pos.relativePoint,pos.xOfs,pos.yOfs)
+			if pos.width and pos.height then
+				f:SetWidth(pos.width)
+				f:SetHeight(pos.height)
+			end
+		end
+	end
+
+	local function StartMovingShift(self)
 		if IsShiftKeyDown() then
+			if self.__redirect then
+				self.__redirect:StartMoving()
+			else
+				self:StartMoving()
+			end
+		end
+	end
+
+	local function StartMoving(self)
+		if self.__redirect then
+			self.__redirect:StartMoving()
+		else
 			self:StartMoving()
 		end
 	end
 
-	local function startMoving(self)
-		self:StartMoving()
-	end
-
-	local function stopMoving(self)
-		self:StopMovingOrSizing()
-		addon:SavePosition(self)
+	local function StopMoving(self)
+		if self.__redirect then
+			self.__redirect:StopMovingOrSizing()
+			addon:SavePosition(self.__redirect,self.__dims)
+		else
+			self:StopMovingOrSizing()
+			addon:SavePosition(self,self.__dims)
+		end
 	end
 
 	-- Registers saving positions in database
-	function addon:RegisterMoveSaving(frame,point,relativeTo,relativePoint,xOfs,yOfs,withShift)
+	function addon:RegisterMoveSaving(frame,point,relativeTo,relativePoint,xOfs,yOfs,withShift,redirect,dims)
 		--@debug@
 		assert(type(frame) == "table","expected 'frame' to be a table")
 		assert(frame.IsObjectType and frame:IsObjectType("Region"),"'frame' is not a blizzard frame")
-		--@end-debug@
-		if withShift then
-			frame:SetScript("OnMouseDown",startMovingShift)
-		else
-			frame:SetScript("OnMouseDown",startMoving)
+		if redirect then
+			assert(type(redirect) == "table","expected 'frame' to be a table")
+			assert(redirect.IsObjectType and redirect:IsObjectType("Region"),"'frame' is not a blizzard frame")
 		end
-		frame:SetScript("OnMouseUp",stopMoving)
+		--@end-debug@
+		frame.__redirect = redirect
+		frame.__dims = dims
+		if withShift then
+			frame:SetScript("OnMouseDown",StartMovingShift)
+		else
+			frame:SetScript("OnMouseDown",StartMoving)
+		end
+		frame:SetScript("OnMouseUp",StopMoving)
+
 		-- Add default position
-		local pos = {}
-		pos.point = point
-		pos.relativeTo = relativeTo
-		pos.relativePoint = relativePoint
-		pos.xOfs = xOfs
-		pos.yOfs = yOfs
-		defaults.profile.Positions[frame:GetName()] = pos
+		local pos = {
+			point = point,
+			relativeTo = relativeTo,
+			relativePoint = relativePoint,
+			xOfs = xOfs,
+			yOfs = yOfs,
+		}
+
+		if dims then
+			pos.width = redirect and redirect:GetWidth() or frame:GetWidth()
+			pos.height = redirect and redirect:GetHeight() or frame:GetHeight()
+		end
+
+		defaults.profile.Positions[redirect and redirect:GetName() or frame:GetName()] = pos
 		self:RefreshDefaults()
-	end
-end
-
----------------------------------------------
--- UNIT UTILITY
----------------------------------------------
-
-function addon:GetUnitID(target)
-	if find(target,"0x%x+") then 
-		return Roster.guid_to_unit[target]
-	else 
-		return Roster.name_to_unit[target]
 	end
 end
 
@@ -1034,24 +1058,8 @@ end
 ---------------------------------------------
 
 do
-	local function calculatepoint(self)
-		local worldscale = UIParent:GetEffectiveScale()
-		local midX,midY = worldscale*GetScreenWidth()/2,worldscale*GetScreenHeight()/2
-		local scale,x,y = self:GetEffectiveScale(), self:GetCenter()
-		x,y = x*scale,y*scale
-		if x <= midX and y > midY then -- Top left quadrant
-			return "ANCHOR_BOTTOMRIGHT"
-		elseif x <= midX and y < midY then -- Bottom left quadrant
-			return "ANCHOR_RIGHT"
-		elseif x > midX and y <= midY then -- Bottom right quadrant
-			return "ANCHOR_LEFT"
-		elseif x > midX and y >= midY then -- Top right quadrant
-			return "ANCHOR_BOTTOMLEFT"
-		end
-	end
-
 	local function OnEnter(self)
-		GameTooltip:SetOwner(self, calculatepoint(self))
+		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
 		if self._ttTitle then GameTooltip:AddLine(self._ttTitle,nil,nil,nil,true) end
 		if self._ttText then GameTooltip:AddLine(self._ttText,1,1,1,true) end
 		GameTooltip:Show()
@@ -1064,8 +1072,8 @@ do
 	function addon:AddTooltipText(obj,title,text)
 		obj._ttTitle = title
 		obj._ttText = text
-		obj:SetScript("OnEnter",OnEnter)
-		obj:SetScript("OnLeave",OnLeave) 
+		obj:HookScript("OnEnter",OnEnter)
+		obj:HookScript("OnLeave",OnLeave) 
 	end
 end
 

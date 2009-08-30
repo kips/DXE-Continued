@@ -154,7 +154,7 @@ local function CreateWindow()
 	window:SetContentInset(7)
 	--@debug@
 	window:AddTitleButton("Interface\\Addons\\DXE\\Textures\\Window\\Sync.tga",
-									function() addon:RequestAllVersions() end)
+									function() addon:RequestAllVersions() end,L["Sync"])
 	--@end-debug@
 	local content = window.content
 	local addonbutton = CreateFrame("Button", nil, content, "UIPanelButtonTemplate")
