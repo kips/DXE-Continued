@@ -1,6 +1,7 @@
 local addon = DXE
 local ACD,L = addon.ACD,addon.L
-local name_to_unit= addon.Roster.name_to_unit
+local name_to_unit = addon.Roster.name_to_unit
+local name_to_class = addon.Roster.name_to_class
 
 local window
 
@@ -54,6 +55,14 @@ function handler:AddOptionItems(args)
 				max = 1,
 				step = 0.05,
 			},
+			ClassFilter = {
+				type = "multiselect",
+				order = 300,
+				name = L["Class Filter"],
+				get = function(info,v) return pfl.Proximity.ClassFilter[v] end,
+				set = function(info,v,v2) pfl.Proximity.ClassFilter[v] = v2 end,
+				values = LOCALIZED_CLASS_NAMES_MALE,
+			},
 		},
 	}
 end
@@ -93,9 +102,9 @@ local function CreateWindow()
 
 		local icon = label:CreateTexture(nil,"ARTWORK")
 		icon:SetTexture("Interface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes")
-		icon:SetWidth(h-4)
-		icon:SetHeight(h-4)
-		icon:SetPoint("LEFT",label,"LEFT",3,0)
+		icon:SetWidth(h-2)
+		icon:SetHeight(h-2)
+		icon:SetPoint("LEFT",label,"LEFT",2,0)
 		label.icon = icon
 
 		local bg = label:CreateTexture(nil,"BACKGROUND")
@@ -103,7 +112,7 @@ local function CreateWindow()
 		bg:SetPoint("TOPLEFT",icon,"TOPRIGHT")
 		bg:SetPoint("BOTTOMLEFT",icon,"BOTTOMRIGHT")
 		bg:SetTexture("Interface\\Tooltips\\UI-Tooltip-Background")
-		bg.maxWidth = w - ((h-4) + 3) -- bg starts at the icon. If we use 'w' it will go off the window
+		bg.maxWidth = w - ((h-2) + 2) -- bg starts at the icon. If we use 'w' it will go off the window
 		label.bg = bg
 
 		local left = label:CreateFontString(nil,"ARTWORK")
@@ -132,7 +141,6 @@ local function CreateWindow()
 	local unpack,select = unpack,select
 	local CN = addon.CN
 	local RAID_CLASS_COLORS = RAID_CLASS_COLORS
-	local UnitClass = UnitClass
 	local floor = math.floor
 	local counter = 0
 	local function Execute(_,elapsed)
@@ -144,7 +152,8 @@ local function CreateWindow()
 		local n = 0
 		for name in pairs(name_to_unit) do
 			-- Use CheckInteractDistance (proxFunc) to take the z-axis into account
-			if name ~= addon.PNAME and proxFunc(name) then
+			local class = name_to_class[name]
+			if name ~= addon.PNAME and proxFunc(name) and pfl.Proximity.ClassFilter[class] then
 				local d = addon:GetDistanceToUnit(name)
 				local flag = true
 				if d and d > range then flag = false end
@@ -155,7 +164,6 @@ local function CreateWindow()
 					elseif label.curr ~= name then
 						label.curr = name
 						label.name:SetText(CN[name])
-						local _,class = UnitClass(name)
 						label.icon:SetTexCoord(unpack(ICON_COORDS[class]))
 						local c = RAID_CLASS_COLORS[class]
 						label.bg:SetVertexColor(c.r,c.g,c.b,0.4)

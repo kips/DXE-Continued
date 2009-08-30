@@ -61,6 +61,7 @@ local defaults = {
 		Proximity = {
 			Range = 10,
 			Delay = 0.05,
+			ClassFilter = {['*'] = true},
 		},
 	},
 }
@@ -516,6 +517,9 @@ local refreshFuncs = {
 	end,
 	unit_to_unittarget = function(t,id)
 		t[id] = targetof[id]
+	end,
+	name_to_class = function(t,id)
+		t[UnitName(id)] = select(2,UnitClass(id))
 	end,
 }
 
