@@ -52,7 +52,7 @@ function handler:AddOptionItems(args)
 				desc = L["The proximity window refresh rate (seconds). Increase to improve performance. |cff99ff330|r refreshes every frame"],
 				min = 0,
 				max = 1,
-				step = 0.1,
+				step = 0.05,
 			},
 		},
 	}
