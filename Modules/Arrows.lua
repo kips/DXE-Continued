@@ -102,6 +102,7 @@ do
 		else
 			if not UnitIsVisible(self.unit) then self:Destroy() return end
 			local d,dx,dy = addon:GetDistanceToUnit(self.unit,self.fx,self.fy)
+			if not d then self:Destroy() return end
 			self:SetAngle(dx,dy)
 			self.label2:SetFormattedText(self.fmt,d)
 
@@ -125,6 +126,7 @@ do
 
 		if fixed then self:SetFixed() end
 		local d,dx,dy = addon:GetDistanceToUnit(unit,self.fx,self.fy)
+		if not d then return end
 		self:SetAngle(dx,dy)
 
 		local color = GetColor(d,action)

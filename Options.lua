@@ -35,17 +35,12 @@ local ConfigHandler = {}
 -- MAIN
 -----------------------------------------
 
-local function RefreshProfile(newPfl)
-	pfl = newPfl
+local function RefreshProfile(DB)
+	db = DB
+	gbl = DB.global
+	pfl = DB.profile
 end
 addon:AddToRefreshProfile(RefreshProfile)
-
-function addon:SetDBPointers()
-	db = self.db
-	gbl = self.db.global
-	pfl = self.db.profile
-	self.SetDBPointers = nil
-end
 
 addon.genblank = function(order)
 	return {

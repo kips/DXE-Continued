@@ -94,7 +94,7 @@ do
 			strikecd = {
 				varname = format(L["%s Cooldown"],SN[62130]),
 				type = "dropdown",
-				text = format(L["%s Cooldown"],SN[62130]),
+				text = format(L["Next %s"],SN[62130]),
 				time = 25,
 				flashtime = 5,
 				sound = "ALERT5",

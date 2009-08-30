@@ -70,7 +70,7 @@ local defaults = {
 
 local addon = LibStub("AceAddon-3.0"):NewAddon("DXE","AceEvent-3.0","AceTimer-3.0","AceConsole-3.0","AceComm-3.0","AceSerializer-3.0")
 _G.DXE = addon
-addon.version = 338
+addon.version = 339
 addon:SetDefaultModuleState(false)
 addon.callbacks = LibStub("CallbackHandler-1.0"):New(addon)
 addon.defaults = defaults
@@ -819,11 +819,13 @@ do
 		funcs[#funcs+1] = func
 	end
 
+	function addon:RefreshProfilePointers()
+		for k,func in ipairs(funcs) do func(db) end
+	end
+
 	function addon:RefreshProfile()
 		pfl = db.profile
-		for k,func in ipairs(funcs) do
-			func(pfl)
-		end
+		self:RefreshProfilePointers()
 		
 		self:LoadAllPositions()
 		self.Pane:SetScale(pfl.Pane.Scale)
@@ -841,8 +843,8 @@ function addon:OnInitialize()
 	self.db = LibStub("AceDB-3.0"):New("DXEDB",self.defaults)
 	db = self.db
 	gbl,pfl = db.global,db.profile
-	self:SetDBPointers()
-	self:SetProxPointer()
+
+	self:RefreshProfilePointers()
 
 	-- Options
 	db.RegisterCallback(self, "OnProfileChanged", "RefreshProfile")

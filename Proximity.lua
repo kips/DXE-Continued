@@ -11,12 +11,11 @@ local delay = 0.2
 local ProximityFuncs = addon:GetProximityFuncs()
 
 local pfl
-local function RefreshProfile(newPfl) pfl = newPfl end
+local function RefreshProfile(db) pfl = db.profile end
 addon:AddToRefreshProfile(RefreshProfile)
-function addon:SetProxPointer() pfl = self.db.profile; self.SetProxPointer = nil end
 
 local proxFunc
-local function UpdateValues()
+local function UpdateSettings()
 	proxFunc = ProximityFuncs[pfl.Proximity.Range]
 end
 
@@ -31,7 +30,7 @@ function handler:AddOptionItems(args)
 		name = L["Proximity"],
 		order = 150,
 		get = function(info) return pfl.Proximity[info[#info]] end,
-		set = function(info,v) pfl.Proximity[info[#info]] = v; UpdateValues() end,
+		set = function(info,v) pfl.Proximity[info[#info]] = v; UpdateSettings() end,
 		args = {
 			Range = {
 				type = "select",
@@ -122,7 +121,7 @@ local function CreateWindow()
 		if ACD.OpenFrames.DXE then ACD:SelectGroup("DXE","general_group","proximity_group") end
 	end
 
-	UpdateValues()
+	UpdateSettings()
 	
 	window:AddTitleButton("Interface\\AddOns\\DXE\\Textures\\Pane\\Menu.tga",optionsFunc,L["Options"])
 

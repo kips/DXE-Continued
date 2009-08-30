@@ -32,24 +32,10 @@ function addon:GetDistanceToUnit(unit,fx2,fy2)
 		x2,y2 = self:GetPlayerMapPosition(unit)
 	end
 
-	local map,level = GetMapInfo(),GetCurrentMapDungeonLevel()
-	local dims = MapDims[map]
-	if not dims then 
-		if not fired[map] then
-			geterrorhandler()("DXE Coords.lua: Unable to get MapDims for "..map..". Please report this error")
-			fired[map] = true
-		end
-		dims = backup
-	else
-		dims = dims[level]
-		if not dims then 
-			if not fired[map..level] then
-				geterrorhandler()("DXE Coords.lua: Unable to get MapDims for "..map.." at dungeon level "..level..". Please report this error")
-				fired[map..level] = true
-			end
-			dims = backup 
-		end
-	end
+	local list = MapDims[GetMapInfo()]
+	if not list then return end
+	local dims = list[GetCurrentMapDungeonLevel()]
+	if not dims then return end
 	local dx = (x2 - x1) * dims.w
 	local dy = (y2 - y1) * dims.h
 
