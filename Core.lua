@@ -58,6 +58,9 @@ local defaults = {
 			BlockBossEmoteFrame = false,
 			BlockBossEmoteMessages = false,
 		},
+		Proximity = {
+			Range = 10,
+		},
 	},
 }
 
@@ -839,6 +842,7 @@ function addon:OnInitialize()
 	db = self.db
 	gbl,pfl = db.global,db.profile
 	self:SetDBPointers()
+	self:SetProxPointer()
 
 	-- Options
 	db.RegisterCallback(self, "OnProfileChanged", "RefreshProfile")

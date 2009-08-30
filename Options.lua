@@ -44,6 +44,7 @@ function addon:SetDBPointers()
 	db = self.db
 	gbl = self.db.global
 	pfl = self.db.profile
+	self.SetDBPointers = nil
 end
 
 addon.genblank = function(order)
@@ -54,7 +55,6 @@ addon.genblank = function(order)
 	}
 end
 
--- Should be done in OnInitialize
 function addon:AddOptionArgsItems(module,func)
 	--@debug@
 	assert(type(module) == "table")
@@ -155,7 +155,7 @@ function addon:InitializeOptions()
 	end
 
 	-------ADDITIONAL GROUPS
-	local general = {
+	local general_group = {
 		type = "group",
 		name = L["General"],
 		order = 100,
@@ -413,7 +413,7 @@ function addon:InitializeOptions()
 			},
 		},
 	}
-	options_args.general = general
+	options_args.general_group = general_group
 
 	local about = {
 		type = "group",

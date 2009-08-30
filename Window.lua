@@ -13,7 +13,7 @@ local backdropBorder = {
 }
 
 local windows = {}
-local buttonSize = 12
+local buttonSize = 10
 local titleHeight = 12
 local titleBarInset = 2
 local handlers = {}
@@ -29,15 +29,16 @@ local function AddTitleButton(self,texture,OnClick,text)
 	assert(type(text) == "string")
 	--@end-debug@
 
-	local button = CreateFrame("Button",nil,self.window)
+	local button = CreateFrame("Button",nil,self.frame)
 	button:SetWidth(buttonSize)
 	button:SetHeight(buttonSize)
-	button:SetPoint("RIGHT",self.anchorButton,"LEFT",-2.5,0)
+	button:SetPoint("RIGHT",self.anchorButton,"LEFT",-1,0)
 	button:SetScript("OnClick",OnClick)
 	button:SetScript("OnEnter",handlers.Button_OnEnter)
 	button:SetScript("OnLeave",handlers.Button_OnLeave)
 	button:SetFrameLevel(button:GetFrameLevel()+5)
 	button.t = button:CreateTexture(nil,"ARTWORK")
+	button.t:SetVertexColor(0.33,0.33,0.33)
 	button.t:SetAllPoints(true)
 	button.t:SetTexture(texture)
 	addon:AddTooltipText(button,text)
@@ -69,7 +70,7 @@ function addon:CreateWindow(name,width,height)
 		self:SetWidth(width)
 		self:SetHeight(width*self.ratio)
 		local s = width / self.owidth
-		self.window:SetScale(s)
+		self.frame:SetScale(s)
 	end
 
 	local anchor = CreateFrame("Frame","DXEWindow" ..properName,UIParent)
@@ -83,17 +84,17 @@ function addon:CreateWindow(name,width,height)
 	anchor.ratio = height/width
 	anchor.owidth = width
 
-	-- Window
-	local window = CreateFrame("Frame","DXEWindow" .. properName,anchor)
-	window:SetWidth(width)
-	window:SetHeight(height)
-	window:SetBackdrop(backdrop)
-	window:SetPoint("TOPLEFT")
-	anchor.window = window
+	-- Inside
+	local frame = CreateFrame("Frame","DXEWindow" .. properName,anchor)
+	frame:SetWidth(width)
+	frame:SetHeight(height)
+	frame:SetBackdrop(backdrop)
+	frame:SetPoint("TOPLEFT")
+	anchor.frame = frame
 
 	-- Corner
 	handlers.Corner_OnMouseDown = handlers.Corner_OnMouseDown or function(self)
-		if IsShiftKeyDown() then self.anchor:StartSizing("BOTTOMRIGHT") end
+		self.anchor:StartSizing("BOTTOMRIGHT")
 	end
 
 	handlers.Corner_OnMouseUp = handlers.Corner_OnMouseUp or function(self)
@@ -106,8 +107,8 @@ function addon:CreateWindow(name,width,height)
 	handlers.Corner_OnLeave = handlers.Corner_OnLeave or function(self) self.t:SetVertexColor(1,1,1) end
 	]]
 
-	local corner = CreateFrame("Frame", nil, window)
-	corner:SetFrameLevel(window:GetFrameLevel() + 9)
+	local corner = CreateFrame("Frame", nil, frame)
+	corner:SetFrameLevel(frame:GetFrameLevel() + 9)
 	corner:EnableMouse(true)
 	corner:SetScript("OnMouseDown", handlers.Corner_OnMouseDown)
 	corner:SetScript("OnMouseUp", handlers.Corner_OnMouseUp)
@@ -121,20 +122,20 @@ function addon:CreateWindow(name,width,height)
 	corner.t = corner:CreateTexture(nil,"ARTWORK")
 	corner.t:SetAllPoints(true)
 	corner.t:SetTexture("Interface\\Addons\\DXE\\Textures\\ResizeGrip.tga")
-	addon:AddTooltipText(corner,L["Shift + Click to resize"])
+	addon:AddTooltipText(corner,L["Click and drag to resize"])
 	corner.anchor = anchor
 
 	-- Border
-	local border = CreateFrame("Frame",nil,window)
+	local border = CreateFrame("Frame",nil,frame)
 	border:SetAllPoints(true)
 	border:SetFrameLevel(border:GetFrameLevel()+10)
 	border:SetBackdrop(backdropBorder)
 	border:SetBackdropBorderColor(0.33,0.33,0.33)
 
 	-- Title Bar
-	local titleBar = CreateFrame("Frame",nil,window)
-	titleBar:SetPoint("TOPLEFT",window,"TOPLEFT",titleBarInset,-titleBarInset)
-	titleBar:SetPoint("BOTTOMRIGHT",window,"TOPRIGHT",-titleBarInset, -(titleHeight+titleBarInset))
+	local titleBar = CreateFrame("Frame",nil,frame)
+	titleBar:SetPoint("TOPLEFT",frame,"TOPLEFT",titleBarInset,-titleBarInset)
+	titleBar:SetPoint("BOTTOMRIGHT",frame,"TOPRIGHT",-titleBarInset, -(titleHeight+titleBarInset))
 	titleBar:EnableMouse(true)
 	titleBar:SetMovable(true)
 	self:RegisterMoveSaving(titleBar,"CENTER","UIParent","CENTER",0,0,true,anchor,true)
@@ -151,15 +152,16 @@ function addon:CreateWindow(name,width,height)
 	titleText:SetShadowOffset(1,-1)
 	titleText:SetShadowColor(0,0,0)
 
-	handlers.Button_OnLeave = handlers.Button_OnLeave or function(self) self.t:SetVertexColor(1,1,1) end
+	handlers.Button_OnLeave = handlers.Button_OnLeave or function(self) self.t:SetVertexColor(0.33,0.33,0.33) end
 	handlers.Button_OnEnter = handlers.Button_OnEnter or function(self) self.t:SetVertexColor(0,1,0) end
 
-	local close = CreateFrame("Button",nil,window)
+	local close = CreateFrame("Button",nil,frame)
 	close:SetFrameLevel(close:GetFrameLevel()+5)
 	close:SetScript("OnClick",function() anchor:Hide() end)
 	close.t = close:CreateTexture(nil,"ARTWORK")
 	close.t:SetAllPoints(true)
 	close.t:SetTexture("Interface\\Addons\\DXE\\Textures\\Window\\X.tga")
+	close.t:SetVertexColor(0.33,0.33,0.33)
 	close:SetScript("OnEnter",handlers.Button_OnEnter)
 	close:SetScript("OnLeave",handlers.Button_OnLeave)
 	addon:AddTooltipText(close,L["Close"])
@@ -170,9 +172,9 @@ function addon:CreateWindow(name,width,height)
 	anchor.anchorButton = close
 
 	-- Container
-	local container = CreateFrame("Frame",nil,window)
-	container:SetPoint("TOPLEFT",window,"TOPLEFT",1,-titleHeight-titleBarInset)
-	container:SetPoint("BOTTOMRIGHT",window,"BOTTOMRIGHT",-1,1)
+	local container = CreateFrame("Frame",nil,frame)
+	container:SetPoint("TOPLEFT",frame,"TOPLEFT",1,-titleHeight-titleBarInset)
+	container:SetPoint("BOTTOMRIGHT",frame,"BOTTOMRIGHT",-1,1)
 	anchor.container = container
 
 	-- Content
