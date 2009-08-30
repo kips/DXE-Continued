@@ -69,6 +69,7 @@ local function CreateWindow()
 	local labels = {}
 
 	local function Destroy(self)
+		self.destroyed = true
 		self:Hide()
 		self.curr = nil
 		self.lastd = nil
@@ -158,6 +159,7 @@ local function CreateWindow()
 						label.icon:SetTexCoord(unpack(ICON_COORDS[class]))
 						local c = RAID_CLASS_COLORS[class]
 						label.bg:SetVertexColor(c.r,c.g,c.b,0.4)
+						label.destroyed = nil
 						label:Show()
 					end
 					if d then
@@ -180,7 +182,10 @@ local function CreateWindow()
 				end
 			end
 		end
-		for i=n+1,#labels do labels[i]:Destroy() end
+		for i=n+1,#labels do 
+			local label = labels[i]
+			if not label.destroyed then label:Destroy() end
+		end
 	end
 
 	local updateFrame = CreateFrame("Frame",nil,window)
