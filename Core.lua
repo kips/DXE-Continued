@@ -1329,6 +1329,7 @@ function addon:UNIT_DIED(_, _,eventtype, _, _, _, dstGUID)
 end
 
 -- Currently, only four are needed. We don't want to clutter the screen
+local UNKNOWN = _G.UNKNOWN
 function addon:CreateHealthWatchers(Pane)
 	local function OnMouseDown() if IsShiftKeyDown() then Pane:StartMoving() end end
 	local function OnMouseUp() Pane:StopMovingOrSizing(); addon:SavePosition(Pane) end
@@ -1338,9 +1339,11 @@ function addon:CreateHealthWatchers(Pane)
 		if not self:IsTitleSet() then
 			-- Should only enter once per name
 			local name = UnitName(unit)
-			gbl.L_NPC[npcid] = name
-			addon.NPCNames[name] = true
-			self:SetTitle(name)
+			if name ~= UNKNOWN then
+				gbl.L_NPC[npcid] = name
+				addon.NPCNames[name] = true
+				self:SetTitle(name)
+			end
 		end
 		addon.callbacks:Fire("HW_TRACER_ACQUIRED",unit,npcid) 
 	end

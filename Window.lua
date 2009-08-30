@@ -32,7 +32,7 @@ local function AddTitleButton(self,texture,OnClick,text)
 	local button = CreateFrame("Button",nil,self.frame)
 	button:SetWidth(buttonSize)
 	button:SetHeight(buttonSize)
-	button:SetPoint("RIGHT",self.anchorButton,"LEFT",-1,0)
+	button:SetPoint("RIGHT",self.anchorButton,"LEFT")
 	button:SetScript("OnClick",OnClick)
 	button:SetScript("OnEnter",handlers.Button_OnEnter)
 	button:SetScript("OnLeave",handlers.Button_OnLeave)
@@ -168,7 +168,7 @@ function addon:CreateWindow(name,width,height)
 	addon:AddTooltipText(close,L["Close"])
 	close:SetWidth(buttonSize)
 	close:SetHeight(buttonSize)
-	close:SetPoint("RIGHT",titleBar,"RIGHT",-2,0)
+	close:SetPoint("RIGHT",titleBar,"RIGHT")
 
 	anchor.anchorButton = close
 
