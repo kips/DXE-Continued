@@ -23,6 +23,11 @@ local fired = {}
 -- Intended to be used when the player and unit are in the same map
 -- Supported: Ulduar, Naxxramas, The Eye of Eternity, The Obsidian Sanctum, Trial of the Crusader
 function addon:GetDistanceToUnit(unit,fx2,fy2)
+	local list = MapDims[GetMapInfo()]
+	if not list then return end
+	local dims = list[GetCurrentMapDungeonLevel()]
+	if not dims then return end
+
 	local x1,y1 = self:GetPlayerMapPosition("player")
 	local x2,y2
 
@@ -32,10 +37,6 @@ function addon:GetDistanceToUnit(unit,fx2,fy2)
 		x2,y2 = self:GetPlayerMapPosition(unit)
 	end
 
-	local list = MapDims[GetMapInfo()]
-	if not list then return end
-	local dims = list[GetCurrentMapDungeonLevel()]
-	if not dims then return end
 	local dx = (x2 - x1) * dims.w
 	local dy = (y2 - y1) * dims.h
 
@@ -47,9 +48,7 @@ end
 -------------------------
 
 MapDims= {
-	-- Keyed by GetMapInfo()
 	Ulduar = {
-		-- Keyed by GetCurrentMapDungeonLevel()
 		[1] = {w = 3064.9614761023, h = 2039.5413309668}, 	-- Expedition Base Camp
 		[2] = {w = 624.19069622949, h = 415.89374357805}, 	-- Antechamber of Ulduar
 		[3] = {w = 1238.37427179,   h = 823.90183235628}, 	-- Conservatory of Life

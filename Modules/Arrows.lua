@@ -122,7 +122,7 @@ do
 		self.unit = unit
 		self.elapsed = 0
 		self.persist = persist
-		self.fmt = spell.." <|cffffff78%0.0f|r> "..CN[unit]
+		self.fmt = spell.." <|cffffff78%.0f|r> "..CN[unit]
 
 		if fixed then self:SetFixed() end
 		local d,dx,dy = addon:GetDistanceToUnit(unit,self.fx,self.fy)

@@ -60,6 +60,7 @@ local defaults = {
 		},
 		Proximity = {
 			Range = 10,
+			Delay = 0,
 		},
 	},
 }
@@ -264,9 +265,7 @@ do
 		[11] = function(unit) return CheckInteractDistance(unit,2) end,
 		[18] = function(unit) 
 			for itemid in pairs(bandages) do
-				if IsItemInRange(itemid,unit) == 1 then
-					return true
-				end
+				if IsItemInRange(itemid,unit) == 1 then return true end
 			end
 			return false
 		end,
