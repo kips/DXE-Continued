@@ -67,7 +67,6 @@ local function CreateWindow()
 	local content = window.content
 	local w,h = content:GetWidth(),content:GetHeight()/rows
 	local labels = {}
-	local backdrop = {bgFile = "Interface\\Tooltips\\UI-Tooltip-Background", insets = {left = 1, right = 1, top = 1, bottom = 1}}
 
 	local function Destroy(self)
 		self:Hide()
