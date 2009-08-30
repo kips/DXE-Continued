@@ -60,7 +60,7 @@ local defaults = {
 		},
 		Proximity = {
 			Range = 10,
-			Delay = 0,
+			Delay = 0.05,
 		},
 	},
 }
