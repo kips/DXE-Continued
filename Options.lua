@@ -500,10 +500,16 @@ function addon:GetSlashOptions()
 				order = 300,
 			},
 			vc = {
-				type = "input",
+				type = "execute",
 				name = L["Show version check window"],
-				set = "VersionCheck",
+				func = "VersionCheck",
 				order = 400,
+			},
+			proximity = {
+				type = "execute",
+				name = L["Show proximity window"],
+				func = "Proximity",
+				order = 500,
 			},
 		},
 	}

@@ -52,12 +52,7 @@ local defaults = {
 			NeutralColor = {0,0,1,1},
 			LostColor = {0.66,0.66,0.66,1},
 		},
-		Misc = {
-			BlockRaidWarningFrame = false,
-			BlockRaidWarningMessages = false,
-			BlockBossEmoteFrame = false,
-			BlockBossEmoteMessages = false,
-		},
+		Misc = {['*'] = false},
 		Proximity = {
 			Range = 10,
 			Delay = 0.05,
@@ -72,7 +67,7 @@ local defaults = {
 
 local addon = LibStub("AceAddon-3.0"):NewAddon("DXE","AceEvent-3.0","AceTimer-3.0","AceConsole-3.0","AceComm-3.0","AceSerializer-3.0")
 _G.DXE = addon
-addon.version = 341
+addon.version = 342
 addon:SetDefaultModuleState(false)
 addon.callbacks = LibStub("CallbackHandler-1.0"):New(addon)
 addon.defaults = defaults
