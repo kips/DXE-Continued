@@ -1,66 +1,42 @@
-local AceGUI = LibStub("AceGUI-3.0")
-
+local addon = DXE
 local floor = math.floor
 
-do
-	local WidgetType = "DXE_Timer"
-	local WidgetVersion = 1
-	
-	local function OnAcquire(self)
-		self.frame:Show()
-	end
+local Timer,prototype = {},{}
+DXE.Timer = Timer
 
-	local function OnRelease(self)
-		self.frame:Hide()
-		self.frame:ClearAllPoints()
-		self.frame:SetParent(nil)
-	end
-	
-	local function SetTime(self,time)
-		time = time < 0 and 0 or time
-		local dec = (time - floor(time)) * 100
-		local min = floor(time/60)
-		local sec = time % 60
-		self.left:SetFormattedText("%d:%02d",min,sec)
-		self.right:SetFormattedText("%02d",dec)
-	end
+function Timer:New(parent)
+	local timer = CreateFrame("Frame",nil,parent)
+	for k,v in pairs(prototype) do timer[k] = v end
 
-	local function Constructor()
-		local self = {}
-		self.type = WidgetType
-		local frame = CreateFrame("Frame",nil,UIParent)
-		frame:SetWidth(80)
-		frame:SetHeight(20)
+	timer:SetWidth(80); timer:SetHeight(20)
 
-		local left = frame:CreateFontString(nil,"OVERLAY")
-		left:SetFont("Interface\\Addons\\DXE\\Fonts\\BS.ttf",20)
-		left:SetPoint("LEFT",frame,"LEFT")
-		left:SetWidth(60)
-		left:SetHeight(20)
-		left:SetJustifyH("RIGHT")
-		self.left = left
+	local left = timer:CreateFontString(nil,"OVERLAY")
+	left:SetFont("Interface\\Addons\\DXE\\Fonts\\BS.ttf",20)
+	left:SetPoint("LEFT",timer,"LEFT")
+	left:SetWidth(60)
+	left:SetHeight(20)
+	left:SetJustifyH("RIGHT")
+	timer.left = left
 
-		local right = frame:CreateFontString(nil,"OVERLAY")
-		right:SetFont("Interface\\Addons\\DXE\\Fonts\\BS.ttf",12)
-		right:SetPoint("BOTTOMLEFT",left,"BOTTOMRIGHT",0,2)
-		right:SetWidth(20)
-		right:SetHeight(12)
-		right:SetJustifyH("LEFT")
-		self.right = right
+	local right = timer:CreateFontString(nil,"OVERLAY")
+	right:SetFont("Interface\\Addons\\DXE\\Fonts\\BS.ttf",12)
+	right:SetPoint("BOTTOMLEFT",left,"BOTTOMRIGHT",0,2)
+	right:SetWidth(20)
+	right:SetHeight(12)
+	right:SetJustifyH("LEFT")
+	timer.right = right
 
-		left:SetText("0:00")
-		right:SetText("00")
+	left:SetText("0:00")
+	right:SetText("00")
 
-		self.OnAcquire = OnAcquire
-		self.OnRelease = OnRelease
-		self.SetTime = SetTime
-		
-		self.frame = frame
-		frame.obj = self
+	return timer
+end
 
-		AceGUI:RegisterAsWidget(self)
-		return self
-	end
-
-	AceGUI:RegisterWidgetType(WidgetType,Constructor,WidgetVersion)
+function prototype:SetTime(time)
+	if time < 0 then time = 0 end
+	local dec = (time - floor(time)) * 100
+	local min = floor(time/60)
+	local sec = time % 60
+	self.left:SetFormattedText("%d:%02d",min,sec)
+	self.right:SetFormattedText("%02d",dec)
 end

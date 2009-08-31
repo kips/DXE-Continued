@@ -539,7 +539,7 @@ function prototype:Destroy()
 	UIFrameFadeRemoveFrame(self)
 	BarPool[self] = true
 	wipe(self.data)
-	self.timer.frame:Show()
+	self.timer:Show()
 	self.iconf:Hide()
 	self.icon:SetTexture("")
 end
@@ -750,14 +750,14 @@ local function StyleBar(bar,style)
 	bar.icon:ClearAllPoints()
 
 	local timer = bar.timer
-	timer.frame:ClearAllPoints()
+	timer:ClearAllPoints()
 
 	if style == "RDX" then
 		BARHEIGHT = 30
 
 		timer.left:SetFont("Interface\\Addons\\DXE\\Fonts\\BS.ttf",20)
 		timer.right:SetFont("Interface\\Addons\\DXE\\Fonts\\BS.ttf",12)
-		timer.frame:SetPoint("RIGHT",bar,"RIGHT",-5,0)
+		timer:SetPoint("RIGHT",bar,"RIGHT",-5,0)
 		bar.border:Show()
 
 		local inset = pfl.BarBorderSize/4
@@ -781,7 +781,7 @@ local function StyleBar(bar,style)
 
 		timer.left:SetFont("Interface\\Addons\\DXE\\Fonts\\BS.ttf",13)
 		timer.right:SetFont("Interface\\Addons\\DXE\\Fonts\\BS.ttf",8)
-		timer.frame:SetPoint("RIGHT",bar,"RIGHT",5,0)
+		timer:SetPoint("RIGHT",bar,"RIGHT",5,0)
 
 		bar.border:Hide()
 
@@ -866,9 +866,8 @@ local function CreateBar()
 	border:SetFrameLevel(bar:GetFrameLevel()+1)
 	self.border = border
 
-	local timer = addon.AceGUI:Create("DXE_Timer")
-	timer.frame:SetFrameLevel(self:GetFrameLevel()+1)
-	timer.frame:SetParent(self)
+	local timer = addon.Timer:New(self)
+	timer:SetFrameLevel(self:GetFrameLevel()+1)
 	timer.left:SetShadowOffset(1,-1)
 	timer.right:SetShadowOffset(1,-1)
 	self.timer = timer
@@ -876,7 +875,7 @@ local function CreateBar()
 	local text = bar:CreateFontString(nil,"ARTWORK")
 	text:SetPoint("LEFT",self,"LEFT",5,0)
 	-- Adjust if we ever have a timer > 1 hour
-	text:SetPoint("RIGHT",self.timer.frame,"LEFT",7,0)
+	text:SetPoint("RIGHT",self.timer,"LEFT",7,0)
 	text:SetShadowOffset(1,-1)
 	self.text = text
 
@@ -991,7 +990,7 @@ function module:Simple(text, totalTime, sound, c1, flashscreen, icon)
 	end
 	bar:SetIcon(icon)
 	bar:SetText(text) 
-	bar.timer.frame:Hide()
+	bar.timer:Hide()
 	bar:SetSound(soundFile)
 	bar:AnchorToCenter()
 	bar:ScheduleTimer("Fade",totalTime)

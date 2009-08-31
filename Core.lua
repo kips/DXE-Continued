@@ -23,6 +23,8 @@ local defaults = {
 		_Minimap = {},
 		-- NPC id -> Localized name  
 		L_NPC = {},
+		BarTexture = "Blizzard",
+		Font = "Franklin Gothic Medium",
 		--@debug@
 		debug = debugDefaults,
 		--@end-debug@
@@ -862,6 +864,7 @@ function addon:OnInitialize()
 
 	-- Pane
 	self:CreatePane()
+	self:SkinPane()
 
 	-- The default encounter
 	self:RegisterEncounter({key = "default", name = L["Default"], title = L["Default"]})
@@ -905,7 +908,6 @@ end
 
 function addon:OnEnable()
 	forceBlockDisable = false
-	self:SkinPane()
 	self:SetPlayerConstants()
 	self:UpdateTriggers()
 	self:UpdateLock()
@@ -1158,7 +1160,7 @@ do
 		local control = CreateFrame("Button",nil,self.Pane)
 		control:SetWidth(size)
 		control:SetHeight(size)
-		control:SetPoint("LEFT",buttons[#buttons] or self.Pane.timer.frame,"RIGHT")
+		control:SetPoint("LEFT",buttons[#buttons] or self.Pane.timer,"RIGHT")
 		control:SetScript("OnClick",OnClick)
 		control:SetNormalTexture(normal)
 		control:SetHighlightTexture(highlight)
@@ -1196,8 +1198,7 @@ function addon:CreatePane()
 	Pane.fadeTable = {timeToFade = 0.5, finishedArg1 = Pane}
   	self.Pane = Pane
 	
-	Pane.timer = AceGUI:Create("DXE_Timer")
-	Pane.timer.frame:SetParent(Pane)
+	Pane.timer = addon.Timer:New(Pane)
 	Pane.timer:SetPoint("BOTTOMLEFT",5,2)
 	Pane.timer.left:SetFont("Interface\\Addons\\DXE\\Fonts\\BS.ttf",19)
 	Pane.timer.right:SetFont("Interface\\Addons\\DXE\\Fonts\\BS.ttf",11)
@@ -1286,8 +1287,8 @@ function addon:SkinPane()
 		hw.health:SetVertexColor(unpack(db.FontColor))
 
 		PaneBackdrop.edgeFile = nil
-		hw.frame:SetBackdrop(PaneBackdrop)
-		hw.frame:SetBackdropColor(unpack(db.BackgroundColor))
+		hw:SetBackdrop(PaneBackdrop)
+		hw:SetBackdropColor(unpack(db.BackgroundColor))
 
 		PaneBackdrop.edgeFile = SM:Fetch("border",db.Border)
 		PaneBackdrop.bgFile = nil
@@ -1349,13 +1350,13 @@ function addon:CreateHealthWatchers(Pane)
 	end
 
 	for i=1,4 do 
-		local hw = AceGUI:Create("DXE_HealthWatcher")
-		self:AddTooltipText(hw.frame,"Pane",L["|cffffff00Shift + Click|r to move"])
-		hw.frame:HookScript("OnEnter",function(self) Pane.MouseIsOver = true; addon:UpdatePaneVisibility() end)
-		hw.frame:HookScript("OnLeave",function(self) Pane.MouseIsOver = false; addon:UpdatePaneVisibility()end)
-		hw.frame:SetScript("OnMouseDown",OnMouseDown)
-		hw.frame:SetScript("OnMouseUp",OnMouseUp)
-		hw.frame:SetParent(Pane)
+		local hw = addon.HealthWatcher:New(Pane)
+		self:AddTooltipText(hw,"Pane",L["|cffffff00Shift + Click|r to move"])
+		hw:HookScript("OnEnter",function(self) Pane.MouseIsOver = true; addon:UpdatePaneVisibility() end)
+		hw:HookScript("OnLeave",function(self) Pane.MouseIsOver = false; addon:UpdatePaneVisibility()end)
+		hw:SetScript("OnMouseDown",OnMouseDown)
+		hw:SetScript("OnMouseUp",OnMouseUp)
+		hw:SetParent(Pane)
 		hw:SetCallback("HW_TRACER_ACQUIRED",OnAcquired) 
 		HW[i] = hw
 	end
@@ -1367,7 +1368,7 @@ function addon:CreateHealthWatchers(Pane)
 end
 
 function addon:CloseAllHW()
-	for i=1,4 do HW[i]:Close(); HW[i].frame:Hide() end
+	for i=1,4 do HW[i]:Close(); HW[i]:Hide() end
 end
 
 function addon:ShowFirstHW()
@@ -1375,7 +1376,7 @@ function addon:ShowFirstHW()
 		HW[1]:SetInfoBundle("",1)
 		HW[1]:ApplyNeutralColor()
 		HW[1]:SetTitle(CE.title)
-		HW[1].frame:Show()
+		HW[1]:Show()
 	end
 end
 
@@ -1448,8 +1449,8 @@ do
 					end
 					hw:Track("npcid",npcid)
 					hw:Open()
-					if not hw.frame:IsShown() then 
-						hw.frame:Show()
+					if not hw:IsShown() then 
+						hw:Show()
 						flag = true
 					end
 				end
@@ -1511,13 +1512,13 @@ function addon:SetTracing(npcids)
 			hw:ApplyNeutralColor()
 			hw:Track("npcid",npcid)
 			hw:Open()
-			hw.frame:Show()
+			hw:Show()
 		end
 		n = n + 1
 	end
 	for i=n+1,4 do
 		HW[i]:Close()
-		HW[i].frame:Hide()
+		HW[i]:Hide()
 	end
 	self:LayoutHealthWatchers()
 end
@@ -1538,10 +1539,10 @@ function addon:LayoutHealthWatchers()
 		point,relpoint = "TOP","BOTTOM"
 	end
 	for i,hw in ipairs(self.HW) do
-		if hw.frame:IsShown() then
+		if hw:IsShown() then
 			hw:ClearAllPoints()
 			hw:SetPoint(point,anchor,relpoint)
-			anchor = hw.frame
+			anchor = hw
 		end
 	end
 end
@@ -1777,19 +1778,19 @@ do
 
 	local function OnUpdate(self,elapsed)
 		elapsedTime = elapsedTime + elapsed
-		self.obj:SetTime(elapsedTime)
+		self:SetTime(elapsedTime)
 	end
 
 	--- Starts the Pane timer
 	function addon:StartTimer()
 		elapsedTime = 0
-		self.Pane.timer.frame:SetScript("OnUpdate",OnUpdate)
+		self.Pane.timer:SetScript("OnUpdate",OnUpdate)
 		isRunning = true
 	end
 
 	--- Stops the Pane timer
 	function addon:StopTimer()
-		self.Pane.timer.frame:SetScript("OnUpdate",nil)
+		self.Pane.timer:SetScript("OnUpdate",nil)
 		isRunning = false
 	end
 

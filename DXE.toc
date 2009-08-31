@@ -13,11 +13,11 @@ Libs.xml
 # Locales
 Locales.lua
 
-# AceGUI Widgets
-Widgets.xml
-
 # Main files
 Core.lua
+Widgets.xml
+FontStrings.lua
+StatusBars.lua
 Media.lua
 Tracer.lua
 Coords.lua
