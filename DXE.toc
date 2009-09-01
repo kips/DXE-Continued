@@ -16,7 +16,6 @@ Locales.lua
 # Main files
 Core.lua
 Widgets.xml
-Globals.lua
 Media.lua
 Tracer.lua
 Coords.lua

@@ -6,6 +6,7 @@ local name_to_class = addon.Roster.name_to_class
 local window
 
 local rows = 5
+local labels = {}
 
 local ProximityFuncs = addon:GetProximityFuncs()
 
@@ -19,6 +20,11 @@ local function UpdateSettings()
 	range = pfl.Proximity.Range
 	proxFunc = range <= 10 and ProximityFuncs[10] or (range <= 11 and ProximityFuncs[11] or ProximityFuncs[18])
 	delay = pfl.Proximity.Delay
+
+	for i,label in ipairs(labels) do
+		local r,g,b = label.bar:GetStatusBarColor()
+		label.bar:SetStatusBarColor(r,g,b,pfl.Proximity.BarAlpha)
+	end
 end
 
 -- Options
@@ -54,6 +60,15 @@ function handler:AddOptionItems(args)
 				max = 1,
 				step = 0.05,
 			},
+			BarAlpha = {
+				type = "range",
+				order = 250,
+				name = L["Bar Alpha"],
+				desc = L["Adjust the transparency of range bars"],
+				min = 0.1,
+				max = 1,
+				step = 0.1,
+			},
 			ClassFilter = {
 				type = "multiselect",
 				order = 300,
@@ -74,7 +89,6 @@ local function CreateWindow()
 	window:SetContentInset(1)
 	local content = window.content
 	local w,h = content:GetWidth(),content:GetHeight()/rows
-	local labels = {}
 
 	local function Destroy(self)
 		self.destroyed = true
@@ -93,12 +107,6 @@ local function CreateWindow()
 		label:SetWidth(w); label:SetHeight(h)
 		label:SetPoint("TOP",content,"TOP",0,-(i-1)*h)
 
-		local name = label:CreateFontString(nil,"ARTWORK")
-		name:SetAllPoints(true)
-		name:SetShadowOffset(1,-1)
-		addon:RegisterFontString(name,10)
-		label.name = name
-
 		local icon = label:CreateTexture(nil,"ARTWORK")
 		icon:SetTexture("Interface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes")
 		icon:SetWidth(h-2)
@@ -114,6 +122,12 @@ local function CreateWindow()
 		addon:RegisterStatusBar(bar)
 		label.bar = bar
 
+		local name = bar:CreateFontString(nil,"ARTWORK")
+		name:SetAllPoints(label)
+		name:SetShadowOffset(1,-1)
+		addon:RegisterFontString(name,10)
+		label.name = name
+
 		local left = bar:CreateFontString(nil,"ARTWORK")
 		left:SetPoint("RIGHT",-12,0)
 		left:SetShadowOffset(1,-1)
@@ -121,7 +135,6 @@ local function CreateWindow()
 		label.left = left
 
 		local right = bar:CreateFontString(nil,"ARTWORK")
-		right:SetFont(GameFontNormal:GetFont(),6)
 		right:SetPoint("BOTTOMLEFT",left,"BOTTOMRIGHT")
 		right:SetShadowOffset(1,-1)
 		addon:RegisterFontString(right,6)
@@ -166,7 +179,7 @@ local function CreateWindow()
 						label.name:SetText(CN[name])
 						label.icon:SetTexCoord(unpack(ICON_COORDS[class]))
 						local c = RAID_CLASS_COLORS[class]
-						label.bar:SetStatusBarColor(c.r,c.g,c.b,0.4)
+						label.bar:SetStatusBarColor(c.r,c.g,c.b,pfl.Proximity.BarAlpha)
 						label.destroyed = nil
 						label:Show()
 					end

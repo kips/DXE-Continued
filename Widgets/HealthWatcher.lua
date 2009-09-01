@@ -16,6 +16,7 @@ function HealthWatcher:New(parent)
 	hw.events = {}
 
 	hw:SetWidth(220); hw:SetHeight(22)
+	addon:RegisterBackground(hw)
 
 	local bar = CreateFrame("StatusBar",nil,hw)
 	bar:SetMinMaxValues(0,1)
@@ -27,6 +28,7 @@ function HealthWatcher:New(parent)
 	local border = CreateFrame("Frame",nil,hw)
 	border:SetAllPoints(true)
 	border:SetFrameLevel(bar:GetFrameLevel()+1)
+	addon:RegisterBorder(border)
 	hw.border = border
 
 	-- Add title text

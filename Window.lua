@@ -1,17 +1,6 @@
 local addon = DXE
 local L = addon.L
 
-local backdrop = {
-	bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
-	insets = {left = 2, right = 2, top = 2, bottom = 2}
-}
-
-local backdropBorder = {
-   edgeFile="Interface\\Tooltips\\UI-Tooltip-Border", 
-	edgeSize = 9,             
-	insets = {left = 2, right = 2, top = 2, bottom = 2}
-}
-
 local windows = {}
 local buttonSize = 10
 local titleHeight = 12
@@ -88,7 +77,7 @@ function addon:CreateWindow(name,width,height)
 	local frame = CreateFrame("Frame","DXEWindow" .. properName,anchor)
 	frame:SetWidth(width)
 	frame:SetHeight(height)
-	frame:SetBackdrop(backdrop)
+	addon:RegisterBackground(frame)
 	frame:SetPoint("TOPLEFT")
 	anchor.frame = frame
 
@@ -129,8 +118,7 @@ function addon:CreateWindow(name,width,height)
 	local border = CreateFrame("Frame",nil,frame)
 	border:SetAllPoints(true)
 	border:SetFrameLevel(border:GetFrameLevel()+10)
-	border:SetBackdrop(backdropBorder)
-	border:SetBackdropBorderColor(0.33,0.33,0.33)
+	addon:RegisterBorder(border)
 
 	-- Title Bar
 	local titleBar = CreateFrame("Frame",nil,frame)
@@ -148,6 +136,7 @@ function addon:CreateWindow(name,width,height)
 
 	local titleText = titleBar:CreateFontString(nil,"OVERLAY")
 	titleText:SetFont(GameFontNormal:GetFont(),8)
+	--addon:RegisterFontString(titleText,8)
 	titleText:SetPoint("LEFT",titleBar,"LEFT",5,0)
 	titleText:SetText(name)
 	titleText:SetShadowOffset(1,-1)

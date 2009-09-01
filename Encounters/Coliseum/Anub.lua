@@ -21,12 +21,13 @@ do
 				varname = format(L["%s on self"],SN[62374]),
 				type = "centerpopup",
 				time = 60,
-				flashtime = 60
+				flashtime = 60,
 				text = format("%s: #5#! %s!",SN[62374],L["RUN"]),
+				sound = "ALERT1",
 				color1 = "BROWN",
 				color2 = "GREY",
 				icon = ST[67574],
-			}
+			},
 			pursueother = {
 				varname = format(L["%s on others"],SN[62374]),
 				type = "dropdown",
@@ -49,7 +50,7 @@ do
 					},
 					{
 						"expect",{"#4#","~=","&playerguid&"},
-						"alert","pursueothers",
+						"alert","pursueother",
 					},
 				},
 			},
@@ -64,7 +65,7 @@ do
 					},
 					{
 						"expect",{"#4#","~=","&playerguid&"},
-						"quash","pursueothers",
+						"quash","pursueother",
 					},
 				},
 			},

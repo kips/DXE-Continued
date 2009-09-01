@@ -570,18 +570,6 @@ do
 		self.bar:SetValue(value)
 	end
 
-	local backdrop = {
-		bgFile="Interface\\DialogFrame\\UI-DialogBox-Background",
-		tileSize=16,
-		insets = {left = 2, right = 2, top = 1, bottom = 2}
-	}
-
-	local backdropborder = {
-		edgeFile="Interface\\Tooltips\\UI-Tooltip-Border", 
-		edgeSize = 9,             
-		insets = {left = 2, right = 2, top = 3, bottom = 2}
-	}
-
 	local function Constructor()
 		local self = {}
 		self.type = WidgetType
@@ -589,7 +577,7 @@ do
 
 		frame:SetWidth(222) 
 		frame:SetHeight(27)
-		frame:SetBackdrop(backdrop)
+		addon:RegisterBackground(frame)
 		
 		local bar = CreateFrame("StatusBar",nil,frame)
 		bar:SetPoint("TOPLEFT",2,-2)
@@ -601,8 +589,7 @@ do
 
 		local border = CreateFrame("Frame",nil,frame)
 		border:SetAllPoints(true)
-		border:SetBackdrop(backdropborder)
-		border:SetBackdropBorderColor(0.33,0.33,0.33)
+		addon:RegisterBorder(border)
 		border:SetFrameLevel(bar:GetFrameLevel()+1)
 		
 		local text = bar:CreateFontString(nil,"ARTWORK")

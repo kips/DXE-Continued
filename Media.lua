@@ -83,23 +83,28 @@ end
 -------------------------
 -- GLOBALS
 -------------------------
--- TODO: Add border
+local bgBackdrop = {bgFile = "Interface\\Tooltips\\UI-Tooltip-Background", insets = {left = 2, right = 2, top = 2, bottom = 2}}
+local borderBackdrop = {edgeSize = 8, insets = {left = 2, right = 2, top = 2, bottom = 2}}
+
 local gbl
-local function RefreshProfile(db) gbl = db.global end
+local function RefreshProfile(db) 
+	gbl = db.global 
+	borderBackdrop.edgeFile = SM:Fetch("border",gbl.Border)
+end
 addon:AddToRefreshProfile(RefreshProfile)
 
 do
 	local reg = {}
-	function addon:RegisterFontString(fontstring,size,flag1,flag2,flag3)
+	function addon:RegisterFontString(fontstring,size,flags)
 		reg[#reg+1] = fontstring
-		fontstring:SetFont(SM:Fetch("font",gbl.Font),size,flag1,flag2,flag3)
+		fontstring:SetFont(SM:Fetch("font",gbl.Font),size,flags)
 	end
 
 	function addon:NotifyFontChanged()
 		local font = SM:Fetch("font",gbl.Font)
 		for _,fontstring in ipairs(reg) do 
-			local _,size,flag1,flag2,flag3 = fontstring:GetFont()
-			fontstring:SetFont(font,size,flag1,flag2,flag3)
+			local _,size,flags = fontstring:GetFont()
+			fontstring:SetFont(font,size,flags)
 		end
 	end
 end
@@ -111,8 +116,50 @@ do
 		statusbar:SetStatusBarTexture(SM:Fetch("statusbar",gbl.BarTexture))
 	end
 
-	function addon:NotifyBarTextureChanged()
-		local texture = SM:Fetch("statusbar",gbl.BarTexture)
+	function addon:NotifyBarTextureChanged(name)
+		local texture = SM:Fetch("statusbar",name)
 		for _,statusbar in ipairs(reg) do statusbar:SetStatusBarTexture(texture) end
+	end
+end
+
+do
+	local reg = {}
+	function addon:RegisterBorder(frame)
+		reg[#reg+1] = frame
+		local r,g,b,a = unpack(gbl.BorderColor)
+		frame:SetBackdrop(borderBackdrop)
+		frame:SetBackdropBorderColor(r,g,b,a)
+	end
+
+	function addon:NotifyBorderChanged(edgeFile)
+		borderBackdrop.edgeFile = SM:Fetch("border",edgeFile)
+		local r,g,b,a = unpack(gbl.BorderColor)
+		for _,frame in ipairs(reg) do 
+			frame:SetBackdrop(borderBackdrop)
+			frame:SetBackdropBorderColor(r,g,b,a)
+		end
+	end
+
+	function addon:NotifyBorderColorChanged(r,g,b,a)
+		for _,frame in ipairs(reg) do 
+			frame:SetBackdropBorderColor(r,g,b,a)
+		end
+	end
+end
+
+do
+	local reg = {}
+	function addon:RegisterBackground(frame)
+		reg[#reg+1] = frame
+		frame:SetBackdrop(bgBackdrop)
+		local r,g,b,a = unpack(gbl.BackgroundColor)
+		frame:SetBackdropColor(r,g,b,a)
+	end
+
+	function addon:NotifyBackgroundColorChanged(r,g,b,a)
+		local r,g,b,a = unpack(gbl.BackgroundColor)
+		for _,frame in ipairs(reg) do 
+			frame:SetBackdropColor(r,g,b,a)
+		end
 	end
 end

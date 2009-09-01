@@ -25,6 +25,9 @@ local defaults = {
 		L_NPC = {},
 		BarTexture = "Blizzard",
 		Font = "Franklin Gothic Medium",
+		Border = "Blizzard Tooltip",
+		BorderColor = {0.33,0.33,0.33,1},
+		BackgroundColor = {0,0,0,0.8},
 		--@debug@
 		debug = debugDefaults,
 		--@end-debug@
@@ -46,14 +49,12 @@ local defaults = {
 			TitleFontSize = 10,
 			HealthFontSize = 12,
 			BackgroundColor = {0,0,0,0.8},
-			Border = "Blizzard Tooltip",
-			BorderColor = {0.33,0.33,0.33,1},
-			BorderSize = 8,
 			NeutralColor = {0,0,1,1},
 			LostColor = {0.66,0.66,0.66,1},
 		},
 		Misc = {['*'] = false},
 		Proximity = {
+			BarAlpha = 0.4,
 			Range = 10,
 			Delay = 0.05,
 			ClassFilter = {['*'] = true},
@@ -176,6 +177,7 @@ end
 ---------------------------------------------
 -- UTILITY 
 ---------------------------------------------
+
 local ipairs,pairs = ipairs,pairs
 
 local util = {}
@@ -1091,13 +1093,6 @@ function addon:ToggleConfig()
 	ACD[ACD.OpenFrames.DXE and "Close" or "Open"](ACD,"DXE") 
 end
 
-local PaneBackdrop = {
-	bgFile = "Interface\\Tooltips\\UI-Tooltip-Background",
-   edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border", 
-	edgeSize = 8,             
-	insets = {left = 2, right = 2, top = 2, bottom = 2}
-}
-
 function addon:ScalePaneAndCenter()
 	local x,y = Pane:GetCenter()
 	local escale = Pane:GetEffectiveScale()
@@ -1177,8 +1172,10 @@ function addon:CreatePane()
 	Pane:SetAlpha(0)
 	Pane:Hide()
 	Pane:SetClampedToScreen(true)
-	Pane:SetBackdrop(PaneBackdrop)
-	Pane:SetBackdropBorderColor(0.33,0.33,0.33)
+	addon:RegisterBackground(Pane)
+	Pane.border = CreateFrame("Frame",nil,Pane)
+	Pane.border:SetAllPoints(true)
+	addon:RegisterBorder(Pane.border)
 	Pane:SetWidth(220)
 	Pane:SetHeight(25)
 	Pane:EnableMouse(true)
@@ -1260,17 +1257,6 @@ end
 function addon:SkinPane()
 	local db = pfl.Pane
 
-	-- Pane
-	PaneBackdrop.edgeSize = db.BorderSize
-	PaneBackdrop.edgeFile = SM:Fetch("border",db.Border)
-	for k in pairs(PaneBackdrop.insets) do
-		PaneBackdrop.insets[k] = db.BorderSize/4
-	end
-	Pane:SetBackdrop(PaneBackdrop)
-	Pane:SetBackdropColor(unpack(db.BackgroundColor))
-	local borderR,borderG,borderB,borderA = unpack(db.BorderColor)
-	Pane:SetBackdropBorderColor(borderR,borderG,borderB,borderA)
-
 	-- Health watchers
 	for i,hw in ipairs(addon.HW) do
 		hw:SetNeutralColor(db.NeutralColor)
@@ -1281,16 +1267,6 @@ function addon:SkinPane()
 		hw.title:SetVertexColor(unpack(db.FontColor))
 		hw.health:SetFont(hw.health:GetFont(),db.HealthFontSize)
 		hw.health:SetVertexColor(unpack(db.FontColor))
-
-		PaneBackdrop.edgeFile = nil
-		hw:SetBackdrop(PaneBackdrop)
-		hw:SetBackdropColor(unpack(db.BackgroundColor))
-
-		PaneBackdrop.edgeFile = SM:Fetch("border",db.Border)
-		PaneBackdrop.bgFile = nil
-		hw.border:SetBackdrop(PaneBackdrop)
-		hw.border:SetBackdropBorderColor(borderR,borderG,borderB,borderA)
-		PaneBackdrop.bgFile = "Interface\\Tooltips\\UI-Tooltip-Background"
 	end
 end
 
@@ -1596,12 +1572,6 @@ do
 		self:UpdateLockedFrames()
 	end
 
-	local backdrop = {
-		bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
-		edgeFile="Interface\\Tooltips\\UI-Tooltip-Border", 
-		edgeSize = 8,             
-		insets = {left = 2, right = 2, top = 2, bottom = 2},
-	}
 	function addon:CreateLockableFrame(name,width,height,text)
 		--@debug@
 		assert(type(name) == "string","expected 'name' to be a string")
@@ -1612,8 +1582,10 @@ do
 		local frame = CreateFrame("Frame","DXE"..name,UIParent)
 		frame:EnableMouse(true)
 		frame:SetMovable(true)
-		frame:SetBackdrop(backdrop)
-		frame:SetBackdropBorderColor(0.33,0.33,0.33)
+		addon:RegisterBackground(frame)
+		frame.border = CreateFrame("Frame",nil,frame)
+		frame.border:SetAllPoints(true)
+		addon:RegisterBorder(frame.border)
 		frame:SetWidth(width)
 		frame:SetHeight(height)
 		LockableFrames[frame] = true

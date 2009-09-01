@@ -5,6 +5,7 @@ local defaults = {
 		DisableDropdowns = false,
 		DisableScreenFlash = false,
 		DisableSounds = false,
+		BarTextJustification = "CENTER",
 		IconPosition = "LEFT",
 		IconOffset = 0,
 		HideIcons = false,
@@ -20,13 +21,14 @@ local defaults = {
 		TopBarWidth = 250,
 		CenterBarWidth = 275,
 		BarBackgroundColor = {0,0,0,0.8},
-		BarBorder = "Blizzard Tooltip",
-		BarBorderColor = {1,1,1,1},
 		BarFontSize = 10,
 		BarFontColor = {1,1,1,1},
-		BarStyle = "RDX",
-		BarBorderSize = 8,
 		BarFillDirection = "FILL",
+		BarHeight = 30,
+		TimerXOffset = -5,
+		MinuteFontSize = 20,
+		DecimalFontSize = 12,
+		DecimalYOffset = 2,
 	}
 }
 
@@ -47,7 +49,6 @@ local util = addon.util
 
 local ANIMATION_TIME = 0.3
 local FADE_TIME = 2
-local BARHEIGHT
 
 local db,pfl
 
@@ -112,13 +113,6 @@ function module:InitializeOptions(area)
 						name = L["General"],
 						order = 105,
 					},
-					BarStyle = {
-						order = 110,
-						type = "select",
-						name = L["Bar Style"],
-						desc = L["Select a bar style"],
-						values = {RDX = "RDX", BIGWIGS = "BigWigs"},
-					},
 					BarFillDirection = {
 						order = 130,
 						type = "select",
@@ -150,44 +144,62 @@ function module:InitializeOptions(area)
 						desc = L["Turns off all alert sounds"],
 						set = SetNoRefresh,
 					},
-					border_group = {
-						type = "group",
-						order = 300,
-						name = L["Border"],
-						disabled = function() return pfl.BarStyle == "BIGWIGS" end,
-						args = {
-							border_desc = {
-								type = "header",
-								name = L["Adjust the border used on timer bars"].."\n",
-								order = 1,
-							},
-							BarBorder = {
-								order = 100,
-								type = "select",
-								name = L["Bar Border"],
-								desc = L["Select a bar border"],
-								values = SM:HashTable("border"),
-								dialogControl = "LSM30_Border",
-							},
-							BarBorderSize = {
-								order = 200,
-								type = "range",
-								name = L["Bar Border Size"],
-								desc = L["Adjust the size of bar borders"],
-								min = 6,
-								max = 20,
-								step = 1,
-							},
-							BarBorderColor = {
-								order = 300,
-								type = "color",
-								name = L["Bar Border Color"],
-								desc = L["Select a bar border color"],
-								hasAlpha = true,
-							},
+					BarTextJustification = {
+						order = 170,
+						type = "select",
+						name = L["Bar Text Justification"],
+						desc = L["Select a text justification"],
+						values = {
+							LEFT = L["Left"],
+							CENTER = L["Center"],
+							RIGHT = L["Right"],
 						},
 					},
-
+					BarHeight = {
+						order = 180,
+						type = "range",
+						name = L["Bar Height"],
+						desc = L["Select a bar height"],
+						min = 14,
+						max = 35,
+						step = 1,
+					},
+					TimerXOffset = {
+						order = 190,
+						type = "range",
+						name = L["Timer Offset"],
+						desc = L["The horizontal position of the timer"],
+						min = -10,
+						max = 10,
+						step = 1,
+					},
+					MinuteFontSize = {
+						order = 200,
+						type = "range",
+						name = L["Minute Font Size"],
+						desc = L["Font size of a timer's minute text"],
+						min = 13,
+						max = 30,
+						step = 1,
+					},
+					DecimalFontSize = {
+						order = 210,
+						type = "range",
+						name = L["Decimal Font Size"],
+						desc = L["Font size of a timer's decimal text"],
+						min = 8,
+						max = 15,
+						step = 1,
+					},
+					DecimalYOffset = {
+						order = 220,
+						type = "range",
+						name = L["Decimal Offset"],
+						desc = L["The vertical position of a timer's decimal text"],
+						min = 0,
+						max = 10,
+						step = 1,
+					},
 					font_group = {
 						type = "group",
 						name = L["Font"],
@@ -541,7 +553,7 @@ do
 		end
 		for i,bar in ipairs(stack) do
 			bar:ClearAllPoints()
-			bar:SetPoint(point,anchor,relpoint,0,mult*(i-1)*BARHEIGHT)
+			bar:SetPoint(point,anchor,relpoint,0,mult*(i-1)*pfl.BarHeight)
 		end
 	end
 end
@@ -609,7 +621,7 @@ do
 		local mult = pfl.CenterGrowth == "DOWN" and -1 or 1
 		cy = cy + mult*5 -- CenterStackAnchor:GetHeight() / 2
 
-		local offset = (BARHEIGHT * #CenterAlertStack + BARHEIGHT/2) * (pfl.CenterScale * worldscale)
+		local offset = (pfl.BarHeight * #CenterAlertStack + pfl.BarHeight/2) * (pfl.CenterScale * worldscale)
 		local tox,toy = cx*worldscale,cy*worldscale
 		toy = toy + mult*(offset)
 
@@ -724,6 +736,8 @@ function prototype:SetIcon(texture)
 	self.icon:SetTexture(texture)
 end
 
+
+--[[
 local Backdrop = {bgFile = "Interface\\Tooltips\\UI-Tooltip-Background", insets = {left = 2, right = 2, top = 2, bottom = 2}}
 local BackdropBorder = {edgeFile="Interface\\Tooltips\\UI-Tooltip-Border", edgeSize = 8, insets = {left = 2, right = 2, top = 2, bottom = 2}}
 local BackdropDummy = {bgFile = "", insets = {left = 0, right = 0, top = 0, bottom = 0}}
@@ -732,14 +746,14 @@ local function StyleBar(bar,style)
 	bar.icon:ClearAllPoints()
 
 	local timer = bar.timer
-	timer:ClearAllPoints()
+	timer.frame:ClearAllPoints()
 
 	if style == "RDX" then
 		BARHEIGHT = 30
 
 		timer.left:SetFont("Interface\\Addons\\DXE\\Fonts\\BS.ttf",20)
 		timer.right:SetFont("Interface\\Addons\\DXE\\Fonts\\BS.ttf",12)
-		timer:SetPoint("RIGHT",bar,"RIGHT",-5,0)
+		timer.frame:SetPoint("RIGHT",bar,"RIGHT",-5,0)
 		bar.border:Show()
 
 		local inset = pfl.BarBorderSize/4
@@ -763,7 +777,7 @@ local function StyleBar(bar,style)
 
 		timer.left:SetFont("Interface\\Addons\\DXE\\Fonts\\BS.ttf",13)
 		timer.right:SetFont("Interface\\Addons\\DXE\\Fonts\\BS.ttf",8)
-		timer:SetPoint("RIGHT",bar,"RIGHT",5,0)
+		timer.frame:SetPoint("RIGHT",bar,"RIGHT",5,0)
 
 		bar.border:Hide()
 
@@ -782,15 +796,23 @@ local function StyleBar(bar,style)
 	bar.iconf:SetWidth(BARHEIGHT)
 	bar.iconf:SetHeight(BARHEIGHT)
 end
+]]
 
 local function SkinBar(bar)
-	StyleBar(bar,pfl.BarStyle)
+	if pfl.HideIcons then bar.iconf:Hide() 
+	else bar:SetIcon(bar.data.icon) end
 
-	if pfl.HideIcons then 
-		bar.iconf:Hide() 
-	else
-		bar:SetIcon(bar.data.icon)
-	end
+	bar:SetHeight(pfl.BarHeight)
+
+	local fontsize = 
+	bar.timer.left:SetFont("Interface\\Addons\\DXE\\Fonts\\BS.ttf",(7/16)*(pfl.BarHeight)+6.875)--pfl.MinuteFontSize)
+	bar.timer.right:SetFont("Interface\\Addons\\DXE\\Fonts\\BS.ttf",pfl.DecimalFontSize)
+
+	bar.timer.right:ClearAllPoints()
+	bar.timer.right:SetPoint("BOTTOMLEFT",bar.timer.left,"BOTTOMRIGHT",0,pfl.DecimalYOffset)
+
+	bar.timer:ClearAllPoints()
+	bar.timer:SetPoint("RIGHT",bar,"RIGHT",pfl.TimerXOffset,0)
 
 	bar.iconf:ClearAllPoints()
 	if pfl.IconPosition == "LEFT" then
@@ -798,17 +820,12 @@ local function SkinBar(bar)
 	elseif pfl.IconPosition == "RIGHT" then
 		bar.iconf:SetPoint("LEFT",bar,"RIGHT",pfl.IconOffset,0)
 	end
-
-	BackdropBorder.edgeFile = SM:Fetch("border",pfl.BarBorder)
-	local r,g,b,a = unpack(pfl.BarBorderColor)
-	bar.border:SetBackdrop(BackdropBorder)
-	bar.border:SetBackdropBorderColor(r,g,b,a)
-	bar.iconf:SetBackdropBorderColor(r,g,b,a)
+	bar.iconf:SetWidth(pfl.BarHeight)
+	bar.iconf:SetHeight(pfl.BarHeight)
 
 	bar.text:SetFont(bar.text:GetFont(),pfl.BarFontSize)
 	bar.text:SetVertexColor(unpack(pfl.BarFontColor))
-
-	bar:SetBackdropColor(unpack(pfl.BarBackgroundColor))
+	bar.text:SetJustifyH(pfl.BarTextJustification)
 
 	local data = bar.data
 	if data.anchor == "TOP" then
@@ -831,20 +848,26 @@ function module:RefreshBars()
 end
 
 local BarCount = 1
+local inset = 2
 local function CreateBar()
 	local self = CreateFrame("Frame","DXEAlertBar"..BarCount,UIParent)
+	self:SetHeight(pfl.BarHeight)
+	addon:RegisterBackground(self)
 
 	self.data = {}
 
-	local bar = CreateFrame("StatusBar",nil,self)
-	bar:SetMinMaxValues(0,1) 
-	bar:SetValue(0)
-	addon:RegisterStatusBar(bar)
-	self.statusbar = bar
+	local statusbar = CreateFrame("StatusBar",nil,self)
+	statusbar:SetMinMaxValues(0,1) 
+	statusbar:SetValue(0)
+	statusbar:SetPoint("TOPLEFT",inset,-inset)
+	statusbar:SetPoint("BOTTOMRIGHT",-inset,inset)
+	addon:RegisterStatusBar(statusbar)
+	self.statusbar = statusbar
 
 	local border = CreateFrame("Frame",nil,self)
 	border:SetAllPoints(true)
-	border:SetFrameLevel(bar:GetFrameLevel()+1)
+	border:SetFrameLevel(statusbar:GetFrameLevel()+1)
+	addon:RegisterBorder(border)
 	self.border = border
 
 	local timer = addon.Timer:New(self)
@@ -853,7 +876,7 @@ local function CreateBar()
 	timer.right:SetShadowOffset(1,-1)
 	self.timer = timer
 
-	local text = bar:CreateFontString(nil,"ARTWORK")
+	local text = statusbar:CreateFontString(nil,"ARTWORK")
 	text:SetPoint("LEFT",self,"LEFT",5,0)
 	-- Adjust if we ever have a timer > 1 hour
 	text:SetPoint("RIGHT",self.timer,"LEFT",7,0)
@@ -862,10 +885,14 @@ local function CreateBar()
 	self.text = text
 
 	local iconf = CreateFrame("Frame",nil,self)
+	addon:RegisterBorder(iconf)
 	self.iconf = iconf
 
 	local icon = iconf:CreateTexture(nil,"BACKGROUND")
 	icon:SetTexCoord(0.07,0.93,0.07,0.93)
+
+	icon:SetPoint("TOPLEFT",inset,-inset)
+	icon:SetPoint("BOTTOMRIGHT",-inset,inset)
 	self.icon = icon
 
 	addon.AceTimer:Embed(self)

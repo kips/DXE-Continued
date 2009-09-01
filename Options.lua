@@ -160,14 +160,29 @@ function addon:InitializeOptions()
 				type = "group",
 				name = L["Globals"],
 				order = 50,
-				get = function(info) return gbl[info[#info]] end,
+				get = function(info) 
+					local var = info[#info]
+					if var:find("Color") then return unpack(gbl[var])
+					else return gbl[var] end
+					return gbl[info[#info]] 
+				end,
+				set = function(info,v,v2,v3,v4)
+					local var = info[#info]
+					if var:find("Color") then
+						local t = gbl[var]
+						t[1],t[2],t[3],t[4] = v,v2,v3,v4
+						addon["Notify"..var.."Changed"](addon,v,v2,v3,v4)
+					else
+						gbl[var] = v
+						addon["Notify"..var.."Changed"](addon,v)
+					end
+				end,
 				args = {
 					BarTexture = {
 						type = "select",
 						order = 100,
 						name = L["Bar Texture"],
 						desc = L["Bar texture used throughout the addon"],
-						set = function(info,v) gbl.BarTexture = v; addon:NotifyBarTextureChanged() end,
 						values = SM:HashTable("statusbar"),
 						dialogControl = "LSM30_Statusbar",
 					},
@@ -176,9 +191,30 @@ function addon:InitializeOptions()
 						type = "select",
 						name = L["Font"],
 						desc = L["Font used throughout the addon"],
-						set = function(info,v) gbl.Font = v; addon:NotifyFontChanged() end,
 						values = SM:HashTable("font"),
 						dialogControl = "LSM30_Font",
+					},
+					Border = {
+						order = 300,
+						type = "select",
+						name = L["Border"],
+						desc = L["Border used throughout the addon"],
+						values = SM:HashTable("border"),
+						dialogControl = "LSM30_Border",
+					},
+					BorderColor = {
+						order = 400,
+						type = "color",
+						name = L["Border Color"],
+						desc = L["Border color used throughout the addon"],
+						hasAlpha = true,
+					},
+					BackgroundColor = {
+						order = 500,
+						type = "color",
+						name = L["Background Color"],
+						desc = L["Background color used throughout the addon"],
+						hasAlpha = true,
 					},
 				},
 			},
@@ -295,42 +331,6 @@ function addon:InitializeOptions()
 								min = 0.1,
 								max = 2,
 								step = 0.1,
-							},
-							border_header = {
-								type = "header",
-								name = L["Border"],
-								order = 350,
-							},
-							Border = {
-								order = 400,
-								type = "select",
-								name = L["Border"],
-								desc = L["Select a border used on the pane and health watchers"],
-								values = SM:HashTable("border"),
-								dialogControl = "LSM30_Border",
-							},
-							BorderSize = {
-								order = 500,
-								type = "range",
-								name = L["Border Size"],
-								desc = L["Adjust the size of borders used on the pane and health watchers"],
-								min = 6,
-								max = 16,
-								step = 1,
-							},
-							BorderColor = {
-								order = 600,
-								type = "color",
-								name = L["Border Color"],
-								desc = L["Select a border color used on the pane and health watchers"],
-								hasAlpha = true,
-							},
-							BackgroundColor = {
-								order = 700,
-								type = "color",
-								name = L["Background Color"],
-								desc = L["Select a background color used on the pane and health watchers"],
-								hasAlpha = true,
 							},
 							font_header = {
 								type = "header",
