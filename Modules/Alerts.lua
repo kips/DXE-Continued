@@ -20,15 +20,16 @@ local defaults = {
 		FlashOscillations = 2,
 		TopBarWidth = 250,
 		CenterBarWidth = 275,
-		BarBackgroundColor = {0,0,0,0.8},
 		BarFontSize = 10,
 		BarFontColor = {1,1,1,1},
+		TimerFontColor = {1,1,1,1},
 		BarFillDirection = "FILL",
 		BarHeight = 30,
 		TimerXOffset = -5,
 		MinuteFontSize = 20,
 		DecimalFontSize = 12,
 		DecimalYOffset = 2,
+		ShowBorder = true,
 	}
 }
 
@@ -49,6 +50,7 @@ local util = addon.util
 
 local ANIMATION_TIME = 0.3
 local FADE_TIME = 2
+local INSET = 2
 
 local db,pfl
 
@@ -99,7 +101,6 @@ function module:InitializeOptions(area)
 				type = "group",
 				name = L["Bars"],
 				order = 100,
-				--inline = true,
 				args = {
 					BarTest = {
 						type = "execute",
@@ -123,19 +124,13 @@ function module:InitializeOptions(area)
 							DEPLETE = L["Right to Left"],
 						},
 					},
-					BarBackgroundColor = {
-						order = 140,
-						type = "color",
-						name = L["Bar Background Color"],
-						desc = L["Select a bar background color"],
-						hasAlpha = true,
-					},
 					DisableDropdowns = {
 						order = 150,
 						type = "toggle",
 						name = L["Disable Dropdowns"],
 						desc = L["Anchor bars onto the center anchor only"],
 						set = SetNoRefresh,
+						width = "full",
 					},
 					DisableSounds = {
 						order = 160,
@@ -143,17 +138,14 @@ function module:InitializeOptions(area)
 						name = L["Disable Sounds"],
 						desc = L["Turns off all alert sounds"],
 						set = SetNoRefresh,
+						width = "full",
 					},
-					BarTextJustification = {
+					ShowBorder = {
 						order = 170,
-						type = "select",
-						name = L["Bar Text Justification"],
-						desc = L["Select a text justification"],
-						values = {
-							LEFT = L["Left"],
-							CENTER = L["Center"],
-							RIGHT = L["Right"],
-						},
+						type = "toggle",
+						name = L["Show Border"],
+						desc = L["Displays a border around the bar and its icon"],
+						width = "full",
 					},
 					BarHeight = {
 						order = 180,
@@ -161,69 +153,89 @@ function module:InitializeOptions(area)
 						name = L["Bar Height"],
 						desc = L["Select a bar height"],
 						min = 14,
-						max = 35,
-						step = 1,
-					},
-					TimerXOffset = {
-						order = 190,
-						type = "range",
-						name = L["Timer Offset"],
-						desc = L["The horizontal position of the timer"],
-						min = -10,
-						max = 10,
-						step = 1,
-					},
-					MinuteFontSize = {
-						order = 200,
-						type = "range",
-						name = L["Minute Font Size"],
-						desc = L["Font size of a timer's minute text"],
-						min = 13,
-						max = 30,
-						step = 1,
-					},
-					DecimalFontSize = {
-						order = 210,
-						type = "range",
-						name = L["Decimal Font Size"],
-						desc = L["Font size of a timer's decimal text"],
-						min = 8,
-						max = 15,
-						step = 1,
-					},
-					DecimalYOffset = {
-						order = 220,
-						type = "range",
-						name = L["Decimal Offset"],
-						desc = L["The vertical position of a timer's decimal text"],
-						min = 0,
-						max = 10,
+						max = 40,
 						step = 1,
 					},
 					font_group = {
 						type = "group",
-						name = L["Font"],
+						name = L["Text"],
 						order = 400,
 						args = {
 							font_desc = {
 								type = "header",
-								name = L["Adjust the font used on timer bars"].."\n",
+								name = L["Adjust the text used on timer bars"].."\n",
 								order = 1,
 							},
-							BarFontSize = {
-								order = 100,
-								type = "range",
-								name = L["Bar Font Size"],
-								desc = L["Select a font size used on bars"],
-								min = 8,
-								max = 20,
-								step = 1,
+							bartext_group = {
+								type = "group",
+								name = L["Bar Text"],
+								inline = true,
+								order = 1,
+								args = {
+									BarFontSize = {
+										order = 100,
+										type = "range",
+										name = L["Font Size"],
+										desc = L["Select a font size used on bar text"],
+										min = 8,
+										max = 20,
+										step = 1,
+									},
+									BarFontColor = {
+										order = 200,
+										type = "color",
+										name = L["Font Color"],
+										desc = L["Set a font color used on bar text"],
+									},
+									BarTextJustification = {
+										order = 170,
+										type = "select",
+										name = L["Justification"],
+										desc = L["Select a text justification"],
+										values = {
+											LEFT = L["Left"],
+											CENTER = L["Center"],
+											RIGHT = L["Right"],
+										},
+									},
+								},
 							},
-							BarFontColor = {
-								order = 200,
-								type = "color",
-								name = L["Bar Font Color"],
-								desc = L["Set a font color used on bars"],
+							timertext_group = {
+								type = "group",
+								name = L["Timer Text"],
+								order = 2,
+								inline = true,
+								args = {
+									timer_desc = {
+										type = "description",
+										name = L["Timer font sizes are determined by bar height"].."\n",
+										order = 1,
+									},
+									TimerXOffset = {
+										order = 100,
+										type = "range",
+										name = L["Horizontal Offset"],
+										desc = L["The horizontal position of the timer"],
+										min = -20,
+										max = 20,
+										step = 1,
+									},
+									DecimalYOffset = {
+										order = 200,
+										type = "range",
+										name = L["Decimal Vertical Offset"],
+										desc = L["The vertical position of a timer's decimal text"],
+										min = -10,
+										max = 10,
+										step = 1,
+									},
+									TimerFontColor = {
+										order = 300,
+										type = "color",
+										name = L["Font Color"],
+										desc = L["Set a font color used on bar timers"],
+									},
+								},
 							},
 						},
 					},
@@ -534,8 +546,8 @@ function prototype:Destroy()
 	BarPool[self] = true
 	wipe(self.data)
 	self.timer:Show()
-	self.iconf:Hide()
-	self.icon:SetTexture("")
+	self.icon:Hide()
+	self.icon.t:SetTexture("")
 end
 
 do
@@ -729,99 +741,62 @@ do
 end
 
 function prototype:SetIcon(texture)
-	if not texture then self.iconf:Hide() return end
+	if not texture then self.icon:Hide() return end
 	self.data.icon = texture
 	if pfl.HideIcons then return end
-	self.iconf:Show()
-	self.icon:SetTexture(texture)
+	self.icon:Show()
+	self.icon.t:SetTexture(texture)
 end
-
-
---[[
-local Backdrop = {bgFile = "Interface\\Tooltips\\UI-Tooltip-Background", insets = {left = 2, right = 2, top = 2, bottom = 2}}
-local BackdropBorder = {edgeFile="Interface\\Tooltips\\UI-Tooltip-Border", edgeSize = 8, insets = {left = 2, right = 2, top = 2, bottom = 2}}
-local BackdropDummy = {bgFile = "", insets = {left = 0, right = 0, top = 0, bottom = 0}}
-local function StyleBar(bar,style)
-	bar.statusbar:ClearAllPoints()
-	bar.icon:ClearAllPoints()
-
-	local timer = bar.timer
-	timer.frame:ClearAllPoints()
-
-	if style == "RDX" then
-		BARHEIGHT = 30
-
-		timer.left:SetFont("Interface\\Addons\\DXE\\Fonts\\BS.ttf",20)
-		timer.right:SetFont("Interface\\Addons\\DXE\\Fonts\\BS.ttf",12)
-		timer.frame:SetPoint("RIGHT",bar,"RIGHT",-5,0)
-		bar.border:Show()
-
-		local inset = pfl.BarBorderSize/4
-		bar.statusbar:SetPoint("TOPLEFT",inset,-inset)
-		bar.statusbar:SetPoint("BOTTOMRIGHT",-inset,inset)
-
-		for k,v in pairs(Backdrop.insets) do 
-			Backdrop.insets[k] = inset 
-			BackdropBorder.insets[k] = inset
-		end
-		Backdrop.bgFile = "Interface\\Tooltips\\UI-Tooltip-Background"
-
-		BackdropBorder.edgeSize = pfl.BarBorderSize
-		bar.iconf:SetBackdrop(BackdropBorder)
-
-		bar.icon:SetPoint("TOPLEFT",2,-2)
-		bar.icon:SetPoint("BOTTOMRIGHT",-2,2)
-
-	elseif style == "BIGWIGS" then
-		BARHEIGHT = 14
-
-		timer.left:SetFont("Interface\\Addons\\DXE\\Fonts\\BS.ttf",13)
-		timer.right:SetFont("Interface\\Addons\\DXE\\Fonts\\BS.ttf",8)
-		timer.frame:SetPoint("RIGHT",bar,"RIGHT",5,0)
-
-		bar.border:Hide()
-
-		bar.statusbar:SetAllPoints(true)
-
-		for k,v in pairs(Backdrop.insets) do Backdrop.insets[k] = 0 end
-		Backdrop.bgFile = SM:Fetch("statusbar",pfl.BarTexture)
-
-		bar.iconf:SetBackdrop(BackdropDummy)
-
-		bar.icon:SetAllPoints(true)
-	end
-
-	bar:SetBackdrop(Backdrop)
-	bar:SetHeight(BARHEIGHT)
-	bar.iconf:SetWidth(BARHEIGHT)
-	bar.iconf:SetHeight(BARHEIGHT)
-end
-]]
 
 local function SkinBar(bar)
-	if pfl.HideIcons then bar.iconf:Hide() 
+	if pfl.HideIcons then bar.icon:Hide() 
 	else bar:SetIcon(bar.data.icon) end
+
+	bar.statusbar:ClearAllPoints()
+	bar.icon.t:ClearAllPoints()
+	bar.bg:ClearAllPoints()
+	if pfl.ShowBorder then
+		bar.border:Show()
+		bar.icon.border:Show()
+		bar.statusbar:SetPoint("TOPLEFT",INSET,-INSET)
+		bar.statusbar:SetPoint("BOTTOMRIGHT",-INSET,INSET)
+		bar.icon.t:SetPoint("TOPLEFT",bar.icon,"TOPLEFT",INSET,-INSET)
+		bar.icon.t:SetPoint("BOTTOMRIGHT",bar.icon,"BOTTOMRIGHT",-INSET,INSET)
+		bar.bg:SetPoint("TOPLEFT",INSET,-INSET)
+		bar.bg:SetPoint("BOTTOMRIGHT",-INSET,INSET)
+	else
+		bar.border:Hide()
+		bar.icon.border:Hide()
+		bar.statusbar:SetPoint("TOPLEFT")
+		bar.statusbar:SetPoint("BOTTOMRIGHT")
+		bar.icon.t:SetPoint("TOPLEFT",bar.icon,"TOPLEFT")
+		bar.icon.t:SetPoint("BOTTOMRIGHT",bar.icon,"BOTTOMRIGHT")
+		bar.bg:SetPoint("TOPLEFT")
+		bar.bg:SetPoint("BOTTOMRIGHT")
+	end
 
 	bar:SetHeight(pfl.BarHeight)
 
 	local fontsize = 
-	bar.timer.left:SetFont("Interface\\Addons\\DXE\\Fonts\\BS.ttf",(7/16)*(pfl.BarHeight)+6.875)--pfl.MinuteFontSize)
-	bar.timer.right:SetFont("Interface\\Addons\\DXE\\Fonts\\BS.ttf",pfl.DecimalFontSize)
+	bar.timer.left:SetFont("Interface\\Addons\\DXE\\Fonts\\BS.ttf",(0.4375*pfl.BarHeight)+6.875)
+	bar.timer.right:SetFont("Interface\\Addons\\DXE\\Fonts\\BS.ttf",(0.25*pfl.BarHeight)+4.5)
 
 	bar.timer.right:ClearAllPoints()
 	bar.timer.right:SetPoint("BOTTOMLEFT",bar.timer.left,"BOTTOMRIGHT",0,pfl.DecimalYOffset)
 
 	bar.timer:ClearAllPoints()
 	bar.timer:SetPoint("RIGHT",bar,"RIGHT",pfl.TimerXOffset,0)
+	bar.timer.right:SetVertexColor(unpack(pfl.TimerFontColor))
+	bar.timer.left:SetVertexColor(unpack(pfl.TimerFontColor))
 
-	bar.iconf:ClearAllPoints()
+	bar.icon:ClearAllPoints()
 	if pfl.IconPosition == "LEFT" then
-		bar.iconf:SetPoint("RIGHT",bar,"LEFT",-pfl.IconOffset,0)
+		bar.icon:SetPoint("RIGHT",bar,"LEFT",-pfl.IconOffset,0)
 	elseif pfl.IconPosition == "RIGHT" then
-		bar.iconf:SetPoint("LEFT",bar,"RIGHT",pfl.IconOffset,0)
+		bar.icon:SetPoint("LEFT",bar,"RIGHT",pfl.IconOffset,0)
 	end
-	bar.iconf:SetWidth(pfl.BarHeight)
-	bar.iconf:SetHeight(pfl.BarHeight)
+	bar.icon:SetWidth(pfl.BarHeight)
+	bar.icon:SetHeight(pfl.BarHeight)
 
 	bar.text:SetFont(bar.text:GetFont(),pfl.BarFontSize)
 	bar.text:SetVertexColor(unpack(pfl.BarFontColor))
@@ -848,19 +823,19 @@ function module:RefreshBars()
 end
 
 local BarCount = 1
-local inset = 2
 local function CreateBar()
 	local self = CreateFrame("Frame","DXEAlertBar"..BarCount,UIParent)
 	self:SetHeight(pfl.BarHeight)
-	addon:RegisterBackground(self)
+
+	local bg = self:CreateTexture(nil,"BACKGROUND")
+	addon:RegisterBackground(bg)
+	self.bg = bg
 
 	self.data = {}
 
 	local statusbar = CreateFrame("StatusBar",nil,self)
 	statusbar:SetMinMaxValues(0,1) 
 	statusbar:SetValue(0)
-	statusbar:SetPoint("TOPLEFT",inset,-inset)
-	statusbar:SetPoint("BOTTOMRIGHT",-inset,inset)
 	addon:RegisterStatusBar(statusbar)
 	self.statusbar = statusbar
 
@@ -884,16 +859,16 @@ local function CreateBar()
 	addon:RegisterFontString(text,10)
 	self.text = text
 
-	local iconf = CreateFrame("Frame",nil,self)
-	addon:RegisterBorder(iconf)
-	self.iconf = iconf
-
-	local icon = iconf:CreateTexture(nil,"BACKGROUND")
-	icon:SetTexCoord(0.07,0.93,0.07,0.93)
-
-	icon:SetPoint("TOPLEFT",inset,-inset)
-	icon:SetPoint("BOTTOMRIGHT",-inset,inset)
+	local icon = CreateFrame("Frame",nil,self)
 	self.icon = icon
+
+	icon.t = icon:CreateTexture(nil,"BACKGROUND")
+	icon.t:SetTexCoord(0.07,0.93,0.07,0.93)
+
+	icon.border = CreateFrame("Frame",nil,icon)
+	icon.border:SetAllPoints(true)
+	addon:RegisterBorder(icon.border)
+
 
 	addon.AceTimer:Embed(self)
 	for k,v in pairs(prototype) do self[k] = v end

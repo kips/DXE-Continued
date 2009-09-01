@@ -17,12 +17,13 @@
 <Script file="Encounters\Naxxramas\Razuvious.lua"/>
 <Script file="Encounters\Naxxramas\Sapphiron.lua"/>
 <Script file="Encounters\Naxxramas\Thaddius.lua"/>
+-->
 
 <Script file="Encounters\Northrend\Malygos.lua"/>
 <Script file="Encounters\Northrend\Sartharion.lua"/>
 <Script file="Encounters\Northrend\Archavon.lua"/>
 <Script file="Encounters\Northrend\Emalon.lua"/>
--->
+<Script file="Encounters\Northrend\Koralon.lua"/>
 
 <Script file="Encounters\Ulduar\Algalon.lua"/>
 <Script file="Encounters\Ulduar\Auriaya.lua"/>

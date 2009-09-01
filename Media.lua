@@ -149,17 +149,26 @@ end
 
 do
 	local reg = {}
-	function addon:RegisterBackground(frame)
-		reg[#reg+1] = frame
-		frame:SetBackdrop(bgBackdrop)
+	function addon:RegisterBackground(widget)
+		reg[#reg+1] = widget
 		local r,g,b,a = unpack(gbl.BackgroundColor)
-		frame:SetBackdropColor(r,g,b,a)
+		if widget:IsObjectType("Frame") then
+			widget:SetBackdrop(bgBackdrop)
+			widget:SetBackdropColor(r,g,b,a)
+		elseif widget:IsObjectType("Texture") then
+			widget:SetTexture(bgBackdrop.bgFile)
+			widget:SetVertexColor(r,g,b,a)
+		end
 	end
 
 	function addon:NotifyBackgroundColorChanged(r,g,b,a)
 		local r,g,b,a = unpack(gbl.BackgroundColor)
-		for _,frame in ipairs(reg) do 
-			frame:SetBackdropColor(r,g,b,a)
+		for _,widget in ipairs(reg) do 
+			if widget:IsObjectType("Frame") then
+				widget:SetBackdropColor(r,g,b,a)
+			elseif widget:IsObjectType("Texture") then
+				widget:SetVertexColor(r,g,b,a)
+			end
 		end
 	end
 end

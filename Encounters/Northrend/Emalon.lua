@@ -5,7 +5,7 @@ do
 		key = "emalon", 
 		zone = L["Vault of Archavon"], 
 		category = L["Northrend"],
-		name = L["Emalon the Storm Watcher"], 
+		name = L["Emalon"], 
 		triggers = {
 			scan = {
 				33993, -- Emalon
