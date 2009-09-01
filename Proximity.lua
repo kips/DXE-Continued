@@ -6,7 +6,6 @@ local name_to_class = addon.Roster.name_to_class
 local window
 
 local rows = 5
-local delay = 0.2
 
 local ProximityFuncs = addon:GetProximityFuncs()
 
@@ -85,7 +84,7 @@ local function CreateWindow()
 		self.dblank = true
 		self.left:SetText("")
 		self.right:SetText("")
-		self.bg:SetWidth(self.bg.maxWidth)
+		self.bar:SetValue(1)
 	end
 
 	for i=1,rows do
@@ -95,9 +94,9 @@ local function CreateWindow()
 		label:SetPoint("TOP",content,"TOP",0,-(i-1)*h)
 
 		local name = label:CreateFontString(nil,"ARTWORK")
-		name:SetFont(GameFontNormal:GetFont(),10)
 		name:SetAllPoints(true)
 		name:SetShadowOffset(1,-1)
+		addon:RegisterFontString(name,10)
 		label.name = name
 
 		local icon = label:CreateTexture(nil,"ARTWORK")
@@ -107,24 +106,25 @@ local function CreateWindow()
 		icon:SetPoint("LEFT",label,"LEFT",2,0)
 		label.icon = icon
 
-		local bg = label:CreateTexture(nil,"BACKGROUND")
-		bg:SetPoint("LEFT")
-		bg:SetPoint("TOPLEFT",icon,"TOPRIGHT")
-		bg:SetPoint("BOTTOMLEFT",icon,"BOTTOMRIGHT")
-		bg:SetTexture("Interface\\Tooltips\\UI-Tooltip-Background")
-		bg.maxWidth = w - ((h-2) + 2) -- bg starts at the icon. If we use 'w' it will go off the window
-		label.bg = bg
+		local bar = CreateFrame("StatusBar",nil,label)
+		bar:SetHeight(h-2)
+		bar:SetMinMaxValues(0,1)
+		bar:SetPoint("LEFT",icon,"RIGHT")
+		bar:SetPoint("RIGHT",label,"RIGHT")
+		addon:RegisterStatusBar(bar)
+		label.bar = bar
 
-		local left = label:CreateFontString(nil,"ARTWORK")
-		left:SetFont(GameFontNormal:GetFont(),9)
-		left:SetPoint("RIGHT",label,"RIGHT",-12,0)
+		local left = bar:CreateFontString(nil,"ARTWORK")
+		left:SetPoint("RIGHT",-12,0)
 		left:SetShadowOffset(1,-1)
+		addon:RegisterFontString(left,9)
 		label.left = left
 
-		local right = label:CreateFontString(nil,"ARTWORK")
+		local right = bar:CreateFontString(nil,"ARTWORK")
 		right:SetFont(GameFontNormal:GetFont(),6)
 		right:SetPoint("BOTTOMLEFT",left,"BOTTOMRIGHT")
 		right:SetShadowOffset(1,-1)
+		addon:RegisterFontString(right,6)
 		label.right = right
 
 		label.Destroy = Destroy
@@ -166,14 +166,14 @@ local function CreateWindow()
 						label.name:SetText(CN[name])
 						label.icon:SetTexCoord(unpack(ICON_COORDS[class]))
 						local c = RAID_CLASS_COLORS[class]
-						label.bg:SetVertexColor(c.r,c.g,c.b,0.4)
+						label.bar:SetStatusBarColor(c.r,c.g,c.b,0.4)
 						label.destroyed = nil
 						label:Show()
 					end
 					if d then
 						if d ~= label.lastd then
 							local perc = d / range
-							label.bg:SetWidth(label.bg.maxWidth * perc)
+							label.bar:SetValue(perc)
 							local sec = floor(d)
 							label.left:SetFormattedText("%d",sec)
 							label.right:SetFormattedText("%02d",100*(d - sec))
@@ -183,7 +183,7 @@ local function CreateWindow()
 					elseif not label.dblank then 
 						label.left:SetText("")
 						label.right:SetText("")
-						label.bg:SetWidth(label.bg.maxWidth)
+						label.bar:SetValue(1)
 						label.dblank = true 
 						label.lastd = nil
 					end

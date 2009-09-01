@@ -592,12 +592,12 @@ do
 		frame:SetBackdrop(backdrop)
 		
 		local bar = CreateFrame("StatusBar",nil,frame)
-		bar:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
 		bar:SetPoint("TOPLEFT",2,-2)
 		bar:SetPoint("BOTTOMRIGHT",-2,2)
 		bar:SetMinMaxValues(0,1) 
 		bar:SetValue(0)
 		self.bar = bar
+		addon:RegisterStatusBar(bar)
 
 		local border = CreateFrame("Frame",nil,frame)
 		border:SetAllPoints(true)
@@ -606,23 +606,23 @@ do
 		border:SetFrameLevel(bar:GetFrameLevel()+1)
 		
 		local text = bar:CreateFontString(nil,"ARTWORK")
-		text:SetFont("Interface\\Addons\\DXE\\Fonts\\FGM.ttf",9)
 		text:SetPoint("CENTER",frame,"CENTER",0,-4)
 		text:SetTextColor(0.6,1,0.2)
 		text:SetShadowOffset(1,-1)
+		addon:RegisterFontString(text,9)
 		self.text = text
 
 		local perc = bar:CreateFontString(nil,"ARTWORK")
-		perc:SetFont("Interface\\Addons\\DXE\\Fonts\\FGM.ttf",8)
 		perc:SetPoint("TOPRIGHT",frame,"TOPRIGHT",-5,-3)
 		perc:SetShadowOffset(1,-1)
+		addon:RegisterFontString(perc,8)
 		self.perc = perc
 
 		local status = bar:CreateFontString(nil,"ARTWORK")
-		status:SetFont("Interface\\Addons\\DXE\\Fonts\\FGM.ttf",8)
 		status:SetPoint("TOPLEFT",frame,"TOPLEFT",5,-3)
 		status:SetTextColor(1,0.82,0)
 		status:SetShadowOffset(1,-1)
+		addon:RegisterFontString(status,8)
 		self.status = status
 		
 		self.OnAcquire = OnAcquire

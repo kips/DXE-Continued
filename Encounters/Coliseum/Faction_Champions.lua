@@ -201,6 +201,7 @@ do
 				icon = ST[67519],
 			},
 			-- Possibly add Earth Shield
+			-- Add in Ice Block
 		},
 		events = { 
 			-- Bloodlust

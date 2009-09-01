@@ -79,3 +79,40 @@ do
 	SM:Register("font", "Courier New", "Interface\\AddOns\\DXE\\Fonts\\CN.ttf")
 	SM:Register("font", "Franklin Gothic Medium", "Interface\\AddOns\\DXE\\Fonts\\FGM.ttf")
 end
+
+-------------------------
+-- GLOBALS
+-------------------------
+-- TODO: Add border
+local gbl
+local function RefreshProfile(db) gbl = db.global end
+addon:AddToRefreshProfile(RefreshProfile)
+
+do
+	local reg = {}
+	function addon:RegisterFontString(fontstring,size,flag1,flag2,flag3)
+		reg[#reg+1] = fontstring
+		fontstring:SetFont(SM:Fetch("font",gbl.Font),size,flag1,flag2,flag3)
+	end
+
+	function addon:NotifyFontChanged()
+		local font = SM:Fetch("font",gbl.Font)
+		for _,fontstring in ipairs(reg) do 
+			local _,size,flag1,flag2,flag3 = fontstring:GetFont()
+			fontstring:SetFont(font,size,flag1,flag2,flag3)
+		end
+	end
+end
+
+do
+	local reg = {}
+	function addon:RegisterStatusBar(statusbar)
+		reg[#reg+1] = statusbar
+		statusbar:SetStatusBarTexture(SM:Fetch("statusbar",gbl.BarTexture))
+	end
+
+	function addon:NotifyBarTextureChanged()
+		local texture = SM:Fetch("statusbar",gbl.BarTexture)
+		for _,statusbar in ipairs(reg) do statusbar:SetStatusBarTexture(texture) end
+	end
+end

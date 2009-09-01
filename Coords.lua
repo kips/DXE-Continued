@@ -23,13 +23,13 @@ local fired = {}
 -- Intended to be used when the player and unit are in the same map
 -- Supported: Ulduar, Naxxramas, The Eye of Eternity, The Obsidian Sanctum, Trial of the Crusader
 function addon:GetDistanceToUnit(unit,fx2,fy2)
+	local x1,y1 = self:GetPlayerMapPosition("player")
+	local x2,y2
+
 	local list = MapDims[GetMapInfo()]
 	if not list then return end
 	local dims = list[GetCurrentMapDungeonLevel()]
 	if not dims then return end
-
-	local x1,y1 = self:GetPlayerMapPosition("player")
-	local x2,y2
 
 	if fx2 and fy2 then
 		x2,y2 = fx2,fy2

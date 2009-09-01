@@ -42,8 +42,6 @@ local defaults = {
 			OnlyIfRunning = false,
 			OnlyOnMouseover = false,
 			BarGrowth = "AUTOMATIC",
-			BarTexture = "Blizzard",
-			Font = "Franklin Gothic Medium",
 			FontColor = {1,1,1,1},
 			TitleFontSize = 10,
 			HealthFontSize = 12,
@@ -1275,15 +1273,13 @@ function addon:SkinPane()
 
 	-- Health watchers
 	for i,hw in ipairs(addon.HW) do
-		hw.bar:SetStatusBarTexture(SM:Fetch("statusbar",db.BarTexture))
 		hw:SetNeutralColor(db.NeutralColor)
 		hw:SetLostColor(db.LostColor)
 		hw:ApplyNeutralColor()
 
-		local font = SM:Fetch("font",db.Font)
-		hw.title:SetFont(font,db.TitleFontSize)
+		hw.title:SetFont(hw.title:GetFont(),db.TitleFontSize)
 		hw.title:SetVertexColor(unpack(db.FontColor))
-		hw.health:SetFont(font,db.HealthFontSize)
+		hw.health:SetFont(hw.health:GetFont(),db.HealthFontSize)
 		hw.health:SetVertexColor(unpack(db.FontColor))
 
 		PaneBackdrop.edgeFile = nil
@@ -1626,7 +1622,7 @@ do
 		local desc = frame:CreateFontString(nil,"ARTWORK")
 		desc:SetShadowOffset(1,-1)
 		desc:SetPoint("BOTTOM",frame,"TOP")
-		desc:SetFont(GameFontNormal:GetFont(),9)
+		self:RegisterFontString(desc,9)
 		desc:SetText(text)
 		return frame
 	end

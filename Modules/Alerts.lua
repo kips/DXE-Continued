@@ -2,7 +2,6 @@
 
 local defaults = {
 	profile = {
-		BarTexture = "Blizzard",
 		DisableDropdowns = false,
 		DisableScreenFlash = false,
 		DisableSounds = false,
@@ -23,7 +22,6 @@ local defaults = {
 		BarBackgroundColor = {0,0,0,0.8},
 		BarBorder = "Blizzard Tooltip",
 		BarBorderColor = {1,1,1,1},
-		BarFont = "Franklin Gothic Medium",
 		BarFontSize = 10,
 		BarFontColor = {1,1,1,1},
 		BarStyle = "RDX",
@@ -121,14 +119,6 @@ function module:InitializeOptions(area)
 						desc = L["Select a bar style"],
 						values = {RDX = "RDX", BIGWIGS = "BigWigs"},
 					},
-					BarTexture = {
-						order = 120,
-						type = "select",
-						name = L["Bar Texture"],
-						desc = L["Select a bar texture"],
-						values = SM:HashTable("statusbar"),
-						dialogControl = "LSM30_Statusbar",
-					},
 					BarFillDirection = {
 						order = 130,
 						type = "select",
@@ -208,16 +198,8 @@ function module:InitializeOptions(area)
 								name = L["Adjust the font used on timer bars"].."\n",
 								order = 1,
 							},
-							BarFont = {
-								order = 100,
-								type = "select",
-								name = L["Bar Font"],
-								desc = L["Select a font used on bars"],
-								values = SM:HashTable("font"),
-								dialogControl = "LSM30_Font",
-							},
 							BarFontSize = {
-								order = 200,
+								order = 100,
 								type = "range",
 								name = L["Bar Font Size"],
 								desc = L["Select a font size used on bars"],
@@ -226,7 +208,7 @@ function module:InitializeOptions(area)
 								step = 1,
 							},
 							BarFontColor = {
-								order = 300,
+								order = 200,
 								type = "color",
 								name = L["Bar Font Color"],
 								desc = L["Set a font color used on bars"],
@@ -804,8 +786,6 @@ end
 local function SkinBar(bar)
 	StyleBar(bar,pfl.BarStyle)
 
-	bar.statusbar:SetStatusBarTexture(SM:Fetch("statusbar",pfl.BarTexture))
-
 	if pfl.HideIcons then 
 		bar.iconf:Hide() 
 	else
@@ -825,7 +805,7 @@ local function SkinBar(bar)
 	bar.border:SetBackdropBorderColor(r,g,b,a)
 	bar.iconf:SetBackdropBorderColor(r,g,b,a)
 
-	bar.text:SetFont(SM:Fetch("font",pfl.BarFont),pfl.BarFontSize)
+	bar.text:SetFont(bar.text:GetFont(),pfl.BarFontSize)
 	bar.text:SetVertexColor(unpack(pfl.BarFontColor))
 
 	bar:SetBackdropColor(unpack(pfl.BarBackgroundColor))
@@ -859,6 +839,7 @@ local function CreateBar()
 	local bar = CreateFrame("StatusBar",nil,self)
 	bar:SetMinMaxValues(0,1) 
 	bar:SetValue(0)
+	addon:RegisterStatusBar(bar)
 	self.statusbar = bar
 
 	local border = CreateFrame("Frame",nil,self)
@@ -877,6 +858,7 @@ local function CreateBar()
 	-- Adjust if we ever have a timer > 1 hour
 	text:SetPoint("RIGHT",self.timer,"LEFT",7,0)
 	text:SetShadowOffset(1,-1)
+	addon:RegisterFontString(text,10)
 	self.text = text
 
 	local iconf = CreateFrame("Frame",nil,self)

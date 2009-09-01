@@ -21,6 +21,7 @@ function HealthWatcher:New(parent)
 	bar:SetMinMaxValues(0,1)
 	bar:SetPoint("TOPLEFT",2,-2)
 	bar:SetPoint("BOTTOMRIGHT",-2,2)
+	addon:RegisterStatusBar(bar)
 	hw.bar = bar
 	
 	local border = CreateFrame("Frame",nil,hw)
@@ -32,12 +33,14 @@ function HealthWatcher:New(parent)
 	title = bar:CreateFontString(nil,"ARTWORK")
 	title:SetPoint("LEFT",bar,"LEFT",2,0)
 	title:SetShadowOffset(1,-1)
+	addon:RegisterFontString(title,10)
 	hw.title = title
 
 	-- Add health text
 	health = bar:CreateFontString(nil,"ARTWORK")
 	health:SetPoint("RIGHT",bar,"RIGHT",-2,0)
 	health:SetShadowOffset(1,-1)
+	addon:RegisterFontString(health,12)
 	hw.health = health
 
 	local tracer = addon.Tracer:New()

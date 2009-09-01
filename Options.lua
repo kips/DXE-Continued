@@ -156,10 +156,35 @@ function addon:InitializeOptions()
 		order = 100,
 		handler = self,
 		args = {
+			globals_group = {
+				type = "group",
+				name = L["Globals"],
+				order = 50,
+				get = function(info) return gbl[info[#info]] end,
+				args = {
+					BarTexture = {
+						type = "select",
+						order = 100,
+						name = L["Bar Texture"],
+						desc = L["Bar texture used throughout the addon"],
+						set = function(info,v) gbl.BarTexture = v; addon:NotifyBarTextureChanged() end,
+						values = SM:HashTable("statusbar"),
+						dialogControl = "LSM30_Statusbar",
+					},
+					Font = {
+						order = 200,
+						type = "select",
+						name = L["Font"],
+						desc = L["Font used throughout the addon"],
+						set = function(info,v) gbl.Font = v; addon:NotifyFontChanged() end,
+						values = SM:HashTable("font"),
+						dialogControl = "LSM30_Font",
+					},
+				},
+			},
 			pane_group = {
 				type = "group",
 				name = L["Pane"],
-				--inline = true,
 				order = 100,
 				get = function(info) 
 					local var = info[#info]
@@ -246,14 +271,6 @@ function addon:InitializeOptions()
 							self:SkinPane()
 						end,
 						args = {
-							BarTexture = {
-								order = 100,
-								type = "select",
-								name = L["Bar Texture"],
-								desc = L["Select a bar texture used on health watchers"],
-								values = SM:HashTable("statusbar"),
-								dialogControl = "LSM30_Statusbar",
-							},
 							BarGrowth = {
 								order = 200,
 								type = "select",
@@ -319,14 +336,6 @@ function addon:InitializeOptions()
 								type = "header",
 								name = L["Font"],
 								order = 750,
-							},
-							Font = {
-								order = 800,
-								type = "select",
-								name = L["Font"],
-								desc = L["Select a font used on the pane and health watchers"],
-								values = SM:HashTable("font"),
-								dialogControl = "LSM30_Font",
 							},
 							TitleFontSize = {
 								order = 900,
