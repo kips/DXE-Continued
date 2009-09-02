@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 311,
+		version = 312,
 		key = "jaraxxus", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -156,38 +156,8 @@ do
 				color1 = "TAN",
 				icon = ST[67905],
 			},
-			touchself = {
-				varname = format(L["%s on self"],SN[66209]),
-				text = format("%s: %s!",SN[66209],L["YOU"]),
-				type = "centerpopup",
-				time = 12,
-				flashtime = 12,
-				color1 = "INDIGO",
-				color2 = "PEACH",
-				sound = "ALERT5",
-				icon = ST[66209],
-				flashscreen = true,
-			},
-			touchproximitywarn = {
-				varname = format(L["%s Proximity Warning"],SN[66209]),
-				text = format("%s: #5#! %s!",SN[66209],L["MOVE AWAY"]),
-				type = "simple",
-				time = 3,
-				sound = "ALERT7",
-				icon = ST[66209],
-				flashscreen = true,
-			},
 		},
 		arrows = {
-			toucharrow = {
-				varname = SN[66209],
-				unit = "#5#",
-				persist = 3,
-				action = "AWAY",
-				msg = L["MOVE AWAY"],
-				spell = L["Touch"],
-				sound = "ALERT6",
-			},
 			flamearrow = {
 				varname = SN[68123],
 				unit = "#5#",
@@ -205,13 +175,6 @@ do
 				persist = 6,
 				unit = "#5#",
 				icon = 7,
-			},
-			touchmark = {
-				varname = SN[66209],
-				type = "FRIENDLY",
-				persist = 12,
-				unit = "#5#",
-				icon = 8,
 			},
 		},
 		announces = {
@@ -334,39 +297,6 @@ do
 				execute = {
 					{
 						"alert","netherpowerwarn",
-					},
-				},
-			},
-			-- Touch of Jaraxxus
-			{
-				type = "combatevent",
-				eventtype = "SPELL_AURA_APPLIED",
-				spellid = 66209,
-				execute = {
-					{
-						"raidicon","touchmark",
-					},
-					{
-						"expect",{"#4#","==","&playerguid&"},
-						"alert","touchself",
-					},
-					{
-						"expect",{"#4#","~=","&playerguid&"},
-						"proximitycheck",{"#5#",11},
-						"alert","touchproximitywarn",
-						"arrow","toucharrow",
-					},
-				},
-			},
-			-- Touch of Jaraxxus Removal
-			{
-				type = "combatevent",
-				eventtype = "SPELL_AURA_REMOVED",
-				spellid = 66209,
-				execute = {
-					{
-						"expect",{"#4#","==","&playerguid&"},
-						"quash","touchself",
 					},
 				},
 			},

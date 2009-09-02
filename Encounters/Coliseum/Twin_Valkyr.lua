@@ -5,7 +5,7 @@ do
 	local LE = SN[67223] -- Light Essence
 
 	local data = {
-		version = 8,
+		version = 9,
 		key = "twinvalkyr", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
