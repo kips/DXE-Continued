@@ -213,23 +213,6 @@ do
 					},
 				},
 			},
-			-- Legion Flame removal
-			{
-				type = "combatevent",
-				eventtype = "SPELL_AURA_REMOVED",
-				spellid = {
-					68125,
-					68124, -- 10m hard
-					66197, -- 10 normal
-					68123, -- 25 normal
-				},
-				execute = {
-					{
-						"expect",{"#4#","==","&playerguid&"},
-						"quash","legionflameself",
-					},
-				},
-			},
 			-- Incinerate Flesh
 			{
 				type = "combatevent",

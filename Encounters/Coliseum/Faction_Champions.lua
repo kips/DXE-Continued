@@ -2,7 +2,7 @@ do
 	local faction = UnitFactionGroup("player")
 	local npc_list
 
-	local NID_MAGE
+	local NID_MAGE,NID_WARLOCK
 	
 	if faction == "Alliance" then
 		-- Horde npcs
@@ -23,6 +23,7 @@ do
 			34453, -- Narrhok   	WARRIOR
 		}
 		NID_MAGE = "34449"
+		NID_WARLOCK = "34450"
 	elseif faction == "Horde" then
 		-- Alliance npcs
 		npc_list = {
@@ -42,6 +43,7 @@ do
 			34475, -- Shocuul 	WARRIOR
 		}
 		NID_MAGE = "34468"
+		NID_WARLOCK = "34474"
 	else
 		error("DXE_Coliseum Faction Champions: Unable to detect faction. Please report this bug.") 
 	end
@@ -237,11 +239,26 @@ do
 					},
 				},
 			},
+			-- Hellfire interrupt
+			{
+				type = "combatevent",
+				eventtype = "SPELL_INTERRUPT",
+				execute = {
+					{
+						"expect",{"&npcid|#4#& #10#","==",NID_WARLOCK.." 68145"},
+						"quash","hellfirewarn",
+					},
+					{
+						"expect",{"&npcid|#4#& #10#","==",NID_WARLOCK.." 65816"},
+						"quash","hellfirewarn",
+					},
+				},
+			},
 			-- Hellfire on self
 			{
 				type = "combatevent",
 				eventtype = "SPELL_DAMAGE",
-				spellid = 65817,
+				spellid = {65817,68142},
 				execute = {
 					{
 						"expect",{"#4#","==","&playerguid&"},
