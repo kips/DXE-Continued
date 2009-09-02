@@ -20,6 +20,7 @@ do
 			combatstop = true,
 		},
 		userdata = {
+			enragetime = 900,
 			acidmawdead = 0,
 			dreadscaledead = 0,
 			jormunactivated = 0,
@@ -38,6 +39,10 @@ do
 		},
 		onstart = {
 			{
+				"expect",{"&difficulty&","==","3"},
+				"set",{enragetime = 486}, -- 10m hard
+			},
+			{
 				"alert","enragecd",
 				"alert","zerotoone",
 			},
@@ -47,7 +52,7 @@ do
 				varname = L["Enrage"],
 				type = "dropdown", 
 				text = L["Enrage"],
-				time = 900, 
+				time = "<enragetime>",
 				flashtime = 10, 
 				color1 = "RED", 
 				icon = ST[12317],
