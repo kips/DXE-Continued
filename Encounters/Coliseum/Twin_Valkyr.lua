@@ -110,8 +110,62 @@ do
 				sound = "ALERT7",
 				icon = ST[56105],
 			},
+			empoweredlightself = {
+				varname = format(L["%s on self"],SN[67217]),
+				text = SN[67217].."!",
+				type = "centerpopup",
+				time = 15,
+				flashtime = 15,
+				color1 = "GOLD",
+				sound = "ALERT8",
+				icon = ST[67217],
+			},
+			empowereddarkself = {
+				varname = format(L["%s on self"],SN[67214]),
+				text = SN[67214].."!",
+				type = "centerpopup",
+				time = 20,
+				flashtime = 20,
+				color1 = "BLUE",
+				sound = "ALERT8",
+				icon = ST[67214],
+			},
 		},
 		events = {
+			-- Empowered Light
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellid = {
+					67217, -- 10 hard
+					65748, -- 10 normal
+					67216, -- 25 normal
+					67216,
+				},
+				execute = {
+					{
+						"expect",{"#4#","==","&playerguid&"},
+						"alert","empoweredlightself",
+					},
+				},
+			},
+			-- Empowered Darkness
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellid = {
+					67214, -- 10 hard
+					65724, -- 10 normal
+					67213, -- 25 normal
+					67215,
+				},
+				execute = {
+					{
+						"expect",{"#4#","==","&playerguid&"},
+						"alert","empowereddarkself",
+					},
+				},
+			},
 			-- Dark Vortex
 			{
 				type = "combatevent",
@@ -119,7 +173,7 @@ do
 				spellid = {
 					67182, -- 25 normal
 					66058, -- 10 normal
-					67183,
+					67183, -- 10m hard
 					67184,
 				},
 				execute = {
@@ -138,7 +192,7 @@ do
 				spellid = {
 					67206, -- 25 normal
 					66046, -- 10 normal
-					67207,
+					67207, -- 10m hard
 					67208,
 				},
 				execute = {
@@ -157,7 +211,7 @@ do
 				spellid = {
 					67256, -- 25 normal
 					65874,
-					67257,
+					67257, -- 10m hard
 					67258,
 				},
 				execute = {
@@ -174,7 +228,7 @@ do
 				spellid = {
 					67256, -- 25 normal
 					65874,
-					67257,
+					67257, -- 10m hard
 					67258,
 				},
 				execute = {
