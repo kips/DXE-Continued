@@ -36,7 +36,10 @@ local UnitGUID, UnitName, UnitExists, UnitIsUnit = UnitGUID, UnitName, UnitExist
 local UnitBuff,UnitDebuff = UnitBuff,UnitDebuff
 
 local name_to_unit = addon.Roster.name_to_unit
-local EncDB,CE,alerts,raidicons,arrows,announces
+local pfl,key,CE,alerts,raidicons,arrows,announces
+
+local function RefreshProfile(db) pfl = db.profile end
+addon:AddToRefreshProfile(RefreshProfile)
 
 -- Temp variable environment
 local userdata = {}
@@ -381,10 +384,7 @@ do
 
 	-- @ADD TO HANDLERS
 	handlers.alert = function(info)
-		local stgs = EncDB[info]
-		--@debug@
-		if not stgs then print(info) end
-		--@end-debug@
+		local stgs = pfl.Encounters[key][info]
 		if stgs.enabled then
 			local alertInfo = alerts[info]
 			-- Sanity check
@@ -530,7 +530,7 @@ end
 do
 	-- @ADD TO HANDLERS
 	handlers.arrow = function(info)
-		local stgs = EncDB[info]
+		local stgs = pfl.Encounters[key][info]
 		if stgs.enabled then 
 			local arrowInfo = arrows[info]
 			local unit = ReplaceTokens(arrowInfo.unit)
@@ -573,7 +573,7 @@ do
 
 	-- @ADD TO HANDLERS
 	handlers.raidicon = function(info)
-		local stgs = EncDB[info]
+		local stgs = pfl.Encounters[key][info]
 		--@debug@
 		if not stgs then print(info) end
 		--@end-debug@
@@ -599,7 +599,7 @@ do
 
 	-- @ADD TO HANDLERS
 	handlers.announce = function(info)
-		local stgs = EncDB[info]
+		local stgs = pfl.Encounters[key][info]
 		if stgs.enabled then
 			local announceInfo = announces[info]
 			if announceInfo.type == "SAY" then
@@ -729,7 +729,7 @@ function module:OnSet(_,data)
 	alerts = CE.alerts
 	announces = CE.announces
 	-- Set db upvalues
-	EncDB = addon.db.profile.Encounters[CE.key]
+	key = CE.key
 	-- Wipe events
 	self:WipeEvents()
 	-- Register events

@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 2,
+		version = 4,
 		key = "anubcoliseum", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -15,6 +15,11 @@ do
 			tracing = {34564},
 			tracerstart = true,
 			combatstop = true,
+		},
+		onstart = {
+			{
+				"alert","burrowcd",
+			},
 		},
 		alerts = {
 			pursueself = {
@@ -30,12 +35,21 @@ do
 			},
 			pursueother = {
 				varname = format(L["%s on others"],SN[62374]),
-				type = "dropdown",
+				type = "centerpopup",
 				text = format("%s: #5#!",SN[62374]),
 				time = 60,
-				flashtime = 15,
+				flashtime = 60,
 				color1 = "BROWN",
 				icon = ST[67574],
+			},
+			burrowcd = {
+				varname = "Burrow Cooldown",
+				type = "dropdown",
+				text = "Next Burrow",
+				time = 81,
+				flashtime = 10,
+				color1 = "GREY",
+				icon = ST[26381],
 			},
 		},
 		events = {
