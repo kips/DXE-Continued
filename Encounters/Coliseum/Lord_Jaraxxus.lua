@@ -25,6 +25,24 @@ do
 		},
 		onstart = {
 			{
+				"expect",{"&difficulty&","==","3"}, -- 10m hard
+				"tracing",{
+					34780, -- Jaraxxus
+					34826, -- Mistress
+					34825, -- Nether Portal
+					34813, -- Infernal Volcano
+				},
+			},
+			{
+				"expect",{"&difficulty&","==","4"}, -- 25m hard
+				"tracing",{
+					34780, -- Jaraxxus
+					34826, -- Mistress
+					34825, -- Nether Portal
+					34813, -- Infernal Volcano
+				},
+			},
+			{
 				"alert","enragecd",
 				"alert","portalcd",
 				"alert","legionflamecd",

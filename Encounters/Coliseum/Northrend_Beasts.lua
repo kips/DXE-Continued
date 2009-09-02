@@ -40,7 +40,7 @@ do
 		onstart = {
 			{
 				"expect",{"&difficulty&","==","3"},
-				"set",{enragetime = 486}, -- 10m hard
+				"set",{enragetime = 486}, -- 10m hard, need more data to verify this
 			},
 			{
 				"alert","enragecd",
