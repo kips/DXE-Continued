@@ -1,18 +1,18 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 1,
+		version = 2,
 		key = "anubcoliseum", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
 		name = L["Anub'arak"], 
 		triggers = {
 			scan = {
-				34660, -- Anub
+				34564, -- Anub
 			}, 
 		},
 		onactivate = {
-			tracing = {34660},
+			tracing = {34564},
 			tracerstart = true,
 			combatstop = true,
 		},
