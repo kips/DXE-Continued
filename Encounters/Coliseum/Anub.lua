@@ -87,6 +87,17 @@ do
 					},
 				},
 			},
+			-- Shadow Strike (Hard Mode) interrupt
+			{
+				type = "combatevent",
+				eventtype = "SPELL_INTERRUPT",
+				execute = {
+					{
+						"expect",{"&npcid|#4#&","==","34607"},
+						"quash","shadowstrikewarn",
+					},
+				},
+			},
 			-- Pursued by Anub'arak
 			{
 				type = "combatevent",
