@@ -191,7 +191,7 @@ do
 				eventtype = "SPELL_AURA_APPLIED",
 				spellid = {
 					68125,
-					68124,
+					68124, -- 10m hard
 					66197, -- 10 normal
 					68123, -- 25 normal
 				},
@@ -213,12 +213,29 @@ do
 					},
 				},
 			},
+			-- Legion Flame removal
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_REMOVED",
+				spellid = {
+					68125,
+					68124, -- 10m hard
+					66197, -- 10 normal
+					68123, -- 25 normal
+				},
+				execute = {
+					{
+						"expect",{"#4#","==","&playerguid&"},
+						"quash","legionflameself",
+					},
+				},
+			},
 			-- Incinerate Flesh
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
 				spellid = {
-					67050,
+					67050, -- 10m hard
 					67051,
 					66237, -- 10 normal
 					67049, -- 25 normal
@@ -242,7 +259,7 @@ do
 				type = "combatevent",
 				eventtype = "SPELL_AURA_REMOVED",
 				spellid = {
-					67050,
+					67050, -- 10m hard
 					67051,
 					66237, -- 10 normal
 					67049, -- 25 normal
@@ -263,6 +280,7 @@ do
 				type = "combatevent",
 				eventtype = "SPELL_CAST_SUCCESS",
 				spellid = {
+					67902, -- 10m hard
 					67903,
 					66258, -- 10 normal
 					67901, -- 25 normal
@@ -281,6 +299,7 @@ do
 					67900,
 					66269, -- 10 normal
 					67898, -- 25 normal
+					67899, -- 10m hard
 				},
 				execute = {
 					{
