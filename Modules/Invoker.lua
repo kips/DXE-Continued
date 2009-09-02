@@ -382,6 +382,9 @@ do
 	-- @ADD TO HANDLERS
 	handlers.alert = function(info)
 		local stgs = EncDB[info]
+		--@debug@
+		if not stgs then print(info) end
+		--@end-debug@
 		if stgs.enabled then
 			local alertInfo = alerts[info]
 			-- Sanity check
@@ -571,6 +574,9 @@ do
 	-- @ADD TO HANDLERS
 	handlers.raidicon = function(info)
 		local stgs = EncDB[info]
+		--@debug@
+		if not stgs then print(info) end
+		--@end-debug@
 		if addon:IsPromoted() and stgs.enabled then
 			local raidInfo = raidicons[info]
 			if not raidInfo then return end

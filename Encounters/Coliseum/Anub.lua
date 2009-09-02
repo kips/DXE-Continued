@@ -22,7 +22,7 @@ do
 				type = "centerpopup",
 				time = 60,
 				flashtime = 60,
-				text = format("%s: #5#! %s!",SN[62374],L["RUN"]),
+				text = format("%s: %s! %s!",SN[62374],L["YOU"],L["RUN"]),
 				sound = "ALERT1",
 				color1 = "BROWN",
 				color2 = "GREY",

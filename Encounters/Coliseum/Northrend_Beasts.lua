@@ -339,6 +339,10 @@ do
 			},
 		},
 		events = { 
+			---------------
+			-- Gormok
+			---------------
+
 			-- Fire Bomb on self - Gormok
 			{
 				type = "combatevent",
@@ -394,6 +398,11 @@ do
 					},
 				},
 			},
+
+			---------------
+			-- Jormungars
+			---------------
+
 			-- Paralytic Toxin - Jormungars - Acidmaw
 			{
 				type = "combatevent",
@@ -551,6 +560,11 @@ do
 					},
 				},
 			},
+
+			---------------
+			-- Icehowl
+			---------------
+
 			-- Arctic Breath - Icehowl
 			{
 				type = "combatevent",

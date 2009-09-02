@@ -5,7 +5,7 @@ do
 	local LE = SN[67223] -- Light Essence
 
 	local data = {
-		version = 7,
+		version = 8,
 		key = "twinvalkyr", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -35,7 +35,7 @@ do
 				varname = L["Enrage"],
 				text = L["Enrage"],
 				type = "dropdown",
-				time = 540,
+				time = 480,
 				flashtime = 10,
 				color1 = "RED",
 				icon = ST[12317],
