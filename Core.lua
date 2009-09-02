@@ -72,7 +72,7 @@ local defaults = {
 
 local addon = LibStub("AceAddon-3.0"):NewAddon("DXE","AceEvent-3.0","AceTimer-3.0","AceConsole-3.0","AceComm-3.0","AceSerializer-3.0")
 _G.DXE = addon
-addon.version = 346
+addon.version = 347
 addon:SetDefaultModuleState(false)
 addon.callbacks = LibStub("CallbackHandler-1.0"):New(addon)
 addon.defaults = defaults
@@ -1038,7 +1038,7 @@ do
 		assert(type(frame) == "table","expected 'frame' to be a table")
 		assert(frame.IsObjectType and frame:IsObjectType("Region"),"'frame' is not a blizzard frame")
 		if redirect then
-			assert(type(redirect) == "table","expected 'frame' to be a table")
+			assert(type(redirect) == "table","expected 'redirect' to be a table")
 			assert(redirect.IsObjectType and redirect:IsObjectType("Region"),"'frame' is not a blizzard frame")
 		end
 		--@end-debug@

@@ -728,7 +728,6 @@ function module:OnSet(_,data)
 	raidicons = CE.raidicons
 	alerts = CE.alerts
 	announces = CE.announces
-	-- Set db upvalues
 	key = CE.key
 	-- Wipe events
 	self:WipeEvents()

@@ -347,7 +347,11 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_DAMAGE",
-				spellid = {67472,66320},
+				spellid = {
+					67472,
+					66320,
+					67473, -- 10m hard
+				},
 				execute = {
 					{
 						"expect",{"#4#","==","&playerguid&"},
@@ -359,7 +363,11 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_SUCCESS",
-				spellid = {67477,66331},
+				spellid = {
+					67477,
+					66331,
+					67478, -- 10m hard
+				},
 				execute = {
 					{
 						"alert","impalecd",
@@ -370,7 +378,11 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED_DOSE",
-				spellid = {67477,66331},
+				spellid = {
+					67477,
+					66331,
+					67478, -- 10m hard
+				},
 				execute = {
 					{
 						"expect",{"#4#","==","&playerguid&"},
@@ -390,7 +402,11 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
-				spellid = {67647,66330},
+				spellid = {
+					67647,
+					66330,
+					67648, -- 10m hard
+				},
 				execute = {
 					{
 						"alert","stompwarn",
@@ -407,7 +423,11 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellid = {67618,66823},
+				spellid = {
+					67618,
+					66823,
+					67619, -- 10m hard
+				},
 				execute = {
 					{
 						"expect",{"#4#","==","&playerguid&"},
@@ -432,7 +452,11 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_REMOVED",
-				spellid = {67618,66823},
+				spellid = {
+					67618,
+					66823,
+					67619, -- 10m hard
+				},
 				execute = {
 					{
 						"expect",{"#4#","==","&playerguid&"},
@@ -497,7 +521,11 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_DAMAGE",
-				spellid = {66881,67638},
+				spellid = {
+					66881,
+					67638,
+					67639, -- 10m hard
+				},
 				execute = {
 					{
 						"expect",{"#4#","==","&playerguid&"},
@@ -569,7 +597,11 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellid = {67650,66689},
+				spellid = {
+					67650,
+					66689,
+					67651, -- 10m hard
+				},
 				execute = {
 					{
 						"alert","breathwarn",
@@ -580,7 +612,10 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellid = 67657,
+				spellid = {
+					67657,
+					67658, -- 10m hard
+				},
 				execute = {
 					{
 						"alert","ragewarn",
@@ -591,7 +626,10 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_REMOVED",
-				spellid = 67657,
+				spellid = {
+					67657,
+					67658,
+				},
 				execute = {
 					{
 						"quash","ragewarn",
@@ -613,7 +651,11 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
-				spellid = {67660,66683},
+				spellid = {
+					67660,
+					66683,
+					67661, -- 10m hard
+				},
 				execute = {
 					{
 						"alert","crashcast",
