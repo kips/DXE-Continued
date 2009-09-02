@@ -75,6 +75,16 @@ do
 				throttle = 2,
 			},
 		},
+		arrows = {
+			pursuedarrow = {
+				varname = SN[62374],
+				unit = "#5#",
+				persist = 60,
+				action = "AWAY",
+				msg = L["MOVE AWAY"],
+				spell = L["Burrow"],
+			},
+		},
 		events = {
 			-- Shadow Strike (Hard Mode)
 			{
@@ -111,6 +121,7 @@ do
 					{
 						"expect",{"#4#","~=","&playerguid&"},
 						"alert","pursueother",
+						"arrow","pursuedarrow",
 					},
 				},
 			},
@@ -127,6 +138,7 @@ do
 					{
 						"expect",{"#4#","~=","&playerguid&"},
 						"quash","pursueother",
+						"removearrow","#5#",
 					},
 				},
 			},
