@@ -51,8 +51,8 @@ do
 				text = format(L["Next %s"],SN[26381]),
 				time = "<burrowtime>",
 				flashtime = 10,
-				color1 = "GREY",
-				icon = ST[26381],
+				color1 = "ORANGE",
+				icon = ST[1784],
 			},
 			burrowdur = {
 				varname = format(L["%s Duration"],SN[26381]),
@@ -74,6 +74,16 @@ do
 				icon = ST[66134],
 				throttle = 2,
 			},
+			submergewarn = {
+				varname = format(L["%s Cast"],SN[67322]),
+				type = "centerpopup",
+				text = format(L["%s Cast"],SN[67322]),
+				time = 2,
+				flashtime = 2,
+				color1 = "GREY",
+				sound = "ALERT6",
+				icon = ST[67322],
+			},
 		},
 		arrows = {
 			pursuedarrow = {
@@ -86,7 +96,18 @@ do
 			},
 		},
 		events = {
-			-- Shadow Strike (Hard Mode)
+			-- Submerge
+			{
+				type = "combatevent",
+				eventtype = "SPELL_CAST_START",
+				spellid = 67322,
+				execute = {
+					{
+						"alert","submergewarn",
+					},
+				},
+			},
+			-- Shadow Strike (Hard Mode) - Only tracks up to 1
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
