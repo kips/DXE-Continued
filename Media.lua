@@ -86,10 +86,14 @@ end
 local bgBackdrop = {bgFile = "Interface\\Tooltips\\UI-Tooltip-Background", insets = {left = 2, right = 2, top = 2, bottom = 2}}
 local borderBackdrop = {edgeSize = 8, insets = {left = 2, right = 2, top = 2, bottom = 2}}
 
-local gbl
+local pfl
 local function RefreshProfile(db) 
-	gbl = db.global 
-	borderBackdrop.edgeFile = SM:Fetch("border",gbl.Border)
+	pfl = db.profile 
+	addon:NotifyBarTextureChanged(pfl.Globals.BarTexture)
+	addon:NotifyFontChanged(pfl.Globals.Font)
+	addon:NotifyBorderChanged(pfl.Globals.Border)
+	addon:NotifyBorderColorChanged(unpack(pfl.Globals.BorderColor))
+	addon:NotifyBackgroundColorChanged(unpack(pfl.Globals.BackgroundColor))
 end
 addon:AddToRefreshProfile(RefreshProfile)
 
@@ -97,11 +101,11 @@ do
 	local reg = {}
 	function addon:RegisterFontString(fontstring,size,flags)
 		reg[#reg+1] = fontstring
-		fontstring:SetFont(SM:Fetch("font",gbl.Font),size,flags)
+		fontstring:SetFont(SM:Fetch("font",pfl.Globals.Font),size,flags)
 	end
 
-	function addon:NotifyFontChanged()
-		local font = SM:Fetch("font",gbl.Font)
+	function addon:NotifyFontChanged(fontFile)
+		local font = SM:Fetch("font",fontFile)
 		for _,fontstring in ipairs(reg) do 
 			local _,size,flags = fontstring:GetFont()
 			fontstring:SetFont(font,size,flags)
@@ -113,7 +117,7 @@ do
 	local reg = {}
 	function addon:RegisterStatusBar(statusbar)
 		reg[#reg+1] = statusbar
-		statusbar:SetStatusBarTexture(SM:Fetch("statusbar",gbl.BarTexture))
+		statusbar:SetStatusBarTexture(SM:Fetch("statusbar",pfl.Globals.BarTexture))
 	end
 
 	function addon:NotifyBarTextureChanged(name)
@@ -126,14 +130,14 @@ do
 	local reg = {}
 	function addon:RegisterBorder(frame)
 		reg[#reg+1] = frame
-		local r,g,b,a = unpack(gbl.BorderColor)
+		local r,g,b,a = unpack(pfl.Globals.BorderColor)
 		frame:SetBackdrop(borderBackdrop)
 		frame:SetBackdropBorderColor(r,g,b,a)
 	end
 
 	function addon:NotifyBorderChanged(edgeFile)
 		borderBackdrop.edgeFile = SM:Fetch("border",edgeFile)
-		local r,g,b,a = unpack(gbl.BorderColor)
+		local r,g,b,a = unpack(pfl.Globals.BorderColor)
 		for _,frame in ipairs(reg) do 
 			frame:SetBackdrop(borderBackdrop)
 			frame:SetBackdropBorderColor(r,g,b,a)
@@ -151,7 +155,7 @@ do
 	local reg = {}
 	function addon:RegisterBackground(widget)
 		reg[#reg+1] = widget
-		local r,g,b,a = unpack(gbl.BackgroundColor)
+		local r,g,b,a = unpack(pfl.Globals.BackgroundColor)
 		if widget:IsObjectType("Frame") then
 			widget:SetBackdrop(bgBackdrop)
 			widget:SetBackdropColor(r,g,b,a)
@@ -162,7 +166,7 @@ do
 	end
 
 	function addon:NotifyBackgroundColorChanged(r,g,b,a)
-		local r,g,b,a = unpack(gbl.BackgroundColor)
+		local r,g,b,a = unpack(pfl.Globals.BackgroundColor)
 		for _,widget in ipairs(reg) do 
 			if widget:IsObjectType("Frame") then
 				widget:SetBackdropColor(r,g,b,a)

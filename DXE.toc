@@ -19,9 +19,9 @@ Widgets.xml
 Media.lua
 Tracer.lua
 Coords.lua
-Window.lua
 Modules.xml
 Options.lua
+Window.lua
 Versions.lua
 Proximity.lua
 

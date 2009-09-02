@@ -17,24 +17,26 @@ local debugDefaults = {
 
 local defaults = { 
 	global = { 
-		Enabled = true,
 		Locked = true,
 		AdvancedMode = false,
 		_Minimap = {},
 		-- NPC id -> Localized name  
 		L_NPC = {},
-		BarTexture = "Blizzard",
-		Font = "Franklin Gothic Medium",
-		Border = "Blizzard Tooltip",
-		BorderColor = {0.33,0.33,0.33,1},
-		BackgroundColor = {0,0,0,0.8},
 		--@debug@
 		debug = debugDefaults,
 		--@end-debug@
 	},
 	profile = {
+		Enabled = true,
 		Positions = {},
 		Encounters = {},
+		Globals = {
+			BarTexture = "Blizzard",
+			Font = "Franklin Gothic Medium",
+			Border = "Blizzard Tooltip",
+			BorderColor = {0.33,0.33,0.33,1},
+			BackgroundColor = {0,0,0,0.8},
+		},
 		Pane = {
 			Show = true,
 			Scale = 1, 
@@ -48,11 +50,13 @@ local defaults = {
 			FontColor = {1,1,1,1},
 			TitleFontSize = 10,
 			HealthFontSize = 12,
-			BackgroundColor = {0,0,0,0.8},
 			NeutralColor = {0,0,1,1},
 			LostColor = {0.66,0.66,0.66,1},
 		},
 		Misc = {['*'] = false},
+		Windows = {
+			TitleBarColor = {0,0,0.82,1},
+		},
 		Proximity = {
 			BarAlpha = 0.4,
 			Range = 10,
@@ -832,6 +836,8 @@ do
 		self:LayoutHealthWatchers()
 		self:SkinPane()
 		self:UpdatePaneVisibility()
+
+		self[pfl.Enabled and "Enable" or "Disable"](self)
 	end
 end
 
@@ -901,7 +907,7 @@ function addon:OnInitialize()
 	-- Minimap
 	self:SetupMinimapIcon()
 
-	self:SetEnabledState(gbl.Enabled)
+	self:SetEnabledState(pfl.Enabled)
 	self:Print(L["Type |cffffff00/dxe|r for slash commands"])
 	self.OnInitialize = nil
 end

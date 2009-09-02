@@ -9,13 +9,10 @@ local rows = 5
 local labels = {}
 
 local ProximityFuncs = addon:GetProximityFuncs()
-
 local pfl
-local function RefreshProfile(db) pfl = db.profile end
-addon:AddToRefreshProfile(RefreshProfile)
-
 local range
 local proxFunc
+
 local function UpdateSettings()
 	range = pfl.Proximity.Range
 	proxFunc = range <= 10 and ProximityFuncs[10] or (range <= 11 and ProximityFuncs[11] or ProximityFuncs[18])
@@ -26,6 +23,12 @@ local function UpdateSettings()
 		label.bar:SetStatusBarColor(r,g,b,pfl.Proximity.BarAlpha)
 	end
 end
+
+local function RefreshProfile(db) 
+	pfl = db.profile 
+	UpdateSettings()
+end
+addon:AddToRefreshProfile(RefreshProfile)
 
 -- Options
 local handler = {}

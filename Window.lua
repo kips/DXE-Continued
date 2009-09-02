@@ -8,6 +8,54 @@ local titleBarInset = 2
 local handlers = {}
 
 ---------------------------------------
+-- SETTINGS
+---------------------------------------
+
+local pfl
+
+local function SkinWindow(window)
+	local r,g,b,a = unpack(pfl.Windows.TitleBarColor)
+	window.gradient:SetTexture(r,g,b,a)
+	window.gradient:SetGradient("HORIZONTAL",r,g,b,0,0,0)
+end
+
+local function UpdateSettings()
+	for window in pairs(windows) do SkinWindow(window) end
+end
+
+local function RefreshProfile(db) 
+	pfl = db.profile 
+	UpdateSettings()
+end
+addon:AddToRefreshProfile(RefreshProfile)
+
+-- Options
+local handler = {}
+function handler:AddOptionItems(args)
+	args.general_group.args.windows_group = {
+		type = "group",
+		name = L["Windows"],
+		order = 160,
+		args = {
+			TitleBarColor = {
+				order = 100,
+				type = "color",
+				set = function(info,v,v2,v3,v4) 
+					local t = pfl.Windows.TitleBarColor
+					t[1],t[2],t[3],t[4] = v,v2,v3,v4
+					UpdateSettings()
+				end,
+				get = function(info) return unpack(pfl.Windows.TitleBarColor) end,
+				name = L["Title Bar Color"],
+				desc = L["Title bar color used throughout the addon"],
+				hasAlpha = true,
+			},
+		},
+	}
+end
+addon:AddOptionArgsItems(handler,"AddOptionItems")
+
+---------------------------------------
 -- API
 ---------------------------------------
 
@@ -131,8 +179,7 @@ function addon:CreateWindow(name,width,height)
 
 	local gradient = titleBar:CreateTexture(nil,"ARTWORK")
 	gradient:SetAllPoints(true)
-	gradient:SetTexture(0,0,0.82)
-	gradient:SetGradient("HORIZONTAL",0,0,1,0,0,0)
+	anchor.gradient = gradient
 
 	local titleText = titleBar:CreateFontString(nil,"OVERLAY")
 	titleText:SetFont(GameFontNormal:GetFont(),8)
@@ -179,6 +226,8 @@ function addon:CreateWindow(name,width,height)
 	windows[anchor] = true
 
 	self:LoadPosition(anchor:GetName())
+
+	SkinWindow(anchor)
 
 	return anchor
 end
@@ -235,4 +284,3 @@ do
 		return windows
 	end
 end
-

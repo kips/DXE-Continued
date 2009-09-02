@@ -84,7 +84,7 @@ function addon:InitializeOptions()
 	options.type = "group"
 	options.name = "DXE"
 	options.handler = self
-	options.disabled = function() return not gbl.Enabled end
+	options.disabled = function() return not pfl.Enabled end
 	options.childGroups = "tab"
 	options.args = {
 		dxe_header = {
@@ -99,7 +99,7 @@ function addon:InitializeOptions()
 			name = L["Enabled"],
 			get = "IsEnabled",
 			width = "half",
-			set = function(info,val) gbl.Enabled = val
+			set = function(info,val) pfl.Enabled = val
 					if val then self:Enable()
 					else self:Disable() end
 			end,
@@ -162,18 +162,17 @@ function addon:InitializeOptions()
 				order = 50,
 				get = function(info) 
 					local var = info[#info]
-					if var:find("Color") then return unpack(gbl[var])
-					else return gbl[var] end
-					return gbl[info[#info]] 
+					if var:find("Color") then return unpack(pfl.Globals[var])
+					else return pfl.Globals[var] end
 				end,
 				set = function(info,v,v2,v3,v4)
 					local var = info[#info]
 					if var:find("Color") then
-						local t = gbl[var]
+						local t = pfl.Globals[var]
 						t[1],t[2],t[3],t[4] = v,v2,v3,v4
 						addon["Notify"..var.."Changed"](addon,v,v2,v3,v4)
 					else
-						gbl[var] = v
+						pfl.Globals[var] = v
 						addon["Notify"..var.."Changed"](addon,v)
 					end
 				end,
@@ -202,18 +201,19 @@ function addon:InitializeOptions()
 						values = SM:HashTable("border"),
 						dialogControl = "LSM30_Border",
 					},
-					BorderColor = {
-						order = 400,
-						type = "color",
-						name = L["Border Color"],
-						desc = L["Border color used throughout the addon"],
-						hasAlpha = true,
-					},
+					blank = addon.genblank(350),
 					BackgroundColor = {
-						order = 500,
+						order = 400,
 						type = "color",
 						name = L["Background Color"],
 						desc = L["Background color used throughout the addon"],
+						hasAlpha = true,
+					},
+					BorderColor = {
+						order = 500,
+						type = "color",
+						name = L["Border Color"],
+						desc = L["Border color used throughout the addon"],
 						hasAlpha = true,
 					},
 				},
@@ -494,13 +494,13 @@ function addon:GetSlashOptions()
 				type = "execute",
 				name = L["Enable"],
 				order = 100,
-				func = function() gbl.Enabled = true; self:Enable() end,
+				func = function() pfl.Enabled = true; self:Enable(); addon.ACR:NotifyChange("DXE") end,
 			},
 			disable = {
 				type = "execute",
 				name = L["Disable"],
 				order = 200,
-				func = function() gbl.Enabled = false; self:Disable() end,
+				func = function() pfl.Enabled = false; self:Disable(); addon.ACR:NotifyChange("DXE") end,
 			},
 			config = {
 				type = "execute",
