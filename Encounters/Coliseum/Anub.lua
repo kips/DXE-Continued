@@ -63,8 +63,31 @@ do
 				color1 = "GREEN",
 				icon = ST[56504],
 			},
+			shadowstrikewarn = { 
+				varname = format(L["%s Cast"],SN[66134]),
+				type = "centerpopup", 
+				text = format(L["%s Cast"],SN[66134]),
+				time = 8, 
+				flashtime = 8,
+				color1 = "PURPLE", 
+				sound = "ALERT5",
+				icon = ST[66134],
+				throttle = 2,
+			},
 		},
 		events = {
+			-- Shadow Strike (Hard Mode)
+			{
+				type = "combatevent",
+				eventtype = "SPELL_CAST_START",
+				spellid = 66134, -- 10m hard
+				execute = {
+					{
+						"alert","shadowstrikewarn",
+					},
+				},
+			},
+			-- Pursued by Anub'arak
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
@@ -80,6 +103,7 @@ do
 					},
 				},
 			},
+			-- Pursued on Anub'arak removal
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_REMOVED",
@@ -95,6 +119,7 @@ do
 					},
 				},
 			},
+			-- Burrows/Emerges
 			{
 				type = "event",
 				event = "EMOTE",
