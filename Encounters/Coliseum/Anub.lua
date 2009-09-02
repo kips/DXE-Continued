@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 6,
+		version = 7,
 		key = "anubcoliseum", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -46,18 +46,18 @@ do
 				icon = ST[67574],
 			},
 			burrowcd = {
-				varname = format(L["%s Cooldown"],L["Burrow"]),
+				varname = format(L["%s Cooldown"],SN[26381]),
 				type = "dropdown",
-				text = "Next Burrow",
+				text = format(L["Next %s"],SN[26381]),
 				time = "<burrowtime>",
 				flashtime = 10,
 				color1 = "GREY",
 				icon = ST[26381],
 			},
 			burrowdur = {
-				varname = "Burrow Duration",
-				type = "dropdown",
-				text = "Burrow Duration",
+				varname = format(L["%s Duration"],SN[26381]),
+				type = "centerpopup",
+				text = format(L["%s Duration"],SN[26381]),
 				time = 64,
 				flashtime = 10,
 				color1 = "GREEN",
