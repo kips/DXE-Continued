@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 320,
+		version = 321,
 		key = "northrendbeasts", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -39,12 +39,12 @@ do
 		},
 		onstart = {
 			{
-				"expect",{"&difficulty&","==","3"},
-				"set",{enragetime = 486}, -- 10m hard, need more data to verify this
+				"expect",{"&difficulty&",">=","3"},
+				"set",{enragetime = 180},
 			},
 			{
-				"alert","enragecd",
 				"alert","zerotoone",
+				"scheduletimer",{"fireenrage",22},
 			},
 		},
 		alerts = {
@@ -328,6 +328,11 @@ do
 			},
 		},
 		timers = {
+			fireenrage = {
+				{
+					"alert","enragecd",
+				},
+			},
 			reset = {
 				{"resettimer",true},
 			},
@@ -723,6 +728,9 @@ do
 						"alert","onetotwo",
 						"scheduletimer",{"reset",15},
 						"scheduletimer",{"firemolten",15},
+						"expect",{"&difficulty&",">=","3"},
+						"quash","enragecd",
+						"scheduletimer",{"fireenrage",15},
 					},
 					{
 						"expect",{"&npcid|#4#&","==","35144"}, -- Acidmaw
@@ -743,6 +751,9 @@ do
 						"alert","twotothree",
 						"scheduletimer",{"reset",10},
 						"scheduletimer",{"firecrash",10},
+						"expect",{"&difficulty&",">=","3"},
+						"quash","enragecd",
+						"scheduletimer",{"fireenrage",10},
 					},
 				},
 			},

@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 312,
+		version = 313,
 		key = "jaraxxus", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -25,16 +25,7 @@ do
 		},
 		onstart = {
 			{
-				"expect",{"&difficulty&","==","3"}, -- 10m hard
-				"tracing",{
-					34780, -- Jaraxxus
-					34826, -- Mistress
-					34825, -- Nether Portal
-					34813, -- Infernal Volcano
-				},
-			},
-			{
-				"expect",{"&difficulty&","==","4"}, -- 25m hard
+				"expect",{"&difficulty&",">=","3"},
 				"tracing",{
 					34780, -- Jaraxxus
 					34826, -- Mistress
