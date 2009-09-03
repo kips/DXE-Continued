@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 319,
+		version = 320,
 		key = "northrendbeasts", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -577,6 +577,7 @@ do
 					},
 					{
 						"expect",{"<dreadscaledead>","==","1"},
+						"set",{acidicspewtime = 21},
 						"alert","acidicspewcd",
 					},
 				},
@@ -603,6 +604,7 @@ do
 					},
 					{
 						"expect",{"<acidmawdead>","==","1"},
+						"set",{moltenspewtime = 21},
 						"alert","moltenspewcd",
 					},
 				},

@@ -46,7 +46,7 @@ do
 				text = format(L["%s Ends"],L["Hard Mode"]),
 				time = 172.5, 
 				flashtime = 5, 
-				color1 = "RED",
+				color1 = "GREY",
 				sound = "ALERT1", 
 				icon = ST[20573],
 			},
