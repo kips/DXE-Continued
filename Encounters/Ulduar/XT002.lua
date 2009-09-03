@@ -2,7 +2,7 @@ do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 
 	local data = {
-		version = 298,
+		version = 299,
 		key = "xt002", 
 		zone = L["Ulduar"], 
 		name = L["XT-002 Deconstructor"], 
@@ -90,7 +90,7 @@ do
 				varname = format(L["%s Cooldown"],SN[62776]),
 				type = "dropdown",
 				text = format(L["%s Cooldown"],L["Tantrum"]),
-				time = "65",
+				time = 64,
 				flashtime = 5,
 				color1 = "ORANGE",
 				color2 = "ORANGE",

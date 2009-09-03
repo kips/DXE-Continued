@@ -371,7 +371,8 @@ do
 				spellid = {
 					67477,
 					66331,
-					67478, -- 10m hard
+					67478, -- 10 hard
+					67479, -- 25 hard
 				},
 				execute = {
 					{
@@ -386,7 +387,8 @@ do
 				spellid = {
 					67477,
 					66331,
-					67478, -- 10m hard
+					67478, -- 10 hard
+					67479, -- 25 hard
 				},
 				execute = {
 					{
@@ -411,6 +413,7 @@ do
 					67647,
 					66330,
 					67648, -- 10m hard
+					67649, -- 10m hard
 				},
 				execute = {
 					{
@@ -432,6 +435,7 @@ do
 					67618,
 					66823,
 					67619, -- 10m hard
+					67620,
 				},
 				execute = {
 					{
@@ -461,6 +465,7 @@ do
 					67618,
 					66823,
 					67619, -- 10m hard
+					67620,
 				},
 				execute = {
 					{
@@ -481,7 +486,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellid = 66869,
+				spellid = {66869,66870},
 				execute = {
 					{
 						"expect",{"#4#","==","&playerguid&"},
@@ -506,7 +511,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_REMOVED",
-				spellid = 66869,
+				spellid = {66869,66870},
 				execute = {
 					{
 						"expect",{"#4#","==","&playerguid&"},
@@ -530,6 +535,7 @@ do
 					66881,
 					67638,
 					67639, -- 10 hard
+					67640,
 				},
 				execute = {
 					{
@@ -628,6 +634,7 @@ do
 				spellid = {
 					67657,
 					67658, -- 10m hard
+					66759,
 				},
 				execute = {
 					{
@@ -642,6 +649,7 @@ do
 				spellid = {
 					67657,
 					67658,
+					66759,
 				},
 				execute = {
 					{
@@ -668,6 +676,7 @@ do
 					67660,
 					66683,
 					67661, -- 10m hard
+					67662,
 				},
 				execute = {
 					{
