@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 318,
+		version = 319,
 		key = "northrendbeasts", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -529,7 +529,7 @@ do
 				spellid = {
 					66881,
 					67638,
-					67639, -- 10m hard
+					67639, -- 10 hard
 				},
 				execute = {
 					{
@@ -560,14 +560,18 @@ do
 						"alert","acidicspewwarn",
 					},
 					{
-						"expect",{"<fireacidiccd>","==","0"},
+						"expect",{"<fireacidiccd> <dreadscaledead>","==","0 0"},
 						"alert","moltenspewcd",
 						"set",{firemoltencd = 1},
 					},
 					{
-						"expect",{"<fireacidiccd>","==","1"},
+						"expect",{"<fireacidiccd> <dreadscaledead>","==","1 0"},
 						"alert","acidicspewcd",
 						"set",{fireacidiccd = 0},
+					},
+					{
+						"expect",{"<dreadscaledead>","==","1"},
+						"alert","acidicspewcd",
 					},
 				},
 			},
@@ -582,14 +586,18 @@ do
 						"alert","moltenspewwarn",
 					},
 					{
-						"expect",{"<firemoltencd>","==","0"},
+						"expect",{"<firemoltencd> <acidmawdead>","==","0 0"},
 						"alert","acidicspewcd",
 						"set",{fireacidiccd = 1},
 					},
 					{
-						"expect",{"<firemoltencd>","==","1"},
+						"expect",{"<firemoltencd> <acidmawdead>","==","1 0"},
 						"alert","moltenspewcd",
 						"set",{firemoltencd = 0},
+					},
+					{
+						"expect",{"<acidmawdead>","==","1"},
+						"alert","moltenspewcd",
 					},
 				},
 			},
