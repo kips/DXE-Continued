@@ -72,7 +72,7 @@ local defaults = {
 
 local addon = LibStub("AceAddon-3.0"):NewAddon("DXE","AceEvent-3.0","AceTimer-3.0","AceConsole-3.0","AceComm-3.0","AceSerializer-3.0")
 _G.DXE = addon
-addon.version = 350
+addon.version = 351
 addon:SetDefaultModuleState(false)
 addon.callbacks = LibStub("CallbackHandler-1.0"):New(addon)
 addon.defaults = defaults
@@ -261,15 +261,23 @@ do
 	-- 4 = Follow, 28 yards 
 
 	local IsItemInRange = IsItemInRange
+	local knownBandage
 	-- Keys refer to yards
 	local ProximityFuncs = {
 		[10] = function(unit) return CheckInteractDistance(unit,3) end,
 		[11] = function(unit) return CheckInteractDistance(unit,2) end,
 		[18] = function(unit) 
-			for itemid in pairs(bandages) do
-				if IsItemInRange(itemid,unit) == 1 then return true end
+			if knownBandage then
+				return IsItemInRange(knownBandage,unit) == 1
+			else
+				for itemid in pairs(bandages) do
+					if IsItemInRange(itemid,unit) == 1 then 
+						knownBandage = itemid
+						return true
+					end
+				end
+				return false
 			end
-			return false
 		end,
 		[28] = function(unit) return CheckInteractDistance(unit,4) end,
 	}
