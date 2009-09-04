@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 323,
+		version = 324,
 		key = "northrendbeasts", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -242,8 +242,8 @@ do
 				type = "centerpopup",
 				varname = format(L["%s on self"],SN[66734]),
 				text = format("%s: %s! %s",SN[66734],L["YOU"],L["MOVE"]),
-				time = 3,
-				flashtime = 3,
+				time = 4.5,
+				flashtime = 4.5,
 				color1 = "ORANGE",
 				color2 = "GREEN",
 				sound = "ALERT9",
@@ -253,7 +253,7 @@ do
 			tramplewarnothers = {
 				type = "centerpopup",
 				varname = format(L["%s on others"],SN[66734]),
-				time = 3,
+				time = 4.5,
 				text = format("%s: #5#! %s!",SN[66734],L["MOVE AWAY"]),
 				color1 = "ORANGE",
 				sound = "ALERT9",
