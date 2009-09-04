@@ -702,7 +702,7 @@ end
 
 local outputInfos = {
 	alerts = { 
-		L = L["Alerts"], 
+		L = L["Bars"], 
 		order = 100, 
 		defaultEnabled = true ,
 		defaults = {
@@ -783,7 +783,7 @@ local function InjectAdvancedOptions(data,encArgs)
 			encArgs[outputType] = encArgs[outputType] or {
 				type = "group",
 				name = outputInfo.L,
-				order = order,
+				order = outputInfo.order,
 				args = {},
 			}
 			encArgs[outputType].inline = nil

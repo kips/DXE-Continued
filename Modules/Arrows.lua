@@ -116,7 +116,8 @@ do
 
 	-- @param action a string == "TOWARD" or "AWAY"
 	function prototype:SetTarget(unit,persist,action,msg,spell,sound,fixed)
-		if sound then PlaySoundFile(SM:Fetch("sound",sound)) end
+		-- Factor in mute all toggle from Alerts
+		if sound and not addon.Alerts.db.profile.DisableSounds then PlaySoundFile(SM:Fetch("sound",sound)) end
 		UIFrameFadeRemoveFrame(self)
 		self.action = action
 		self.unit = unit

@@ -80,6 +80,9 @@ function module:InitializeOptions(area)
 		else pfl[var] = v end
 	end
 
+	local SelectedEncounter
+	local EncounterList = {}
+
 	area.alerts_group = {
 		type = "group",
 		name = L["Alerts"],
@@ -129,14 +132,6 @@ function module:InitializeOptions(area)
 						type = "toggle",
 						name = L["Disable Dropdowns"],
 						desc = L["Anchor bars onto the center anchor only"],
-						set = SetNoRefresh,
-						width = "full",
-					},
-					DisableSounds = {
-						order = 160,
-						type = "toggle",
-						name = L["Disable Sounds"],
-						desc = L["Turns off all alert sounds"],
 						set = SetNoRefresh,
 						width = "full",
 					},
@@ -368,6 +363,70 @@ function module:InitializeOptions(area)
 								values = {DOWN = L["Down"], UP = L["Up"]},
 							},
 						},
+					},
+				},
+			},
+			sounds_group = {
+				type = "group",
+				name = L["Sounds"],
+				order = 150,
+				set = SetNoRefresh,
+				args = {
+					DisableSounds = {
+						order = 100,
+						type = "toggle",
+						name = L["Mute all"],
+						desc = L["Silences all alert sounds"],
+					},
+					DisableAll = {
+						order = 200,
+						type = "execute",
+						name = L["Set all to None"],
+						desc = L["Sets every alert's sound to None. This affects currently loaded encounters"],
+						func = function()
+							for key,tbl in pairs(addon.db.profile.Encounters) do 
+								for var,stgs in pairs(tbl) do 
+									if stgs.sound then stgs.sound = "None" end 
+								end 
+							end
+						end,
+						confirm = true,
+					},
+					curr_enc_group = {
+						type = "group",
+						name = L["Change encounter"],
+						order = 400,
+						inline = true,
+						args = {
+							SelectedEncounter = {
+								order = 100,
+								type = "select",
+								name = L["Select encounter"],
+								desc = L["The encounter to change"],
+								get = function() return SelectedEncounter end,
+								set = function(info,value) SelectedEncounter = value end,
+								values = function()
+									wipe(EncounterList)
+									for k in addon:IterateEDB() do
+										EncounterList[k] = addon.EDB[k].name
+									end
+									return EncounterList
+								end,
+							},
+							DisableSelected = {
+								order = 200,
+								type = "execute",
+								name = L["Set selected to None"],
+								desc = L["Sets every alert's sound in the selected encounter to None"],
+								disabled = function() return not SelectedEncounter end,
+								confirm = true,
+								func = function()
+									for var,stgs in pairs(addon.db.profile.Encounters[SelectedEncounter]) do
+										if stgs.sound then stgs.sound = "None" end
+									end
+								end,
+							},
+						}
 					},
 				},
 			},
