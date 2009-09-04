@@ -62,6 +62,7 @@ local defaults = {
 			Range = 10,
 			Delay = 0.05,
 			ClassFilter = {['*'] = true},
+			Invert = false,
 		},
 	},
 }

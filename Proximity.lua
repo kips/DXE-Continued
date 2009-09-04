@@ -11,12 +11,14 @@ local labels = {}
 local ProximityFuncs = addon:GetProximityFuncs()
 local pfl
 local range
+local invert
 local proxFunc
 
 local function UpdateSettings()
 	range = pfl.Proximity.Range
 	proxFunc = range <= 10 and ProximityFuncs[10] or (range <= 11 and ProximityFuncs[11] or ProximityFuncs[18])
 	delay = pfl.Proximity.Delay
+	invert = pfl.Proximity.Invert
 
 	for i,label in ipairs(labels) do
 		local r,g,b = label.bar:GetStatusBarColor()
@@ -71,6 +73,12 @@ function handler:AddOptionItems(args)
 				min = 0.1,
 				max = 1,
 				step = 0.1,
+			},
+			Invert = {
+				type = "toggle",
+				order = 275,
+				name = L["Invert Bars"],
+				desc = L["Inverts all range bars"],
 			},
 			ClassFilter = {
 				type = "multiselect",
@@ -189,7 +197,7 @@ local function CreateWindow()
 					if d then
 						if d ~= label.lastd then
 							local perc = d / range
-							label.bar:SetValue(perc)
+							label.bar:SetValue(invert and (1-perc) or perc)
 							local sec = floor(d)
 							label.left:SetFormattedText("%d",sec)
 							label.right:SetFormattedText("%02d",100*(d - sec))

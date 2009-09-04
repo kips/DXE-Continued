@@ -25,7 +25,7 @@ local DL_SUFFIX = "DL"
 local DR_PTN = TRANSFER_PREFIX.."_([%w'%- ]+)" -- DownloadReceived
 local CMA_PTN = TRANSFER_PREFIX.."_([%w'%- ]+)(.*)" -- CHAT_MSG_ADDON
 local UL_TIMEOUT = 5
-local DL_TIMEOUT = 20
+local DL_TIMEOUT = 35
 
 ----------------------------------
 -- INITIALIZATION
