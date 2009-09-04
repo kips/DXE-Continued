@@ -642,8 +642,9 @@ do
 				eventtype = "SPELL_AURA_APPLIED",
 				spellid = {
 					67657,
-					67658, -- 10m hard
+					67658, -- 10 hard
 					66759,
+					67659, -- 25 hard
 				},
 				execute = {
 					{
@@ -659,6 +660,7 @@ do
 					67657,
 					67658,
 					66759,
+					67659, -- 25 hard
 				},
 				execute = {
 					{
