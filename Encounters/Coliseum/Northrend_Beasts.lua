@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 321,
+		version = 323,
 		key = "northrendbeasts", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -23,7 +23,6 @@ do
 			enragetime = 900,
 			acidmawdead = 0,
 			dreadscaledead = 0,
-			jormunactivated = 0,
 			moltenspewtime = {10,21,loop = false},
 			acidicspewtime = {27,21,loop = true},
 			firemoltencd = 1,
@@ -36,11 +35,12 @@ do
 			tmp = "",
 			crashtext = {format(L["Next %s"],SN[66683]),format(L["%s Cooldown"],SN[66683]),loop = false},
 			crashtime = {36,55,loop = false},
+			enragetext = {format(L["Next %s"],L["Phase"]),format(L["Next %s"],L["Phase"]),L["Enrage"]},
 		},
 		onstart = {
 			{
 				"expect",{"&difficulty&",">=","3"},
-				"set",{enragetime = 180},
+				"set",{enragetime = 184},
 			},
 			{
 				"alert","zerotoone",
@@ -51,7 +51,7 @@ do
 			enragecd = {
 				varname = L["Enrage"],
 				type = "dropdown", 
-				text = L["Enrage"],
+				text = "<enragetext>",
 				time = "<enragetime>",
 				flashtime = 10, 
 				color1 = "RED", 
@@ -360,7 +360,8 @@ do
 				spellid = {
 					67472,
 					66320,
-					67473, -- 10m hard
+					67473, -- 10 hard
+					67475, -- 25 hard
 				},
 				execute = {
 					{
@@ -626,7 +627,8 @@ do
 				spellid = {
 					67650,
 					66689,
-					67651, -- 10m hard
+					67651, -- 10 hard
+					67652, -- 25 hard
 				},
 				execute = {
 					{
@@ -715,6 +717,37 @@ do
 					},
 				},
 			},
+			-- Phase Transitions
+			{
+				type = "event",
+				event = "YELL",
+				execute = {
+					{
+						-- Gormok dies
+						"expect",{"#1#","find",L["^Steel yourselves, heroes, for the twin terrors"]},
+						"tracing",{35144,34799},
+						"alert","onetotwo",
+						"scheduletimer",{"reset",15},
+						"scheduletimer",{"firemolten",15},
+						"expect",{"&difficulty&",">=","3"},
+						"set",{enragetime = 166},
+						"quash","enragecd",
+						"scheduletimer",{"fireenrage",15},
+					},
+					-- Jormungars die
+					{
+						"expect",{"#1#","find",L["^The air itself freezes with the introduction"]},
+						"tracing",{34797}, -- Icehowl
+						"alert","twotothree",
+						"scheduletimer",{"reset",10},
+						"scheduletimer",{"firecrash",10},
+						"expect",{"&difficulty&",">=","3"},
+						"set",{enragetime = 183},
+						"quash","enragecd",
+						"scheduletimer",{"fireenrage",10},
+					},
+				},
+			},
 			-- Deaths
 			{
 				type = "combatevent",
@@ -722,15 +755,8 @@ do
 				execute = {
 					{
 						"expect",{"&npcid|#4#&","==","34796"}, -- Gormok
-						"tracing",{35144,34799},
 						"quash","impalecd",
 						"quash","stompcd",
-						"alert","onetotwo",
-						"scheduletimer",{"reset",15},
-						"scheduletimer",{"firemolten",15},
-						"expect",{"&difficulty&",">=","3"},
-						"quash","enragecd",
-						"scheduletimer",{"fireenrage",15},
 					},
 					{
 						"expect",{"&npcid|#4#&","==","35144"}, -- Acidmaw
@@ -743,17 +769,6 @@ do
 						"quash","moltenspewcd",
 						"quash","acidicspewcd",
 						"set",{dreadscaledead = 1},
-					},
-					{
-						"expect",{"<acidmawdead> <dreadscaledead> <jormunactivated>","==","1 1 0"},
-						"set",{jormunactivated = 1},
-						"tracing",{34797}, -- Icehowl
-						"alert","twotothree",
-						"scheduletimer",{"reset",10},
-						"scheduletimer",{"firecrash",10},
-						"expect",{"&difficulty&",">=","3"},
-						"quash","enragecd",
-						"scheduletimer",{"fireenrage",10},
 					},
 				},
 			},
