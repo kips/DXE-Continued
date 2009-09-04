@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 313,
+		version = 314,
 		key = "jaraxxus", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -26,12 +26,7 @@ do
 		onstart = {
 			{
 				"expect",{"&difficulty&",">=","3"},
-				"tracing",{
-					34780, -- Jaraxxus
-					34826, -- Mistress
-					34825, -- Nether Portal
-					34813, -- Infernal Volcano
-				},
+				"scheduletimer",{"sethardtracing",0},
 			},
 			{
 				"alert","enragecd",
@@ -39,6 +34,18 @@ do
 				"alert","legionflamecd",
 				"alert","eruptioncd",
 				"alert","fleshcd",
+			},
+		},
+		timers = {
+			sethardtracing = {
+				{
+					"tracing",{
+						34780, -- Jaraxxus
+						34826, -- Mistress
+						34825, -- Nether Portal
+						34813, -- Infernal Volcano
+					},
+				},
 			},
 		},
 		alerts = {
@@ -182,7 +189,7 @@ do
 				eventtype = "SPELL_AURA_APPLIED",
 				spellid = {
 					68125,
-					68124, -- 10m hard
+					68124, -- 10 hard
 					66197, -- 10 normal
 					68123, -- 25 normal
 				},
@@ -209,7 +216,7 @@ do
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
 				spellid = {
-					67050, -- 10m hard
+					67050, -- 10 hard
 					67051,
 					66237, -- 10 normal
 					67049, -- 25 normal
@@ -233,7 +240,7 @@ do
 				type = "combatevent",
 				eventtype = "SPELL_AURA_REMOVED",
 				spellid = {
-					67050, -- 10m hard
+					67050, -- 10 hard
 					67051,
 					66237, -- 10 normal
 					67049, -- 25 normal
@@ -254,7 +261,7 @@ do
 				type = "combatevent",
 				eventtype = "SPELL_CAST_SUCCESS",
 				spellid = {
-					67902, -- 10m hard
+					67902, -- 10 hard
 					67903,
 					66258, -- 10 normal
 					67901, -- 25 normal

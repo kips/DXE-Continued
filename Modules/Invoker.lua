@@ -90,6 +90,7 @@ local debugDefaults = {
 	Alerts = false,
 	REG_EVENT = false,
 	["handlers.set"] = false,
+	replace_funcs = false,
 }
 
 --@end-debug@
@@ -250,6 +251,9 @@ do
 		else
 			local func = RepFuncs[str]
 			if not func then return end
+			--@debug@
+			debug("replace_funcs","func: %s ret: %s",str,func())
+			--@end-debug@
 			return func()
 		end
 	end
