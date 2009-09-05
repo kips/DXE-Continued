@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 8,
+		version = 9,
 		key = "anubcoliseum", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -19,12 +19,22 @@ do
 		onstart = {
 			{
 				"alert","burrowcd",
+				"alert","enragecd",
 			},
 		},
 		userdata = {
 			burrowtime = {81,75,loop = false},
 		},
 		alerts = {
+			enragecd = {
+				type = "dropdown",
+				varname = L["Enrage"],
+				text = L["Enrage"],
+				time = 570,
+				flashtime = 10,
+				color1 = "RED",
+				icon = ST[12317],
+			},
 			pursueself = {
 				varname = format(L["%s on self"],SN[62374]),
 				type = "centerpopup",
