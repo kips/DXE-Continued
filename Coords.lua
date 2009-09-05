@@ -15,10 +15,6 @@ function addon:GetPlayerMapPosition(unit)
 	return x,y
 end
 
-local backup = {w = 750, h = 750}
-
-local fired = {}
-
 -- Computes the distance between the player and unit in game yards
 -- Intended to be used when the player and unit are in the same map
 -- Supported: Ulduar, Naxxramas, The Eye of Eternity, The Obsidian Sanctum, Trial of the Crusader
@@ -28,8 +24,19 @@ function addon:GetDistanceToUnit(unit,fx2,fy2)
 
 	local list = MapDims[GetMapInfo()]
 	if not list then return end
-	local dims = list[GetCurrentMapDungeonLevel()]
-	if not dims then return end
+	local level = GetCurrentMapDungeonLevel()
+	local dims = list[level]
+	if not dims then 
+		-- Zoning in and out will set the dungeon level to 0 so
+		-- we need some special handling to get to the dungeon
+		-- level we want
+		if level == 0 and list[1] then
+			SetMapToCurrentZone()
+			level = GetCurrentMapDungeonLevel()
+			dims = list[level]
+			if not dims then return end
+		else return end
+	end
 
 	if fx2 and fy2 then
 		x2,y2 = fx2,fy2
