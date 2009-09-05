@@ -73,7 +73,7 @@ local defaults = {
 
 local addon = LibStub("AceAddon-3.0"):NewAddon("DXE","AceEvent-3.0","AceTimer-3.0","AceConsole-3.0","AceComm-3.0","AceSerializer-3.0")
 _G.DXE = addon
-addon.version = 355
+addon.version = 356
 addon:SetDefaultModuleState(false)
 addon.callbacks = LibStub("CallbackHandler-1.0"):New(addon)
 addon.defaults = defaults
@@ -980,6 +980,7 @@ do
 			pos.width = f:GetWidth()
 			pos.height = f:GetHeight()
 		end
+		f:SetUserPlaced(false)
 	end
 
 	-- Used after the profile is changed
@@ -1204,6 +1205,7 @@ function addon:CreatePane()
 	Pane:SetScale(pfl.Pane.Scale)
 	self:RegisterMoveSaving(Pane,"CENTER","UIParent","CENTER",nil,nil,true)
 	self:LoadPosition("DXEPane")
+	Pane:SetUserPlaced(false)
 	self:AddTooltipText(Pane,"Pane",L["|cffffff00Shift + Click|r to move"])
 	local function OnUpdate() addon:LayoutHealthWatchers() end
 	Pane:HookScript("OnMouseDown",function(self) self:SetScript("OnUpdate",OnUpdate) end)
@@ -1602,6 +1604,7 @@ do
 		local frame = CreateFrame("Frame","DXE"..name,UIParent)
 		frame:EnableMouse(true)
 		frame:SetMovable(true)
+		frame:SetUserPlaced(false)
 		addon:RegisterBackground(frame)
 		frame.border = CreateFrame("Frame",nil,frame)
 		frame.border:SetAllPoints(true)
