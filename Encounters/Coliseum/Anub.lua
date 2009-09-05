@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 9,
+		version = 10,
 		key = "anubcoliseum", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -185,6 +185,10 @@ do
 					{
 						"expect",{"#1#","find",L["emerges from the ground!$"]},
 						"alert","burrowcd",
+					},
+					{
+						"expect",{"#1#","find",L["unleashes a Leeching Swarm to heal himself!$"]},
+						"quash","burrowcd",
 					},
 				},
 			},
