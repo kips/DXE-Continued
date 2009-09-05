@@ -137,9 +137,6 @@ end
 
 function module:OnStart(_,...)
 	if not CE then return end
-	if CE.onstart then
-		self:InvokeCommands(CE.onstart,...)
-	end
 	if next(CombatEvents) then
 		self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED","COMBAT_EVENT")
 	end
@@ -153,6 +150,9 @@ function module:OnStart(_,...)
 			hw:SetInfoBundle("",1)
 			hw:ApplyNeutralColor()
 		end
+	end
+	if CE.onstart then
+		self:InvokeCommands(CE.onstart,...)
 	end
 end
 

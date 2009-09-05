@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST -- 137
 	local data = {
-		version = 325,
+		version = 326,
 		key = "northrendbeasts", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -41,6 +41,10 @@ do
 			{
 				"expect",{"&difficulty&",">=","3"},
 				"set",{enragetime = 137},
+			},
+			{
+				"expect",{"&difficulty&","<=","2"},
+				"set",{enragetext = L["Enrage"]},
 			},
 			{
 				"alert","zerotoone",

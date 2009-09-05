@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 314,
+		version = 315,
 		key = "jaraxxus", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -26,7 +26,12 @@ do
 		onstart = {
 			{
 				"expect",{"&difficulty&",">=","3"},
-				"scheduletimer",{"sethardtracing",0},
+				"tracing",{
+					34780, -- Jaraxxus
+					34826, -- Mistress
+					34825, -- Nether Portal
+					34813, -- Infernal Volcano
+				},
 			},
 			{
 				"alert","enragecd",
@@ -34,18 +39,6 @@ do
 				"alert","legionflamecd",
 				"alert","eruptioncd",
 				"alert","fleshcd",
-			},
-		},
-		timers = {
-			sethardtracing = {
-				{
-					"tracing",{
-						34780, -- Jaraxxus
-						34826, -- Mistress
-						34825, -- Nether Portal
-						34813, -- Infernal Volcano
-					},
-				},
 			},
 		},
 		alerts = {
