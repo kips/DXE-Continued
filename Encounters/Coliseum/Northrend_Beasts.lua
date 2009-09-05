@@ -1,5 +1,5 @@
 do
-	local L,SN,ST = DXE.L,DXE.SN,DXE.ST -- 137
+	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
 		version = 326,
 		key = "northrendbeasts", 
@@ -35,7 +35,7 @@ do
 			tmp = "",
 			crashtext = {format(L["Next %s"],SN[66683]),format(L["%s Cooldown"],SN[66683]),loop = false},
 			crashtime = {36,55,loop = false},
-			enragetext = {format(L["Next %s"],L["Phase"]),format(L["Next %s"],L["Phase"]),L["Enrage"]},
+			enragetext = {format(L["Next %s"],L["Phase"]),format(L["Next %s"],L["Phase"]),L["Enrage"], loop = false},
 		},
 		onstart = {
 			{

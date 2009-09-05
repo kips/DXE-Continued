@@ -173,7 +173,7 @@ do
 				spellid = {
 					67182, -- 25 normal
 					66058, -- 10 normal
-					67183, -- 10m hard
+					67183, -- 10 hard
 					67184,
 				},
 				execute = {
@@ -192,7 +192,7 @@ do
 				spellid = {
 					67206, -- 25 normal
 					66046, -- 10 normal
-					67207, -- 10m hard
+					67207, -- 10 hard
 					67208,
 				},
 				execute = {
@@ -211,7 +211,7 @@ do
 				spellid = {
 					67256, -- 25 normal
 					65874,
-					67257, -- 10m hard
+					67257, -- 10 hard
 					67258,
 				},
 				execute = {
@@ -228,7 +228,7 @@ do
 				spellid = {
 					67256, -- 25 normal
 					65874,
-					67257, -- 10m hard
+					67257, -- 10 hard
 					67258,
 				},
 				execute = {

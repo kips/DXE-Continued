@@ -2,33 +2,46 @@
 
 local defaults = {
 	profile = {
-		DisableDropdowns = false,
-		DisableScreenFlash = false,
-		DisableSounds = false,
-		IconPosition = "LEFT",
-		IconOffset = 0,
-		HideIcons = false,
-		TopScale = 1,
-		CenterScale = 1,
+		-- Top
+		TopScale = 0.9,
 		TopGrowth = "DOWN",
-		CenterGrowth = "DOWN",
 		TopAlpha = 0.55,
+		TopBarWidth = 250,
+		-- Center
+		CenterScale = 0.9,
+		CenterGrowth = "DOWN",
 		CenterAlpha = 0.75,
+		CenterBarWidth = 275,
+		-- Warning
+		WarningAnchor = false,
+		WarningScale = 0.9,
+		WarningGrowth = "DOWN",
+		WarningAlpha = 0.75,
+		WarningBarWidth = 275,
+		-- Flash
 		FlashAlpha = 0.6,
 		FlashDuration = 0.8,
 		FlashOscillations = 2,
-		TopBarWidth = 250,
-		CenterBarWidth = 275,
+		-- Bar
 		BarTextJustification = "CENTER",
 		BarFontSize = 10,
 		BarFillDirection = "FILL",
 		BarFontColor = {1,1,1,1},
-		TimerFontColor = {1,1,1,1},
 		BarHeight = 30,
+		-- Timer
+		TimerFontColor = {1,1,1,1},
 		TimerXOffset = -5,
 		MinuteFontSize = 20,
 		DecimalFontSize = 12,
 		DecimalYOffset = 2,
+		-- Icon
+		IconPosition = "LEFT",
+		IconOffset = 0,
+		-- Toggles
+		DisableDropdowns = false,
+		DisableScreenFlash = false,
+		DisableSounds = false,
+		HideIcons = false,
 		ShowBorder = true,
 	}
 }
@@ -63,10 +76,11 @@ addon.Alerts = module
 local Active = {}
 local TopAlertStack = {}
 local CenterAlertStack = {}
+local WarningAlertStack = {}
 local BarPool = {}
 local prototype = {}
 
-local TopStackAnchor,CenterStackAnchor
+local TopStackAnchor,CenterStackAnchor,WarningStackAnchor
 
 function module:RefreshProfile()
 	pfl = db.profile
@@ -140,6 +154,13 @@ function module:InitializeOptions(area)
 						type = "toggle",
 						name = L["Show Border"],
 						desc = L["Displays a border around the bar and its icon"],
+						width = "full",
+					},
+					WarningAnchor = {
+						order = 175,
+						type = "toggle",
+						name = L["Enable Warning Anchor"],
+						desc = L["Anchors all warning bars to the warning anchor"],
 						width = "full",
 					},
 					BarHeight = {
@@ -364,6 +385,53 @@ function module:InitializeOptions(area)
 							},
 						},
 					},
+					warning_group = {
+						type = "group",
+						name = L["Warning Anchored Bars"],
+						order = 800,
+						disabled = function() return not pfl.WarningAnchor end,
+						args = {
+							warning_desc = {
+								type = "header",
+								name = L["Adjust settings related to the warning anchor"].."\n",
+								order = 1,
+							},
+							WarningScale = {
+								order = 100,
+								type = "range",
+								name = L["Bar Scale"],
+								desc = L["Adjust the size of warning bars"],
+								min = 0.5,
+								max = 1.5,
+								step = 0.05,
+							},
+							WarningAlpha = {
+								type = "range",
+								name = L["Bar Alpha"],
+								desc = L["Adjust the transparency of warning bars"],
+								order = 200,
+								min = 0.1,
+								max = 1,
+								step = 0.05,
+							},
+							WarningBarWidth = {
+								order = 300,
+								type = "range",
+								name = L["Bar Width"],
+								desc = L["Adjust the width of warning bars"],
+								min = 220,
+								max = 1000,
+								step = 1,
+							},
+							WarningGrowth = {
+								order = 400,
+								type = "select",
+								name = L["Bar Growth"],
+								desc = L["The direction warning bars grow"],
+								values = {DOWN = L["Down"], UP = L["Up"]},
+							},
+						},
+					},
 				},
 			},
 			sounds_group = {
@@ -509,6 +577,10 @@ function module:OnInitialize()
 	addon:RegisterMoveSaving(CenterStackAnchor,"CENTER","UIParent","CENTER",0,100)
 	addon:LoadPosition("DXEAlertsCenterStackAnchor")
 
+	WarningStackAnchor = addon:CreateLockableFrame("AlertsWarningStackAnchor",245,10,format("%s - %s",L["Alerts"],L["Bar Warning Anchor"]))
+	addon:RegisterMoveSaving(WarningStackAnchor,"CENTER","UIParent","CENTER",0,210)
+	addon:LoadPosition("DXEAlertsWarningStackAnchor")
+
 	self.db = addon.db:RegisterNamespace("Alerts", defaults)
 	db = self.db
 	pfl = db.profile
@@ -650,6 +722,17 @@ function prototype:AnchorToCenter()
 	self:LayoutAlertStack(CenterAlertStack, CenterStackAnchor, pfl.CenterGrowth)
 end
 
+function prototype:AnchorToWarning()
+	if self.data.sound and not pfl.DisableSounds then PlaySoundFile(self.data.sound) end
+	self.data.anchor = "WARNING"
+	self:SetAlpha(pfl.WarningAlpha)
+	self:SetScale(pfl.WarningScale)
+	self:SetWidth(pfl.WarningBarWidth)
+	self:RemoveFromStacks()
+	WarningAlertStack[#WarningAlertStack+1] = self
+	self:LayoutAlertStack(WarningAlertStack, WarningStackAnchor, pfl.WarningGrowth)
+end
+
 do
 	local function AnimationFunc(self,time)
 		local data = self.data
@@ -718,6 +801,7 @@ end
 function prototype:RemoveFromStacks()
 	self:RemoveFromStack(TopAlertStack)
 	self:RemoveFromStack(CenterAlertStack)
+	self:RemoveFromStack(WarningAlertStack)
 end
 
 do
@@ -870,6 +954,10 @@ local function SkinBar(bar)
 		bar:SetScale(pfl.CenterScale)
 		bar:SetAlpha(pfl.CenterAlpha)
 		bar:SetWidth(pfl.CenterBarWidth)
+	elseif data.anchor == "WARNING" then
+		bar:SetScale(pfl.WarningScale)
+		bar:SetAlpha(pfl.WarningAlpha)
+		bar:SetWidth(pfl.WarningBarWidth)
 	end
 end
 
@@ -879,6 +967,7 @@ function module:RefreshBars()
 	for bar in pairs(BarPool) do SkinBar(bar) end
 	prototype:LayoutAlertStack(TopAlertStack, TopStackAnchor, pfl.TopGrowth)
 	prototype:LayoutAlertStack(CenterAlertStack, CenterStackAnchor, pfl.CenterGrowth)
+	prototype:LayoutAlertStack(WarningAlertStack, WarningStackAnchor, pfl.WarningGrowth)
 end
 
 local BarCount = 1
@@ -1035,7 +1124,7 @@ function module:Simple(text, totalTime, sound, c1, flashscreen, icon)
 	bar:SetText(text) 
 	bar.timer:Hide()
 	bar:SetSound(soundFile)
-	bar:AnchorToCenter()
+	bar[pfl.WarningAnchor and "AnchorToWarning" or "AnchorToCenter"](bar)
 	bar:ScheduleTimer("Fade",totalTime)
 	if flashscreen then self:FlashScreen(c1Data) end
 	return bar
