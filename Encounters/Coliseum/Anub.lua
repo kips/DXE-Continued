@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 10,
+		version = 11,
 		key = "anubcoliseum", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -94,6 +94,16 @@ do
 				sound = "ALERT6",
 				icon = ST[67322],
 			},
+			leechingswarmwarn = {
+				varname = format(L["%s Cast"],SN[66118]),
+				type = "centerpopup",
+				text = format(L["%s Cast"],SN[66118]),
+				time = 1.5,
+				flashtime = 1.5,
+				color1 = "DCYAN",
+				sound = "ALERT7",
+				icon = ST[66118],
+			},
 		},
 		arrows = {
 			pursuedarrow = {
@@ -173,6 +183,23 @@ do
 					},
 				},
 			},
+			-- Leeching Swarm
+			{
+				type = "combatevent",
+				eventtype = "SPELL_CAST_START",
+				spellid = {
+					66118, -- 10 normal
+					68646, -- 10 hard
+					67630, -- 25 normal
+					68647, -- 25 hard
+				},
+				execute = {
+					{
+						"quash","burrowcd",
+						"alert","leechingswarmwarn",
+					},
+				},
+			},
 			-- Burrows/Emerges
 			{
 				type = "event",
@@ -185,10 +212,6 @@ do
 					{
 						"expect",{"#1#","find",L["emerges from the ground!$"]},
 						"alert","burrowcd",
-					},
-					{
-						"expect",{"#1#","find",L["unleashes a Leeching Swarm to heal himself!$"]},
-						"quash","burrowcd",
 					},
 				},
 			},
