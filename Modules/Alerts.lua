@@ -21,6 +21,8 @@ local defaults = {
 		WarningAlpha = 0.75,
 		WarningBarWidth = 275,
 		SinkStorage = {},
+		RedirectCenter = false,
+		RedirectThreshold = 5,
 		-- Flash
 		FlashAlpha = 0.6,
 		FlashDuration = 0.8,
@@ -451,6 +453,23 @@ function module:InitializeOptions(area)
 														name = L["Bar Growth"],
 														desc = L["The direction warning bars grow"],
 														values = {DOWN = L["Down"], UP = L["Up"]},
+													},
+													RedirectCenter = {
+														order = 500,
+														type = "toggle",
+														name = L["Redirect center bars"],
+														desc = L["Anchor a center bar to the warnings anchor if its duration is less than or equal to threshold time"],
+														width = "full",
+													},
+													RedirectThreshold = {
+														order = 600,
+														type = "range",
+														name = L["Threshold time"],
+														desc = L["If a center bar's duration is less than or equal to this then it anchors to the warnings anchor"],
+														min = 1,
+														max = 15,
+														step = 1,
+														disabled = function() return not pfl.WarningBars or not pfl.WarningAnchor or not pfl.RedirectCenter end
 													},
 												},
 											},
@@ -1154,7 +1173,11 @@ function module:CenterPopup(id, text, totalTime, flashTime, sound, c1, c2, flash
 	bar:SetText(text)
 	bar:Countdown(totalTime, flashTime)
 	bar:SetSound(soundFile)
-	bar:AnchorToCenter()
+	if pfl.WarningAnchor and pfl.RedirectCenter and totalTime <= pfl.RedirectThreshold then
+		bar:AnchorToWarning()
+	else
+		bar:AnchorToCenter()
+	end
 	bar:ScheduleTimer("Fade",totalTime)
 	if flashscreen then self:FlashScreen(c1Data) end
 end
@@ -1162,6 +1185,7 @@ end
 function module:Simple(text, totalTime, sound, c1, flashscreen, icon)
 	local soundFile,c1Data = GetMedia(sound,c1)
 	if soundFile and not pfl.DisableSounds then PlaySoundFile(soundFile) end
+	if flashscreen then self:FlashScreen(c1Data) end
 	if pfl.WarningBars then
 		local bar = GetBar()
 		if c1Data then 
@@ -1173,12 +1197,11 @@ function module:Simple(text, totalTime, sound, c1, flashscreen, icon)
 		bar.timer:Hide()
 		bar[pfl.WarningAnchor and "AnchorToWarning" or "AnchorToCenter"](bar)
 		bar:ScheduleTimer("Fade",totalTime)
-		if flashscreen then self:FlashScreen(c1Data) end
 	end
 
 	if pfl.WarningMessages then
 		local c = c1Data or Colors.WHITE
-		self:Pour(text,c.r,c.g,c.b, nil,nil,nil,nil,nil,icon)
+		self:Pour(text,c.r,c.g,c.b,nil,nil,nil,nil,nil,icon)
 	end
 end
 
