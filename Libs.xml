@@ -16,6 +16,7 @@
 <Include file="Libs\AceSerializer-3.0\AceSerializer-3.0.xml"/>
 <Include file="Libs\AceLocale-3.0\AceLocale-3.0.xml"/>
 <Include file="Libs\LibSharedMedia-3.0\lib.xml"/>
+<Include file="Libs\LibSink-2.0\lib.xml"/>
 <Include file="Libs\AceGUI-3.0-SharedMediaWidgets\widget.xml"/>
 <!--@end-no-lib-strip@-->
 <Script file="Libs\LibDataBroker-1.1\LibDataBroker-1.1.lua"/>

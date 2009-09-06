@@ -13,11 +13,14 @@ local defaults = {
 		CenterAlpha = 0.75,
 		CenterBarWidth = 275,
 		-- Warning
+		WarningBars = true,
 		WarningAnchor = false,
+		WarningMessages = false,
 		WarningScale = 0.9,
 		WarningGrowth = "DOWN",
 		WarningAlpha = 0.75,
 		WarningBarWidth = 275,
+		SinkStorage = {},
 		-- Flash
 		FlashAlpha = 0.6,
 		FlashDuration = 0.8,
@@ -71,7 +74,7 @@ local db,pfl
 -- INITIALIZATION
 ---------------------------------------
 
-local module = addon:NewModule("Alerts")
+local module = addon:NewModule("Alerts","LibSink-2.0")
 addon.Alerts = module
 local Active = {}
 local TopAlertStack = {}
@@ -85,6 +88,7 @@ local TopStackAnchor,CenterStackAnchor,WarningStackAnchor
 function module:RefreshProfile()
 	pfl = db.profile
 	self:RefreshBars()
+	self:SetSinkStorage(pfl.SinkStorage)
 end
 
 function module:InitializeOptions(area)
@@ -113,7 +117,7 @@ function module:InitializeOptions(area)
 			else pfl[var] = v end
 			self:RefreshBars()
 		end,
-		args = {
+		args = { 
 			bars_group = {
 				type = "group",
 				name = L["Bars"],
@@ -154,13 +158,6 @@ function module:InitializeOptions(area)
 						type = "toggle",
 						name = L["Show Border"],
 						desc = L["Displays a border around the bar and its icon"],
-						width = "full",
-					},
-					WarningAnchor = {
-						order = 175,
-						type = "toggle",
-						name = L["Enable Warning Anchor"],
-						desc = L["Anchors all warning bars to the warning anchor"],
 						width = "full",
 					},
 					BarHeight = {
@@ -384,51 +381,98 @@ function module:InitializeOptions(area)
 								values = {DOWN = L["Down"], UP = L["Up"]},
 							},
 						},
-					},
+					}, 
 					warning_group = {
 						type = "group",
-						name = L["Warning Anchored Bars"],
+						name = L["Warnings"],
 						order = 800,
-						disabled = function() return not pfl.WarningAnchor end,
 						args = {
-							warning_desc = {
-								type = "header",
-								name = L["Adjust settings related to the warning anchor"].."\n",
-								order = 1,
-							},
-							WarningScale = {
+							warning_bar_group = {
+								type = "group",
+								name = L["Warning Bars"],
 								order = 100,
-								type = "range",
-								name = L["Bar Scale"],
-								desc = L["Adjust the size of warning bars"],
-								min = 0.5,
-								max = 1.5,
-								step = 0.05,
-							},
-							WarningAlpha = {
-								type = "range",
-								name = L["Bar Alpha"],
-								desc = L["Adjust the transparency of warning bars"],
+								inline = true,
+								args = {
+									WarningBars = {
+										type = "toggle",
+										order = 100,
+										name = L["Enable Warning Bars"],
+										set = SetNoRefresh,
+									},
+									warning_bars = {
+										type = "group",
+										name = L["Warning Anchor"],
+										order = 200,
+										disabled = function() return not pfl.WarningBars end,
+										args = {
+											WarningAnchor = {
+												order = 100,
+												type = "toggle",
+												name = L["Enable Warning Anchor"],
+												desc = L["Anchors all warning bars to the warning anchor instead of the center anchor"],
+												width = "full",
+											},
+											warning_settings_group = {
+												type = "group",
+												name = "",
+												order = 200,
+												disabled = function() return not pfl.WarningAnchor or not pfl.WarningBars end,
+												args = {
+													WarningScale = {
+														order = 100,
+														type = "range",
+														name = L["Bar Scale"],
+														desc = L["Adjust the size of warning bars"],
+														min = 0.5,
+														max = 1.5,
+														step = 0.05,
+													},
+													WarningAlpha = {
+														type = "range",
+														name = L["Bar Alpha"],
+														desc = L["Adjust the transparency of warning bars"],
+														order = 200,
+														min = 0.1,
+														max = 1,
+														step = 0.05,
+													},
+													WarningBarWidth = {
+														order = 300,
+														type = "range",
+														name = L["Bar Width"],
+														desc = L["Adjust the width of warning bars"],
+														min = 220,
+														max = 1000,
+														step = 1,
+													},
+													WarningGrowth = {
+														order = 400,
+														type = "select",
+														name = L["Bar Growth"],
+														desc = L["The direction warning bars grow"],
+														values = {DOWN = L["Down"], UP = L["Up"]},
+													},
+												},
+											},
+										},
+									},
+								},
+							}, 
+							warning_message_group = {
+								type = "group",
+								name = L["Warning Messages"],
 								order = 200,
-								min = 0.1,
-								max = 1,
-								step = 0.05,
-							},
-							WarningBarWidth = {
-								order = 300,
-								type = "range",
-								name = L["Bar Width"],
-								desc = L["Adjust the width of warning bars"],
-								min = 220,
-								max = 1000,
-								step = 1,
-							},
-							WarningGrowth = {
-								order = 400,
-								type = "select",
-								name = L["Bar Growth"],
-								desc = L["The direction warning bars grow"],
-								values = {DOWN = L["Down"], UP = L["Up"]},
+								inline = true,
+								args = {
+									WarningMessages = {
+										type = "toggle",
+										name = L["Enable Warning Messages"],
+										desc = L["Output to an additional interface"],
+										width = "full",
+										order = 50,
+									},
+									Output = module:GetSinkAce3OptionsDataTable(),
+								},
 							},
 						},
 					},
@@ -494,7 +538,7 @@ function module:InitializeOptions(area)
 									end
 								end,
 							},
-						}
+						},
 					},
 				},
 			},
@@ -564,6 +608,8 @@ function module:InitializeOptions(area)
 			},
 		},
 	}
+
+	area.alerts_group.args.bars_group.args.warning_group.args.warning_message_group.args.Output.disabled = function() return not pfl.WarningMessages end
 end
 
 function module:OnInitialize()
@@ -584,6 +630,8 @@ function module:OnInitialize()
 	self.db = addon.db:RegisterNamespace("Alerts", defaults)
 	db = self.db
 	pfl = db.profile
+
+	self:SetSinkStorage(pfl.SinkStorage)
 
 	db.RegisterCallback(self, "OnProfileChanged", "RefreshProfile")
 	db.RegisterCallback(self, "OnProfileCopied", "RefreshProfile")
@@ -1094,7 +1142,6 @@ function module:Dropdown(id, text, totalTime, flashTime, sound, c1, c2, flashscr
 		else bar:ScheduleTimer("TranslateToCenter",waitTime) end
 	end
 	bar:ScheduleTimer("Fade",totalTime)
-	return bar
 end
 
 function module:CenterPopup(id, text, totalTime, flashTime, sound, c1, c2, flashscreen, icon)
@@ -1110,24 +1157,29 @@ function module:CenterPopup(id, text, totalTime, flashTime, sound, c1, c2, flash
 	bar:AnchorToCenter()
 	bar:ScheduleTimer("Fade",totalTime)
 	if flashscreen then self:FlashScreen(c1Data) end
-	return bar
 end
 
 function module:Simple(text, totalTime, sound, c1, flashscreen, icon)
 	local soundFile,c1Data = GetMedia(sound,c1)
-	local bar = GetBar()
-	if c1Data then 
-		bar:SetColor(c1Data)
-		bar.statusbar:SetValue(1)
+	if soundFile and not pfl.DisableSounds then PlaySoundFile(soundFile) end
+	if pfl.WarningBars then
+		local bar = GetBar()
+		if c1Data then 
+			bar:SetColor(c1Data)
+			bar.statusbar:SetValue(1)
+		end
+		bar:SetIcon(icon)
+		bar:SetText(text) 
+		bar.timer:Hide()
+		bar[pfl.WarningAnchor and "AnchorToWarning" or "AnchorToCenter"](bar)
+		bar:ScheduleTimer("Fade",totalTime)
+		if flashscreen then self:FlashScreen(c1Data) end
 	end
-	bar:SetIcon(icon)
-	bar:SetText(text) 
-	bar.timer:Hide()
-	bar:SetSound(soundFile)
-	bar[pfl.WarningAnchor and "AnchorToWarning" or "AnchorToCenter"](bar)
-	bar:ScheduleTimer("Fade",totalTime)
-	if flashscreen then self:FlashScreen(c1Data) end
-	return bar
+
+	if pfl.WarningMessages then
+		local c = c1Data or Colors.WHITE
+		self:Pour(text,c.r,c.g,c.b, nil,nil,nil,nil,nil,icon)
+	end
 end
 
 ---------------------------------------------

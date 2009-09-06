@@ -3,7 +3,7 @@
 ## Notes: Deus Vox Encounters
 ## Author: Kollektiv, Fariel
 ## SavedVariables: DXEDB
-## OptionalDeps: Ace3, LibDBIcon-1.0, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets
+## OptionalDeps: Ace3, LibDBIcon-1.0, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets, LibSink-2.0
 ## LoadManagers: AddonLoader
 ## X-LoadOn-Always: true
 
