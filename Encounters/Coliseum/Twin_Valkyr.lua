@@ -5,7 +5,7 @@ do
 	local LE = SN[67223] -- Light Essence
 
 	local data = {
-		version = 9,
+		version = 11,
 		key = "twinvalkyr", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -129,6 +129,24 @@ do
 				color1 = "BLUE",
 				sound = "ALERT8",
 				icon = ST[67214],
+			},
+			touchlightself = {
+				varname = format(L["%s on self"],SN[67298]),
+				text = format("%s: %s!",SN[67298],L["YOU"]),
+				type = "centerpopup",
+				time = 20,
+				flashtime = 20,
+				color1 = "MAGENTA",
+				icon = ST[67298],
+			},
+			touchdarkself = {
+				varname = format(L["%s on self"],SN[67283]),
+				text = format("%s: %s!",SN[67283],L["YOU"]),
+				type = "centerpopup",
+				time = 20,
+				flashtime = 20,
+				color1 = "MAGENTA",
+				icon = ST[67283],
 			},
 		},
 		events = {
@@ -267,6 +285,76 @@ do
 				execute = {
 					{
 						"quash","shieldoflightdur",
+					},
+				},
+			},
+			-- Touch of Darkness
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellid = {
+					67283, -- 25 hard
+					66001,
+					67281,
+					67282,
+				},
+				execute = {
+					{
+						"expect",{"#4#","==","&playerguid&"},
+						"alert","switchtodarkwarn",
+						"alert","touchdarkself",
+					},
+				},
+			},
+			-- Touch of Darkness removal
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_REMOVED",
+				spellid = {
+					67283, -- 25 hard
+					66001,
+					67281,
+					67282,
+				},
+				execute = {
+					{
+						"expect",{"#4#","==","&playerguid&"},
+						"quash","touchdarkself",
+					},
+				},
+			},
+			-- Touch of Light
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellid = {
+					67298, -- 25 hard
+					67297,
+					67296,
+					65950,
+				},
+				execute = {
+					{
+						"expect",{"#4#","==","&playerguid&"},
+						"alert","switchtolightwarn",
+						"alert","touchlightself",
+					},
+				},
+			},
+			-- Touch of Light removal
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_REMOVED",
+				spellid = {
+					67298, -- 25 hard
+					67297,
+					67296,
+					65950,
+				},
+				execute = {
+					{
+						"expect",{"#4#","==","&playerguid&"},
+						"quash","touchlightself",
 					},
 				},
 			},
