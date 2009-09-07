@@ -5,7 +5,7 @@ do
 	local LE = SN[67223] -- Light Essence
 
 	local data = {
-		version = 11,
+		version = 12,
 		key = "twinvalkyr", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -28,7 +28,12 @@ do
 			{
 				"alert","enragecd",
 				"alert","shieldvortexcd",
+				"expect",{"&difficulty&",">=","3"},
+				"set",{vortextime = 6},
 			},
+		},
+		userdata = {
+			vortextime = 8,
 		},
 		alerts = {
 			enragecd = {
@@ -44,20 +49,38 @@ do
 				varname = format(L["%s Cast"],SN[67182]),
 				text = format(L["%s Cast"],SN[67182]),
 				type = "centerpopup",
-				time = 8,
-				flashtime = 8,
+				time = "<vortextime>",
+				flashtime = 6,
 				color1 = "BROWN",
 				sound = "ALERT1",
+				icon = ST[67184],
+			},
+			darkvortexdur = {
+				varname = format(L["%s Channel"],SN[67182]),
+				text = format(L["%s Channel"],SN[67182]),
+				type = "centerpopup",
+				time = 5,
+				flashtime = 5,
+				color1 = "BROWN",
 				icon = ST[67184],
 			},
 			lightvortexwarn = {
 				varname = format(L["%s Cast"],SN[67206]),
 				text = format(L["%s Cast"],SN[67206]),
 				type = "centerpopup",
-				time = 8,
-				flashtime = 8,
+				time = "<vortextime>",
+				flashtime = 6,
 				color1 = "PURPLE",
 				sound = "ALERT2",
+				icon = ST[67208],
+			},
+			lightvortexdur = {
+				varname = format(L["%s Channel"],SN[67206]),
+				text = format(L["%s Channel"],SN[67206]),
+				type = "centerpopup",
+				time = 5,
+				flashtime = 5,
+				color1 = "PURPLE",
 				icon = ST[67208],
 			},
 			shieldofdarknessdur = {
@@ -184,7 +207,7 @@ do
 					},
 				},
 			},
-			-- Dark Vortex
+			-- Dark Vortex Cast
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
@@ -192,7 +215,7 @@ do
 					67182, -- 25 normal
 					66058, -- 10 normal
 					67183, -- 10 hard
-					67184,
+					67184, -- 25 hard
 				},
 				execute = {
 					{
@@ -203,7 +226,24 @@ do
 					},
 				},
 			},
-			-- Light Vortex
+			-- Dark Vortex Channel
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellid = {
+					67182, -- 25 normal
+					66058, -- 10 normal
+					67183, -- 10 hard
+					67184, -- 25 hard
+				},
+				execute = {
+					{
+						"quash","darkvortexwarn",
+						"alert","darkvortexdur",
+					},
+				},
+			},
+			-- Light Vortex Cast
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
@@ -211,7 +251,7 @@ do
 					67206, -- 25 normal
 					66046, -- 10 normal
 					67207, -- 10 hard
-					67208,
+					67208, -- 25 hard
 				},
 				execute = {
 					{
@@ -219,6 +259,23 @@ do
 						"alert","shieldvortexcd",
 						"expect",{"&playerdebuff|"..DE.."&","==","true"},
 						"alert","switchtolightwarn",
+					},
+				},
+			},
+			-- Light Vortex Channel
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellid = {
+					67206, -- 25 normal
+					66046, -- 10 normal
+					67207, -- 10 hard
+					67208, -- 25 hard
+				},
+				execute = {
+					{
+						"quash","lightvortexwarn",
+						"alert","lightvortexdur",
 					},
 				},
 			},
@@ -363,4 +420,3 @@ do
 
 	DXE:RegisterEncounter(data)
 end
-
