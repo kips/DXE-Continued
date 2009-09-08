@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 11,
+		version = 12,
 		key = "anubcoliseum", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -91,8 +91,8 @@ do
 				time = 2,
 				flashtime = 2,
 				color1 = "GREY",
-				sound = "ALERT6",
 				icon = ST[67322],
+				throttle = 0.1,
 			},
 			leechingswarmwarn = {
 				varname = format(L["%s Cast"],SN[66118]),

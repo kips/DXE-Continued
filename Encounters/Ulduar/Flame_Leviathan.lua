@@ -1,9 +1,9 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 297,
+		version = 298,
 		key = "flameleviathan", 
-		zone = "Ulduar", 
+		zone = L["Ulduar"], 
 		name = L["Flame Leviathan"], 
 		triggers = {
 			scan = 33113, -- Flame Leviathan
