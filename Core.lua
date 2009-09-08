@@ -73,7 +73,7 @@ local defaults = {
 
 local addon = LibStub("AceAddon-3.0"):NewAddon("DXE","AceEvent-3.0","AceTimer-3.0","AceConsole-3.0","AceComm-3.0","AceSerializer-3.0")
 _G.DXE = addon
-addon.version = 357
+addon.version = 358
 addon:SetDefaultModuleState(false)
 addon.callbacks = LibStub("CallbackHandler-1.0"):New(addon)
 addon.defaults = defaults
@@ -762,7 +762,7 @@ function addon:AddMessageFilters()
 	local RaidBossEmoteFrame_OnEvent = RaidBossEmoteFrame:GetScript("OnEvent")
 	RaidBossEmoteFrame:SetScript("OnEvent", function(self,event,msg,name,...)
 		if not forceBlockDisable and pfl.Misc.BlockBossEmoteFrame
-			and type(name) == "string" and self.NPCNames[name] then
+			and type(name) == "string" and addon.NPCNames[name] then
 			-- Do nothing
 		else
 			return RaidBossEmoteFrame_OnEvent(self,event,msg,name,...)
@@ -783,7 +783,7 @@ function addon:AddMessageFilters()
 
 	local function RAID_BOSS_FILTER(self,event,msg,name)
 		if not forceBlockDisable and pfl.Misc.BlockBossEmoteMessages
-			and type(name) == "string" and self.NPCNames[name] then
+			and type(name) == "string" and addon.NPCNames[name] then
 			return true
 		end
 	end
