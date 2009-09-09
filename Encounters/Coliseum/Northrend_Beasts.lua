@@ -736,7 +736,7 @@ do
 						"scheduletimer",{"reset",15},
 						"scheduletimer",{"firemolten",15},
 						"expect",{"&difficulty&",">=","3"},
-						"set",{enragetime = 166},
+						"set",{enragetime = 171}, -- A guess +5
 						"quash","enragecd",
 						"scheduletimer",{"fireenrage",15},
 					},
@@ -748,7 +748,7 @@ do
 						"scheduletimer",{"reset",10},
 						"scheduletimer",{"firecrash",10},
 						"expect",{"&difficulty&",">=","3"},
-						"set",{enragetime = 183},
+						"set",{enragetime = 188}, -- A guess +5
 						"quash","enragecd",
 						"scheduletimer",{"fireenrage",10},
 					},
