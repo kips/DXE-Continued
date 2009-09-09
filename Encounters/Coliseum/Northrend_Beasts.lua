@@ -40,7 +40,7 @@ do
 		onstart = {
 			{
 				"expect",{"&difficulty&",">=","3"},
-				"set",{enragetime = 137},
+				"set",{enragetime = 140},
 			},
 			{
 				"expect",{"&difficulty&","<=","2"},
