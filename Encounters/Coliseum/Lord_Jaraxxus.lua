@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 315,
+		version = 317,
 		key = "jaraxxus", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -22,6 +22,7 @@ do
 			portaltime = {20,120, loop = false},
 			fleshtime = {14, 21, loop = false},
 			flametime = {9, 30, loop = false},
+			mistresstime = 8,
 		},
 		onstart = {
 			{
@@ -32,6 +33,7 @@ do
 					34825, -- Nether Portal
 					34813, -- Infernal Volcano
 				},
+				"set",{mistresstime = 6},
 			},
 			{
 				"alert","enragecd",
@@ -114,7 +116,7 @@ do
 			},
 			eruptioncd = {
 				varname = format(L["%s Cooldown"],SN[67901]),
-				text = format(L["%s Cooldown"],SN[67901]),
+				text = format(L["Next %s"],SN[67901]),
 				type = "dropdown",
 				time = "<eruptiontime>",
 				flashtime = 10,
@@ -123,7 +125,7 @@ do
 			},
 			portalcd = {
 				varname = format(L["%s Cooldown"],SN[67898]),
-				text = format(L["%s Cooldown"],SN[67898]),
+				text = format(L["Next %s"],SN[67898]),
 				type = "dropdown",
 				time = "<portaltime>",
 				flashtime = 5,
@@ -143,7 +145,7 @@ do
 				varname = format(L["%s Timer"],L["Mistress of Pain"]),
 				text = format(L["%s Spawns"],L["Mistress of Pain"]).."!",
 				type = "centerpopup",
-				time = 8,
+				time = "<mistresstime>",
 				color1 = "TAN",
 				icon = ST[67905],
 			},
