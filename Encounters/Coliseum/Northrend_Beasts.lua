@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 327,
+		version = 328,
 		key = "northrendbeasts", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -736,7 +736,7 @@ do
 						"scheduletimer",{"reset",15},
 						"scheduletimer",{"firemolten",15},
 						"expect",{"&difficulty&",">=","3"},
-						"set",{enragetime = 171}, -- A guess +5
+						"set",{enragetime = 185},
 						"quash","enragecd",
 						"scheduletimer",{"fireenrage",15},
 					},
@@ -748,7 +748,7 @@ do
 						"scheduletimer",{"reset",10},
 						"scheduletimer",{"firecrash",10},
 						"expect",{"&difficulty&",">=","3"},
-						"set",{enragetime = 188}, -- A guess +5
+						"set",{enragetime = 185},
 						"quash","enragecd",
 						"scheduletimer",{"fireenrage",10},
 					},
