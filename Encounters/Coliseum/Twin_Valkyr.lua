@@ -5,7 +5,7 @@ do
 	local LE = SN[67223] -- Light Essence
 
 	local data = {
-		version = 12,
+		version = 13,
 		key = "twinvalkyr", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -26,21 +26,24 @@ do
 		},
 		onstart = {
 			{
+				"expect",{"&difficulty&",">=","3"},
+				"set",{vortextime = 6, enragetime = 360},
+			},
+			{
 				"alert","enragecd",
 				"alert","shieldvortexcd",
-				"expect",{"&difficulty&",">=","3"},
-				"set",{vortextime = 6},
 			},
 		},
 		userdata = {
 			vortextime = 8,
+			enragetime = 480,
 		},
 		alerts = {
 			enragecd = {
 				varname = L["Enrage"],
 				text = L["Enrage"],
 				type = "dropdown",
-				time = 480,
+				time = "<enragetime>",
 				flashtime = 10,
 				color1 = "RED",
 				icon = ST[12317],
