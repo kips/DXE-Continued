@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 13,
+		version = 14,
 		key = "anubcoliseum", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -214,6 +214,8 @@ do
 				execute = {
 					{
 						"quash","burrowcd",
+						"quash","nerubiancd",
+						"canceltimer","firenerubian",
 						"alert","leechingswarmwarn",
 					},
 				},
