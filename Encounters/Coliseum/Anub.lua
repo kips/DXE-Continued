@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 12,
+		version = 13,
 		key = "anubcoliseum", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -20,10 +20,19 @@ do
 			{
 				"alert","burrowcd",
 				"alert","enragecd",
+				"alert","nerubiancd",
+				"scheduletimer",{"firenerubian",10},
+				"set",{nerubiantime = {5.5,46.5,loop = true}},
 			},
 		},
 		userdata = {
-			burrowtime = {81,75,loop = false},
+			burrowtime = {80,75,loop = false},
+			nerubiantime = {10.5,46.5,loop = false},
+		},
+		timers = {
+			firenerubian = {
+				{"alert","nerubiancd"},
+			},
 		},
 		alerts = {
 			enragecd = {
@@ -103,6 +112,15 @@ do
 				color1 = "DCYAN",
 				sound = "ALERT7",
 				icon = ST[66118],
+			},
+			nerubiancd = {
+				varname = format(L["%s Timer"],SN[66333]),
+				type = "dropdown",
+				text = format(L["%s Spawns"],SN[66333]),
+				time = "<nerubiantime>",
+				flashtime = 10,
+				color1 = "INDIGO",
+				icon = ST[66333],
 			},
 		},
 		arrows = {
@@ -205,13 +223,17 @@ do
 				type = "event",
 				event = "EMOTE",
 				execute = {
+					-- Burrows
 					{
 						"expect",{"#1#","find",L["burrows into the ground!$"]},
 						"alert","burrowdur",
 					},
+					-- Emerges
 					{
 						"expect",{"#1#","find",L["emerges from the ground!$"]},
 						"alert","burrowcd",
+						"alert","nerubiancd",
+						"scheduletimer",{"firenerubian",5},
 					},
 				},
 			},
