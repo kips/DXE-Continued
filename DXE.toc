@@ -2,7 +2,7 @@
 ## Title: DXE
 ## Notes: Deus Vox Encounters
 ## Author: Kollektiv, Fariel
-## OptionalDeps: LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets, LibSink-2.0
+## OptionalDeps: LibSharedMedia-3.0, LibSink-2.0
 ## LoadOnDemand: 1
 ## Dependencies: DXE_Loader
 ## SavedVariables: DXEDB
@@ -36,7 +36,7 @@ Window.lua
 Windows.xml
 
 #@debug@
-Options/Options.lua
+Options\Options.lua
 Debug.lua
 Validator.lua
 Tests.lua

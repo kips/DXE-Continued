@@ -365,13 +365,11 @@ function addon:RegisterEncounter(data)
 	if key ~= "default" then
 		self:AddEncounterDefaults(data)
 		self:RefreshDefaults()
+		self.callbacks:Fire("OnRegisterEncounter",data)
+		self:UpdateTriggers()
 	end
 
 	EDB[key] = data
-
-	self:UpdateTriggers()
-
-	self.callbacks:Fire("OnRegisterEncounter",data)
 end
 
 --- Remove an encounter previously added with RegisterEncounter.
@@ -1059,8 +1057,8 @@ end
 local Pane
 
 function addon:ToggleConfig()
-	if select(4,GetAddOnInfo("DXE_Options")) == "MISSING" then (L["Missing %s"]):format("DXE_Options") return end
-	if not IsAddOnLoaded("DXE_Options") then self.Loader:Load("DXE_Options") end
+	--[===[@non-debug@if select(4,GetAddOnInfo("DXE_Options")) == "MISSING" then (L["Missing %s"]):format("DXE_Options") return end
+	if not IsAddOnLoaded("DXE_Options") then self.Loader:Load("DXE_Options") end--@end-non-debug@]===]
 	addon.Options:ToggleConfig()
 end
 

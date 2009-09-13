@@ -4,6 +4,7 @@
 ## Author: Kollektiv
 ## LoadOnDemand: 1
 ## Dependencies: DXE
+## OptionalDeps: AceGUI-3.0-SharedMediaWidgets
 
 #@no-lib-strip@
 Libs\AceGUI-3.0\AceGUI-3.0.xml

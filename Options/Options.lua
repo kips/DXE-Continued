@@ -382,7 +382,7 @@ end
 ---------------------------------------------
 
 do
-	local loadselect = next(addon.Loader.Z_MODS_LIST)
+	local loadselect
 	local handler = {}
 	local encs_group = {
 		type = "group",
@@ -410,9 +410,11 @@ do
 				type = "select",
 				name = L["Modules"],
 				order = 3,
-				get = function() return loadselect end,
+				get = function() 
+					loadselect = loadselect or next(addon.Loader.Z_MODS_LIST)
+					return loadselect end,
 				set = function(info,v) loadselect = v end,
-				values = addon.Loader.Z_MODS_LIST,
+				values = function() return addon.Loader.Z_MODS_LIST end,
 				disabled = function() return not loadselect end,
 			},
 			load = {
