@@ -2,13 +2,22 @@
 ## Title: DXE
 ## Notes: Deus Vox Encounters
 ## Author: Kollektiv, Fariel
+## OptionalDeps: LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets, LibSink-2.0
+## LoadOnDemand: 1
+## Dependencies: DXE_Loader
 ## SavedVariables: DXEDB
-## OptionalDeps: Ace3, LibDBIcon-1.0, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets, LibSink-2.0
-## LoadManagers: AddonLoader
-## X-LoadOn-Always: true
 
-# Libraries
-Libs.xml
+#@no-lib-strip@
+Libs\AceAddon-3.0\AceAddon-3.0.xml
+Libs\AceConsole-3.0\AceConsole-3.0.xml
+Libs\AceEvent-3.0\AceEvent-3.0.xml
+Libs\AceDB-3.0\AceDB-3.0.xml
+Libs\AceTimer-3.0\AceTimer-3.0.xml
+Libs\AceComm-3.0\AceComm-3.0.xml
+Libs\AceSerializer-3.0\AceSerializer-3.0.xml
+Libs\LibSharedMedia-3.0\lib.xml
+Libs\LibSink-2.0\lib.xml
+#@end-no-lib-strip@
 
 # Locales
 Locales.lua
@@ -19,15 +28,17 @@ Widgets.xml
 Media.lua
 Tracer.lua
 Coords.lua
-Modules.xml
-Options.lua
-Window.lua
+Alerts.xml
+Invoker.lua
+Distributor.lua
 Versions.lua
-Proximity.lua
+Window.lua
+Windows.xml
 
 #@debug@
+Options/Options.lua
 Debug.lua
 Validator.lua
 Tests.lua
-Encounters.xml
+#Encounters.xml
 #@end-debug@

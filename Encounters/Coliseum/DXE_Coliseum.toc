@@ -1,5 +1,6 @@
 ## Interface: 30200
-## Title: DXE Coliseum
+## Title: DXE |cff99ff33Coliseum|r
+## Notes: Deus Vox Encounters |cff99ff33Coliseum|r
 ## Author: Kollektiv
 ## LoadOnDemand: 1
 ## Dependencies: DXE

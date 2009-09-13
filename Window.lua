@@ -19,41 +19,15 @@ local function SkinWindow(window)
 	window.gradient:SetGradient("HORIZONTAL",r,g,b,0,0,0)
 end
 
-local function UpdateSettings()
+function addon:UpdateWindowSettings()
 	for window in pairs(windows) do SkinWindow(window) end
 end
 
 local function RefreshProfile(db) 
 	pfl = db.profile 
-	UpdateSettings()
+	addon:UpdateWindowSettings()
 end
 addon:AddToRefreshProfile(RefreshProfile)
-
--- Options
-local handler = {}
-function handler:AddOptionItems(args)
-	args.general_group.args.windows_group = {
-		type = "group",
-		name = L["Windows"],
-		order = 160,
-		args = {
-			TitleBarColor = {
-				order = 100,
-				type = "color",
-				set = function(info,v,v2,v3,v4) 
-					local t = pfl.Windows.TitleBarColor
-					t[1],t[2],t[3],t[4] = v,v2,v3,v4
-					UpdateSettings()
-				end,
-				get = function(info) return unpack(pfl.Windows.TitleBarColor) end,
-				name = L["Title Bar Color"],
-				desc = L["Title bar color used throughout the addon"],
-				hasAlpha = true,
-			},
-		},
-	}
-end
-addon:AddOptionArgsItems(handler,"AddOptionItems")
 
 ---------------------------------------
 -- API

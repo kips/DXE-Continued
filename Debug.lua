@@ -105,7 +105,7 @@ function addon:CreateDebugger(name,global,defaults,windowName)
 	if addon.options then
 		self:AddDebugOptions(name,global)
 	else
-		addon:AddOptionArgsItems(self,"UnrollOptions")
+		--addon:AddOptionArgsItems(self,"UnrollOptions")
 		OptionsToAdd[name] = global
 	end
 	return CreateDebugFunction(name,global,windowName)

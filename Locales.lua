@@ -20,8 +20,6 @@ if L then
 --@localization(locale="enUS", format="lua_additive_table", same-key-is-true=true, namespace="alerts_generic")@
 -- Specific alert phrases
 --@localization(locale="enUS", format="lua_additive_table", same-key-is-true=true, namespace="alerts_specific")@
--- Zone names
---@localization(locale="enUS", format="lua_additive_table", same-key-is-true=true, namespace="zone")@
 
 if GetLocale() == "enUS" or GetLocale() == "enGB" then return end
 end
@@ -35,8 +33,6 @@ if L then
 --@localization(locale="deDE", format="lua_additive_table", namespace="alerts_generic")@
 -- Specific alert phrases
 --@localization(locale="deDE", format="lua_additive_table", namespace="alerts_specific")@
--- Zone names
---@localization(locale="deDE", format="lua_additive_table", namespace="zone")@
 
 return
 end
@@ -50,8 +46,6 @@ if L then
 --@localization(locale="esES", format="lua_additive_table", namespace="alerts_generic")@
 -- Specific alert phrases
 --@localization(locale="esES", format="lua_additive_table", namespace="alerts_specific")@
--- Zone names
---@localization(locale="esES", format="lua_additive_table", namespace="zone")@
 
 return
 end
@@ -65,8 +59,6 @@ if L then
 --@localization(locale="esMX", format="lua_additive_table", namespace="alerts_generic")@
 -- Specific alert phrases
 --@localization(locale="esMX", format="lua_additive_table", namespace="alerts_specific")@
--- Zone names
---@localization(locale="esMX", format="lua_additive_table", namespace="zone")@
 
 return
 end
@@ -80,8 +72,6 @@ if L then
 --@localization(locale="frFR", format="lua_additive_table", namespace="alerts_generic")@
 -- Specific alert phrases
 --@localization(locale="frFR", format="lua_additive_table", namespace="alerts_specific")@
--- Zone names
---@localization(locale="frFR", format="lua_additive_table", namespace="zone")@
 
 return
 end
@@ -95,8 +85,6 @@ if L then
 --@localization(locale="koKR", format="lua_additive_table", namespace="alerts_generic")@
 -- Specific alert phrases
 --@localization(locale="koKR", format="lua_additive_table", namespace="alerts_specific")@
--- Zone names
---@localization(locale="koKR", format="lua_additive_table", namespace="zone")@
 
 return
 end
@@ -110,8 +98,6 @@ if L then
 --@localization(locale="ruRU", format="lua_additive_table", namespace="alerts_generic")@
 -- Specific alert phrases
 --@localization(locale="ruRU", format="lua_additive_table", namespace="alerts_specific")@
--- Zone names
---@localization(locale="ruRU", format="lua_additive_table", namespace="zone")@
 
 return
 end
@@ -125,8 +111,6 @@ if L then
 --@localization(locale="zhCN", format="lua_additive_table", namespace="alerts_generic")@
 -- Specific alert phrases
 --@localization(locale="zhCN", format="lua_additive_table", namespace="alerts_specific")@
--- Zone names
---@localization(locale="zhCN", format="lua_additive_table", namespace="zone")@
 
 return
 end
@@ -140,8 +124,6 @@ if L then
 --@localization(locale="zhTW", format="lua_additive_table", namespace="alerts_generic")@
 -- Specific alert phrases
 --@localization(locale="zhTW", format="lua_additive_table", namespace="alerts_specific")@
--- Zone names
---@localization(locale="zhTW", format="lua_additive_table", namespace="zone")@
 
 return
 end

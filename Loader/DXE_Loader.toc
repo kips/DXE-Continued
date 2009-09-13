@@ -1,0 +1,17 @@
+## Interface: 30200
+## Title: DXE |cff99ff33Loader|r
+## Notes: Deus Vox Encounters |cff99ff33Loader|r
+## Author: Kollektiv, Fariel
+## OptionalDeps: Ace3, LibDataBroker-1.1, LibDBIcon-1.0
+## SavedVariables: DXEIconDB
+
+#@no-lib-strip@
+Libs\LibStub\LibStub.lua
+Libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
+Libs\AceLocale-3.0\AceLocale-3.0.xml
+Libs\LibDataBroker-1.1\LibDataBroker-1.1.lua
+Libs\LibDBIcon-1.0\LibDBIcon-1.0.lua
+#@end-no-lib-strip@
+
+Locales.lua
+Loader.lua

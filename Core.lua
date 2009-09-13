@@ -19,7 +19,6 @@ local defaults = {
 	global = { 
 		Locked = true,
 		AdvancedMode = false,
-		_Minimap = {},
 		-- NPC id -> Localized name  
 		L_NPC = {},
 		--@debug@
@@ -96,32 +95,26 @@ local db,gbl,pfl
 -- LIBS
 ---------------------------------------------
 
-local ACD = LibStub("AceConfigDialog-3.0")
-local AC = LibStub("AceConfig-3.0")
-local ACR = LibStub("AceConfigRegistry-3.0")
-local AceGUI = LibStub("AceGUI-3.0")
 local AceTimer = LibStub("AceTimer-3.0")
 local L = LibStub("AceLocale-3.0"):GetLocale("DXE")
 local SM = LibStub("LibSharedMedia-3.0")
 
--- Localized spell names
+-- Localized spell names - caching is unnecessary
 local SN = setmetatable({},{
 	__index = function(t,k)
 		if type(k) ~= "number" then return "nil" end
 		local name = GetSpellInfo(k)
 		if not name then error("Invalid spell name attempted to be retrieved") end
-		--t[k] = name
 		return name 
 	end,
 })
 
--- Spell textures
+-- Spell textures - caching is unnecessary
 local ST = setmetatable({},{
 	__index = function(t,k)
 		if type(k) ~= "number" then return "nil" end
 		local texture = select(3,GetSpellInfo(k))
 		if not texture then error("Invalid spell texture attempted to be retrieved") end
-		--t[k] = texture
 		return texture
 	end,
 })
@@ -161,12 +154,7 @@ local CN = setmetatable({}, {__index =
 })
 
 do
-	local libs = { 
-		ACD = ACD,
-		AC = AC,
-		ACR = ACR,
-		AceGUI = AceGUI,
-		AceTimer = AceTimer,
+	local embeds = { 
 		L = L,
 		SN = SN,
 		NID = NID,
@@ -174,9 +162,7 @@ do
 		SM = SM,
 		ST = ST,
 	}
-	for k,lib in pairs(libs) do
-		addon[k] = lib
-	end
+	for k,v in pairs(embeds) do addon[k] = v end
 end
 
 ---------------------------------------------
@@ -378,38 +364,26 @@ function addon:RegisterEncounter(data)
 	-- Only encounters with field key have options
 	if key ~= "default" then
 		self:AddEncounterDefaults(data)
-		self:AddEncounterOptions(data)
 		self:RefreshDefaults()
 	end
 
 	EDB[key] = data
 
 	self:UpdateTriggers()
+
+	self.callbacks:Fire("OnRegisterEncounter",data)
 end
 
 --- Remove an encounter previously added with RegisterEncounter.
--- There's no need to update the version string because we always register after an unregister
 function addon:UnregisterEncounter(key)
 	if key == "default" or not EDB[key] then return end
 
 	-- Swap to default if we're trying to unregister the current encounter
 	if CE.key == key then self:SetActiveEncounter("default") end
 
-	self:RemoveEncounterOptions(EDB[key])
-
-	ACD:Close("DXE")
-
-	EDB[key] = nil
-
 	self:UpdateTriggers()
-end
-
-function addon:GetEncounterData(key)
-	return EDB[key]
-end
-
-function addon:SetEncounterData(key,data)
-	EDB[key] = data
+	self.callbacks:Fire("OnUnregisterEncounter",EDB[key])
+	EDB[key] = nil
 end
 
 --- Get the name of the currently-active encounter
@@ -798,24 +772,6 @@ end
 -- MAIN
 ---------------------------------------------
 
-function addon:SetupMinimapIcon()
-	local LDB = LibStub("LibDataBroker-1.1")
-	self.launcher = LDB:NewDataObject("DXE", 
-	{
-		type = "launcher",
-		icon = "Interface\\Addons\\DXE\\Textures\\Icon",
-		OnClick = function(_, button)
-			self:ToggleConfig() 
-		end,
-		OnTooltipShow = function(tooltip)
-			tooltip:AddLine(L["Deus Vox Encounters"])
-			tooltip:AddLine(L["|cffffff00Click|r to toggle the settings window"],1,1,1)
-		end,
-	})
-	local LDBIcon = LibStub("LibDBIcon-1.0",true)
-	if LDBIcon then LDBIcon:Register("DXE",self.launcher,gbl._Minimap) end
-	self.SetupMinimapIcon = nil
-end
 
 -- Replace default Print
 local print,format = print,string.format
@@ -870,9 +826,6 @@ function addon:OnInitialize()
 	debug = self:CreateDebugger("Core",gbl,debugDefaults)
 	--@end-debug@
 
-	-- Slash Commands
-	AC:RegisterOptionsTable(L["Deus Vox Encounters"], self:GetSlashOptions(),"dxe")
-
 	-- Received database
 	RDB = self.db:RegisterNamespace("RDB", {global = {}}).global
 	self.RDB = RDB
@@ -913,11 +866,7 @@ function addon:OnInitialize()
 
 	self:AddMessageFilters()
 
-	-- Minimap
-	self:SetupMinimapIcon()
-
 	self:SetEnabledState(pfl.Enabled)
-	self:Print(L["Type |cffffff00/dxe|r for slash commands"])
 	self.OnInitialize = nil
 end
 
@@ -1110,8 +1059,9 @@ end
 local Pane
 
 function addon:ToggleConfig()
-	if not self.options then self:InitializeOptions() end
-	ACD[ACD.OpenFrames.DXE and "Close" or "Open"](ACD,"DXE") 
+	if select(4,GetAddOnInfo("DXE_Options")) == "MISSING" then (L["Missing %s"]):format("DXE_Options") return end
+	if not IsAddOnLoaded("DXE_Options") then self.Loader:Load("DXE_Options") end
+	addon.Options:ToggleConfig()
 end
 
 function addon:ScalePaneAndCenter()
@@ -1797,6 +1747,7 @@ end
 ---------------------------------------------
 
 local dead
+-- PLAYER_REGEN_ENABLED
 function addon:CombatStop()
 	--@debug@
 	debug("CombatStop","Invoked")
@@ -1820,6 +1771,7 @@ function addon:CombatStop()
 	end
 end
 
+-- PLAYER_REGEN_DISABLED
 function addon:CombatStart()
 	local key = self:Scan()
 	if key then 
@@ -1860,3 +1812,117 @@ function addon:DispatchComm(sender,success,commType,...)
 		self.callbacks:Fire(callback,commType,sender,...)
 	end
 end
+
+---------------------------------------------
+-- ENCOUNTER DEFAULTS
+---------------------------------------------
+
+local OutputInfos = {
+	alerts = { 
+		L = L["Bars"], 
+		order = 100, 
+		defaultEnabled = true ,
+		defaults = {
+			color1 = "Clear",
+			color2 = "Off",
+			sound = "None",
+			flashscreen = false,
+			counter = false,
+		},
+	},
+	raidicons = { 
+		L = L["Raid Icons"], 
+		order = 200, 
+		defaultEnabled = true,
+		defaults = {
+			icon = 8,
+		},
+	},
+	arrows = { 
+		L = L["Arrows"], 
+		order = 300, 
+		defaultEnabled = true,
+		defaults = {
+			sound = "None",
+		},
+	},
+	announces = {
+		L = L["Announces"],
+		order = 400,
+		defaultEnabled = true,
+		defaults = {},
+	},
+}
+
+addon.OutputInfos = OutputInfos
+
+local Filters = {
+	sound = function(str)
+		return str:find("^ALERT%d+$") and "DXE "..str or str
+	end
+}
+
+function addon:AddEncounterDefaults(data)
+	local defaults = {}
+	self.defaults.profile.Encounters[data.key] = defaults
+	
+	for outputType,outputInfo in pairs(OutputInfos) do
+		local outputData = data[outputType]
+		if outputData then
+			for var,info in pairs(outputData) do
+				defaults[var] = {}
+				-- Add setting defaults
+				defaults[var].enabled = outputInfo.defaultEnabled
+				for k,varDefault in pairs(OutputInfos[outputType].defaults) do
+					if Filters[k] then
+						defaults[var][k] = info[k] and Filters[k](info[k]) or varDefault
+					else
+						defaults[var][k] = info[k] or varDefault
+					end
+				end
+			end
+		end
+	end
+end
+
+--[[
+function addon:GetSlashOptions()
+	return {
+		type = "group",
+		name = L["Deus Vox Encounters"],
+		handler = self,
+		args = {
+			enable = {
+				type = "execute",
+				name = L["Enable"],
+				order = 100,
+				func = function() addon.db.profile.Enabled = true; self:Enable(); LibStub("AceConfigRegistry-3.0"):NotifyChange("DXE") end,
+			},
+			disable = {
+				type = "execute",
+				name = L["Disable"],
+				order = 200,
+				func = function() addon.db.profile.Enabled = false; self:Disable(); LibStub("AceConfigRegistry-3.0"):NotifyChange("DXE") end,
+			},
+			config = {
+				type = "execute",
+				name = L["Toggles the configuration"],
+				func = "ToggleConfig",
+				order = 300,
+			},
+			vc = {
+				type = "execute",
+				name = L["Show version check window"],
+				func = "VersionCheck",
+				order = 400,
+			},
+			proximity = {
+				type = "execute",
+				name = L["Show proximity window"],
+				func = "Proximity",
+				order = 500,
+			},
+		},
+	}
+end
+]]

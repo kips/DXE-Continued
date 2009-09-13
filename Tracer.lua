@@ -3,6 +3,7 @@
 local addon = DXE
 local NID = addon.NID
 local unit_to_unittarget = addon.Roster.unit_to_unittarget
+local AceTimer = LibStub("AceTimer-3.0")
 
 local pairs = pairs
 local UnitExists,UnitGUID = UnitExists,UnitGUID
@@ -24,7 +25,7 @@ local trackInfos = {
 }
 
 function Tracer:New()
-	local tracer = addon.AceTimer:Embed({})
+	local tracer = AceTimer:Embed({})
 	for k,v in pairs(prototype) do tracer[k] = v end
 	tracer.s = LOST 			-- Status
 	tracer.callbacks = {} 	-- Events

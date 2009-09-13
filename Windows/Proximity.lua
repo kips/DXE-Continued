@@ -1,5 +1,5 @@
 local addon = DXE
-local ACD,L = addon.ACD,addon.L
+local L = addon.L
 local name_to_unit = addon.Roster.name_to_unit
 local name_to_class = addon.Roster.name_to_class
 
@@ -14,7 +14,7 @@ local range
 local invert
 local proxFunc
 
-local function UpdateSettings()
+function addon:UpdateProximitySettings()
 	range = pfl.Proximity.Range
 	proxFunc = range <= 10 and ProximityFuncs[10] or (range <= 11 and ProximityFuncs[11] or ProximityFuncs[18])
 	delay = pfl.Proximity.Delay
@@ -28,72 +28,10 @@ end
 
 local function RefreshProfile(db) 
 	pfl = db.profile 
-	UpdateSettings()
+	addon:UpdateProximitySettings()
 end
 addon:AddToRefreshProfile(RefreshProfile)
 
--- Options
-local handler = {}
-function handler:AddOptionItems(args)
-	args.general_group.args.proximity_group = {
-		type = "group",
-		name = L["Proximity"],
-		order = 150,
-		get = function(info) return pfl.Proximity[info[#info]] end,
-		set = function(info,v) pfl.Proximity[info[#info]] = v; UpdateSettings() end,
-		args = {
-			header_desc = {
-				type = "description",
-				order = 1,
-				name = L["The proximity window uses map coordinates of players to calculate distances. This relies on knowing the dimensions, in game yards, of each map. If the dimension of a map is not known, it will default to the closest range rounded up to 10, 11, or 18 game yards"].."\n",
-			},
-			Range = {
-				type = "range",
-				order = 100,
-				name = L["Range"],
-				desc = L["The distance (game yards) a player has to be within to appear in the proximity window"],
-				min = 5,
-				max = 18,
-				step = 1,
-			},
-			Delay = {
-				type = "range",
-				order = 200,
-				name = L["Delay"],
-				desc = L["The proximity window refresh rate (seconds). Increase to improve performance. |cff99ff330|r refreshes every frame"],
-				min = 0,
-				max = 1,
-				step = 0.05,
-			},
-			BarAlpha = {
-				type = "range",
-				order = 250,
-				name = L["Bar Alpha"],
-				desc = L["Adjust the transparency of range bars"],
-				min = 0.1,
-				max = 1,
-				step = 0.1,
-			},
-			Invert = {
-				type = "toggle",
-				order = 275,
-				name = L["Invert Bars"],
-				desc = L["Inverts all range bars"],
-			},
-			ClassFilter = {
-				type = "multiselect",
-				order = 300,
-				name = L["Class Filter"],
-				get = function(info,v) return pfl.Proximity.ClassFilter[v] end,
-				set = function(info,v,v2) pfl.Proximity.ClassFilter[v] = v2 end,
-				values = LOCALIZED_CLASS_NAMES_MALE,
-			},
-		},
-	}
-end
-addon:AddOptionArgsItems(handler,"AddOptionItems")
-
--- nil'd after called
 local function CreateWindow()
 	window = addon:CreateWindow(L["Proximity"],110,100)
 	window:Hide()
@@ -231,10 +169,11 @@ local function CreateWindow()
 
 	local function optionsFunc()
 		addon:ToggleConfig()
-		if ACD.OpenFrames.DXE then ACD:SelectGroup("DXE","general_group","proximity_group") end
+		if not addon.Options then return end
+		if LibStub("AceConfigDialog-3.0").OpenFrames.DXE then LibStub("AceConfigDialog-3.0"):SelectGroup("DXE","windows_group","proximity_group") end
 	end
 
-	UpdateSettings()
+	addon:UpdateProximitySettings()
 	
 	window:AddTitleButton("Interface\\AddOns\\DXE\\Textures\\Pane\\Menu.tga",optionsFunc,L["Options"])
 

@@ -1,5 +1,6 @@
 ## Interface: 30200
-## Title: DXE Naxxramas
+## Title: DXE |cff99ff33Naxxramas|r
+## Notes: Deus Vox Encounters |cff99ff33Naxxramas|r
 ## Author: Kollektiv
 ## LoadOnDemand: 1
 ## Dependencies: DXE

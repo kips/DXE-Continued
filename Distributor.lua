@@ -1,5 +1,11 @@
 -- Credits to Bazaar (by Shadowed) for this idea
 
+local defaults = {
+	profile = {
+		AutoAccept = true,
+	},
+}
+
 local addon = DXE
 local L = addon.L
 
@@ -35,108 +41,20 @@ local module = addon:NewModule("Distributor","AceEvent-3.0","AceTimer-3.0","AceC
 addon.Distributor = module
 local StackAnchor
 
-function module:RefreshProfile()
-	pfl = self.db.profile
-end
-
-function module:InitializeOptions(area)
-	local list,names = {},{}
-	local ListSelect,PlayerSelect
-	area.dist_group = {
-		type = "group",
-		name = L["Distributor"],
-		order = 300,
-		get = function(info) return pfl[info[#info]] end,
-		set = function(info,v) pfl[info[#info]] = v end,
-		args = {
-			AutoAccept = {
-				type = "toggle",
-				name = L["Auto accept"],
-				desc = L["Automatically accepts encounters sent by players"],
-				order = 50,
-			},
-			first_desc = {
-				type = "description",
-				order = 75,
-				name = L["You can send encounters to the entire raid or to a player. You can check versions by typing |cffffd200/dxe vc|r or by opening the version checker from the pane"],
-			},
-			raid_desc = {
-				type = "description",
-				order = 90,
-				name = "\n"..L["If you want to send an encounter to the raid, select an encounter, and then press '|cffffd200Send to raid|r'"],
-			},
-			ListSelect = {
-				type = "select",
-				order = 100,
-				name = L["Select an encounter"],
-				get = function() return ListSelect end,
-				set = function(info,value) ListSelect = value end,
-				values = function()
-					wipe(list)
-					for k in addon:IterateEDB() do
-						list[k] = addon.EDB[k].name
-					end
-					return list
-				end,
-			},
-			DistributeToRaid = {
-				type = "execute",
-				name = L["Send to raid"],
-				order = 200,
-				func = function() module:Distribute(ListSelect) end,
-				disabled = function() return GetNumRaidMembers() == 0 or not ListSelect  end,
-			},
-			player_desc = {
-				type = "description",
-				order = 250,
-				name = "\n\n"..L["If you want to send an encounter to a player, select an encounter, select a player, and then press '|cffffd200Send to player|r'"],
-			},
-			PlayerSelect = {
-				type = "select",
-				order = 300,
-				name = L["Select a player"],
-				get = function() return PlayerSelect end,
-				set = function(info,value) PlayerSelect = value end,
-				values = function()
-					wipe(names)
-					for name in pairs(addon.Roster.name_to_unit) do
-						if name ~= addon.PNAME then
-							 names[name] = name
-						end
-					end
-					return names
-				end,
-				disabled = function() return GetNumRaidMembers() == 0 or not ListSelect end,
-			},
-			DistributeToPlayer = {
-				type = "execute",
-				order = 400,
-				name = L["Send to player"],
-				func = function() module:Distribute(ListSelect, "WHISPER", PlayerSelect) end,
-				disabled = function() return not PlayerSelect end,
-			},
-		},
-	}
-end
+function module:RefreshProfile() pfl = self.db.profile end
 
 function module:OnInitialize()
 	StackAnchor = addon:CreateLockableFrame("DistributorStackAnchor",200,10,L["Download/Upload Anchor"])
 	addon:RegisterMoveSaving(StackAnchor,"CENTER","UIParent","CENTER",0,300)
 	addon:LoadPosition("DXEDistributorStackAnchor")
 
-	self.db = addon.db:RegisterNamespace("Distributor", {
-		profile = {
-			AutoAccept = true,
-		},
-	})
+	self.db = addon.db:RegisterNamespace("Distributor", defaults)
 	db = self.db
 	pfl = db.profile
 
 	db.RegisterCallback(self, "OnProfileChanged", "RefreshProfile")
 	db.RegisterCallback(self, "OnProfileCopied", "RefreshProfile")
 	db.RegisterCallback(self, "OnProfileReset", "RefreshProfile")
-
-	addon:AddModuleOptionInitializer(module,"InitializeOptions")
 end
 
 function module:OnEnable()
@@ -440,7 +358,7 @@ end
 function module:RemoveLoad(loadTable,key)
 	local loadInfo = loadTable[key]
 	self:RemoveProgressBar(loadInfo.bar)
-	addon.AceGUI:Release(loadInfo.bar)
+	self:ReleaseProgressBar(bar)
 	loadTable[key] = nil
 end
 
@@ -451,13 +369,23 @@ end
 ----------------------------------
 -- PROGRESS BARS
 ----------------------------------
+local CreateProgressBar
+local FramePool = {}
 local ProgressStack = {}
 
 function module:GetProgressBar()
-	local bar = addon.AceGUI:Create("DXE_ProgressBar")
+	local bar = next(FramePool)
+	if bar then FramePool[bar] = nil
+	else bar = CreateProgressBar() end
+	bar:OnAcquired()
 	ProgressStack[#ProgressStack+1] = bar
 	self:LayoutBarStack()
 	return bar
+end
+
+function module:ReleaseProgressBar(bar)
+	bar:OnRelease()
+	FramePool[bar] = true
 end
 
 function module:RemoveProgressBar(bar)
@@ -479,9 +407,8 @@ function module:LayoutBarStack()
 	end
 end
 
-----------------------------------
--- PROGRESS BAR
-----------------------------------
+-- UPDATING
+
 -- The active progress bars
 local UpdateStack = {}
 -- Frame used for updating
@@ -510,125 +437,80 @@ function module:RemoveFromUpdating(key)
 	if not next(UpdateStack) then frame:SetScript("OnUpdate",nil) end
 end
 
-do
-	local WidgetType = "DXE_ProgressBar"
-	local WidgetVersion = 1
+-- PROTOTYPE
+local prototype = {}
 
-	local WHITE = {r=1,g=1,b=1}
-	local BLUE = {r=0,g=0,b=1} 
+function prototype:OnAcquire()
+	self.frame:Show()
+	self.frame:SetParent(UIParent)
+	self:SetColor(Colors.BLUE)
+end
+
+function prototype:OnRelease()
+	self.frame:Hide()
+	self.frame:ClearAllPoints()
+	self.bar:SetValue(0)
+	self:SetAlpha(1)
+	self.perc:SetText("")
+	UIFrameFadeRemoveFrame(self.frame)
+	wipe(self.userdata)
+end
+
+function prototype:SetText(text) self.text:SetText(text) end
+function prototype:SetFormattedText(text,...) self.text:SetFormattedText(text,...) end
+function prototype:SetPerc(perc) self.perc:SetText(perc) end
+function prototype:SetStatus(status,r,g,b) self.status:SetFormattedText(L["STATUS"]..": |cffffffff%s|r",status) end
+function prototype:SetAlpha(alpha) self.frame:SetAlpha(alpha) end
+function prototype:SetValue(value) self.bar:SetValue(value) end
+function prototype:SetColor(c) self.bar:SetStatusBarColor(c.r,c.g,c.b) end
+function prototype:Anchor(relPoint,frame,relTo)
+	self.frame:ClearAllPoints()
+	self.frame:SetPoint(relPoint,frame,relTo)
+end
+
+function CreateProgressBar()
+	local self = {}
+	self.userdata = {}
+	local frame = CreateFrame("Frame",nil,UIParent)
+
+	frame:SetWidth(222)
+	frame:SetHeight(27)
+	addon:RegisterBackground(frame)
 	
-	local function OnAcquire(self)
-		self.frame:Show()
-		self.frame:SetParent(UIParent)
-		self:SetColor(BLUE,WHITE)
-	end
+	local bar = CreateFrame("StatusBar",nil,frame)
+	bar:SetPoint("TOPLEFT",2,-2)
+	bar:SetPoint("BOTTOMRIGHT",-2,2)
+	bar:SetMinMaxValues(0,1) 
+	bar:SetValue(0)
+	self.bar = bar
+	addon:RegisterStatusBar(bar)
 
-	local function OnRelease(self)
-		self.frame:Hide()
-		self.frame:ClearAllPoints()
-		self.bar:SetValue(0)
-		self:SetAlpha(1)
-		self.perc:SetText("")
-		UIFrameFadeRemoveFrame(self.frame)
-	end
-
-	local function SetText(self,text)
-		self.text:SetText(text)
-	end
-
-	local function SetFormattedText(self,text,...)
-		self.text:SetFormattedText(text,...)
-	end
-
-	local function SetPerc(self,perc)
-		self.perc:SetText(perc)
-	end
-
-	local function SetStatus(self,status,r,g,b)
-		self.status:SetFormattedText(L["STATUS"]..": |cffffffff%s|r",status)
-	end
-
-	local function SetColor(self,c1,c2)
-		if c1 then
-			self.userdata.c1 = c1
-			self.bar:SetStatusBarColor(c1.r,c1.g,c1.b)
-		end
-		if c2 then self.userdata.c2 = c2 end
-	end
-
-	local function Anchor(self,relPoint,frame,relTo)
-		self.userdata.animFunc = nil
-		self.frame:ClearAllPoints()
-		self.frame:SetPoint(relPoint,frame,relTo)
-	end
+	local border = CreateFrame("Frame",nil,frame)
+	border:SetAllPoints(true)
+	addon:RegisterBorder(border)
+	border:SetFrameLevel(bar:GetFrameLevel()+1)
 	
-	local function SetAlpha(self,alpha)
-		self.frame:SetAlpha(alpha)
-	end
+	local text = bar:CreateFontString(nil,"ARTWORK")
+	text:SetPoint("CENTER",frame,"CENTER",0,-4)
+	text:SetTextColor(0.6,1,0.2)
+	text:SetShadowOffset(1,-1)
+	addon:RegisterFontString(text,9)
+	self.text = text
 
-	local function SetValue(self,value)
-		self.bar:SetValue(value)
-	end
+	local perc = bar:CreateFontString(nil,"ARTWORK")
+	perc:SetPoint("TOPRIGHT",frame,"TOPRIGHT",-5,-3)
+	perc:SetShadowOffset(1,-1)
+	addon:RegisterFontString(perc,8)
+	self.perc = perc
 
-	local function Constructor()
-		local self = {}
-		self.type = WidgetType
-		local frame = CreateFrame("Frame",nil,UIParent)
-
-		frame:SetWidth(222) 
-		frame:SetHeight(27)
-		addon:RegisterBackground(frame)
-		
-		local bar = CreateFrame("StatusBar",nil,frame)
-		bar:SetPoint("TOPLEFT",2,-2)
-		bar:SetPoint("BOTTOMRIGHT",-2,2)
-		bar:SetMinMaxValues(0,1) 
-		bar:SetValue(0)
-		self.bar = bar
-		addon:RegisterStatusBar(bar)
-
-		local border = CreateFrame("Frame",nil,frame)
-		border:SetAllPoints(true)
-		addon:RegisterBorder(border)
-		border:SetFrameLevel(bar:GetFrameLevel()+1)
-		
-		local text = bar:CreateFontString(nil,"ARTWORK")
-		text:SetPoint("CENTER",frame,"CENTER",0,-4)
-		text:SetTextColor(0.6,1,0.2)
-		text:SetShadowOffset(1,-1)
-		addon:RegisterFontString(text,9)
-		self.text = text
-
-		local perc = bar:CreateFontString(nil,"ARTWORK")
-		perc:SetPoint("TOPRIGHT",frame,"TOPRIGHT",-5,-3)
-		perc:SetShadowOffset(1,-1)
-		addon:RegisterFontString(perc,8)
-		self.perc = perc
-
-		local status = bar:CreateFontString(nil,"ARTWORK")
-		status:SetPoint("TOPLEFT",frame,"TOPLEFT",5,-3)
-		status:SetTextColor(1,0.82,0)
-		status:SetShadowOffset(1,-1)
-		addon:RegisterFontString(status,8)
-		self.status = status
-		
-		self.OnAcquire = OnAcquire
-		self.OnRelease = OnRelease
-		self.SetText = SetText
-		self.SetColor = SetColor
-		self.Anchor = Anchor
-		self.SetAlpha = SetAlpha
-		self.SetValue = SetValue
-		self.SetPerc = SetPerc
-		self.SetStatus = SetStatus
-		self.SetFormattedText = SetFormattedText
-		
-		self.frame = frame
-		frame.obj = self
-
-		addon.AceGUI:RegisterAsWidget(self)
-		return self
-	end
-
-	addon.AceGUI:RegisterWidgetType(WidgetType,Constructor,WidgetVersion)
+	local status = bar:CreateFontString(nil,"ARTWORK")
+	status:SetPoint("TOPLEFT",frame,"TOPLEFT",5,-3)
+	status:SetTextColor(1,0.82,0)
+	status:SetShadowOffset(1,-1)
+	addon:RegisterFontString(status,8)
+	self.status = status
+	
+	for k,v in pairs(prototype) do self[k] = v end
+	self.frame = frame
+	return self
 end
