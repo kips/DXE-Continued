@@ -47,7 +47,7 @@ function module:ADDON_LOADED(name)
 		addon = DXE
 		addon.Loader = module
 		for name in pairs(B_MODS) do self:Load(name) end
-		B_MODS = true,nil
+		B_MODS = nil
 	elseif Z_MODS_LIST[name] then
 		self:CleanZoneModules(name)
 		addon.callbacks:Fire("OnLoadZoneModule")
