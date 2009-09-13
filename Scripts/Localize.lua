@@ -12,7 +12,7 @@ local fmtstr = "L[\"%s\"]"
 local file = io.open(out, "w")
 local files = {}
 
-local directories = {"","Modules"}
+local directories = {"","Alerts","Windows","Loader","Options"}
 
 for i,directory in pairs(directories) do
 	os.execute(fmt("ls ../"..directory.." | grep 'lua' > %s",i..tempFile))

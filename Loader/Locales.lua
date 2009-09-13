@@ -16,6 +16,8 @@ if L then
 
 -- Zone names
 --@localization(locale="enUS", format="lua_additive_table", same-key-is-true=true, namespace="zone")@
+-- Loader
+--@localization(locale="enUS", format="lua_additive_table", same-key-is-true=true, namespace="loader")@
 
 if GetLocale() == "enUS" or GetLocale() == "enGB" then return end
 end
@@ -25,6 +27,8 @@ if L then
 
 -- Zone names
 --@localization(locale="deDE", format="lua_additive_table", namespace="zone")@
+-- Loader
+--@localization(locale="deDE", format="lua_additive_table", namespace="loader")@
 
 return
 end
@@ -34,6 +38,8 @@ if L then
 
 -- Zone names
 --@localization(locale="esES", format="lua_additive_table", namespace="zone")@
+-- Loader
+--@localization(locale="esES", format="lua_additive_table", namespace="loader")@
 
 return
 end
@@ -43,6 +49,8 @@ if L then
 
 -- Zone names
 --@localization(locale="esMX", format="lua_additive_table", namespace="zone")@
+-- Loader
+--@localization(locale="esMX", format="lua_additive_table", namespace="loader")@
 
 return
 end
@@ -52,6 +60,8 @@ if L then
 
 -- Zone names
 --@localization(locale="frFR", format="lua_additive_table", namespace="zone")@
+-- Loader
+--@localization(locale="frFR", format="lua_additive_table", namespace="loader")@
 
 return
 end
@@ -61,6 +71,8 @@ if L then
 
 -- Zone names
 --@localization(locale="koKR", format="lua_additive_table", namespace="zone")@
+-- Loader
+--@localization(locale="koKR", format="lua_additive_table", namespace="loader")@
 
 return
 end
@@ -70,6 +82,8 @@ if L then
 
 -- Zone names
 --@localization(locale="ruRU", format="lua_additive_table", namespace="zone")@
+-- Loader
+--@localization(locale="ruRU", format="lua_additive_table", namespace="loader")@
 
 return
 end
@@ -79,6 +93,8 @@ if L then
 
 -- Zone names
 --@localization(locale="zhCN", format="lua_additive_table", namespace="zone")@
+-- Loader
+--@localization(locale="zhCN", format="lua_additive_table", namespace="loader")@
 
 return
 end
@@ -88,6 +104,8 @@ if L then
 
 -- Zone names
 --@localization(locale="zhTW", format="lua_additive_table", namespace="zone")@
+-- Loader
+--@localization(locale="zhTW", format="lua_additive_table", namespace="loader")@
 
 return
 end
