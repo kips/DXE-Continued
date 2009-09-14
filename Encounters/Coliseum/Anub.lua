@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 14,
+		version = 15,
 		key = "anubcoliseum", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -122,6 +122,16 @@ do
 				color1 = "INDIGO",
 				icon = ST[66333],
 			},
+			slashother = {
+				varname = format(L["%s on others"],SN[66012]),
+				type = "centerpopup",
+				time = 3,
+				flashtime = 3,
+				text = format("%s: #5#!",SN[66012]),
+				color1 = "BLUE",
+				icon = ST[66012],
+				sound = "ALERT8",
+			},
 		},
 		arrows = {
 			pursuedarrow = {
@@ -236,6 +246,18 @@ do
 						"alert","burrowcd",
 						"alert","nerubiancd",
 						"scheduletimer",{"firenerubian",5},
+					},
+				},
+			},
+			-- Freezing Slash
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellid = 66012,
+				execute = {
+					{
+						"expect",{"#4#","~=","&playerguid&"},
+						"alert","slashother",
 					},
 				},
 			},
