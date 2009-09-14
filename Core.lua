@@ -70,7 +70,7 @@ local defaults = {
 -- INITIALIZATION
 ---------------------------------------------
 
-local addon = LibStub("AceAddon-3.0"):NewAddon("DXE","AceEvent-3.0","AceTimer-3.0","AceConsole-3.0","AceComm-3.0","AceSerializer-3.0")
+local addon = LibStub("AceAddon-3.0"):NewAddon("DXE","AceEvent-3.0","AceTimer-3.0","AceComm-3.0","AceSerializer-3.0")
 _G.DXE = addon
 addon.version = 367
 addon:SetDefaultModuleState(false)
@@ -1890,8 +1890,7 @@ end
 
 function addon:SetupSlashCommands()
 	DXE_SLASH_HANDLER = function(msg)
-		local cmd = addon:GetArgs(msg)
-		if cmd then cmd = cmd:lower() end
+		local cmd = msg:match("[^ ]*"):lower()
 		if cmd == L["enable"] then
 			addon.db.profile.Enabled = true
 			addon:Enable()
@@ -1917,4 +1916,5 @@ function addon:SetupSlashCommands()
 			ChatFrame1:AddMessage(" |cffffd200"..L["proximity"].."|r - "..L["Show proximity window"])
 		end
 	end
+	self.SetupSlashCommands = nil
 end
