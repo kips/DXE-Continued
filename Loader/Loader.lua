@@ -64,7 +64,7 @@ end
 
 function module:PLAYER_LOGIN()
 	self:UnregisterEvent("PLAYER_LOGIN")
-	if select(4,GetAddOnInfo(CORE_ADDON)) == "MISSING" then error(("DXE requires %s to be installed"):format(CORE_ADDON)) end
+	if select(6,GetAddOnInfo(CORE_ADDON)) == "MISSING" then error(("DXE requires %s to be installed"):format(CORE_ADDON)) end
 
 	for i=1,GetNumAddOns() do
 		local name = GetAddOnInfo(i)

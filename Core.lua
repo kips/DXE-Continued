@@ -72,7 +72,7 @@ local defaults = {
 
 local addon = LibStub("AceAddon-3.0"):NewAddon("DXE","AceEvent-3.0","AceTimer-3.0","AceConsole-3.0","AceComm-3.0","AceSerializer-3.0")
 _G.DXE = addon
-addon.version = 365
+addon.version = 366
 addon:SetDefaultModuleState(false)
 addon.callbacks = LibStub("CallbackHandler-1.0"):New(addon)
 addon.defaults = defaults
@@ -1058,7 +1058,7 @@ local Pane
 
 function addon:ToggleConfig()
 	--[===[@non-debug@
-	if select(4,GetAddOnInfo("DXE_Options")) == "MISSING" then (L["Missing %s"]):format("DXE_Options") return end
+	if select(6,GetAddOnInfo("DXE_Options")) == "MISSING" then self:Print((L["Missing %s"]):format("DXE_Options")) return end
 	if not IsAddOnLoaded("DXE_Options") then self.Loader:Load("DXE_Options") end
 	--@end-non-debug@]===]
 	addon.Options:ToggleConfig()
