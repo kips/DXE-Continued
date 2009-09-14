@@ -80,7 +80,7 @@ end
 -- Used to start uploads
 function module:Distribute(key, dist, target)
 	dist = dist or "RAID"
-	local data = addon:GetEncounterData(key)
+	local data = addon.EDB[key]
 	if not data or Uploads[key] or key == "default" or GetNumRaidMembers() == 0 then return end
 	if addon.util.tablesize(Uploads) == 4 then UploadQueue[key] = self:Serialize(key,dist,target) return end
 	local serialData = self:Serialize(data)
@@ -358,7 +358,7 @@ end
 function module:RemoveLoad(loadTable,key)
 	local loadInfo = loadTable[key]
 	self:RemoveProgressBar(loadInfo.bar)
-	self:ReleaseProgressBar(bar)
+	self:ReleaseProgressBar(loadInfo.bar)
 	loadTable[key] = nil
 end
 
@@ -377,7 +377,7 @@ function module:GetProgressBar()
 	local bar = next(FramePool)
 	if bar then FramePool[bar] = nil
 	else bar = CreateProgressBar() end
-	bar:OnAcquired()
+	bar:OnAcquire()
 	ProgressStack[#ProgressStack+1] = bar
 	self:LayoutBarStack()
 	return bar
