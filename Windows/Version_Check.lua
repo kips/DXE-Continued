@@ -84,13 +84,6 @@ local function SetHeaderText(name,version)
 	heading:SetText(format("%s: |cffffffff%s|r",name,version))
 end
 
-local function DropdownChanged(widget,event,v)
-	value = v
-	SetHeaderText(list[v],EDB[v].version)
-	addon:RefreshVersionList()
-	addon:RequestVersions(value)
-end
-
 local function RefreshDropdown()
 	wipe(list)
 	for key,data in addon:IterateEDB() do
@@ -211,6 +204,10 @@ local function CreateWindow()
 		local function OnClick(self)
 			dropdown.value = self.value
 			UIDropDownMenu_SetSelectedValue(dropdown,self.value)
+			value = self.value
+			SetHeaderText(list[value],EDB[value].version)
+			addon:RefreshVersionList()
+			addon:RequestVersions(value)
 		end
 
 		local function dropdown_initialize(self)

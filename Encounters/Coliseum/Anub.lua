@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 15,
+		version = 16,
 		key = "anubcoliseum", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -132,6 +132,15 @@ do
 				icon = ST[66012],
 				sound = "ALERT8",
 			},
+			slashcd = {
+				varname = format(L["%s Cooldown"],SN[66012]),
+				type = "dropdown",
+				time = 20,
+				flashtime = 5,
+				text = format(L["%s Cooldown"],SN[66012]),
+				color1 = "YELLOW",
+				icon = ST[66012],
+			},
 		},
 		arrows = {
 			pursuedarrow = {
@@ -239,6 +248,7 @@ do
 					{
 						"expect",{"#1#","find",L["burrows into the ground!$"]},
 						"alert","burrowdur",
+						"quash","slashcd",
 					},
 					-- Emerges
 					{
@@ -256,6 +266,8 @@ do
 				spellid = 66012,
 				execute = {
 					{
+						"quash","slashcd",
+						"alert","slashcd",
 						"expect",{"#4#","~=","&playerguid&"},
 						"alert","slashother",
 					},
