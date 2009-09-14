@@ -130,6 +130,9 @@ function module:SetupBroker()
 	self.SetupBroker = nil
 end
 
+SLASH_DXE1 = "/dxe"
+SlashCmdList.DXE = function() if not addon then module:Load(CORE_ADDON) end end
+
 module:SetScript("OnEvent",function(self,event,...) self[event](self,...) end)
 module:RegisterEvent("PLAYER_LOGIN")
 module:RegisterEvent("ADDON_LOADED")
