@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 299,
+		version = 300,
 		key = "thorim", 
 		zone = L["Ulduar"], 
 		name = L["Thorim"], 
@@ -22,6 +22,7 @@ do
 		userdata = {
 			chargetime = 34,
 			enragetime = {369,300,loop = false},
+			striketext = "",
 		},
 		onstart = {
 			{
@@ -102,6 +103,14 @@ do
 				color2 = "BROWN",
 				icon = ST[62130],
 			},
+			strikewarn = {
+				varname = format(L["%s Warning"],SN[62130]),
+				type = "simple",
+				text = "<striketext>",
+				time = 3,
+				sound = "ALERT6",
+				icon = ST[62130],
+			},
 		},
 		events = {
 			{
@@ -165,7 +174,18 @@ do
 				spellid = 62130,
 				execute = {
 					{
+						"quash","strikecd",
 						"alert","strikecd",
+					},
+					{
+						"expect",{"#4#","==","&playerguid&"},
+						"set",{striketext = format("%s: %s!",SN[62130],L["YOU"])},
+						"alert","strikewarn",
+					},
+					{
+						"expect",{"#4#","~=","&playerguid&"},
+						"set",{striketext = format("%s: #5#!",SN[62130])},
+						"alert","strikewarn",
 					},
 				},
 			},

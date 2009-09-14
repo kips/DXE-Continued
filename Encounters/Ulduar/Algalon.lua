@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 299,
+		version = 300,
 		key = "algalon", 
 		zone = L["Ulduar"], 
 		name = L["Algalon the Observer"], 
@@ -96,7 +96,7 @@ do
 				counter = true,
 			},
 			punchwarn = {
-				varname = format(L["%s Warning"],SN[64412]).." "..format(L["%s Stacks"],">= 4"),
+				varname = format(L["%s Warning"],SN[64412]),
 				type = "simple",
 				text = "<punchtext>",
 				time = 3,
@@ -139,7 +139,15 @@ do
 				execute = {
 					{
 						"alert","punchcd",
-					}	
+						"expect",{"#4#","==","&playerguid&"},
+						"set",{punchtext = format("%s: %s!",SN[64412],L["YOU"])},
+						"alert","punchwarn",
+					},
+					{
+						"expect",{"#4#","~=","&playerguid&"},
+						"set",{punchtext = format("%s: #5#!",SN[64412])},
+						"alert","punchwarn",
+					},
 				},
 			},
 			-- Phase Punch Stacks
@@ -150,13 +158,11 @@ do
 				execute = {
 					{
 						"expect",{"#4#","==","&playerguid&"},
-						"expect",{"#11#",">=","4"},
 						"set",{punchtext = format("%s: %s! %s!",SN[64412],L["YOU"],format(L["%s Stacks"],"#11#"))},
 						"alert","punchwarn",
 					},
 					{
 						"expect",{"#4#","~=","&playerguid&"},
-						"expect",{"#11#",">=","4"},
 						"set",{punchtext = format("%s: #5#! %s!",SN[64412],format(L["%s Stacks"],"#11#")) },
 						"alert","punchwarn",
 					},

@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 328,
+		version = 329,
 		key = "northrendbeasts", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -84,7 +84,7 @@ do
 				counter = true,
 			},
 			impalewarn = {
-				varname = format(L["%s Warning"],SN[66331]).." "..format(L["%s Stacks"],">= 3"),
+				varname = format(L["%s Warning"],SN[66331]),
 				type = "simple",
 				text = "<impaletext>",
 				time = 3,
@@ -387,6 +387,14 @@ do
 				execute = {
 					{
 						"alert","impalecd",
+						"expect",{"#4#","==","&playerguid&"},
+						"set",{impaletext = format("%s: %s!",SN[66331],L["YOU"])},
+						"alert","impalewarn",
+					},
+					{
+						"expect",{"#4#","~=","&playerguid&"},
+						"set",{impaletext = format("%s: #5#!",SN[66331])},
+						"alert","impalewarn",
 					},
 				},
 			},
@@ -403,13 +411,11 @@ do
 				execute = {
 					{
 						"expect",{"#4#","==","&playerguid&"},
-						"expect",{"#11#",">=","3"},
 						"set",{impaletext = format("%s: %s! %s!",SN[66331],L["YOU"],format(L["%s Stacks"],"#11#"))},
 						"alert","impalewarn",
 					},
 					{
 						"expect",{"#4#","~=","&playerguid&"},
-						"expect",{"#11#",">=","3"},
 						"set",{impaletext = format("%s: #5#! %s!",SN[66331],format(L["%s Stacks"],"#11#")) },
 						"alert","impalewarn",
 					},
