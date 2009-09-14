@@ -1376,7 +1376,7 @@ do
 			first_desc = {
 				type = "description",
 				order = 75,
-				name = L["You can send encounters to the entire raid or to a player. You can check versions by typing |cffffd200/dxe vc|r or by opening the version checker from the pane"],
+				name = format(L["You can send encounters to the entire raid or to a player. You can check versions by typing |cffffd200/dxe %s|r or by opening the version checker from the pane"],L["version"]),
 			},
 			raid_desc = {
 				type = "description",

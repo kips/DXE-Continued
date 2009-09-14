@@ -131,7 +131,8 @@ function module:SetupBroker()
 end
 
 SLASH_DXE1 = "/dxe"
-SlashCmdList.DXE = function() if not addon then module:Load(CORE_ADDON) end end
+DXE_SLASH_HANDLER = function(msg) if not addon then module:Load(CORE_ADDON) end end
+SlashCmdList.DXE = function(msg) DXE_SLASH_HANDLER(msg) end
 
 module:SetScript("OnEvent",function(self,event,...) self[event](self,...) end)
 module:RegisterEvent("PLAYER_LOGIN")

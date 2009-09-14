@@ -72,7 +72,7 @@ local defaults = {
 
 local addon = LibStub("AceAddon-3.0"):NewAddon("DXE","AceEvent-3.0","AceTimer-3.0","AceConsole-3.0","AceComm-3.0","AceSerializer-3.0")
 _G.DXE = addon
-addon.version = 366
+addon.version = 367
 addon:SetDefaultModuleState(false)
 addon.callbacks = LibStub("CallbackHandler-1.0"):New(addon)
 addon.defaults = defaults
@@ -832,6 +832,8 @@ function addon:OnInitialize()
 	self:CreatePane()
 	self:SkinPane()
 
+	self:SetupSlashCommands()
+
 	-- The default encounter
 	self:RegisterEncounter({key = "default", name = L["Default"], title = L["Default"]})
 	self:SetActiveEncounter("default")
@@ -865,6 +867,7 @@ function addon:OnInitialize()
 	self:AddMessageFilters()
 
 	self:SetEnabledState(pfl.Enabled)
+	self:Print(L["Loaded - Type |cffffff00/dxe|r for slash commands"])
 	self.OnInitialize = nil
 end
 
@@ -1885,44 +1888,33 @@ function addon:AddEncounterDefaults(data)
 	end
 end
 
---[[
-function addon:GetSlashOptions()
-	return {
-		type = "group",
-		name = L["Deus Vox Encounters"],
-		handler = self,
-		args = {
-			enable = {
-				type = "execute",
-				name = L["Enable"],
-				order = 100,
-				func = function() addon.db.profile.Enabled = true; self:Enable(); LibStub("AceConfigRegistry-3.0"):NotifyChange("DXE") end,
-			},
-			disable = {
-				type = "execute",
-				name = L["Disable"],
-				order = 200,
-				func = function() addon.db.profile.Enabled = false; self:Disable(); LibStub("AceConfigRegistry-3.0"):NotifyChange("DXE") end,
-			},
-			config = {
-				type = "execute",
-				name = L["Toggles the configuration"],
-				func = "ToggleConfig",
-				order = 300,
-			},
-			vc = {
-				type = "execute",
-				name = L["Show version check window"],
-				func = "VersionCheck",
-				order = 400,
-			},
-			proximity = {
-				type = "execute",
-				name = L["Show proximity window"],
-				func = "Proximity",
-				order = 500,
-			},
-		},
-	}
+function addon:SetupSlashCommands()
+	DXE_SLASH_HANDLER = function(msg)
+		local cmd = addon:GetArgs(msg)
+		if cmd then cmd = cmd:lower() end
+		if cmd == L["enable"] then
+			addon.db.profile.Enabled = true
+			addon:Enable()
+			local ACR = LibStub("AceConfigRegistry-3.0",true)
+			if ACR then ACR:NotifyChange("DXE") end
+		elseif cmd == L["disable"] then
+			addon.db.profile.Enabled = false
+			addon:Disable()
+			local ACR = LibStub("AceConfigRegistry-3.0",true)
+			if ACR then ACR:NotifyChange("DXE") end
+		elseif cmd == L["config"] then
+			addon:ToggleConfig()
+		elseif cmd == L["version"] then
+			addon:VersionCheck()
+		elseif cmd == L["proximity"] then
+			addon:Proximity()
+		else
+			ChatFrame1:AddMessage("|cff99ff33"..L["DXE Slash Commands"].."|r: |cffffff00/dxe|r |cffffd200<"..L["option"]..">|r")
+			ChatFrame1:AddMessage(" |cffffd200"..L["enable"].."|r - "..L["Enable addon"])
+			ChatFrame1:AddMessage(" |cffffd200"..L["disable"].."|r - "..L["Disable addon"])
+			ChatFrame1:AddMessage(" |cffffd200"..L["config"].."|r - "..L["Toggles configuration"])
+			ChatFrame1:AddMessage(" |cffffd200"..L["version"].."|r - "..L["Show version check window"])
+			ChatFrame1:AddMessage(" |cffffd200"..L["proximity"].."|r - "..L["Show proximity window"])
+		end
+	end
 end
-]]

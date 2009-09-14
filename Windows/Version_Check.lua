@@ -294,4 +294,3 @@ function addon:VersionCheck()
 	end
 end
 addon:RegisterWindow(L["Version Check"],function() addon:VersionCheck() end)
-
