@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 16,
+		version = 19,
 		key = "anubcoliseum", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -22,16 +22,27 @@ do
 				"alert","enragecd",
 				"alert","nerubiancd",
 				"scheduletimer",{"firenerubian",10},
-				"set",{nerubiantime = {5.5,46.5,loop = true}},
+				"set",{nerubiantime = 5.5},
 			},
 		},
 		userdata = {
 			burrowtime = {80,75,loop = false},
-			nerubiantime = {10.5,46.5,loop = false},
+			nerubiantime = 10.5,
 		},
 		timers = {
 			firenerubian = {
-				{"alert","nerubiancd"},
+				{
+					"set",{nerubiantime = 46.5},
+					"alert","nerubiancd",
+					"expect",{"&difficulty&",">=","3"},
+					"scheduletimer",{"firenerubian2",46},
+				},
+			},
+			firenerubian2 = {
+				{
+					"alert","nerubiancd",
+					"scheduletimer",{"firenerubian2",46},
+				},
 			},
 		},
 		alerts = {
@@ -233,9 +244,10 @@ do
 				execute = {
 					{
 						"quash","burrowcd",
+						"alert","leechingswarmwarn",
+						"expect",{"&difficulty&","<=","2"},
 						"quash","nerubiancd",
 						"canceltimer","firenerubian",
-						"alert","leechingswarmwarn",
 					},
 				},
 			},
@@ -249,11 +261,14 @@ do
 						"expect",{"#1#","find",L["burrows into the ground!$"]},
 						"alert","burrowdur",
 						"quash","slashcd",
+						"quash","nerubiancd",
+						"canceltimer","firenerubian2",
 					},
 					-- Emerges
 					{
 						"expect",{"#1#","find",L["emerges from the ground!$"]},
 						"alert","burrowcd",
+						"set",{nerubiantime = 5.5},
 						"alert","nerubiancd",
 						"scheduletimer",{"firenerubian",5},
 					},
