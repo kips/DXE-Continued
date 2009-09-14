@@ -40,5 +40,5 @@ Options\Options.lua
 Debug.lua
 Validator.lua
 Tests.lua
-#Encounters.xml
+Encounters.xml
 #@end-debug@

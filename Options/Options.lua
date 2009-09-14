@@ -37,6 +37,8 @@ local opts = {
 	},
 }
 
+module.opts = opts
+
 local opts_args = opts.args
 
 -- Minimap
@@ -1531,7 +1533,9 @@ local DEFAULT_WIDTH = 890
 local DEFAULT_HEIGHT = 650
 
 function module:OnInitialize()
+	--[===[@non-debug@
 	self:FillEncounters()
+	--@end-non-debug@]===]
 
 	opts_args.profile = LibStub("AceDBOptions-3.0"):GetOptionsTable(addon.db)
 	opts_args.profile.order = -10
