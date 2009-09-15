@@ -72,7 +72,7 @@ local defaults = {
 
 local addon = LibStub("AceAddon-3.0"):NewAddon("DXE","AceEvent-3.0","AceTimer-3.0","AceComm-3.0","AceSerializer-3.0")
 _G.DXE = addon
-addon.version = 367
+addon.version = 368
 addon:SetDefaultModuleState(false)
 addon.callbacks = LibStub("CallbackHandler-1.0"):New(addon)
 addon.defaults = defaults
@@ -1887,6 +1887,10 @@ function addon:AddEncounterDefaults(data)
 		end
 	end
 end
+
+---------------------------------------------
+-- SLASH COMMANDS
+---------------------------------------------
 
 function addon:SetupSlashCommands()
 	DXE_SLASH_HANDLER = function(msg)

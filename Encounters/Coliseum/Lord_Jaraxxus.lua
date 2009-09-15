@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 317,
+		version = 318,
 		key = "jaraxxus", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -149,6 +149,27 @@ do
 				color1 = "TAN",
 				icon = ST[67905],
 			},
+			kissselfdur = {
+				type = "centerpopup",
+				varname = format(L["%s on self"],SN[67907]),
+				text = format("%s: %s! %s!",SN[67907],L["YOU"],L["CAREFUL"]),
+				time = 15,
+				flashtime = 15,
+				color1 = "CYAN",
+				sound = "ALERT5",
+				flashscreen = true,
+				icon = ST[67907],
+			},
+			felinfernowarn = {
+				type = "simple",
+				varname = format(L["%s on self"],SN[68718]),
+				text = format("%s: %s! %s!",SN[68718],L["YOU"],L["MOVE AWAY"]),
+				time = 3,
+				sound = "ALERT7",
+				flashscreen = true,
+				icon = ST[68718],
+				throttle = 2,
+			},
 		},
 		arrows = {
 			flamearrow = {
@@ -292,6 +313,53 @@ do
 				execute = {
 					{
 						"alert","netherpowerwarn",
+					},
+				},
+			},
+			-- Mistress' Kiss (hard)
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellid = {
+					67906, -- 10 hard
+					67907, -- 25 hard
+				},
+				execute = {
+					{
+						"expect",{"#4#","==","&playerguid&"},
+						"alert","kissselfdur",
+					},
+				},
+			},
+			-- Mistress' Kiss removal (hard)
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_REMOVED",
+				spellid = {
+					67906, -- 10 hard
+					67907, -- 25 hard
+				},
+				execute = {
+					{
+						"expect",{"#4#","==","&playerguid&"},
+						"quash","kissselfdur",
+					},
+				},
+			},
+			-- Fel Inferno
+			{
+				type = "combatevent",
+				eventtype = "SPELL_DAMAGE",
+				spellid = {
+					68718, -- 25 hard
+					68716, -- 25 normal
+					68717, -- 10 hard
+					66496, -- 10 normal
+				},
+				execute = {
+					{
+						"expect",{"#4#","==","&playerguid&"},
+						"alert","felinfernowarn",
 					},
 				},
 			},
