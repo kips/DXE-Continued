@@ -72,7 +72,7 @@ local defaults = {
 
 local addon = LibStub("AceAddon-3.0"):NewAddon("DXE","AceEvent-3.0","AceTimer-3.0","AceComm-3.0","AceSerializer-3.0")
 _G.DXE = addon
-addon.version = 368
+addon.version = 369
 addon:SetDefaultModuleState(false)
 addon.callbacks = LibStub("CallbackHandler-1.0"):New(addon)
 addon.defaults = defaults
@@ -651,6 +651,7 @@ do
 		self:CancelTimer(ScanHandle,true)
 		-- Build trigger lists
 		local scan, yell = BuildTriggerLists()
+		self.TriggerZone = scan or yell
 		-- Start invokers
 		if scan then ScanHandle = self:ScheduleRepeatingTimer("ScanUpdate",2) end
 		if yell then self:RegisterEvent("CHAT_MSG_MONSTER_YELL") end
@@ -721,12 +722,9 @@ end
 ---------------------------------------------
 
 local forceBlockDisable
-addon.NPCNames = {}
 
 function addon:AddMessageFilters()
 	local OTHER_BOSS_MOD_PTN = "%*%*%*"
-
-	for _,name in pairs(gbl.L_NPC) do self.NPCNames[name] = true end
 
 	local RaidWarningFrame_OnEvent = RaidWarningFrame:GetScript("OnEvent")
 	RaidWarningFrame:SetScript("OnEvent", function(self,event,msg,...)
@@ -741,7 +739,7 @@ function addon:AddMessageFilters()
 	local RaidBossEmoteFrame_OnEvent = RaidBossEmoteFrame:GetScript("OnEvent")
 	RaidBossEmoteFrame:SetScript("OnEvent", function(self,event,msg,name,...)
 		if not forceBlockDisable and pfl.Misc.BlockBossEmoteFrame
-			and type(name) == "string" and addon.NPCNames[name] then
+			and type(name) == "string" and addon.TriggerZone then
 			-- Do nothing
 		else
 			return RaidBossEmoteFrame_OnEvent(self,event,msg,name,...)
@@ -762,7 +760,7 @@ function addon:AddMessageFilters()
 
 	local function RAID_BOSS_FILTER(self,event,msg,name)
 		if not forceBlockDisable and pfl.Misc.BlockBossEmoteMessages
-			and type(name) == "string" and addon.NPCNames[name] then
+			and type(name) == "string" and addon.TriggerZone then
 			return true
 		end
 	end
@@ -1296,7 +1294,6 @@ function addon:CreateHealthWatchers(Pane)
 			local name = UnitName(unit)
 			if name ~= UNKNOWN then
 				gbl.L_NPC[npcid] = name
-				addon.NPCNames[name] = true
 				self:SetTitle(name)
 			end
 		end
