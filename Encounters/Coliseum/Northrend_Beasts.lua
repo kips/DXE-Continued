@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 329,
+		version = 330,
 		key = "northrendbeasts", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -377,7 +377,7 @@ do
 			-- Impale - Gormok
 			{
 				type = "combatevent",
-				eventtype = "SPELL_CAST_SUCCESS",
+				eventtype = "SPELL_AURA_APPLIED",
 				spellid = {
 					67477,
 					66331,

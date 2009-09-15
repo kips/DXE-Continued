@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 300,
+		version = 301,
 		key = "algalon", 
 		zone = L["Ulduar"], 
 		name = L["Algalon the Observer"], 
@@ -134,7 +134,7 @@ do
 			-- Phase Punch
 			{
 				type = "combatevent",
-				eventtype = "SPELL_CAST_SUCCESS",
+				eventtype = "SPELL_AURA_APPLIED",
 				spellid = 64412,
 				execute = {
 					{
