@@ -511,6 +511,7 @@ end
 
 local numOnline = 0
 local numMembers = 0
+local prevGroupType = "NONE"
 local RosterHandle
 addon.GroupType = "NONE"
 function addon:RAID_ROSTER_UPDATE()
@@ -525,6 +526,12 @@ function addon:RAID_ROSTER_UPDATE()
 		tmpMembers = GetNumPartyMembers()
 		addon.GroupType = tmpMembers > 0 and "PARTY" or "NONE"
 	end
+
+	-- Switches to default if we leave a group
+	if prevGroupType ~= "NONE" and addon.GroupType == "NONE" then
+		self:SetActiveEncounter("default")
+	end
+	prevGroupType = addon.GroupType
 
 	if not RosterHandle and tmpMembers > 0 then
 		-- Refresh roster tables every half minute to detect offline players

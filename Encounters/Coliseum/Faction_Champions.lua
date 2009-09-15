@@ -249,12 +249,21 @@ do
 				type = "combatevent",
 				eventtype = "SPELL_INTERRUPT",
 				execute = {
+					-- This is terribly inefficient
 					{
 						"expect",{"&npcid|#4#& #10#","==",NID_WARLOCK.." 68145"},
 						"quash","hellfirewarn",
 					},
 					{
 						"expect",{"&npcid|#4#& #10#","==",NID_WARLOCK.." 65816"},
+						"quash","hellfirewarn",
+					},
+					{
+						"expect",{"&npcid|#4#& #10#","==",NID_WARLOCK.." 68147"},
+						"quash","hellfirewarn",
+					},
+					{
+						"expect",{"&npcid|#4#& #10#","==",NID_WARLOCK.." 68146"},
 						"quash","hellfirewarn",
 					},
 				},
