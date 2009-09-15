@@ -134,11 +134,21 @@ do
 			-- Phase Punch
 			{
 				type = "combatevent",
-				eventtype = "SPELL_AURA_APPLIED",
+				eventtype = "SPELL_CAST_SUCCESS",
 				spellid = 64412,
 				execute = {
 					{
 						"alert","punchcd",
+					},
+				},
+			},
+			-- Phase Punch application
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellid = 64412,
+				execute = {
+					{
 						"expect",{"#4#","==","&playerguid&"},
 						"set",{punchtext = format("%s: %s!",SN[64412],L["YOU"])},
 						"alert","punchwarn",

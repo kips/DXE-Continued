@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 300,
+		version = 301,
 		key = "thorim", 
 		zone = L["Ulduar"], 
 		name = L["Thorim"], 
@@ -177,6 +177,14 @@ do
 						"quash","strikecd",
 						"alert","strikecd",
 					},
+				},
+			},
+			-- Unbalancing Strike application
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellid = 62130,
+				execute = {
 					{
 						"expect",{"#4#","==","&playerguid&"},
 						"set",{striketext = format("%s: %s!",SN[62130],L["YOU"])},

@@ -377,7 +377,7 @@ do
 			-- Impale - Gormok
 			{
 				type = "combatevent",
-				eventtype = "SPELL_AURA_APPLIED",
+				eventtype = "SPELL_CAST_SUCCESS",
 				spellid = {
 					67477,
 					66331,
@@ -387,6 +387,21 @@ do
 				execute = {
 					{
 						"alert","impalecd",
+					},
+				},
+			},
+			-- Impale - Gormok application
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellid = {
+					67477,
+					66331,
+					67478, -- 10 hard
+					67479, -- 25 hard
+				},
+				execute = {
+					{
 						"expect",{"#4#","==","&playerguid&"},
 						"set",{impaletext = format("%s: %s!",SN[66331],L["YOU"])},
 						"alert","impalewarn",

@@ -52,7 +52,7 @@ do
 
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 4,
+		version = 5,
 		key = "factionchampions", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -232,7 +232,12 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_SUCCESS",
-				spellid = {65816,68145},
+				spellid = {
+					65816,
+					68145,
+					68147,
+					68146,
+				},
 				execute = {
 					{
 						"alert","hellfirewarn",

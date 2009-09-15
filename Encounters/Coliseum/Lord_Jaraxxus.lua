@@ -168,7 +168,7 @@ do
 				sound = "ALERT7",
 				flashscreen = true,
 				icon = ST[68718],
-				throttle = 2,
+				throttle = 3,
 			},
 		},
 		arrows = {
