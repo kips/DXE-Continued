@@ -10,7 +10,7 @@ local format = string.format
 local DEAD = DEAD:upper()
 
 function HealthWatcher:New(parent)
-	local hw = CreateFrame("Frame",nil,parent)
+	local hw = CreateFrame("Button",nil,parent)
 	-- Embed
 	for k,v in pairs(prototype) do hw[k] = v end
 	hw.events = {}
