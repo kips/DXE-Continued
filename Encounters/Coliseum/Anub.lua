@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 21,
+		version = 22,
 		key = "anubcoliseum", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -331,6 +331,23 @@ do
 					{
 						"expect",{"<leeching>","==","1"},
 						"alert","coldcd",
+					},
+				},
+			},
+			-- Penetrating Cold self
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellid = {
+					68509, -- 10 normal
+					66013, -- 10 hard
+					67700, -- 25 normal
+					68510, -- 25 hard
+				},
+				execute = {
+					{
+						"expect",{"#4#","==","&playerguid&"},
+						"alert","coldselfwarn",
 					},
 				},
 			},
