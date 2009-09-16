@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 20,
+		version = 21,
 		key = "anubcoliseum", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -28,6 +28,7 @@ do
 		userdata = {
 			burrowtime = {80,75,loop = false},
 			nerubiantime = 10.5,
+			leeching = 0,
 		},
 		timers = {
 			firenerubian = {
@@ -152,6 +153,23 @@ do
 				color1 = "YELLOW",
 				icon = ST[66012],
 			},
+			coldcd = {
+				varname = format(L["%s Cooldown"],SN[68509]),
+				type = "dropdown",
+				time = 16,
+				flashtime = 5,
+				text = format(L["%s Cooldown"],SN[68509]),
+				color1 = "TURQUOISE",
+				icon = ST[68509],
+			},
+			coldselfwarn = {
+				varname = format(L["%s on self"],SN[68509]),
+				type = "simple",
+				time = 3,
+				text = format("%s: %s!",SN[68509],L["YOU"]),
+				flashscreen = true,
+				icon = ST[68509],
+			},
 		},
 		arrows = {
 			pursuedarrow = {
@@ -245,6 +263,7 @@ do
 					{
 						"quash","burrowcd",
 						"alert","leechingswarmwarn",
+						"set",{leeching = 1},
 						"expect",{"&difficulty&","<=","2"},
 						"quash","nerubiancd",
 						"canceltimer","firenerubian",
@@ -295,6 +314,23 @@ do
 					{
 						"expect",{"#4#","~=","&playerguid&"},
 						"alert","slashother",
+					},
+				},
+			},
+			-- Penetrating Cold
+			{
+				type = "combatevent",
+				eventtype = "SPELL_CAST_SUCCESS",
+				spellid = {
+					68509, -- 10 normal
+					66013, -- 10 hard
+					67700, -- 25 normal
+					68510, -- 25 hard
+				},
+				execute = {
+					{
+						"expect",{"<leeching>","==","1"},
+						"alert","coldcd",
 					},
 				},
 			},
