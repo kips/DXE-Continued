@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 19,
+		version = 20,
 		key = "anubcoliseum", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -277,12 +277,22 @@ do
 			-- Freezing Slash
 			{
 				type = "combatevent",
-				eventtype = "SPELL_AURA_APPLIED",
+				eventtype = "SPELL_CAST_SUCCESS",
 				spellid = 66012,
 				execute = {
 					{
 						"quash","slashcd",
 						"alert","slashcd",
+					},
+				},
+			},
+			-- Freezing Slash application
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellid = 66012,
+				execute = {
+					{
 						"expect",{"#4#","~=","&playerguid&"},
 						"alert","slashother",
 					},
