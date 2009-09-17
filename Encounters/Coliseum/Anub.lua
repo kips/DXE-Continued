@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 22,
+		version = 24,
 		key = "anubcoliseum", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -168,6 +168,16 @@ do
 				time = 3,
 				text = format("%s: %s!",SN[68509],L["YOU"]),
 				flashscreen = true,
+				sound = "ALERT9",
+				icon = ST[68509],
+			},
+			coldwarn = {
+				varname = format(L["%s Warning"],SN[68509]),
+				type = "simple",
+				time = 3,
+				text = format(L["%s Casted"],SN[68509]),
+				color1 = "MAGENTA",
+				sound = "ALERT2",
 				icon = ST[68509],
 			},
 		},
@@ -331,6 +341,7 @@ do
 					{
 						"expect",{"<leeching>","==","1"},
 						"alert","coldcd",
+						"alert","coldwarn",
 					},
 				},
 			},
