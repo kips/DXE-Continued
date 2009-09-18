@@ -1900,21 +1900,21 @@ end
 function addon:SetupSlashCommands()
 	DXE_SLASH_HANDLER = function(msg)
 		local cmd = msg:match("[^ ]*"):lower()
-		if cmd == L["enable"] then
+		if cmd == L["enable"]:lower() then
 			addon.db.profile.Enabled = true
 			addon:Enable()
 			local ACR = LibStub("AceConfigRegistry-3.0",true)
 			if ACR then ACR:NotifyChange("DXE") end
-		elseif cmd == L["disable"] then
+		elseif cmd == L["disable"]:lower() then
 			addon.db.profile.Enabled = false
 			addon:Disable()
 			local ACR = LibStub("AceConfigRegistry-3.0",true)
 			if ACR then ACR:NotifyChange("DXE") end
-		elseif cmd == L["config"] then
+		elseif cmd == L["config"]:lower() then
 			addon:ToggleConfig()
-		elseif cmd == L["version"] then
+		elseif cmd == L["version"]:lower() then
 			addon:VersionCheck()
-		elseif cmd == L["proximity"] then
+		elseif cmd == L["proximity"]:lower() then
 			addon:Proximity()
 		else
 			ChatFrame1:AddMessage("|cff99ff33"..L["DXE Slash Commands"].."|r: |cffffff00/dxe|r |cffffd200<"..L["option"]..">|r")
