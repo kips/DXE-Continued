@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 302,
+		version = 303,
 		key = "yoggsaron", 
 		zone = L["Ulduar"], 
 		name = L["Yogg-Saron"], 
@@ -303,7 +303,7 @@ do
 						"quash","inducewarn",
 
 						"expect",{"&timeleft|weakeneddur&",">","&timeleft|crushertentaclespawn&"},
-						"set",{crushertime = "&timeleft|weakeneddur|1&"},
+						"set",{crushertime = "&timeleft|weakeneddur|5&"},
 						"quash","crushertentaclespawn",
 						"alert","crushertentaclespawn",
 					},
