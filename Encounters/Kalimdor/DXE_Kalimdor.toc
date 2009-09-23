@@ -1,0 +1,12 @@
+## Interface: 30200
+## Title: DXE |cff99ff33Kalimdor|r
+## Notes: Deus Vox Encounters |cff99ff33Kalimdor|r
+## Author: Kollektiv
+## LoadOnDemand: 1
+## Dependencies: DXE
+## X-DXE-Zone: Onyxia's Lair
+## X-DXE-Category: Kalimdor
+
+Locales.lua
+
+Onyxia.lua
