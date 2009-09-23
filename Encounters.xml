@@ -46,4 +46,6 @@
 <Script file="Encounters\Coliseum\Northrend_Beasts.lua"/>
 <Script file="Encounters\Coliseum\Twin_Valkyr.lua"/>
 
+<Script file="Encounters\Kalimdor\Onyxia.lua"/>
+
 </Ui>
