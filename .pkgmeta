@@ -64,3 +64,4 @@ move-folders:
     DXE/Encounters/Naxxramas: DXE_Naxxramas
     DXE/Encounters/Northrend: DXE_Northrend
     DXE/Encounters/Coliseum: DXE_Coliseum
+    DXE/Encounters/Kalimdor: DXE_Kalimdor

@@ -17,8 +17,8 @@ do
 			combatstop = true,
 		},
 		userdata = {
-			meteortime = {28,47,loop = false},
-			breathtime = {8,47,loop = false},
+			meteortime = {28,47,loop = false}, -- recheck
+			breathtime = {8,47,loop = false}, -- recheck
 		},
 		onstart = {
 			{

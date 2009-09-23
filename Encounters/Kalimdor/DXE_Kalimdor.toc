@@ -4,8 +4,8 @@
 ## Author: Kollektiv
 ## LoadOnDemand: 1
 ## Dependencies: DXE
-## X-DXE-Zone: Onyxia's Lair
 ## X-DXE-Category: Kalimdor
+## X-DXE-Zone: Onyxia's Lair
 
 Locales.lua
 
