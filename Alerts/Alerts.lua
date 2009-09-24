@@ -570,8 +570,9 @@ end
 ---------------------------------------
 
 local SM = LibStub("LibSharedMedia-3.0")
+local Sounds = addon.Media.Sounds
 local function GetMedia(sound,c1,c2)
-	return SM:Fetch("sound",sound),Colors[c1],Colors[c2]
+	return Sounds:GetFile(sound),Colors[c1],Colors[c2]
 end
 
 ---------------------------------------

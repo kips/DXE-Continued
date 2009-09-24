@@ -10,7 +10,6 @@ local gmatch,match = string.gmatch,string.match
 local assert,type,select = assert,type,select
 local select,concat,wipe = select,table.concat,wipe
 
-local Sounds = addon.Media.Sounds
 local Colors = addon.Media.Colors
 local conditions = addon.Invoker:GetConditions()
 local RepFuncs = addon.Invoker:GetRepFuncs()
@@ -368,7 +367,7 @@ local function validateAlert(data,info,errlvl,...)
 			if k == "type" and not alertTypeValues[info[k]] then
 				err(": expected simple, dropdown, or centerpopup - got '"..info[k].."'",errlvl,k,...)
 			-- check sounds
-			elseif k == "sound" and not Sounds[info[k]] then
+			elseif k == "sound" and not info[k]:find("ALERT%d+") then
 				err(": unknown sound '"..info[k].."'",errlvl,k,...)
 			-- check colors
 			elseif (k == "color1" or k == "color2") and not Colors[info[k]] then
@@ -409,7 +408,7 @@ local function validateArrow(data,info,errlvl,...)
 				err(": expected AWAY or TOWARD - got '"..info[k].."'",errlvl,k,...)
 			elseif k == "unit" then
 				validateReplaces(data,info[k],errlvl,k,...)
-			elseif k == "sound" and not Sounds[info[k]] then
+			elseif k == "sound" and not info[k]:find("ALERT%d+") then
 				err(": unknown sound '"..info[k].."'",errlvl,k,...)
 			end
 		end

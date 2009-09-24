@@ -18,6 +18,7 @@ do
 	local name_to_unit = addon.Roster.name_to_unit
 	local blend = addon.util.blend
 	local CN = addon.CN
+	local Sounds = addon.Media.Sounds
 
 	local GetPlayerFacing = GetPlayerFacing
 	local UnitIsVisible = UnitIsVisible
@@ -117,7 +118,7 @@ do
 	-- @param action a string == "TOWARD" or "AWAY"
 	function prototype:SetTarget(unit,persist,action,msg,spell,sound,fixed)
 		-- Factor in mute all toggle from Alerts
-		if sound and not addon.Alerts.db.profile.DisableSounds then PlaySoundFile(SM:Fetch("sound",sound)) end
+		if sound and not addon.Alerts.db.profile.DisableSounds then PlaySoundFile(Sounds:GetFile(sound)) end
 		UIFrameFadeRemoveFrame(self)
 		self.action = action
 		self.unit = unit

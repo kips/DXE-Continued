@@ -63,6 +63,19 @@ local defaults = {
 			ClassFilter = {['*'] = true},
 			Invert = false,
 		},
+		Sounds = {
+			ALERT1 = "Bell Toll Alliance",
+			ALERT2 = "Bell Toll Horde",
+			ALERT3 = "Low Mana",
+			ALERT4 = "Low Health",
+			ALERT5 = "Zing Alarm",
+			ALERT6 = "Wobble",
+			ALERT7 = "Bottle",
+			ALERT8 = "Lift Me",
+			ALERT9 = "Neo Beep",
+			ALERT10 = "PvP Flag Taken",
+			ALERT11 = "Bad Press",
+		},
 	},
 }
 
@@ -72,7 +85,7 @@ local defaults = {
 
 local addon = LibStub("AceAddon-3.0"):NewAddon("DXE","AceEvent-3.0","AceTimer-3.0","AceComm-3.0","AceSerializer-3.0")
 _G.DXE = addon
-addon.version = 374
+addon.version = 375
 addon:SetDefaultModuleState(false)
 addon.callbacks = LibStub("CallbackHandler-1.0"):New(addon)
 addon.defaults = defaults
@@ -1864,15 +1877,20 @@ local OutputInfos = {
 
 addon.OutputInfos = OutputInfos
 
-local Filters = {
-	sound = function(str)
-		return str:find("^ALERT%d+$") and "DXE "..str or str
-	end
-}
-
 function addon:AddEncounterDefaults(data)
 	local defaults = {}
 	self.defaults.profile.Encounters[data.key] = defaults
+
+	------------------------------------------------------------
+	-- Sound upgrading from versions < 375
+	if pfl.Encounters[data.key] then
+		for var,info in pairs(pfl.Encounters[data.key]) do
+			if info.sound and info.sound:find("^DXE ALERT%d+") then
+				info.sound = (info.sound:gsub("DXE ",""))
+			end
+		end
+	end
+	------------------------------------------------------------
 	
 	for outputType,outputInfo in pairs(OutputInfos) do
 		local outputData = data[outputType]
@@ -1882,11 +1900,7 @@ function addon:AddEncounterDefaults(data)
 				-- Add setting defaults
 				defaults[var].enabled = outputInfo.defaultEnabled
 				for k,varDefault in pairs(OutputInfos[outputType].defaults) do
-					if Filters[k] then
-						defaults[var][k] = info[k] and Filters[k](info[k]) or varDefault
-					else
-						defaults[var][k] = info[k] or varDefault
-					end
+					defaults[var][k] = info[k] or varDefault
 				end
 			end
 		end

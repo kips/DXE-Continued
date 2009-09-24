@@ -5,6 +5,21 @@ local Media = {}
 addon.Media = Media
 
 -------------------------
+-- DB
+-------------------------
+
+local pfl
+local function RefreshProfile(db) 
+	pfl = db.profile 
+	addon:NotifyBarTextureChanged(pfl.Globals.BarTexture)
+	addon:NotifyFontChanged(pfl.Globals.Font)
+	addon:NotifyBorderChanged(pfl.Globals.Border)
+	addon:NotifyBorderColorChanged(unpack(pfl.Globals.BorderColor))
+	addon:NotifyBackgroundColorChanged(unpack(pfl.Globals.BackgroundColor))
+end
+addon:AddToRefreshProfile(RefreshProfile)
+
+-------------------------
 -- Colors
 -------------------------
 
@@ -53,21 +68,28 @@ end
 -------------------------
 
 do
-	local Sounds = {
-		ALERT1 = "Sound\\Doodad\\BellTollAlliance.wav",
-		ALERT2 = "Sound\\Doodad\\BellTollHorde.wav",
-		ALERT3 = "Interface\\AddOns\\DXE\\Sounds\\LowMana.mp3",
-		ALERT4 = "Interface\\AddOns\\DXE\\Sounds\\LowHealth.mp3",
-		ALERT5 = "Interface\\AddOns\\DXE\\Sounds\\ZingAlarm.mp3",
-		ALERT6 = "Interface\\Addons\\DXE\\Sounds\\Wobble.mp3",
-		ALERT7 = "Interface\\AddOns\\DXE\\Sounds\\Bottle.mp3",
-		ALERT8 = "Interface\\AddOns\\DXE\\Sounds\\LiftMe.mp3",
-		ALERT9 = "Interface\\AddOns\\DXE\\Sounds\\NeoBeep.mp3",
-		ALERT10 = "Sound\\Spells\\PVPFlagTaken.wav",
-		ALERT11 = "Sound\\Spells\\SimonGame_Visual_BadPress.wav",
+	local Sounds = {}
+
+	local List = {
+		["Bell Toll Alliance"] = "Sound\\Doodad\\BellTollAlliance.wav",
+		["Bell Toll Horde"] = "Sound\\Doodad\\BellTollHorde.wav",
+		["Low Mana"] = "Interface\\AddOns\\DXE\\Sounds\\LowMana.mp3",
+		["Low Health"] = "Interface\\AddOns\\DXE\\Sounds\\LowHealth.mp3",
+		["Zing Alarm"] = "Interface\\AddOns\\DXE\\Sounds\\ZingAlarm.mp3",
+		["Wobble"] = "Interface\\Addons\\DXE\\Sounds\\Wobble.mp3",
+		["Bottle"] = "Interface\\AddOns\\DXE\\Sounds\\Bottle.mp3",
+		["Lift Me"] = "Interface\\AddOns\\DXE\\Sounds\\LiftMe.mp3",
+		["Neo Beep"] = "Interface\\AddOns\\DXE\\Sounds\\NeoBeep.mp3",
+		["PvP Flag Taken"] = "Sound\\Spells\\PVPFlagTaken.wav",
+		["Bad Press"] = "Sound\\Spells\\SimonGame_Visual_BadPress.wav",
 	}
+
+	function Sounds:GetFile(id) 
+		return id == "None" and "Interface\\Quiet.mp3" or SM:Fetch("sound",pfl.Sounds[id])
+	end
+
 	Media.Sounds = Sounds
-	for name,file in pairs(Sounds) do SM:Register("sound","DXE "..name,file) end
+	for name,file in pairs(List) do SM:Register("sound",name,file) end
 end
 
 -------------------------
@@ -85,17 +107,6 @@ end
 -------------------------
 local bgBackdrop = {bgFile = "Interface\\Tooltips\\UI-Tooltip-Background", insets = {left = 2, right = 2, top = 2, bottom = 2}}
 local borderBackdrop = {edgeSize = 8, insets = {left = 2, right = 2, top = 2, bottom = 2}}
-
-local pfl
-local function RefreshProfile(db) 
-	pfl = db.profile 
-	addon:NotifyBarTextureChanged(pfl.Globals.BarTexture)
-	addon:NotifyFontChanged(pfl.Globals.Font)
-	addon:NotifyBorderChanged(pfl.Globals.Border)
-	addon:NotifyBorderColorChanged(unpack(pfl.Globals.BorderColor))
-	addon:NotifyBackgroundColorChanged(unpack(pfl.Globals.BackgroundColor))
-end
-addon:AddToRefreshProfile(RefreshProfile)
 
 do
 	local reg = {}
