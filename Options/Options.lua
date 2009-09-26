@@ -880,8 +880,6 @@ local function InitializeOptions()
 			},
 		}
 
-		--bars_args.general_group = general_group
-
 		local font_group = {
 			type = "group",
 			name = L["Text"],
@@ -1301,30 +1299,6 @@ local function InitializeOptions()
 				},
 			},
 		}
-
-		--[[
-		do
-			local sounds_args = sounds_group.args
-
-			local sound_selection_group = {
-				type = "group",
-				name = L["Sound Selection"],
-				order = 500,
-				inline = true,
-				args = {
-					test_toggle = {
-						type = "toggle",
-						name = "jdfsl",
-						get = function() end,
-						set = function() end,
-						
-					},
-				},
-			}
-
-			sounds_args.sound_select_group = sound_selection_group
-		end
-		]]
 
 		alerts_args.sounds_group = sounds_group
 

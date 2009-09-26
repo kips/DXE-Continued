@@ -449,7 +449,7 @@ local function validateRaidIcons(data,raidicons,errlvl,...)
 	errlvl=(errlvl or 0)+1
 	for k,info in pairs(raidicons) do
 		validateVal(k,isstring,errlvl,...)
-		validateArrow(data,info,errlvl,k,...)
+		validateRaidIcon(data,info,errlvl,k,...)
 	end
 end
 
@@ -587,6 +587,11 @@ local function validate(data,errlvl,...)
 	-- Announces
 	if data.announces and util.tablesize(data.announces) > 0 then
 		validateAnnounces(data,data.announces,errlvl,"announces",...)
+	end
+
+	-- Raid Icons
+	if data.raidicons and util.tablesize(data.raidicons) > 0 then
+		validateRaidIcons(data,data.raidicons,errlvl,"raidicons",...)
 	end
 
 	-- Events
