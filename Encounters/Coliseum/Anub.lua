@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 24,
+		version = 25,
 		key = "anubcoliseum", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -13,7 +13,7 @@ do
 		},
 		onactivate = {
 			tracing = {34564},
-			tracerstart = true,
+			yell = L["^This place will serve as"],
 			combatstop = true,
 		},
 		onstart = {
