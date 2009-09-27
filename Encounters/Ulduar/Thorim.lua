@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 301,
+		version = 302,
 		key = "thorim", 
 		zone = L["Ulduar"], 
 		name = L["Thorim"], 
