@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 25,
+		version = 26,
 		key = "anubcoliseum", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -10,10 +10,10 @@ do
 			scan = {
 				34564, -- Anub
 			}, 
+			yell = L["^This place will serve as"], 
 		},
 		onactivate = {
 			tracing = {34564},
-			yell = L["^This place will serve as"],
 			combatstop = true,
 		},
 		onstart = {
@@ -23,12 +23,17 @@ do
 				"alert","nerubiancd",
 				"scheduletimer",{"firenerubian",10},
 				"set",{nerubiantime = 5.5},
+				"expect",{"&difficulty&",">=","3"},
+				"alert","shadowstrikecd",
+				"scheduletimer",{"fireshadowstrike","<striketime>"},
 			},
 		},
 		userdata = {
 			burrowtime = {80,75,loop = false},
 			nerubiantime = 10.5,
+			striketime = {30,120,30,110,30,loop = false}, -- Assumes two burrows
 			leeching = 0,
+			burrowed = 0,
 		},
 		timers = {
 			firenerubian = {
@@ -43,6 +48,12 @@ do
 				{
 					"alert","nerubiancd",
 					"scheduletimer",{"firenerubian2",46},
+				},
+			},
+			fireshadowstrike = {
+				{
+					"alert","shadowstrikecd",
+					"scheduletimer",{"fireshadowstrike","<striketime>"},
 				},
 			},
 		},
@@ -104,6 +115,15 @@ do
 				sound = "ALERT5",
 				icon = ST[66134],
 				throttle = 2,
+			},
+			shadowstrikecd = {
+				varname = format(L["%s Cooldown"],SN[66134]),
+				type = "dropdown", 
+				text = format(L["%s Cooldown"],SN[66134]),
+				time = 30,
+				flashtime = 10,
+				color1 = "VIOLET",
+				icon = ST[66135],
 			},
 			submergewarn = {
 				varname = format(L["%s Cast"],SN[67322]),
@@ -288,6 +308,7 @@ do
 					-- Burrows
 					{
 						"expect",{"#1#","find",L["burrows into the ground!$"]},
+						"set",{burrowed = 1},
 						"alert","burrowdur",
 						"quash","slashcd",
 						"quash","nerubiancd",
@@ -296,6 +317,7 @@ do
 					-- Emerges
 					{
 						"expect",{"#1#","find",L["emerges from the ground!$"]},
+						"set",{burrowed = 0},
 						"alert","burrowcd",
 						"set",{nerubiantime = 5.5},
 						"alert","nerubiancd",

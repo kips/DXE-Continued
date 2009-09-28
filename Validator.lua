@@ -290,7 +290,12 @@ local function validateCommandLine(data,type,info,errlvl,...)
 		end
 		local timer,time = info[1],info[2]
 		validateVal(timer,isstring,errlvl,type,...)
-		validateVal(time,isnumber,errlvl,type,...)
+		validateVal(time,isnumberstring,errlvl,type,...)
+		if _G.type(time) == "string" then
+			validateReplaces(data,time,errlvl,type,...)
+		elseif time < 0 then
+			err(": scheduling a timer < 0 '"..info[1].."'",errlvl,type,...)
+		end
 		if not data.timers or not data.timers[timer] then
 			err(": scheduling a non-existent timer '"..info[1].."'",errlvl,type,...)
 		end

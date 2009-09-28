@@ -467,6 +467,15 @@ do
 		-- Rescheduled Timers are overwritten
 		handlers.canceltimer(name)
 		Timers[name] = new()
+
+		-- time is a token
+		if type(time) == "string" then
+			time = tonumber(ReplaceTokens(time))
+		end
+
+		-- sanity check
+		if not time or time < 0 then return end
+
 		Timers[name].handle = module:ScheduleTimer("FireTimer",time,name)
 		local args = new()
 		-- Only need the first 7 (up to spellID)
