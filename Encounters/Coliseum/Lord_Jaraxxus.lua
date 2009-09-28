@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 318,
+		version = 319,
 		key = "jaraxxus", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -190,6 +190,13 @@ do
 				unit = "#5#",
 				icon = 7,
 			},
+			fleshmark = {
+				varname = SN[67051],
+				type = "FRIENDLY",
+				persist = 12,
+				unit = "#5#",
+				icon = 8,
+			},
 		},
 		announces = {
 			flamesay = {
@@ -240,6 +247,7 @@ do
 				execute = {
 					{
 						"alert","fleshcd",
+						"raidicon","fleshmark",
 					},
 					{
 						"expect",{"#4#","==","&playerguid&"},

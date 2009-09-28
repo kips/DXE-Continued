@@ -587,9 +587,6 @@ do
 	-- @ADD TO HANDLERS
 	handlers.raidicon = function(info)
 		local stgs = pfl.Encounters[key][info]
-		--@debug@
-		if not stgs then print(info) end
-		--@end-debug@
 		if addon:IsPromoted() and stgs.enabled then
 			local raidInfo = raidicons[info]
 			if not raidInfo then return end
