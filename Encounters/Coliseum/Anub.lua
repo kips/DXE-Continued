@@ -181,11 +181,12 @@ do
 				sound = "ALERT9",
 				icon = ST[68509],
 			},
-			coldwarn = {
-				varname = format(L["%s Warning"],SN[68509]),
-				type = "simple",
-				time = 3,
-				text = format(L["%s Casted"],SN[68509]),
+			colddur = {
+				varname = format(L["%s Duration"],SN[68509]),
+				type = "centerpopup",
+				time = 18,
+				flashtime = 18,
+				text = format(L["%s Duration"],SN[68509]),
 				color1 = "MAGENTA",
 				sound = "ALERT2",
 				icon = ST[68509],
@@ -342,7 +343,7 @@ do
 					{
 						"expect",{"<leeching>","==","1"},
 						"alert","coldcd",
-						"alert","coldwarn",
+						"alert","colddur",
 					},
 				},
 			},
