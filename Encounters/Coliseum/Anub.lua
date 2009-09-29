@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 27,
+		version = 28,
 		key = "anubcoliseum", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -125,16 +125,6 @@ do
 				color1 = "VIOLET",
 				icon = ST[66135],
 			},
-			submergewarn = {
-				varname = format(L["%s Cast"],SN[67322]),
-				type = "centerpopup",
-				text = format(L["%s Cast"],SN[67322]),
-				time = 2,
-				flashtime = 2,
-				color1 = "GREY",
-				icon = ST[67322],
-				throttle = 0.1,
-			},
 			leechingswarmwarn = {
 				varname = format(L["%s Cast"],SN[66118]),
 				type = "centerpopup",
@@ -212,17 +202,6 @@ do
 			},
 		},
 		events = {
-			-- Submerge
-			{
-				type = "combatevent",
-				eventtype = "SPELL_CAST_START",
-				spellid = 67322,
-				execute = {
-					{
-						"alert","submergewarn",
-					},
-				},
-			},
 			-- Shadow Strike (Hard Mode) - Only tracks up to 1
 			{
 				type = "combatevent",
