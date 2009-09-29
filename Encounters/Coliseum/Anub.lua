@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 26,
+		version = 27,
 		key = "anubcoliseum", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -23,7 +23,7 @@ do
 				"alert","nerubiancd",
 				"scheduletimer",{"firenerubian",10},
 				"set",{nerubiantime = 5.5},
-				"expect",{"&difficulty&",">=","3"},
+				"expect",{"&difficulty&","==","4"},
 				"alert","shadowstrikecd",
 				"scheduletimer",{"fireshadowstrike","<striketime>"},
 			},
