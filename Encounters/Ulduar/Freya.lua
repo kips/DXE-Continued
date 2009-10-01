@@ -2,7 +2,7 @@ do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 
 	local data = {
-		version = 297,
+		version = 298,
 		key = "freya", 
 		zone = L["Ulduar"], 
 		name = L["Freya"], 
@@ -23,7 +23,8 @@ do
 			combatstop = true,
 		},
 		userdata = {
-			spawntime = {10,60,loop=false}
+			spawntime = {10,60,loop=false},
+			tremortime = 28,
 		},
 		onstart = {
 			{
@@ -115,7 +116,7 @@ do
 				varname = format(L["%s Cooldown"],SN[62437]),
 				type = "dropdown",
 				text = format(L["%s Cooldown"],SN[62437]),
-				time = 28,
+				time = "<tremortime>",
 				flashtime = 5,
 				color1 = "TAN",
 				color2 = "TAN",
@@ -210,6 +211,7 @@ do
 					{
 						"quash","spawncd",
 						"alert","attunedwarn",
+						"set",{tremortime = 23},
 					},
 				},
 			},
