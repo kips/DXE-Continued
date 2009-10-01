@@ -85,7 +85,7 @@ local defaults = {
 
 local addon = LibStub("AceAddon-3.0"):NewAddon("DXE","AceEvent-3.0","AceTimer-3.0","AceComm-3.0","AceSerializer-3.0")
 _G.DXE = addon
-addon.version = 378
+addon.version = 379
 addon:SetDefaultModuleState(false)
 addon.callbacks = LibStub("CallbackHandler-1.0"):New(addon)
 addon.defaults = defaults
@@ -1885,8 +1885,13 @@ function addon:AddEncounterDefaults(data)
 	-- Sound upgrading from versions < 375
 	if pfl.Encounters[data.key] then
 		for var,info in pairs(pfl.Encounters[data.key]) do
-			if info.sound and info.sound:find("^DXE ALERT%d+") then
-				info.sound = (info.sound:gsub("DXE ",""))
+			if type(info) == "table" then
+				if info.sound and info.sound:find("^DXE ALERT%d+") then
+					info.sound = (info.sound:gsub("DXE ",""))
+				end
+			elseif type(info) == "boolean" then
+				-- It should never be a boolean
+				pfl.Encounters[data.key][var] = nil
 			end
 		end
 	end
