@@ -1,9 +1,9 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 1,
+		version = 2,
 		key = "onyxia", 
-		zone = L["Onyxia's Lair"], 
+		zone = L["Onyxia's Lair"],
 		category = L["Kalimdor"],
 		name = L["Onyxia"], 
 		triggers = {
@@ -38,13 +38,25 @@ do
 				color1 = "ORANGE",
 				icon = ST[68970],
 			},
+			deepbreathwarn = {
+				varname = format(L["%s Cast"],L["Deep Breath"]),
+				text = format(L["%s Cast"],L["Deep Breath"]).." "..L["MOVE"].."!",
+				type = "centerpopup",
+				time = 8,
+				flashtime = 8,
+				sound = "ALERT5",
+				color1 = "MAGENTA",
+				color2 = "YELLOW",
+				icon = ST[67328],
+				flashscreen = true,
+			},
 		},
 		events = {
 			-- Bellowing Roar
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
-				spellid = 18431,
+				spellid = 18431, -- 25
 				execute = {
 					{
 						"alert","bellowwarn",
@@ -55,10 +67,21 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
-				spellid = 68970,
+				spellid = 68970, -- 25
 				execute = {
 					{
 						"alert","breathwarn",
+					},
+				},
+			},
+			-- Deep Breath
+			{
+				type = "combatevent",
+				eventtype = "SPELL_CAST_START",
+				spellid = 18596, -- 25
+				execute = {
+					{
+						"alert","deepbreathwarn",
 					},
 				},
 			},
