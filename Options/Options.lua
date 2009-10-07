@@ -1367,6 +1367,35 @@ local function InitializeOptions()
 		}
 
 		alerts_args.flash_group = flash_group
+
+		local Arrows = addon.Arrows
+		local arrows_group = {
+			name = L["Arrows"],
+			type = "group",
+			order = 120,
+			get = function(info) return Arrows.db.profile[info[#info]] end,
+			set = function(info,v) Arrows.db.profile[info[#info]] = v; Arrows:RefreshArrows() end,
+			args = {
+				TestArrows = {
+					name = L["Test Arrows"],
+					type = "execute",
+					order = 1,
+					desc = L["Displays arrows and then rotates them for ten seconds"],
+					func = function() end,
+				},
+				Scale = {
+					name = L["Scale"],
+					desc = L["Adjust the scale of arrows"],
+					type = "range",
+					min = 0.3,
+					max = 2,
+					step = 0.1
+				},
+			},
+		}
+
+		alerts_args.arrows_group = arrows_group
+
 	end
 
 	---------------------------------------------

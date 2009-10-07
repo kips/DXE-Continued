@@ -1,6 +1,13 @@
+local defaults = {
+	profile = {
+		Scale = 1,
+	}
+}
+
 local addon = DXE
 local L = addon.L
 local SM = addon.SM
+local db,pfl
 
 local module = addon:NewModule("Arrows")
 addon.Arrows = module
@@ -192,7 +199,26 @@ end
 -- INITIALIZATION
 ---------------------------------------
 
+function module:RefreshArrows()
+	for i,arrow in ipairs(frames) do
+		arrow:SetScale(pfl.Scale)
+	end
+end
+
+function module:RefreshProfile()
+	pfl = db.profile
+	self:RefreshArrows()
+end
+
 function module:OnInitialize()
+	self.db = addon.db:RegisterNamespace("Arrows",defaults)
+	db = self.db
+	pfl = db.profile
+
+	db.RegisterCallback(self, "OnProfileChanged", "RefreshProfile")
+	db.RegisterCallback(self, "OnProfileCopied", "RefreshProfile")
+	db.RegisterCallback(self, "OnProfileReset", "RefreshProfile")
+
 	for i=1,3 do 
 		local arrow = CreateArrow(i)
 		local anchor = addon:CreateLockableFrame("ArrowsAnchor"..i,85,42,format("%s - %s",L["Arrows"],L["Anchor"].." "..i))
@@ -201,6 +227,8 @@ function module:OnInitialize()
 		arrow:SetPoint("CENTER",anchor,"CENTER")
 		frames[i] = arrow
 	end
+
+	self:RefreshArrows()
 end
 
 function module:OnDisable()
