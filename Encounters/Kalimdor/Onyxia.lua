@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 2,
+		version = 3,
 		key = "onyxia", 
 		zone = L["Onyxia's Lair"],
 		category = L["Kalimdor"],
@@ -76,11 +76,11 @@ do
 			},
 			-- Deep Breath
 			{
-				type = "combatevent",
-				eventtype = "SPELL_CAST_START",
-				spellid = 18596, -- 25
+				type = "event",
+				event = "EMOTE",
 				execute = {
 					{
+						"expect",{"#1#","find",L["deep breath"]},
 						"alert","deepbreathwarn",
 					},
 				},
