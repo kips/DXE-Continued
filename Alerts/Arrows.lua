@@ -15,6 +15,7 @@ addon.Arrows = module
 local frames = {}
 local units = {}
 local CreateArrow
+local testing
 
 ---------------------------------------
 -- PROTOTYPE

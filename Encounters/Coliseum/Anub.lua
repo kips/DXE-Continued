@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 28,
+		version = 29,
 		key = "anubcoliseum", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -23,15 +23,14 @@ do
 				"alert","nerubiancd",
 				"scheduletimer",{"firenerubian",10},
 				"set",{nerubiantime = 5.5},
-				"expect",{"&difficulty&","==","4"},
+				"expect",{"&difficulty&",">=","3"},
 				"alert","shadowstrikecd",
-				"scheduletimer",{"fireshadowstrike","<striketime>"},
+				"scheduletimer",{"fireshadowstrike",30},
 			},
 		},
 		userdata = {
 			burrowtime = {80,75,loop = false},
 			nerubiantime = 10.5,
-			striketime = {30,120,30,110,30,loop = false}, -- Assumes two burrows
 			leeching = 0,
 			burrowed = 0,
 		},
@@ -53,7 +52,7 @@ do
 			fireshadowstrike = {
 				{
 					"alert","shadowstrikecd",
-					"scheduletimer",{"fireshadowstrike","<striketime>"},
+					"scheduletimer",{"fireshadowstrike",30},
 				},
 			},
 		},
@@ -207,10 +206,13 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
-				spellid = 66134, -- 10m hard
+				spellid = 66134,
 				execute = {
 					{
 						"alert","shadowstrikewarn",
+						"quash","shadowstrikecd",
+						"alert","shadowstrikecd",
+						"scheduletimer",{"fireshadowstrike",30},
 					},
 				},
 			},
@@ -293,6 +295,8 @@ do
 						"quash","slashcd",
 						"quash","nerubiancd",
 						"canceltimer","firenerubian2",
+						"canceltimer","fireshadowstrike",
+						"quash","shadowstrikecd",
 					},
 					-- Emerges
 					{
@@ -302,6 +306,7 @@ do
 						"set",{nerubiantime = 5.5},
 						"alert","nerubiancd",
 						"scheduletimer",{"firenerubian",5},
+						"scheduletimer",{"fireshadowstrike",5},
 					},
 				},
 			},
