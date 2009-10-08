@@ -1380,8 +1380,12 @@ local function InitializeOptions()
 					name = L["Test Arrows"],
 					type = "execute",
 					order = 1,
-					desc = L["Displays arrows and then rotates them for ten seconds"],
-					func = function() end,
+					desc = L["Displays all arrows and then rotates them for ten seconds"],
+					func = function() 
+						for k,arrow in ipairs(addon.Arrows.frames) do
+							arrow:Test()
+						end
+					end,
 				},
 				Scale = {
 					name = L["Scale"],
@@ -1606,16 +1610,16 @@ local function InitializeOptions()
 					name = L["Reset"],
 					desc = L["Sets the selected sound label back to its default value"],
 					func = function() db.profile.Sounds[label] = addon.defaults.profile.Sounds[label] end,
-					order = 2.5,
+					order = 3
 				},
 				desc2 = {
 					type = "description",
 					name = "\n"..L["Now change the sound to what you want. Sounds can be tested by clicking on the speaker icons within the dropdown"].."\n",
-					order = 3,
+					order = 4,
 				},
 				choose = {
 					name = function() return format(L["Sound File for %s"],label) end,
-					order = 4,
+					order = 5,
 					type = "select",
 					get = function(info) return db.profile.Sounds[label] end,
 					set = function(info,v) db.profile.Sounds[label] = v end,

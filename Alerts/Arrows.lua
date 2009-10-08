@@ -15,7 +15,8 @@ addon.Arrows = module
 local frames = {}
 local units = {}
 local CreateArrow
-local testing
+
+module.frames = frames
 
 ---------------------------------------
 -- PROTOTYPE
@@ -164,6 +165,34 @@ do
 		fadeTable.finishedFunc = self.Hide
 		UIFrameFade(self,fadeTable)
 		self:SetScript("OnUpdate",nil)
+	end
+
+	local function Test_OnUpdate(self,elapsed)
+		self.elapsed = self.elapsed + elapsed
+		if self.elapsed > 10 then 
+			self:Destroy()
+		else
+			local angle = (GetTime()*3) % PI2
+
+			-- Simplified from Claidhaire's TomTom
+			local cell = floor(angle / PI2 * NUM_CELLS + 0.5) % NUM_CELLS
+			local col = (cell % NUM_COLUMNS) * CELL_WIDTH_PERC
+			local row = floor(cell / NUM_COLUMNS) * CELL_HEIGHT_PERC
+
+			self.t:SetTexCoord(col, col + CELL_WIDTH_PERC, row, row + CELL_HEIGHT_PERC)
+		end
+	end
+
+	function prototype:Test()
+		self.elapsed = 0
+		self.unit = ""
+		UIFrameFadeRemoveFrame(self)
+		self:SetAlpha(1)
+		self.t:SetVertexColor(0.66,0.66,0.66)
+		self.label:SetText("Testing")
+		self.label2:SetText("Test <10> Test")
+		self:SetScript("OnUpdate",Test_OnUpdate)
+		self:Show()
 	end
 
 	function CreateArrow(i)
