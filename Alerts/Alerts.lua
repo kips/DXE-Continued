@@ -27,6 +27,8 @@ local defaults = {
 		FlashAlpha = 0.6,
 		FlashDuration = 0.8,
 		FlashOscillations = 2,
+		ConstantClr = false,
+		GlobalColor = {1,0,0},
 		-- Bar
 		BarTextJustification = "CENTER",
 		BarFontSize = 10,
@@ -143,13 +145,18 @@ do
 
 	function module:FlashScreen(c) 
 		if pfl.DisableScreenFlash then return end
-		c = c or Colors.BLACK
+		if pfl.ConstantClr then
+			local r,g,b = unpack(pfl.GlobalColor)
+			flash:SetBackdropColor(r,g,b,pfl.FlashAlpha)
+		else
+			c = c or Colors.BLACK
+			flash:SetBackdropColor(c.r,c.g,c.b,pfl.FlashAlpha)
+		end
 		counter = 0
 		FLASH_DURATION = pfl.FlashDuration
 		PERIOD = FLASH_DURATION / pfl.FlashOscillations
 		AMP = PERIOD / 2
 		MULT = 1 / AMP
-		flash:SetBackdropColor(c.r,c.g,c.b,pfl.FlashAlpha)
 		flash:SetAlpha(0)
 		flash:Show()
 	end
