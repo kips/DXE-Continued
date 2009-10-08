@@ -1575,32 +1575,55 @@ local function InitializeOptions()
 	---------------------------------------------
 
 	do
-		local ord = 295
+		local soundids = {}
+
+		for k,v in pairs(addon.defaults.profile.Sounds) do
+			soundids[k] = k
+		end
+
+		local label = "ALERT1"
+
 		local sounds_group = {
 			type = "group",
 			name = L["Sounds"],
-			order = ord,
-			set = function(info,v) db.profile.Sounds[info[#info]] = v end,
-			get = function(info,v) return db.profile.Sounds[info[#info]] end,
-			args = {},
-		}
-
-		local sounds_args = sounds_group.args
-		do
-			local name = function(info) return info[#info] end
-			local n = addon.util.tablesize(addon.defaults.profile.Sounds)
-			local sounds = addon.SM:HashTable("sound")
-
-			for i=1,n do 
-				sounds_args["ALERT"..i] = {
-					name = name,
-					order = ord + i,
+			order = 295,
+			args = {
+				desc1 = {
+					type = "description",
+					name = L["You can change the sound labels (ALERT1, ALERT2, etc.) to any sound file in SharedMedia. First, select one to change"].."\n",
+					order = 1,
+				},
+				identifier = {
 					type = "select",
+					name = L["Sound Label"],
+					order = 2,
+					get = function() return label end,
+					set = function(info,v) label = v end,
+					values = soundids,
+				},
+				reset = {
+					type = "execute",
+					name = L["Reset"],
+					desc = L["Sets the selected sound label back to its default value"],
+					func = function() db.profile.Sounds[label] = addon.defaults.profile.Sounds[label] end,
+					order = 2.5,
+				},
+				desc2 = {
+					type = "description",
+					name = "\n"..L["Now change the sound to what you want. Sounds can be tested by clicking on the speaker icons within the dropdown"].."\n",
+					order = 3,
+				},
+				choose = {
+					name = function() return format(L["Sound File for %s"],label) end,
+					order = 4,
+					type = "select",
+					get = function(info) return db.profile.Sounds[label] end,
+					set = function(info,v) db.profile.Sounds[label] = v end,
 					dialogControl = "LSM30_Sound",
-					values = sounds,
-				}
-			end
-		end
+					values = addon.SM:HashTable("sound"),
+				},
+			},
+		}
 
 		opts_args.sounds_group = sounds_group
 	end
