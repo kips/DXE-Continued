@@ -172,7 +172,7 @@ do
 		if self.elapsed > 10 then 
 			self:Destroy()
 		else
-			local angle = (GetTime()*3) % PI2
+			local angle = (self.elapsed*3) % PI2
 
 			-- Simplified from Claidhaire's TomTom
 			local cell = floor(angle / PI2 * NUM_CELLS + 0.5) % NUM_CELLS
