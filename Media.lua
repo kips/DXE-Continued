@@ -58,7 +58,7 @@ do
 	L["INDIGO"] L["MAGENTA"] 	L["MIDGREY"] 	L["ORANGE"]
 	L["PEACH"] 	L["PINK"] 		L["PURPLE"] 	L["RED"]
 	L["TAN"] 	L["TEAL"] 		L["TURQUOISE"] L["VIOLET"]
-	L["WHITE"] 	L["YELLOW"] 
+	L["WHITE"] 	L["YELLOW"]
 
 	]]
 end

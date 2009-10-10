@@ -163,7 +163,7 @@ function module:OnStop()
 		self:UnregisterEvent(event)
 	end
 	self:ResetUserData()
-	Alerts:QuashAll()
+	Alerts:QuashByPattern("^invoker")
 	Arrows:RemoveAll()
 	RaidIcons:RemoveAll()
 	self:RemoveAllTimers()
@@ -427,9 +427,9 @@ do
 			if not time or time < 0 then return end
 			-- Pass in appropriate arguments
 			if alertInfo.type == "dropdown" then
-				Alerts:Dropdown(info,text,time,alertInfo.flashtime,stgs.sound,stgs.color1,stgs.color2,stgs.flashscreen,alertInfo.icon)
+				Alerts:Dropdown("invoker"..info,text,time,alertInfo.flashtime,stgs.sound,stgs.color1,stgs.color2,stgs.flashscreen,alertInfo.icon)
 			elseif alertInfo.type == "centerpopup" then
-				Alerts:CenterPopup(info,text,time,alertInfo.flashtime,stgs.sound,stgs.color1,stgs.color2,stgs.flashscreen,alertInfo.icon)
+				Alerts:CenterPopup("invoker"..info,text,time,alertInfo.flashtime,stgs.sound,stgs.color1,stgs.color2,stgs.flashscreen,alertInfo.icon)
 			elseif alertInfo.type == "simple" then
 				Alerts:Simple(text,time,stgs.sound,stgs.color1,stgs.flashscreen,alertInfo.icon)
 			end
@@ -438,7 +438,7 @@ do
 	end
 
 	handlers.quash = function(info)
-		Alerts:QuashByPattern(info)
+		Alerts:QuashByPattern("^invoker"..info)
 		return true
 	end
 end

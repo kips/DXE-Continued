@@ -1819,6 +1819,7 @@ function addon:SendRaidComm(commType,...)
 	assert(type(commType) == "string")
 	--@end-debug@
 	if addon.GroupType == "NONE" then return end
+	print("sending raid comm")
 	self:SendCommMessage("DXE",self:Serialize(commType,...),addon.GroupType)
 end
 

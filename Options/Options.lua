@@ -488,7 +488,7 @@ local function InitializeOptions()
 				for id,name in pairs(db.profile.Sounds) do
 					sounds[id] = id
 				end
-				sounds["None"] = "None"
+				sounds["None"] = L["None"]
 				return sounds
 			end
 		end
@@ -597,12 +597,12 @@ local function InitializeOptions()
 			local info_n_MINUS_4 = info_n - 4 -- type
 			local info_n_MINUS_2 = info_n - 2 -- key
 
-			local colors1 = {}
+			local colors = {}
 			local colors1simple = {}
 			local colors2 = {}
 			for k,c in pairs(addon.Media.Colors) do
 				local hex = ("|cff%02x%02x%02x%s|r"):format(c.r*255,c.g*255,c.b*255,L[k])
-				colors1[k] = hex
+				colors[k] = hex
 				colors1simple[k] = hex
 				colors2[k] = hex
 			end
@@ -614,7 +614,7 @@ local function InitializeOptions()
 				if EDB[key].alerts[var].type == "simple" then
 					return colors1simple
 				else
-					return colors1
+					return colors
 				end
 			end
 
@@ -1102,6 +1102,63 @@ local function InitializeOptions()
 		}
 
 		bars_args.center_group = center_group
+
+		do
+			local colors = {}
+			for k,c in pairs(addon.Media.Colors) do
+				local hex = ("|cff%02x%02x%02x%s|r"):format(c.r*255,c.g*255,c.b*255,L[k])
+				colors[k] = hex
+			end
+
+			local sounds = {}
+			for id,name in pairs(db.profile.Sounds) do sounds[id] = id end
+			sounds["None"] = L["None"]
+
+			local intro_desc = L["You can fire local or raid bars. Local bars are only seen by you. Raid bars are seen by you and raid members. Type |cffffff00/dxelb time text|r (local bar) or |cffffff00/dxerb time text|r (raid bar): |cffffff00time|r can be in the format |cffffd200minutes:seconds|r or |cffffd200seconds|r."]
+			local example1 = "/dxerb 15 Pulling in..."
+			local example2 = "/dxelb 6:00 Pizza Timer"
+
+			local custom_group = {
+				type = "group",
+				name = L["Custom Bars"],
+				order = 750,
+				args = {
+					intro_desc = {
+						type = "description",
+						name = intro_desc,
+						order = 1,
+					},
+					CustomLocalClr = {
+						order = 2,
+						type = "select",
+						name = L["Local Bar Color"],
+						desc = L["The color of local bars that you fire"],
+						values = colors,
+					},
+					CustomRaidClr = {
+						order = 3,
+						type = "select",
+						name = L["Raid Bar Color"],
+						desc = L["The color of broadcasted raid bars fired by you or a raid member"],
+						values = colors,
+					},
+					CustomSound = {
+						order = 4,
+						type = "select",
+						name = L["Sound"],
+						desc = L["The sound that plays when a custom bar is fired"],
+						values = sounds,
+					},
+					examples_desc = {
+						type = "description",
+						order = 5,
+						name = "\n"..L["Slash Command Examples"].."\n\n   "..example1.."\n   "..example2,
+					},
+				},
+			}
+
+			bars_args.custom_group = custom_group
+		end
 
 		local warning_group = {
 			type = "group",

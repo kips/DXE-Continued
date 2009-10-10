@@ -50,11 +50,16 @@ local defaults = {
 		DisableSounds = false,
 		HideIcons = false,
 		ShowBorder = true,
+		-- Custom Bars
+		CustomLocalClr = "TAN",
+		CustomRaidClr = "TAN",
+		CustomSound = "ALERT10",
 	}
 }
 
 local addon = DXE
 local L = addon.L
+local CN = addon.CN
 local AceTimer = LibStub("AceTimer-3.0")
 
 local Colors = addon.Media.Colors
@@ -403,7 +408,6 @@ end
 
 do
 	local gsub = string.gsub
-	local CN = addon.CN
 	local function colorname(prefix,word)
 		return prefix..CN[word]
 	end
@@ -669,6 +673,70 @@ function module:Simple(text, totalTime, sound, c1, flashscreen, icon)
 		local c = c1Data or Colors.WHITE
 		self:Pour(text,c.r,c.g,c.b,nil,nil,nil,nil,nil,icon)
 	end
+end
+
+---------------------------------------------
+-- CUSTOM BARS
+---------------------------------------------
+
+do
+	local tonumber = tonumber
+	local type = type
+
+	local function fire(time,text,icon,color)
+		if time > 15 then
+			module:Dropdown("custom"..text,text,time,15,pfl.CustomSound,color,nil,nil,icon)
+		else
+			module:CenterPopup("custom"..text,text,time,nil,pfl.CustomSound,color,nil,nil,icon)
+		end
+	end
+
+	local function parsetime(str)
+		local t = tonumber(str)
+		if t then return t
+		else
+			local m,s = str:trim():match("^(%d+):(%d+)$")
+			if m and s then
+				return (tonumber(m) * 60) + tonumber(s)
+			end
+		end
+		addon:Print(L["Invalid time. The form must be |cffffd200minutes:seconds|r or |cffffd200seconds|r (e.g. 1:30 or 90)"])
+	end
+
+	local function parsemsg(msg)
+		if type(msg) ~= "string" then addon:Print(L["Invalid bar format. The format is |cffffd200time text|r"]) return end
+		local time,text = msg:match("([%d:]+)%s+(.*)")
+		if not time or not text then addon:Print(L["Invalid bar format. The format is |cffffd200time text|r"]) return end
+		time = parsetime(time)
+		if not time then return end
+		return time,text
+	end
+
+	function SlashCmdList.DXEALERTLOCALBAR(msg)
+		local time,text = parsemsg(msg)
+		if not time or not text then return end
+		fire(time,L["YOU"]..": "..text,"Interface\\Icons\\INV_Misc_PocketWatch_02",pfl.CustomLocalClr)
+	end
+
+	SLASH_DXEALERTLOCALBAR1 = "/dxelb"
+
+	function SlashCmdList.DXEALERTRAIDBAR(msg)
+		if not UnitIsRaidOfficer("player") then DXE:Print(L["You need to be a raid officer"]) return end
+		local time,text = parsemsg(msg)
+		if not time or not text then return end
+		
+		fire(time,L["YOU"]..": "..text,"Interface\\Icons\\INV_Misc_PocketWatch_01",pfl.CustomRaidClr)
+		addon:SendRaidComm("AlertsRaidBar",time,CN[addon.PNAME]..": "..text,GetTime())
+	end
+
+	SLASH_DXEALERTRAIDBAR1 = "/dxerb"
+
+	function module:OnCommAlertsRaidBar(event,commType,sender,time,text,start)
+		local delay = GetTime() - start
+		fire(time - delay,text,"Interface\\Icons\\INV_Misc_PocketWatch_01",pfl.CustomRaidClr)
+	end
+
+	addon.RegisterCallback(module,"OnCommAlertsRaidBar")
 end
 
 ---------------------------------------------
