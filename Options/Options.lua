@@ -1114,7 +1114,8 @@ local function InitializeOptions()
 			for id,name in pairs(db.profile.Sounds) do sounds[id] = id end
 			sounds["None"] = L["None"]
 
-			local intro_desc = L["You can fire local or raid bars. Local bars are only seen by you. Raid bars are seen by you and raid members. Type |cffffff00/dxelb time text|r (local bar) or |cffffff00/dxerb time text|r (raid bar): |cffffff00time|r can be in the format |cffffd200minutes:seconds|r or |cffffd200seconds|r."]
+			local intro_desc = L["You can fire local or raid bars. Local bars are only seen by you. Raid bars are seen by you and raid members; You have to be a raid officer to fire raid bars"]
+			local howto_desc = L["Slash commands: |cffffff00/dxelb time text|r (local bar) or |cffffff00/dxerb time text|r (raid bar): |cffffff00time|r can be in the format |cffffd200minutes:seconds|r or |cffffd200seconds|r"]
 			local example1 = "/dxerb 15 Pulling in..."
 			local example2 = "/dxelb 6:00 Pizza Timer"
 
@@ -1149,10 +1150,15 @@ local function InitializeOptions()
 						desc = L["The sound that plays when a custom bar is fired"],
 						values = sounds,
 					},
+					howto_desc = {
+						type = "description",
+						name = "\n"..howto_desc,
+						order = 5,
+					},
 					examples_desc = {
 						type = "description",
-						order = 5,
-						name = "\n"..L["Slash Command Examples"].."\n\n   "..example1.."\n   "..example2,
+						order = 6,
+						name = "\n"..L["Examples"]..":\n\n   "..example1.."\n   "..example2,
 					},
 				},
 			}

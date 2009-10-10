@@ -1148,6 +1148,7 @@ do
 		control:SetHeight(size)
 		control:SetPoint("LEFT",buttons[#buttons] or self.Pane.timer,"RIGHT")
 		control:SetScript("OnClick",OnClick)
+		control:RegisterForClicks("AnyUp")
 		control:SetNormalTexture(normal)
 		control:SetHighlightTexture(highlight)
 		self:AddTooltipText(control,name,text)
@@ -1198,9 +1199,15 @@ function addon:CreatePane()
 	Pane.startStop = self:AddPaneButton(
 		PaneTextures.."Stop",
 		PaneTextures.."Stop",
-		function() self:StopEncounter() end,
+		function(self,button) 
+			if button == "LeftButton" then
+				addon:StopEncounter() 
+			elseif button == "RightButton" then
+				addon.Alerts:QuashByPattern("^custom")
+			end
+		end,
 		L["Stop"],
-		L["Stops the current encounter"]
+		L["|cffffff00Click|r stops the current encounter"].."\n"..L["|cffffff00Right-Click|r stops all custom bars"]
 	)
 	
 	-- Add Config control

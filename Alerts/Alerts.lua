@@ -680,9 +680,6 @@ end
 ---------------------------------------------
 
 do
-	local tonumber = tonumber
-	local type = type
-
 	local function fire(time,text,icon,color)
 		if time > 15 then
 			module:Dropdown("custom"..text,text,time,15,pfl.CustomSound,color,nil,nil,icon)
