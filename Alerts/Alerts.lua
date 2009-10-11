@@ -680,60 +680,62 @@ end
 ---------------------------------------------
 
 do
-	local function fire(time,text,icon,color)
-		if time > 15 then
-			module:Dropdown("custom"..text,text,time,15,pfl.CustomSound,color,nil,nil,icon)
-		else
-			module:CenterPopup("custom"..text,text,time,nil,pfl.CustomSound,color,nil,nil,icon)
+	local L_ICON = "Interface\\Icons\\INV_Misc_PocketWatch_02"
+	local R_ICON = "Interface\\Icons\\INV_Misc_PocketWatch_01"
+	local YOU_PREFIX = L["YOU"]..": "
+	local ID_PREFIX = "custom"
+	local MSG_PTN = "^([%d:]+)%s+(.*)"
+	local TIME_PTN = "^(%d+):(%d+)$"
+	local DROPDOWN_THRES = 15
+	local FORMAT_ERROR = L["Invalid input. Usage: |cffffd200%s time text|r"]
+	local TIME_ERROR = L["Invalid time. The format must be |cffffd200minutes:seconds|r or |cffffd200seconds|r (e.g. 1:30 or 90)"]
+	local OFFICER_ERROR = L["You need to be a raid officer"]
+	local COMMTYPE = "AlertsRaidBar"
+
+	local function fire(text,time,color,icon)
+		if time > DROPDOWN_THRES then module:Dropdown(ID_PREFIX..text,text,time,DROPDOWN_THRES,pfl.CustomSound,color,nil,nil,icon)
+		else module:CenterPopup(ID_PREFIX..text,text,time,nil,pfl.CustomSound,color,nil,nil,icon) end
+	end
+
+	local function parse(msg,slash)
+		if type(msg) ~= "string" then addon:Print(format(FORMAT_ERROR,slash)) return end
+		local time,text = msg:match(MSG_PTN)
+		if not time then addon:Print(format(FORMAT_ERROR,slash)) return end
+		local secs = tonumber(time)
+		if not secs then
+			local m,s = time:trim():match(TIME_PTN)
+			if m then secs = (tonumber(m)*60) + tonumber(s)
+			else addon:Print(TIME_ERROR) return end
+		end
+		return true,secs,text
+	end
+
+	local function LocalBarHandler(msg)
+		local success,time,text = parse(msg,"/dxelb")
+		if success then fire(YOU_PREFIX..text,time,pfl.CustomLocalClr,L_ICON) end
+	end
+
+	local function RaidBarHandler(msg)
+		if not UnitIsRaidOfficer("player") then addon:Print(OFFICER_ERROR) return end
+		local success,time,text = parse(msg,"/dxerb")
+		if success then
+			fire(YOU_PREFIX..text,time,pfl.CustomRaidClr,R_ICON)
+			addon:SendRaidComm(COMMTYPE,time,CN[addon.PNAME]..": "..text)
 		end
 	end
 
-	local function parsetime(str)
-		local t = tonumber(str)
-		if t then return t
-		else
-			local m,s = str:trim():match("^(%d+):(%d+)$")
-			if m and s then
-				return (tonumber(m) * 60) + tonumber(s)
-			end
-		end
-		addon:Print(L["Invalid time. The form must be |cffffd200minutes:seconds|r or |cffffd200seconds|r (e.g. 1:30 or 90)"])
+	module["OnComm"..COMMTYPE] = function(self,event,commType,sender,time,text)
+		if not UnitIsRaidOfficer(sender) then return end
+		fire(text,time,pfl.CustomRaidClr,R_ICON)
 	end
 
-	local function parsemsg(msg)
-		if type(msg) ~= "string" then addon:Print(L["Invalid bar format. The format is |cffffd200time text|r"]) return end
-		local time,text = msg:match("([%d:]+)%s+(.*)")
-		if not time or not text then addon:Print(L["Invalid bar format. The format is |cffffd200time text|r"]) return end
-		time = parsetime(time)
-		if not time then return end
-		return time,text
-	end
+	addon.RegisterCallback(module,"OnComm"..COMMTYPE)
 
-	function SlashCmdList.DXEALERTLOCALBAR(msg)
-		local time,text = parsemsg(msg)
-		if not time or not text then return end
-		fire(time,L["YOU"]..": "..text,"Interface\\Icons\\INV_Misc_PocketWatch_02",pfl.CustomLocalClr)
-	end
+	SlashCmdList.DXEALERTLOCALBAR = LocalBarHandler
+	SlashCmdList.DXEALERTRAIDBAR = RaidBarHandler
 
 	SLASH_DXEALERTLOCALBAR1 = "/dxelb"
-
-	function SlashCmdList.DXEALERTRAIDBAR(msg)
-		if not UnitIsRaidOfficer("player") then DXE:Print(L["You need to be a raid officer"]) return end
-		local time,text = parsemsg(msg)
-		if not time or not text then return end
-		
-		fire(time,L["YOU"]..": "..text,"Interface\\Icons\\INV_Misc_PocketWatch_01",pfl.CustomRaidClr)
-		addon:SendRaidComm("AlertsRaidBar",time,CN[addon.PNAME]..": "..text)
-	end
-
 	SLASH_DXEALERTRAIDBAR1 = "/dxerb"
-
-	function module:OnCommAlertsRaidBar(event,commType,sender,time,text)
-		if not UnitIsRaidOfficer(sender) then return end
-		fire(time,text,"Interface\\Icons\\INV_Misc_PocketWatch_01",pfl.CustomRaidClr)
-	end
-
-	addon.RegisterCallback(module,"OnCommAlertsRaidBar")
 end
 
 ---------------------------------------------
