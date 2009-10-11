@@ -85,7 +85,7 @@ local defaults = {
 
 local addon = LibStub("AceAddon-3.0"):NewAddon("DXE","AceEvent-3.0","AceTimer-3.0","AceComm-3.0","AceSerializer-3.0")
 _G.DXE = addon
-addon.version = 382
+addon.version = 383
 addon:SetDefaultModuleState(false)
 addon.callbacks = LibStub("CallbackHandler-1.0"):New(addon)
 addon.defaults = defaults
@@ -1826,7 +1826,6 @@ function addon:SendRaidComm(commType,...)
 	assert(type(commType) == "string")
 	--@end-debug@
 	if addon.GroupType == "NONE" then return end
-	print("sending raid comm")
 	self:SendCommMessage("DXE",self:Serialize(commType,...),addon.GroupType)
 end
 
