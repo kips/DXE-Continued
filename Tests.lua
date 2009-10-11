@@ -54,10 +54,10 @@ function addon:AlertsDouble()
 end
 
 
+]]
 function addon:TestArrowOnTarget()
 	addon.Arrows:AddTarget("target",10,"TOWARD","MOVE","Crash","None",false)
 end
-]]
 function addon:YOGGSQUEEZETEST()
 	self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_APPLIED",nil,nil,nil,"","Kruciel",nil,64125)
 end
