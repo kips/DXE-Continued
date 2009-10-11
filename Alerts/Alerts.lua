@@ -723,14 +723,13 @@ do
 		if not time or not text then return end
 		
 		fire(time,L["YOU"]..": "..text,"Interface\\Icons\\INV_Misc_PocketWatch_01",pfl.CustomRaidClr)
-		addon:SendRaidComm("AlertsRaidBar",time,CN[addon.PNAME]..": "..text,GetTime())
+		addon:SendRaidComm("AlertsRaidBar",time,CN[addon.PNAME]..": "..text)
 	end
 
 	SLASH_DXEALERTRAIDBAR1 = "/dxerb"
 
-	function module:OnCommAlertsRaidBar(event,commType,sender,time,text,start)
-		local delay = GetTime() - start
-		fire(time - delay,text,"Interface\\Icons\\INV_Misc_PocketWatch_01",pfl.CustomRaidClr)
+	function module:OnCommAlertsRaidBar(event,commType,sender,time,text)
+		fire(time,text,"Interface\\Icons\\INV_Misc_PocketWatch_01",pfl.CustomRaidClr)
 	end
 
 	addon.RegisterCallback(module,"OnCommAlertsRaidBar")
