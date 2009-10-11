@@ -729,6 +729,7 @@ do
 	SLASH_DXEALERTRAIDBAR1 = "/dxerb"
 
 	function module:OnCommAlertsRaidBar(event,commType,sender,time,text)
+		if not UnitIsRaidOfficer(sender) then return end
 		fire(time,text,"Interface\\Icons\\INV_Misc_PocketWatch_01",pfl.CustomRaidClr)
 	end
 
