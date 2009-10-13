@@ -18,6 +18,7 @@
 		tracing 				= {<name>,...,<name_n>}
 		proximitycheck 	= {"<token>",[10,11,18, or 28]}
 		raidicon 			= "<raidicon>"
+		removeraidicon    = "<token>"
 		arrow 				= "<arrow>"
 		removearrow 		= "<token>"
 		removeallarrows	= [BOOLEAN]
@@ -391,8 +392,6 @@ do
 		local stgs = pfl.Encounters[key][info]
 		if stgs.enabled then
 			local alertInfo = alerts[info]
-			-- Sanity check
-			if not alertInfo then return true end
 			-- Throttling
 			if alertInfo.throttle then
 				-- Initialize to 0 if non-existant
@@ -403,7 +402,7 @@ do
 					Throttles[info] = t
 				else
 					-- Failed throttle, exit out
-					return
+					return true
 				end
 			end
 			-- Replace text
@@ -424,7 +423,7 @@ do
 			debug("Alerts","id: %s text: %s time: %s flashtime: %s sound: %s color1: %s color2: %s",info,text,time,alertInfo.flashtime,stgs.sound,stgs.color1,stgs.color2)
 			--@end-debug@
 			-- Sanity check
-			if not time or time < 0 then return end
+			if not time or time < 0 then return true end
 			-- Pass in appropriate arguments
 			if alertInfo.type == "dropdown" then
 				Alerts:Dropdown("invoker"..info,text,time,alertInfo.flashtime,stgs.sound,stgs.color1,stgs.color2,stgs.flashscreen,alertInfo.icon)
@@ -474,7 +473,7 @@ do
 		end
 
 		-- sanity check
-		if not time or time < 0 then return end
+		if not time or time < 0 then return true end
 
 		Timers[name].handle = module:ScheduleTimer("FireTimer",time,name)
 		local args = new()
@@ -547,8 +546,9 @@ do
 		if stgs.enabled then 
 			local arrowInfo = arrows[info]
 			local unit = ReplaceTokens(arrowInfo.unit)
-			if not UnitExists(unit) then return end
-			Arrows:AddTarget(unit,arrowInfo.persist,arrowInfo.action,arrowInfo.msg,arrowInfo.spell,stgs.sound,arrowInfo.fixed)
+			if UnitExists(unit) then 
+				Arrows:AddTarget(unit,arrowInfo.persist,arrowInfo.action,arrowInfo.msg,arrowInfo.spell,stgs.sound,arrowInfo.fixed)
+			end
 		end
 		return true
 	end
@@ -589,12 +589,23 @@ do
 		local stgs = pfl.Encounters[key][info]
 		if addon:IsPromoted() and stgs.enabled then
 			local raidInfo = raidicons[info]
-			if not raidInfo then return end
-			if raidInfo.type == "FRIENDLY" then
-				local unit = ReplaceTokens(raidInfo.unit)
-				if not UnitExists(unit) then return end
-				RaidIcons:MarkFriendly(unit,stgs.icon,raidInfo.persist)
+			local unit = ReplaceTokens(raidInfo.unit)
+			if UnitExists(unit) then 
+				if raidInfo.type == "FRIENDLY" then
+					RaidIcons:MarkFriendly(unit,raidInfo.icon,raidInfo.persist) 
+				elseif raidInfo.type == "MULTIFRIENDLY" then
+					RaidIcons:MultiMarkFriendly(info,unit,raidInfo.icon,raidInfo.persist,raidInfo.reset)
+				end
 			end
+		end
+		return true
+	end
+
+	-- @ADD TO HANDLERS
+	handlers.removeraidicon = function(info)
+		local unit = ReplaceTokens(info)
+		if UnitExists(unit) then 
+			RaidIcons:RemoveIcon(unit) 
 		end
 		return true
 	end

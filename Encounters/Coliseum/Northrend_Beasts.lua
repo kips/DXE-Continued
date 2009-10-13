@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 332,
+		version = 333,
 		key = "northrendbeasts", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -328,7 +328,7 @@ do
 				type = "FRIENDLY",
 				persist = 8,
 				unit = "#5#",
-				icon = 7,
+				icon = 1,
 			},
 		},
 		timers = {

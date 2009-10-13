@@ -53,14 +53,44 @@ function addon:AlertsDouble()
 	self.Alerts:Dropdown("AlertTest2", "Bigger City Opening", 15, 10, "None", "BLUE")
 end
 
+function addon:MALADYTEST()
+	self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_APPLIED",nil,nil,nil,"","Takamuri",nil,63830)
+end
+
+function addon:PENCOLDTEST()
+	self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_APPLIED",nil,nil,nil,"","Takamuri",nil,68510)
+	self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_APPLIED",nil,nil,nil,"","Kollektiv",nil,68510)
+	self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_APPLIED",nil,nil,nil,"","Dralkan",nil,68510)
+	self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_APPLIED",nil,nil,nil,"","Thisdcapsme",nil,68510)
+	self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_APPLIED",nil,nil,nil,"","Mortalman",nil,68510)
+end
+
+function addon:PENCOLDTEST2()
+	self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_APPLIED",nil,nil,nil,"","Kollektiv",nil,68510)
+	self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_APPLIED",nil,nil,nil,"","Thisdcapsme",nil,68510)
+	self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_APPLIED",nil,nil,nil,"","Takamuri",nil,68510)
+	self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_APPLIED",nil,nil,nil,"","Keelem",nil,68510)
+	self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_APPLIED",nil,nil,nil,"","Structo",nil,68510)
+end
+
 
 ]]
+
+
+--[[
 function addon:TestArrowOnTarget()
 	addon.Arrows:AddTarget("target",10,"TOWARD","MOVE","Crash","None",false)
 end
 function addon:YOGGSQUEEZETEST()
 	self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_APPLIED",nil,nil,nil,"","Kruciel",nil,64125)
 end
+
+function addon:STRIKETEST()
+	self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_CAST_START",nil,nil,nil,nil,nil,nil,66134)
+end
+]]
+
+
 -- Northrend Molten/Acidic Spew test
 
 --[[

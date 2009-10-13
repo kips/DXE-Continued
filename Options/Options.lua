@@ -565,20 +565,19 @@ local function InitializeOptions()
 					},
 				},
 				raidicons = {
-					icon = {
-						type = "select",
-						name = L["Icon"],
+					desc = {
+						type = "description",
 						order = 100,
-						values = {
-							"1. "..L["Star"],
-							"2. "..L["Circle"],
-							"3. "..L["Diamond"],
-							"4. "..L["Triangle"],
-							"5. "..L["Moon"],
-							"6. "..L["Square"],
-							"7. "..L["Cross"],
-							"8. "..L["Skull"],
-						},
+						name = function(info)
+							local key,var = info[3],info[5]
+							local varData = EDB[key].raidicons[var]
+							local type = varData.type
+							if type == "FRIENDLY" then
+								return format(L["Uses |cffffd200Icon %s|r"],varData.icon)
+							elseif type == "MULTIFRIENDLY" then
+								return format(L["Uses |cffffd200Icon %s|r to |cffffd200Icon %s|r"],varData.icon,varData.icon + varData.total - 1)
+							end
+						end,
 					},
 				},
 				arrows = {
@@ -1475,6 +1474,50 @@ local function InitializeOptions()
 		}
 
 		alerts_args.arrows_group = arrows_group
+
+		local RaidIcons = addon.RaidIcons
+
+		local raidicons_group = {
+			type = "group",
+			name = L["Raid Icons"],
+			order = 121,
+			get = function(info) return RaidIcons.db.profile[tonumber(info[#info])] end,
+			set = function(info,v) RaidIcons.db.profile[tonumber(info[#info])] = v end,
+			args = {}
+		}
+
+		do
+			local raidicons_args = raidicons_group.args
+
+			local desc = {
+				type = "description",
+				name = L["Most encounters only use |cffffd200Icon 1|r and |cffffd200Icon 2|r. Additional icons are used for abilities that require multi-marking (e.g. Anub'arak's Penetrating Cold). If you change an icon, make sure all icons are different from one another"],
+				order = 0.5,
+			}
+
+			raidicons_args.desc = desc
+
+			local dropdown = {
+				type = "select",
+				name = function(info) return format(L["Icon %s"],info[#info]) end,
+				order = function(info) return tonumber(info[#info]) end,
+				width = "double",
+				values = {
+					"1. "..L["Star"],
+					"2. "..L["Circle"],
+					"3. "..L["Diamond"],
+					"4. "..L["Triangle"],
+					"5. "..L["Moon"],
+					"6. "..L["Square"],
+					"7. "..L["Cross"],
+					"8. "..L["Skull"],
+				},
+			}
+
+			for i=1,8 do raidicons_args[tostring(i)] = dropdown end
+		end
+
+		alerts_args.raidicons_group = raidicons_group
 
 	end
 

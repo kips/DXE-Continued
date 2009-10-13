@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 304,
+		version = 305,
 		key = "generalvezax", 
 		zone = L["Ulduar"], 
 		name = L["General Vezax"], 
@@ -160,14 +160,14 @@ do
 				type = "FRIENDLY",
 				persist = 5,
 				unit = "&tft_unitname&",
-				icon = 7,
+				icon = 2,
 			},
 			facelessmark = {
 				varname = SN[63276],
 				type = "FRIENDLY",
 				persist = 10,
 				unit = "#5#",
-				icon = 8,
+				icon = 1,
 			},
 		},
 		announces = {

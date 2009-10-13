@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 29,
+		version = 30,
 		key = "anubcoliseum", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -191,6 +191,24 @@ do
 				icon = ST[68509],
 			},
 		},
+		raidicons = {
+			coldmark = {
+				varname = SN[68509],
+				type = "MULTIFRIENDLY",
+				persist = 18,
+				reset = 3,
+				unit = "#5#",
+				icon = 2,
+				total = 5,
+			},
+			pursuemark = {
+				varname = SN[62374],
+				type = "FRIENDLY",
+				persist = 60,
+				unit = "#5#",
+				icon = 1,
+			},
+		},
 		arrows = {
 			pursuedarrow = {
 				varname = SN[62374],
@@ -234,6 +252,9 @@ do
 				spellid = 67574,
 				execute = {
 					{
+						"raidicon","pursuemark",
+					},
+					{
 						"expect",{"#4#","==","&playerguid&"},
 						"alert","pursueself",
 					},
@@ -250,6 +271,9 @@ do
 				eventtype = "SPELL_AURA_REMOVED",
 				spellid = 67574,
 				execute = {
+					{
+						"removeraidicon","#5#",
+					},
 					{
 						"expect",{"#4#","==","&playerguid&"},
 						"quash","pursueself",
@@ -363,6 +387,9 @@ do
 					68510, -- 25 hard
 				},
 				execute = {
+					{
+						"raidicon","coldmark",
+					},
 					{
 						"expect",{"#4#","==","&playerguid&"},
 						"alert","coldselfwarn",

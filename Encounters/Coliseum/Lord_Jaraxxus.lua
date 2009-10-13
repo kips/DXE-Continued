@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 319,
+		version = 320,
 		key = "jaraxxus", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -188,14 +188,14 @@ do
 				type = "FRIENDLY",
 				persist = 6,
 				unit = "#5#",
-				icon = 7,
+				icon = 2,
 			},
 			fleshmark = {
 				varname = SN[67051],
 				type = "FRIENDLY",
 				persist = 12,
 				unit = "#5#",
-				icon = 8,
+				icon = 1,
 			},
 		},
 		announces = {
@@ -270,6 +270,9 @@ do
 					67049, -- 25 normal
 				},
 				execute = {
+					{
+						"removeraidicon","#5#",
+					},
 					{
 						"expect",{"#4#","==","&playerguid&"},
 						"quash","fleshself",

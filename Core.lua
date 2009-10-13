@@ -85,7 +85,7 @@ local defaults = {
 
 local addon = LibStub("AceAddon-3.0"):NewAddon("DXE","AceEvent-3.0","AceTimer-3.0","AceComm-3.0","AceSerializer-3.0")
 _G.DXE = addon
-addon.version = 384
+addon.version = 385
 addon:SetDefaultModuleState(false)
 addon.callbacks = LibStub("CallbackHandler-1.0"):New(addon)
 addon.defaults = defaults
@@ -1862,9 +1862,7 @@ local OutputInfos = {
 		L = L["Raid Icons"], 
 		order = 200, 
 		defaultEnabled = true,
-		defaults = {
-			icon = 8,
-		},
+		defaults = {},
 	},
 	arrows = { 
 		L = L["Arrows"], 

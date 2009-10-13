@@ -65,6 +65,7 @@ local baseLineKeys = {
 	tracing = istable,
 	proximitycheck = istable,
 	raidicon = isstring,
+	removeraidicon = isstring,
 	arrow = isstring,
 	removearrow = isstring,
 	removeallarrows = isboolean,
@@ -114,10 +115,13 @@ local raidIconBaseKeys = {
 	persist = isnumber,
 	unit = isstring,
 	icon = isnumber,
+	reset = optnumber,
+	total = optnumber,
 }
 
 local raidIconTypeValues = {
 	FRIENDLY = true,
+	MULTIFRIENDLY = true,
 	--ENEMY = true,
 }
 
@@ -332,6 +336,8 @@ local function validateCommandLine(data,type,info,errlvl,...)
 		if not data.raidicons or not data.raidicons[info] then
 			err(": starting a non-existent raid icon '"..info.."'",errlvl,type,...)
 		end
+	elseif type == "removeraidicon" then
+		validateReplaces(data,info,errlvl,type,...)
 	end
 end
 

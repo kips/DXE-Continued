@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 303,
+		version = 304,
 		key = "yoggsaron", 
 		zone = L["Ulduar"], 
 		name = L["Yogg-Saron"], 
@@ -210,7 +210,7 @@ do
 				type = "FRIENDLY",
 				persist = 4,
 				unit = "#5#",
-				icon = 8,
+				icon = 1,
 			}
 		},
 		events = {
