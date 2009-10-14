@@ -253,7 +253,7 @@ do
 			local func = RepFuncs[str]
 			if not func then return end
 			--@debug@
-			debug("replace_funcs","func: %s ret: %s",str,func())
+			debug("replace_funcs",format("func: %s ret: %s",str,func()))
 			--@end-debug@
 			return func()
 		end

@@ -1,27 +1,29 @@
 local addon = DXE
 
---[[
 function addon:YOGGTEST()
 	self:SetActiveEncounter("yoggsaron")
 	self:StopEncounter()
 	self:StartEncounter()
 end
 
-function addon:YOGGTEST2()
+function addon:YOGGTEST1()
 	self.Invoker:REG_EVENT("CHAT_MSG_RAID_BOSS_EMOTE","The illusion shatters and a path")
 end
 
-function addon:YOGGTEST3()
+function addon:YOGGTEST2()
 	self.Invoker:REG_EVENT("CHAT_MSG_MONSTER_YELL","I am the lucid dream")
 end
 
-function addon:YOGGTEST4()
-	self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_CAST_SUCCESS",nil,nil,nil,nil,nil,nil,64144)
-end
-
-function addon:YOGGTEST5()
+function addon:YOGGTEST3()
 	self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_CAST_START",nil,nil,nil,nil,nil,nil,64059)
 end
+
+function addon:YOGGTEST4()
+	self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_CAST_SUCCESS",nil,nil,nil,nil,nil,nil,57688)
+end
+
+
+--[[
 
 function addon:FREYATEST()
 	self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_APPLIED",nil,nil,nil,"","Kruciel",nil,63571)
@@ -57,24 +59,31 @@ function addon:MALADYTEST()
 	self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_APPLIED",nil,nil,nil,"","Takamuri",nil,63830)
 end
 
+]]
+
 function addon:PENCOLDTEST()
 	self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_APPLIED",nil,nil,nil,"","Takamuri",nil,68510)
 	self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_APPLIED",nil,nil,nil,"","Kollektiv",nil,68510)
 	self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_APPLIED",nil,nil,nil,"","Dralkan",nil,68510)
-	self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_APPLIED",nil,nil,nil,"","Thisdcapsme",nil,68510)
-	self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_APPLIED",nil,nil,nil,"","Mortalman",nil,68510)
+	self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_APPLIED",nil,nil,nil,"","Nichts",nil,68510)
+	self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_APPLIED",nil,nil,nil,"","Pidge",nil,68510)
 end
 
 function addon:PENCOLDTEST2()
 	self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_APPLIED",nil,nil,nil,"","Kollektiv",nil,68510)
-	self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_APPLIED",nil,nil,nil,"","Thisdcapsme",nil,68510)
-	self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_APPLIED",nil,nil,nil,"","Takamuri",nil,68510)
-	self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_APPLIED",nil,nil,nil,"","Keelem",nil,68510)
-	self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_APPLIED",nil,nil,nil,"","Structo",nil,68510)
+	self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_APPLIED",nil,nil,nil,"","Ohnoes",nil,68510)
+	self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_APPLIED",nil,nil,nil,"","Slivr",nil,68510)
+	self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_APPLIED",nil,nil,nil,"","Xeromus",nil,68510)
+	self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_APPLIED",nil,nil,nil,"","Crowbarjane",nil,68510)
 end
 
-
-]]
+function addon:PENCOLDTEST3()
+	self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_REMOVED",nil,nil,nil,"","Kollektiv",nil,68510)
+	self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_REMOVED",nil,nil,nil,"","Ohnoes",nil,68510)
+	self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_REMOVED",nil,nil,nil,"","Slivr",nil,68510)
+	self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_REMOVED",nil,nil,nil,"","Xeromus",nil,68510)
+	self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_REMOVED",nil,nil,nil,"","Crowbarjane",nil,68510)
+end
 
 
 --[[

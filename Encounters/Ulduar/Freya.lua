@@ -2,7 +2,7 @@ do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 
 	local data = {
-		version = 298,
+		version = 299,
 		key = "freya", 
 		zone = L["Ulduar"], 
 		name = L["Freya"], 
@@ -146,6 +146,17 @@ do
 				sound = "ALERT4",
 			},
 		},
+		raidicons = {
+			rootmark = {
+				varname = SN[62283],
+				type = "MULTIFRIENDLY",
+				persist = 20,
+				reset = 3,
+				unit = "#5#",
+				icon = 1,
+				total = 3,
+			},
+		},
 		events = {
 			-- Spawn waves
 			{
@@ -270,6 +281,9 @@ do
 				spellid = {62861,62930,62283,62438},
 				execute = {
 					{
+						"raidicon","rootmark",
+					},
+					{
 						"expect",{"#4#","~=","&playerguid&"},
 						"arrow","rootarrow",
 					},
@@ -281,6 +295,9 @@ do
 				eventtype = "SPELL_AURA_REMOVED",
 				spellid = {62861,62930,62283,62438},
 				execute = {
+					{
+						"removeraidicon","#5#",
+					},
 					{
 						"expect",{"#4#","~=","&playerguid&"},
 						"removearrow","#5#",

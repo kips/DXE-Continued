@@ -15,6 +15,8 @@ local db,pfl
 local units = {} -- unit -> handle
 local cnt = {} -- multi-marking
 local hdls = {}
+local used = {}
+
 
 function module:RefreshProfile() pfl = db.profile end
 
@@ -33,6 +35,9 @@ function module:OnDisable()
 end
 
 function module:MarkFriendly(unit,icon,persist)
+	--@debug@
+	print("Marking: ",unit)
+	--@end-debug@
 	if units[unit] then self:CancelTimer(units[unit],true) end
 	SetRaidTarget(unit,pfl[icon])
 	units[unit] = self:ScheduleTimer("RemoveIcon",persist,unit)
@@ -59,6 +64,9 @@ function module:MarkEnemy()
 end
 
 function module:RemoveIcon(unit)
+	--@debug@
+	print("Removing: ",unit)
+	--@end-debug@
 	self:CancelTimer(units[unit],true)
 	SetRaidTarget(unit,0)
 	units[unit] = nil

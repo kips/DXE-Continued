@@ -605,7 +605,7 @@ end
 
 function module:GetTimeleft(id)
 	for bar in pairs(Active) do
-		if bar.data.id == id then
+		if bar.data.id and bar.data.id:find(id) then
 			return bar.data.timeleft
 		end
 	end
