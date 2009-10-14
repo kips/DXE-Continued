@@ -10,6 +10,7 @@
 Locales.lua
 
 Archavon.lua
+Koralon.lua
 Emalon.lua
 Malygos.lua
 Sartharion.lua
