@@ -27,6 +27,7 @@ local defaults = {
 		FlashAlpha = 0.6,
 		FlashDuration = 0.8,
 		FlashOscillations = 2,
+		FlashTexture = "Interface\\Tooltips\\UI-Tooltip-Background",
 		ConstantClr = false,
 		GlobalColor = {1,0,0},
 		-- Bar
@@ -92,6 +93,7 @@ function module:RefreshProfile()
 	pfl = db.profile
 	self:RefreshBars()
 	self:SetSinkStorage(pfl.SinkStorage)
+	self:UpdateFlashSettings()
 end
 
 function module:OnInitialize()
@@ -114,6 +116,7 @@ function module:OnInitialize()
 	pfl = db.profile
 
 	self:SetSinkStorage(pfl.SinkStorage)
+	self:UpdateFlashSettings()
 
 	db.RegisterCallback(self, "OnProfileChanged", "RefreshProfile")
 	db.RegisterCallback(self, "OnProfileCopied", "RefreshProfile")
@@ -133,7 +136,9 @@ do
 
 	local flash = CreateFrame("Frame","DXEAlertsFlash",UIParent)
 	flash:SetFrameStrata("BACKGROUND")
-	flash:SetBackdrop({bgFile = "Interface\\Tooltips\\UI-Tooltip-Background"})
+	local t = flash:CreateTexture(nil,"BACKGROUND")
+	t:SetAllPoints(true)
+	t:SetBlendMode("ADD")
 	flash:SetAllPoints(true)
 	flash:Hide()
 	
@@ -148,14 +153,23 @@ do
 
 	flash:SetScript("OnUpdate",OnUpdate)
 
+	module.FlashTextures = {
+		["Interface\\Tooltips\\UI-Tooltip-Background"] = L["Solid"],
+		["Interface\\Addons\\DXE\\Textures\\LowHealthGray"] = L["Low Health"],
+	}
+
+	function module:UpdateFlashSettings()
+		t:SetTexture(pfl.FlashTexture)
+	end
+
 	function module:FlashScreen(c) 
 		if pfl.DisableScreenFlash then return end
 		if pfl.ConstantClr then
 			local r,g,b = unpack(pfl.GlobalColor)
-			flash:SetBackdropColor(r,g,b,pfl.FlashAlpha)
+			t:SetVertexColor(r,g,b,pfl.FlashAlpha)
 		else
 			c = c or Colors.BLACK
-			flash:SetBackdropColor(c.r,c.g,c.b,pfl.FlashAlpha)
+			t:SetVertexColor(c.r,c.g,c.b,pfl.FlashAlpha)
 		end
 		counter = 0
 		FLASH_DURATION = pfl.FlashDuration

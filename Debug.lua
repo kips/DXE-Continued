@@ -9,15 +9,16 @@ local GetChatWindowInfo = GetChatWindowInfo
 local LEFTOFVAR, RIGHTOFVAR = "|cff00ff00<|r|cffeda55f", "|r|cff00ff00>|r "
 
 local OptionsToAdd = {}
+local InsertOptions
 
-function addon:UnrollOptions(args)
+function addon:AddDebugOptions(args)
 	for name,global in pairs(OptionsToAdd) do
-		self:AddDebugOptions(name,global)
+		InsertOptions(name,global,args)
 	end
 	OptionsToAdd = nil
 end
 
-function addon:AddDebugOptions(name,global)
+function InsertOptions(name,global,args)
 	local tbl = {
 		type = "group",
 		name = name,
@@ -33,7 +34,7 @@ function addon:AddDebugOptions(name,global)
 			width = "full",
 		}
 	end
-	self.options.args.debug.args[name] = tbl
+	args[name] = tbl
 end
 
 local function ColorCode(str)
@@ -102,11 +103,6 @@ function addon:CreateDebugger(name,global,defaults,windowName)
 			global.debug[k] = nil
 		end
 	end
-	if addon.options then
-		self:AddDebugOptions(name,global)
-	else
-		--addon:AddOptionArgsItems(self,"UnrollOptions")
-		OptionsToAdd[name] = global
-	end
+	OptionsToAdd[name] = global
 	return CreateDebugFunction(name,global,windowName)
 end

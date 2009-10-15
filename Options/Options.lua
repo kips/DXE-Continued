@@ -1396,9 +1396,17 @@ local function InitializeOptions()
 							order = 100,
 							func = "FlashTest",
 						},
+						FlashTexture = {
+							type = "select",
+							name = L["Texture"],
+							desc = L["Select a background texture"],
+							order = 120,
+							values = Alerts.FlashTextures,
+							set = function(info,v) Alerts.db.profile.FlashTexture = v; Alerts:UpdateFlashSettings() end,
+						},
 						FlashAlpha = {
 							type = "range",
-							name = L["Flash Alpha"],
+							name = L["Alpha"],
 							desc = L["Adjust the transparency of the flash"],
 							order = 200,
 							min = 0.1,
@@ -1750,6 +1758,22 @@ local function InitializeOptions()
 
 		opts_args.sounds_group = sounds_group
 	end
+
+	---------------------------------------------
+	-- DEBUG
+	---------------------------------------------
+	
+	--@debug@
+	local debug_group = {
+		type = "group",
+		order = -2,
+		name = "Debug",
+		args = {},
+	}
+	opts_args.debug_group = debug_group
+	addon:AddDebugOptions(debug_group.args)
+	--@end-debug@
+
 end
 
 ---------------------------------------------

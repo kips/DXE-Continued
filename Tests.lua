@@ -1,4 +1,5 @@
 local addon = DXE
+--[[
 
 function addon:YOGGTEST()
 	self:SetActiveEncounter("yoggsaron")
@@ -23,7 +24,6 @@ function addon:YOGGTEST4()
 end
 
 
---[[
 
 function addon:FREYATEST()
 	self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_APPLIED",nil,nil,nil,"","Kruciel",nil,63571)
@@ -61,28 +61,20 @@ end
 
 ]]
 
-function addon:PENCOLDTEST()
-	self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_APPLIED",nil,nil,nil,"","Takamuri",nil,68510)
-	self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_APPLIED",nil,nil,nil,"","Kollektiv",nil,68510)
-	self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_APPLIED",nil,nil,nil,"","Dralkan",nil,68510)
-	self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_APPLIED",nil,nil,nil,"","Nichts",nil,68510)
-	self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_APPLIED",nil,nil,nil,"","Pidge",nil,68510)
-end
-
-function addon:PENCOLDTEST2()
-	self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_APPLIED",nil,nil,nil,"","Kollektiv",nil,68510)
-	self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_APPLIED",nil,nil,nil,"","Ohnoes",nil,68510)
-	self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_APPLIED",nil,nil,nil,"","Slivr",nil,68510)
-	self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_APPLIED",nil,nil,nil,"","Xeromus",nil,68510)
-	self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_APPLIED",nil,nil,nil,"","Crowbarjane",nil,68510)
-end
-
-function addon:PENCOLDTEST3()
-	self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_REMOVED",nil,nil,nil,"","Kollektiv",nil,68510)
-	self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_REMOVED",nil,nil,nil,"","Ohnoes",nil,68510)
-	self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_REMOVED",nil,nil,nil,"","Slivr",nil,68510)
-	self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_REMOVED",nil,nil,nil,"","Xeromus",nil,68510)
-	self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_REMOVED",nil,nil,nil,"","Crowbarjane",nil,68510)
+do
+	local t = {}
+	function addon:PENCOLDTEST()
+		table.wipe(t)
+		for i=1,5 do
+			local unit = "raid"..math.random(1,GetNumRaidMembers())
+			while t[unit] do
+				unit = "raid"..math.random(1,GetNumRaidMembers())
+			end
+			t[unit] = true
+			print("Test marking: ",(UnitName(unit)))
+			self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_APPLIED",nil,nil,nil,"",(UnitName(unit)),nil,68510)
+		end
+	end
 end
 
 
