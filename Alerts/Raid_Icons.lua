@@ -6,12 +6,14 @@ local defaults = {
 			MarkFriendly = false,
 			RemoveIcon = false,
 			MarkFriendlyUnsch1 = false,
-			MarkFriendlyUnsch2 = false,
 			ResetCount = false,
 		},
 	},
 	--@end-debug@
 }
+
+-- WORKS: SetRaidTarget(unit,0); SetRaidTarget(unit,[1,8]) 
+-- BROKEN: SetRaidTarget(unit,[1,8]); SetRaidTarget(unit,0) 
 
 local addon = DXE
 local L = addon.L
@@ -24,7 +26,6 @@ local module = addon:NewModule("RaidIcons","AceTimer-3.0")
 addon.RaidIcons = module
 
 local db,pfl
-local used = {} -- icon -> unit
 local units = {} -- unit -> handle
 local cnt = {} -- multi-marking
 local rsts = {} -- resets
@@ -56,16 +57,6 @@ function module:MarkFriendly(unit,icon,persist)
 	debug("MarkFriendly","unit: %s",unit)
 	--@end-debug@
 
-	-- Unschedule previous icon owners icon-removal timer
-	if used[icon] and units[used[icon]] then
-		--@debug@
-		debug("MarkFriendlyUnsch1","icon: %s used[icon]: %s units[used[icon]]: %s",icon,used[icon],units[used[icon]])
-		--@end-debug@
-		self:CancelTimer(units[used[icon]],true) 
-		units[used[icon]] = nil
-		used[icon] = nil
-	end
-	
 	-- Unschedule unit's icon removal. The schedule is effectively reset.
 	if units[unit] then 
 		--@debug@
@@ -77,7 +68,6 @@ function module:MarkFriendly(unit,icon,persist)
 
 	SetRaidTarget(unit,pfl[icon])
 	units[unit] = self:ScheduleTimer("RemoveIcon",persist,unit)
-	used[icon] = unit
 end
 
 -- Actual icon is chosen by increasing icon parameter
@@ -103,7 +93,7 @@ function module:MarkEnemy()
 
 end
 
-function module:RemoveIcon(unit,b)
+function module:RemoveIcon(unit)
 	--@debug@
 	debug("RemoveIcon","unit: %s",unit)
 	--@end-debug@
@@ -116,5 +106,4 @@ function module:RemoveAll()
 	for unit in pairs(units) do self:RemoveIcon(unit) end
 	wipe(cnt)
 	wipe(rsts)
-	wipe(used)
 end
