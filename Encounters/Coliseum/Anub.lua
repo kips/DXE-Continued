@@ -396,6 +396,22 @@ do
 					},
 				},
 			},
+			-- Penetrating Cold refreshes
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_REFRESH",
+				spellid = {
+					68509, -- 10 normal
+					66013, -- 10 hard
+					67700, -- 25 normal
+					68510, -- 25 hard
+				},
+				execute = {
+					{
+						"raidicon","coldmark",
+					},
+				},
+			},
 		},
 	}
 

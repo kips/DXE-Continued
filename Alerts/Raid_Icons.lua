@@ -5,6 +5,9 @@ local defaults = {
 		debug = {
 			MarkFriendly = false,
 			RemoveIcon = false,
+			MarkFriendlyUnsch1 = false,
+			MarkFriendlyUnsch2 = false,
+			ResetCount = false,
 		},
 	},
 	--@end-debug@
@@ -54,7 +57,10 @@ function module:MarkFriendly(unit,icon,persist)
 	--@end-debug@
 
 	-- Unschedule previous icon owners icon-removal timer
-	if used[icon] and units[used[icon]] then 
+	if used[icon] and units[used[icon]] then
+		--@debug@
+		debug("MarkFriendlyUnsch1","icon: %s used[icon]: %s units[used[icon]]: %s",icon,used[icon],units[used[icon]])
+		--@end-debug@
 		self:CancelTimer(units[used[icon]],true) 
 		units[used[icon]] = nil
 		used[icon] = nil
@@ -62,6 +68,9 @@ function module:MarkFriendly(unit,icon,persist)
 	
 	-- Unschedule unit's icon removal. The schedule is effectively reset.
 	if units[unit] then 
+		--@debug@
+		debug("MarkFriendlyUnsch2","unit: %s",unit)
+		--@end-debug@
 		self:CancelTimer(units[unit],true) 
 		units[unit] = nil
 	end
@@ -82,6 +91,9 @@ function module:MultiMarkFriendly(var,unit,icon,persist,reset)
 end
 
 function module:ResetCount(var)
+	--@debug@
+	debug("ResetCount","var: %s cnt[var]: %s rsts[var]: %s",var,cnt[var],rsts[var])
+	--@end-debug@
 	cnt[var] = nil
 	rsts[var] = nil
 end
