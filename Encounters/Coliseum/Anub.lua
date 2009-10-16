@@ -195,7 +195,7 @@ do
 			coldmark = {
 				varname = SN[68509],
 				type = "MULTIFRIENDLY",
-				persist = 15,
+				persist = 18,
 				reset = 3,
 				unit = "#5#",
 				icon = 2,
@@ -393,6 +393,22 @@ do
 					{
 						"expect",{"#4#","==","&playerguid&"},
 						"alert","coldselfwarn",
+					},
+				},
+			},
+			-- Penetrating Cold removal
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_REMOVED",
+				spellid = {
+					68509, -- 10 normal
+					66013, -- 10 hard
+					67700, -- 25 normal
+					68510, -- 25 hard
+				},
+				execute = {
+					{
+						"removeraidicon","#5#",
 					},
 				},
 			},

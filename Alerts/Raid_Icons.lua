@@ -60,7 +60,7 @@ function module:MarkFriendly(unit,icon,persist)
 	-- Unschedule unit's icon removal. The schedule is effectively reset.
 	if units[unit] then 
 		--@debug@
-		debug("MarkFriendlyUnsch2","unit: %s",unit)
+		debug("MarkFriendlyUnsch1","unit: %s",unit)
 		--@end-debug@
 		self:CancelTimer(units[unit],true) 
 		units[unit] = nil
