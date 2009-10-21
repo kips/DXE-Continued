@@ -142,7 +142,7 @@ local NID = setmetatable({},{
 		if type(guid) ~= "string" or #guid ~= GUID_LENGTH or not guid:find("%xx%x+") then return end
 		local ut = tonumber(sub(guid,5,5),16) % 8
 		local isNPC = ut == UT_NPC or ut == UT_VEHICLE
-		local npcid = isNPC and tonumber(sub(guid,9,12),16)
+		local npcid = isNPC and tonumber(sub(guid,7,10),16)
 		t[guid] = npcid
 		return npcid
 	end,
