@@ -158,6 +158,39 @@ local eventBaseKeys = {
 	execute = istable,
 }
 
+local eventtypes = {
+	DAMAGE_SHIELD = true,
+	DAMAGE_SHIELD_MISSED = true,
+	DAMAGE_SPLIT = true,
+	PARTY_KILL = true,
+	RANGE_DAMAGE = true,
+	RANGE_MISSED = true,
+	SPELL_AURA_APPLIED = true,
+	SPELL_AURA_APPLIED_DOSE = true,
+	SPELL_AURA_REFRESH = true,
+	SPELL_AURA_REMOVED = true,
+	SPELL_AURA_REMOVED_DOSE = true,
+	SPELL_CAST_FAILED = true,
+	SPELL_CAST_START = true,
+	SPELL_CAST_SUCCESS = true,
+	SPELL_CREATE = true,
+	SPELL_DAMAGE = true,
+	SPELL_ENERGIZE = true,
+	SPELL_EXTRA_ATTACKS = true,
+	SPELL_HEAL = true,
+	SPELL_INTERRUPT = true,
+	SPELL_MISSED = true,
+	SPELL_PERIODIC_DAMAGE = true,
+	SPELL_PERIODIC_ENERGIZE = true,
+	SPELL_PERIODIC_HEAL = true,
+	SPELL_PERIODIC_MISSED = true,
+	SPELL_RESURRECT = true,
+	SPELL_SUMMON = true,
+	SWING_DAMAGE = true,
+	SWING_MISSED = true,
+	UNIT_DIED = true,
+}
+
 local function err(msg, errlvl, ...)
 	local work = {}
 	for i=select("#",...),1,-1 do
@@ -504,6 +537,9 @@ local function validateEvent(data,info,errlvl,...)
 			end
 			if info.type == "combatevent" and not info.eventtype then
 				err(": missing eventtype key",errlvl,k,...)
+			end
+			if info.eventtype and not eventtypes[info.eventtype] then
+				err(": invalid eventtype value - got '"..info.eventtype.."'",errlvl,"eventtype",...)
 			end
 		elseif k == "spellid" then
 			if info.spellid and type(info.spellid) == "number" then

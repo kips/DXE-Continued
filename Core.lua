@@ -85,7 +85,7 @@ local defaults = {
 
 local addon = LibStub("AceAddon-3.0"):NewAddon("DXE","AceEvent-3.0","AceTimer-3.0","AceComm-3.0","AceSerializer-3.0")
 _G.DXE = addon
-addon.version = 390
+addon.version = 391
 addon:SetDefaultModuleState(false)
 addon.callbacks = LibStub("CallbackHandler-1.0"):New(addon)
 addon.defaults = defaults
@@ -1733,7 +1733,6 @@ end
 do
 	local isRunning,elapsedTime
 
-	--- Returns the encounter start time based off GetTime()
 	-- @return number >= 0
 	function addon:GetElapsedTime()
 		return elapsedTime

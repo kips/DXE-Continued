@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 304,
+		version = 305,
 		key = "yoggsaron", 
 		zone = L["Ulduar"], 
 		name = L["Yogg-Saron"], 
@@ -284,6 +284,8 @@ do
 						"quash","weakeneddur",
 						"alert","shadowbeaconcd",
 						"set",{phase = "3"},
+						"expect",{"&difficulty&","==","2"},
+						"alert","deafeningcd",
 					},
 				},
 			},
@@ -368,9 +370,7 @@ do
 				spellid = {57688,57689},
 				execute = {
 					{
-						--"expect",{"&timeleft|crushertentaclespawn&","<","0.5"},
 						"expect",{"<phase>","==","2"},
-						--"set",{crushertime = 55},
 						"quash","crushertentaclespawn",
 						"alert","crushertentaclespawn",
 					},
