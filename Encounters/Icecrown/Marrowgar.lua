@@ -2,17 +2,17 @@ do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
 		version = 1,
-		key = "festergut", 
+		key = "marrowgar", 
 		zone = L["Icecrown Citadel"], 
 		category = L["Icecrown"], 
-		name = L["Festergut"], 
+		name = L["Marrowgar"], 
 		triggers = {
-			scan = {36626}, -- Festergut
-			yell = L["^Just an ordinary gas cloud, but watch"],
+			scan = {36612}, -- Lord Marrowgar
+			yell = {L["^The Scourge will wash over this world"]},
 		},
 		onactivate = {
 			combatstop = true,
-			tracing = {36626}, -- Festergut
+			tracing = {36612}, -- Lord Marrowgar
 		},
 	}
 

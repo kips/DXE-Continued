@@ -1,0 +1,13 @@
+## Interface: 30300
+## Title: DXE |cff99ff33Icecrown|r
+## Notes: Deus Vox Encounters |cff99ff33Icecrown|r
+## Author: Kollektiv
+## LoadOnDemand: 1
+## Dependencies: DXE
+## X-DXE-Category: Icecrown
+## X-DXE-Zone: Icecrown Citadel
+
+Locales.lua
+
+Festergut.lua
+Marrowgar.lua
