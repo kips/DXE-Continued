@@ -1779,7 +1779,7 @@ function addon:CombatStop()
 	--@debug@
 	debug("CombatStop","Invoked")
 	--@end-debug@
-	if (UnitHealth("player") > 0 or UnitIsGhost("player")) and not UnitAffectingCombat("player") then
+	if UnitHealth("player") > 0 and not UnitAffectingCombat("player") then
 		-- If this doesn't work then scan the raid for units in combat
 		if dead then
 			self:ScheduleTimer("CombatStop",4)
