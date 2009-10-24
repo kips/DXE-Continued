@@ -2,7 +2,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 309,
+		version = 310,
 		key = "mimiron", 
 		zone = L["Ulduar"], 
 		name = L["Mimiron"], 
@@ -42,6 +42,9 @@ do
 				"set",{flametime = 27.5},
 				"scheduletimer",{"flames",6.5},
 			},
+		},
+		windows = {
+			proxwindow = true,
 		},
 		timers = {
 			flames = {

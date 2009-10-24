@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 297,
+		version = 298,
 		key = "archavon", 
 		zone = L["Vault of Archavon"],
 		category = L["Northrend"],
@@ -21,6 +21,9 @@ do
 				"alert","enragecd",
 				"alert","stompcd",
 			}
+		},
+		windows = {
+			proxwindow = true,
 		},
 		alerts = {
 			enragecd = {

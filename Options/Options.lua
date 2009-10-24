@@ -451,29 +451,30 @@ local function InitializeOptions()
 
 		-- Can only enable/disable outputs
 		local function InjectSimpleOptions(data,enc_args)
-			for outputType,outputInfo in pairs(addon.OutputInfos) do
-				local outputData = data[outputType]
-				if outputData then
-					enc_args[outputType] = enc_args[outputType] or {
+			for optionType,optionInfo in pairs(addon.EncDefaults) do
+				local encData = data[optionType]
+				local override = optionInfo.override
+				if encData or override then
+					enc_args[optionType] = enc_args[optionType] or {
 						type = "group",
-						name = outputInfo.L,
-						order = outputInfo.order,
+						name = optionInfo.L,
+						order = optionInfo.order,
 						args = {},
 					}
-					enc_args[outputType].inline = true
-					enc_args[outputType].childGroups = nil
+					enc_args[optionType].inline = true
+					enc_args[optionType].childGroups = nil
 
-					local output_args = enc_args[outputType].args
+					local option_args = enc_args[optionType].args
 
-					for var,info in pairs(outputData) do
-						output_args[var] = output_args[var] or {
+					for var,info in pairs(override and optionInfo.list or encData) do
+						option_args[var] = option_args[var] or {
 							name = info.varname,
 							width = "full",
 						}
-						output_args[var].type = "toggle"
-						output_args[var].args = nil
-						output_args[var].set = "SetSimpleEnable"
-						output_args[var].get = "GetSimpleEnable"
+						option_args[var].type = "toggle"
+						option_args[var].args = nil
+						option_args[var].set = "SetSimpleEnable"
+						option_args[var].get = "GetSimpleEnable"
 					end
 				end
 			end
@@ -511,7 +512,7 @@ local function InitializeOptions()
 				set = function(info,v) db.profile.Encounters[info[#info-3]][info[#info-1]].enabled = v end,
 				get = function(info) return db.profile.Encounters[info[#info-3]][info[#info-1]].enabled end,
 			},
-			Output = {
+			Options = {
 				alerts = {
 					color1 = {
 						type = "select",
@@ -625,11 +626,11 @@ local function InitializeOptions()
 				return not db.profile.Encounters[info[info_n_MINUS_4]][info[info_n_MINUS_2]].enabled
 			end
 
-			function handler:GetOutput(info)
+			function handler:GetOption(info)
 				return db.profile.Encounters[info[info_n_MINUS_4]][info[info_n_MINUS_2]][info[info_n]]
 			end
 
-			function handler:SetOutput(info,v)
+			function handler:SetOption(info,v)
 				db.profile.Encounters[info[info_n_MINUS_4]][info[info_n_MINUS_2]][info[info_n]] = v
 			end
 
@@ -650,46 +651,47 @@ local function InitializeOptions()
 
 		local function InjectAdvancedOptions(data,enc_args)
 			-- Add output options
-			for outputType,outputInfo in pairs(addon.OutputInfos) do
-				local outputData = data[outputType]
-				if outputData then
-					enc_args[outputType] = enc_args[outputType] or {
+			for optionType,optionInfo in pairs(addon.EncDefaults) do
+				local encData = data[optionType]
+				local override = optionInfo.override
+				if encData or override then
+					enc_args[optionType] = enc_args[optionType] or {
 						type = "group",
-						name = outputInfo.L,
-						order = outputInfo.order,
+						name = optionInfo.L,
+						order = optionInfo.order,
 						args = {},
 					}
-					enc_args[outputType].inline = nil
-					enc_args[outputType].childGroups = "select"
+					enc_args[optionType].inline = nil
+					enc_args[optionType].childGroups = "select"
 
-					local output_args = enc_args[outputType].args
-					for var,info in pairs(outputData) do
-						output_args[var] = output_args[var] or {
+					local option_args = enc_args[optionType].args
+					for var,info in pairs(override and optionInfo.list or encData) do
+						option_args[var] = option_args[var] or {
 							name = info.varname,
 							width = "full",
 						}
 
-						output_args[var].type = "group"
-						output_args[var].args = {}
-						output_args[var].get = nil
-						output_args[var].set = nil
+						option_args[var].type = "group"
+						option_args[var].args = {}
+						option_args[var].get = nil
+						option_args[var].set = nil
 
-						local item_args = output_args[var].args
+						local item_args = option_args[var].args
 						item_args.enabled = AdvancedItems.EnabledToggle
-						if AdvancedItems.Output[outputType] then
+						if AdvancedItems.Options[optionType] then
 							item_args.settings = {
 								type = "group",
 								name = L["Settings"],
 								order = 1,
 								inline = true,
 								disabled = "DisableSettings",
-								get = "GetOutput",
-								set = "SetOutput",
+								get = "GetOption",
+								set = "SetOption",
 								args = {}
 							}
 
 							local settings_args = item_args.settings.args
-							for k,item in pairs(AdvancedItems.Output[outputType]) do
+							for k,item in pairs(AdvancedItems.Options[optionType]) do
 								settings_args[k] = item
 							end
 						end

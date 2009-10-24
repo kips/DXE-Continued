@@ -2,7 +2,7 @@ do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 
 	local data = {
-		version = 299,
+		version = 300,
 		key = "freya", 
 		zone = L["Ulduar"], 
 		name = L["Freya"], 
@@ -31,6 +31,9 @@ do
 				"alert","spawncd",
 				"alert","enragecd",
 			},
+		},
+		windows = {
+			proxwindow = true,
 		},
 		alerts = {
 			spawncd = {

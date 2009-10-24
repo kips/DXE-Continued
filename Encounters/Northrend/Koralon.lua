@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 2,
+		version = 3,
 		key = "koralon", 
 		zone = L["Vault of Archavon"], 
 		category = L["Northrend"],
@@ -25,6 +25,9 @@ do
 				"alert","breathcd",
 				"alert","meteorcd",
 			},
+		},
+		windows = {
+			proxwindow = true,
 		},
 		alerts = {
 			flamingcinderself = {

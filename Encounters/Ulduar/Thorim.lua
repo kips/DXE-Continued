@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 302,
+		version = 303,
 		key = "thorim", 
 		zone = L["Ulduar"], 
 		name = L["Thorim"], 
@@ -29,6 +29,9 @@ do
 				"alert","hardmodecd",
 				"alert","enragecd",
 			},
+		},
+		windows = {
+			proxwindow = true,
 		},
 		alerts = {
 			enragecd = {

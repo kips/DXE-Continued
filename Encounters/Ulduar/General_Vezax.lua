@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 305,
+		version = 306,
 		key = "generalvezax", 
 		zone = L["Ulduar"], 
 		name = L["General Vezax"], 
@@ -24,6 +24,9 @@ do
 				"alert","enragecd",
 				"alert","animuscd",
 			},
+		},
+		windows = {
+			proxwindow = true,
 		},
 		alerts = {
 			enragecd = {

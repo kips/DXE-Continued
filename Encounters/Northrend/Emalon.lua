@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 297,
+		version = 298,
 		key = "emalon", 
 		zone = L["Vault of Archavon"], 
 		category = L["Northrend"],
@@ -24,6 +24,9 @@ do
 			{
 				"alert","overchargecd",
 			}
+		},
+		windows = {
+			proxwindow = true,
 		},
 		alerts = {
 			novacd = {

@@ -406,6 +406,13 @@ function addon:SetCombat(flag,event,func)
 	if flag then self:RegisterEvent(event,func) end
 end
 
+function addon:OpenWindows()
+	local encdb = pfl.Encounters[CE.key]
+	if encdb and encdb.proxwindow.enabled then
+		self:Proximity()
+	end
+end
+
 --- Change the currently-active encounter.
 function addon:SetActiveEncounter(key)
 	--@debug@
@@ -426,6 +433,8 @@ function addon:SetActiveEncounter(key)
 	self:UnregisterEvent("PLAYER_REGEN_ENABLED")
 
 	self.Pane.SetFolderValue(key)
+
+	self:OpenWindows()
 
 	self:CloseAllHW()
 	self:ResetSortedTracing()
@@ -1844,73 +1853,97 @@ end
 -- ENCOUNTER DEFAULTS
 ---------------------------------------------
 
-local OutputInfos = {
-	alerts = { 
-		L = L["Bars"], 
-		order = 100, 
-		defaultEnabled = true ,
-		defaults = {
-			color1 = "Clear",
-			color2 = "Off",
-			sound = "None",
-			flashscreen = false,
-			counter = false,
+do
+	local EncDefaults = {
+		alerts = { 
+			L = L["Bars"], 
+			order = 100, 
+			defaultEnabled = true ,
+			defaults = {
+				color1 = "Clear",
+				color2 = "Off",
+				sound = "None",
+				flashscreen = false,
+				counter = false,
+			},
 		},
-	},
-	raidicons = { 
-		L = L["Raid Icons"], 
-		order = 200, 
-		defaultEnabled = true,
-		defaults = {},
-	},
-	arrows = { 
-		L = L["Arrows"], 
-		order = 300, 
-		defaultEnabled = true,
-		defaults = {
-			sound = "None",
+		raidicons = { 
+			L = L["Raid Icons"], 
+			order = 200, 
+			defaultEnabled = true,
+			defaults = {},
 		},
-	},
-	announces = {
-		L = L["Announces"],
-		order = 400,
-		defaultEnabled = true,
-		defaults = {},
-	},
-}
+		arrows = { 
+			L = L["Arrows"], 
+			order = 300, 
+			defaultEnabled = true,
+			defaults = {
+				sound = "None",
+			},
+		},
+		announces = {
+			L = L["Announces"],
+			order = 400,
+			defaultEnabled = true,
+			defaults = {},
+		},
 
-addon.OutputInfos = OutputInfos
+		-- always add options
+		windows = {
+			L = L["Windows"],
+			order = 500,
+			override = true,
+			list = {
+				proxwindow = {
+					defaultEnabled = false,
+					varname = L["Proximity"],
+				},
+			}
+		}
+	}
 
-function addon:AddEncounterDefaults(data)
-	local defaults = {}
-	self.defaults.profile.Encounters[data.key] = defaults
+	addon.EncDefaults = EncDefaults
 
-	------------------------------------------------------------
-	-- Sound upgrading from versions < 375
-	if pfl.Encounters[data.key] then
-		for var,info in pairs(pfl.Encounters[data.key]) do
-			if type(info) == "table" then
-				if info.sound and info.sound:find("^DXE ALERT%d+") then
-					info.sound = (info.sound:gsub("DXE ",""))
+	function addon:AddEncounterDefaults(data)
+		local defaults = {}
+		self.defaults.profile.Encounters[data.key] = defaults
+
+		------------------------------------------------------------
+		-- Sound upgrading from versions < 375
+		if pfl.Encounters[data.key] then
+			for var,info in pairs(pfl.Encounters[data.key]) do
+				if type(info) == "table" then
+					if info.sound and info.sound:find("^DXE ALERT%d+") then
+						info.sound = (info.sound:gsub("DXE ",""))
+					end
+				elseif type(info) == "boolean" then
+					-- It should never be a boolean
+					pfl.Encounters[data.key][var] = nil
 				end
-			elseif type(info) == "boolean" then
-				-- It should never be a boolean
-				pfl.Encounters[data.key][var] = nil
 			end
 		end
-	end
-	------------------------------------------------------------
-	
-	for outputType,outputInfo in pairs(OutputInfos) do
-		local outputData = data[outputType]
-		if outputData then
-			for var,info in pairs(outputData) do
-				defaults[var] = {}
-				-- Add setting defaults
-				defaults[var].enabled = outputInfo.defaultEnabled
-				for k,varDefault in pairs(OutputInfos[outputType].defaults) do
-					defaults[var][k] = info[k] or varDefault
+		------------------------------------------------------------
+		
+		for optionType,optionInfo in pairs(EncDefaults) do
+			local optionData = data[optionType]
+			if optionData and not optionInfo.override then
+				for var,info in pairs(optionData) do
+					defaults[var] = {}
+					-- Add setting defaults
+					defaults[var].enabled = optionInfo.defaultEnabled
+					for k,varDefault in pairs(EncDefaults[optionType].defaults) do
+						defaults[var][k] = info[k] or varDefault
+					end
 				end
+			end
+		end
+
+		for var,winData in pairs(EncDefaults.windows.list) do
+			defaults[var] = {}
+			if data.windows and data.windows[var] then
+				defaults[var].enabled = data.windows[var]
+			else
+				defaults[var].enabled = winData.defaultEnabled
 			end
 		end
 	end

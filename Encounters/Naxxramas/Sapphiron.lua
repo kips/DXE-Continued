@@ -21,6 +21,9 @@ do
 				"alert","enragecd",
 			},
 		},
+		windows = {
+			proxwindow = true,
+		},
 		alerts = {
 			enragecd = {
 				varname = L["Enrage"],

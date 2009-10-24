@@ -43,6 +43,9 @@ do
 				"alert","fleshcd",
 			},
 		},
+		windows = {
+			proxwindow = true,
+		},
 		alerts = {
 			enragecd = {
 				varname = L["Enrage"],

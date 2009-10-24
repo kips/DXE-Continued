@@ -29,6 +29,9 @@ do
 				"alert","ktarrives",
 			}
 		},
+		windows = {
+			proxwindow = true,
+		},
 		alerts = {
 			fissurewarn = {
 				varname = format(L["%s Warning"],SN[27810]),

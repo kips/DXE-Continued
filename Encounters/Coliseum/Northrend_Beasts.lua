@@ -51,6 +51,9 @@ do
 				"scheduletimer",{"fireenrage",22},
 			},
 		},
+		windows = {
+			proxwindow = true,
+		},
 		alerts = {
 			enragecd = {
 				varname = L["Enrage"],
