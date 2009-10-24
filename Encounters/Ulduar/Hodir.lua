@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 297,
+		version = 298,
 		key = "hodir", 
 		zone = L["Ulduar"], 
 		name = L["Hodir"], 
@@ -104,6 +104,16 @@ do
 				msg = format(L["%s on Me"],SN[65133]).."!",
 			},
 		},
+		arrows = {
+			stormcloudarrow = {
+				varname = SN[65133],
+				unit = "#5#",
+				persist = 8,
+				action = "TOWARD",
+				msg = L["CONVERGE"],
+				spell = SN[65133],
+			},
+		},
 		events = {
 			-- Flash Freeze cast
 			{
@@ -142,6 +152,7 @@ do
 					{
 						"expect",{"#4#","~=","&playerguid&"},
 						"alert","stormcloudwarnother",
+						"arrow","stormcloudarrow",
 					},
 				},
 			},
