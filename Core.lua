@@ -86,7 +86,7 @@ local defaults = {
 
 local addon = LibStub("AceAddon-3.0"):NewAddon("DXE","AceEvent-3.0","AceTimer-3.0","AceComm-3.0","AceSerializer-3.0")
 _G.DXE = addon
-addon.version = 391
+addon.version = 392
 addon:SetDefaultModuleState(false)
 addon.callbacks = LibStub("CallbackHandler-1.0"):New(addon)
 addon.defaults = defaults

@@ -2,7 +2,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 311,
+		version = 312,
 		key = "mimiron", 
 		zone = L["Ulduar"], 
 		name = L["Mimiron"], 
@@ -17,11 +17,11 @@ do
 				34057, -- Assault Bot
 				34147, -- Emergency Fire Bot
 			},
-			defeat = L["^It would appear that I've made a slight miscalculation"],
 		},
 		onactivate = {
 			tracing = {33432}, -- Leviathan Mk II
 			combatstop = true,
+			defeat = L["^It would appear that I've made a slight miscalculation"],
 		},
 		userdata = {
 			plasmablasttime = {14,30,loop = false},
