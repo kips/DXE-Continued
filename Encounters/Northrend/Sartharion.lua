@@ -7,7 +7,7 @@ do
 	local L_Tenebron = L["Tenebron"]
 
 	local data = {
-		version = 297,
+		version = 298,
 		key = "sartharion", 
 		zone = L["The Obsidian Sanctum"], 
 		category = L["Northrend"],
@@ -25,6 +25,7 @@ do
 			tracerstart = true,
 			tracerstop = true,
 			combatstop = true,
+			defeat = 28860,
 		},
 		userdata = {
 			tenebronarrived = 0,

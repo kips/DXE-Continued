@@ -2,7 +2,7 @@ do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 
 	local data = {
-		version = 297,
+		version = 298,
 		key = "heigantheunclean", 
 		zone = L["Naxxramas"], 
 		name = L["Heigan the Unclean"], 
@@ -14,6 +14,7 @@ do
 			tracerstart = true,
 			tracerstop = true,
 			combatstop = true,
+			defeat = 15936,
 		},
 		userdata = {},
 		onstart = {

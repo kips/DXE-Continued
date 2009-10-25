@@ -2,7 +2,7 @@ do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 
 	local data = {
-		version = 297,
+		version = 298,
 		key = "noththeplaguebringer", 
 		zone = L["Naxxramas"], 
 		name = L["Noth the Plaguebringer"], 
@@ -18,6 +18,7 @@ do
 			tracerstart = true,
 			tracerstop = true,
 			combatstop = true,
+			defeat = 15954,
 		},
 		userdata = { 
 			roomtime = {90,110,180,loop=false},

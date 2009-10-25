@@ -5,7 +5,7 @@ do
 	local LE = SN[67223] -- Light Essence
 
 	local data = {
-		version = 14,
+		version = 15,
 		key = "twinvalkyr", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -23,6 +23,7 @@ do
 			},
 			tracerstart = true,
 			combatstop = true,
+			defeat = 34496,
 		},
 		onstart = {
 			{

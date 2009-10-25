@@ -4,7 +4,7 @@ do
 	local L_AnubRekhan = L["Anub'Rekhan"]
 
 	local data = {
-		version = 297,
+		version = 298,
 		key = "anubrekhan", 
 		zone = L["Naxxramas"], 
 		name = L_AnubRekhan, 
@@ -16,6 +16,7 @@ do
 			tracerstart = true,
 			tracerstop = true,
 			combatstop = true,
+			defeat = 15956,
 		},
 		userdata = { 
 			swarmcd = {90, 85, loop=false},

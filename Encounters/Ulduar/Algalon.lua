@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 301,
+		version = 303,
 		key = "algalon", 
 		zone = L["Ulduar"], 
 		name = L["Algalon the Observer"], 
@@ -13,6 +13,7 @@ do
          tracerstart = true,
          tracerstop = true,
 			combatstop = true,
+			defeat = 32871,
 		},
 		userdata = {
 			cosmicsmashtime = 25,

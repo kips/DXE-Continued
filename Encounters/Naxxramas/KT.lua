@@ -22,6 +22,7 @@ do
 		onactivate = {
 			tracing = {15990}, -- Kel'Thuzad
 			combatstop = true,
+			defeat = 15990,
 		},
 		userdata = {},
 		onstart = {

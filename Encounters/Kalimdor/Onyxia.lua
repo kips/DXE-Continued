@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 3,
+		version = 4,
 		key = "onyxia", 
 		zone = L["Onyxia's Lair"],
 		category = L["Kalimdor"],
@@ -15,6 +15,7 @@ do
 		onactivate = {
 			tracing = {10184}, -- Onyxia
 			combatstop = true,
+			defeat = 10184,
 		},
 		alerts = {
 			bellowwarn = {

@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 303,
+		version = 304,
 		key = "thorim", 
 		zone = L["Ulduar"], 
 		name = L["Thorim"], 
@@ -18,6 +18,7 @@ do
 		onactivate = {
 			tracing = {32872,32873}, -- Runic Colossus, Ancient Rune Giant
 			combatstop = true,
+			defeat = L["Stay your arms"],
 		},
 		userdata = {
 			chargetime = 34,

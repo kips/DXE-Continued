@@ -2,7 +2,7 @@ do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local L_Gluth = L["Gluth"]
 	local data = {
-		version = 297,
+		version = 298,
 		key = "gluth",
 		zone = L["Naxxramas"],
 		name = L_Gluth,
@@ -14,6 +14,7 @@ do
 			tracerstart = true,
 			tracerstop = true,
 			combatstop = true,
+			defeat = 15932,
 		},
 		userdata = {},
 		onstart = {

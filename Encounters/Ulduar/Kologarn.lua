@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 298,
+		version = 299,
 		key = "kologarn", 
 		zone = L["Ulduar"], 
 		name = L["Kologarn"], 
@@ -17,6 +17,7 @@ do
 			tracerstart = true,
 			tracerstop = true,
 			combatstop = true,
+			defeat = 32930,
 		},
 		onstart = {
 			{

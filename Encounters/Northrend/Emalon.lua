@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 298,
+		version = 299,
 		key = "emalon", 
 		zone = L["Vault of Archavon"], 
 		category = L["Northrend"],
@@ -18,6 +18,7 @@ do
 			tracerstart = true,
 			tracerstop = true,
 			combatstop = true,
+			defeat = 33993,
 		},
 		userdata = {},
 		onstart = {

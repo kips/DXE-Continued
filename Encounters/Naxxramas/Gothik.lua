@@ -2,7 +2,7 @@ do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 
 	local data = {
-		version = 297,
+		version = 298,
 		key = "gothiktheharvester",
 		zone = L["Naxxramas"],
 		name = L["Gothik the Harvester"],
@@ -13,6 +13,7 @@ do
 		onactivate = {
 			tracing = {16060}, -- Gothik the Harvester
 			combatstop = true,
+			defeat = 16060,
 		},
 		userdata = {},
 		onstart = {

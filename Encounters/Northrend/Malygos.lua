@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 297,
+		version = 298,
 		key = "malygos", 
 		zone = L["The Eye of Eternity"], 
 		category = L["Northrend"],
@@ -19,6 +19,7 @@ do
 			tracerstart = true,
 			tracerstop = true,
 			combatstop = true,
+			defeat = 28859,
 		},
 		userdata = { 
 			phase = 1,

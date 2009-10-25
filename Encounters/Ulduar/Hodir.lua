@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 298,
+		version = 299,
 		key = "hodir", 
 		zone = L["Ulduar"], 
 		name = L["Hodir"], 
@@ -13,6 +13,7 @@ do
 			tracerstart = true,
 			tracerstop = true,
 			combatstop = true,
+			defeat = L["I am released from his grasp"],
 		},
 		userdata = {},
 		onstart = {

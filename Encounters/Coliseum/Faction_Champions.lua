@@ -52,7 +52,7 @@ do
 
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 5,
+		version = 6,
 		key = "factionchampions", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -65,6 +65,7 @@ do
 			combatstart = true,
 			combatstop = true,
 			sortedtracing = npc_list,
+			defeat = L["^A shallow and tragic victory"],
 		},
 		alerts = {
 			bloodlustwarn = {

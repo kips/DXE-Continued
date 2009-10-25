@@ -4,7 +4,7 @@ do
 	local L_Grobbulus = L["Grobbulus"]
 
 	local data = {
-		version = 297,
+		version = 298,
 		key = "grobbulus",
 		zone = L["Naxxramas"],
 		name = L_Grobbulus,
@@ -16,6 +16,7 @@ do
 			tracerstart = true,
 			tracerstop = true,
 			combatstop = true,
+			defeat = 15931,
 		},
 		userdata = {},
 		onstart = {

@@ -2,7 +2,7 @@ do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 
 	local data = {
-		version = 297,
+		version = 298,
 		key = "maexxna", 
 		zone = L["Naxxramas"], 
 		name = L["Maexxna"], 
@@ -14,6 +14,7 @@ do
 			tracerstart = true,
 			tracerstop = true,
 			combatstop = true,
+			defeat = 15952,
 		},
 		userdata = {},
 		onstart = {

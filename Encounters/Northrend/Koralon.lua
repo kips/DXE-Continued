@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 3,
+		version = 4,
 		key = "koralon", 
 		zone = L["Vault of Archavon"], 
 		category = L["Northrend"],
@@ -15,6 +15,7 @@ do
 			tracing = {35013},
 			tracerstart = true,
 			combatstop = true,
+			defeat = 35013,
 		},
 		userdata = {
 			meteortime = {28,47,loop = false}, -- recheck

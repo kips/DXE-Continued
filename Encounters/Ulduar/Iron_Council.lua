@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 298,
+		version = 299,
 		key = "ironcouncil", 
 		zone = L["Ulduar"], 
 		name = L["The Iron Council"], 
@@ -20,6 +20,11 @@ do
 			},
 			tracerstart = true,
 			combatstop = true,
+			defeat = {
+				32867, -- Steelbreaker
+				32927, -- Runemaster Molgeim
+				32857, -- Stormcaller Brundir
+			},
 		},
 		userdata = {
 			overwhelmtime = 35,

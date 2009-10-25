@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 297,
+		version = 298,
 		key = "razorscale", 
 		zone = L["Ulduar"], 
 		name = L["Razorscale"], 
@@ -17,6 +17,7 @@ do
 		onactivate = {
 			tracing = {33186}, -- Razorscale
 			combatstop = true,
+			defeat = 33186,
 		},
 		onstart = {
 			{

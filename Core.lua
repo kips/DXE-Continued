@@ -75,6 +75,7 @@ local defaults = {
 			ALERT9 = "Neo Beep",
 			ALERT10 = "PvP Flag Taken",
 			ALERT11 = "Bad Press",
+			VICTORY = "FF1 Victory",
 		},
 	},
 }
@@ -338,6 +339,8 @@ local CE
 -- Received database
 local RDB
 
+local DEFEAT_NID
+
 local RegisterQueue = {}
 local Initialized = false
 function addon:RegisterEncounter(data)
@@ -413,6 +416,46 @@ function addon:OpenWindows()
 	end
 end
 
+do
+	local frame = CreateFrame("Frame")
+	local DEFEAT_YELL
+	local DEFEAT_TBL = {}
+
+	frame:SetScript("OnEvent",function(self,event,msg)
+		if find(msg,DEFEAT_YELL) then addon:TriggerDefeat() end
+	end)
+
+	function addon:ResetDefeat()
+		wipe(DEFEAT_TBL)
+		DEFEAT_NID = nil
+		DEFEAT_YELL = nil
+		frame:UnregisterEvent("CHAT_MSG_MONSTER_YELL")
+	end
+
+	function addon:ResetDefeatTbl() 
+		for k in pairs(DEFEAT_TBL) do DEFEAT_TBL[k] = false end
+	end
+
+	function addon:TriggerDefeat()
+		self:StopEncounter()
+		PlaySoundFile(SM:Fetch("sound",pfl.Sounds.VICTORY))
+	end
+
+	function addon:SetDefeat(defeat)
+		if not defeat then return end
+		if type(defeat) == "number" then
+			DEFEAT_NID = defeat
+		elseif type(defeat) == "string" then
+			DEFEAT_YELL = defeat
+		elseif type(defeat) == "table" then
+			for k,v in ipairs(defeat) do DEFEAT_TBL[v] = false end
+			DEFEAT_NID = DEFEAT_TBL
+		end
+
+		if DEFEAT_YELL then frame:RegisterEvent("CHAT_MSG_MONSTER_YELL") end
+	end
+end
+
 --- Change the currently-active encounter.
 function addon:SetActiveEncounter(key)
 	--@debug@
@@ -431,6 +474,7 @@ function addon:SetActiveEncounter(key)
 	self:StopEncounter() 
 
 	self:UnregisterEvent("PLAYER_REGEN_ENABLED")
+	self:UnregisterEvent("PLAYER_REGEN_DISABLED")
 
 	self.Pane.SetFolderValue(key)
 
@@ -438,6 +482,9 @@ function addon:SetActiveEncounter(key)
 
 	self:CloseAllHW()
 	self:ResetSortedTracing()
+
+	self:ResetDefeat()
+
 	if CE.onactivate then
 		local oa = CE.onactivate
 		self:SetTracerStart(oa.tracerstart)
@@ -449,6 +496,8 @@ function addon:SetActiveEncounter(key)
 
 		self:SetCombat(oa.combatstop,"PLAYER_REGEN_ENABLED","CombatStop")
 		self:SetCombat(oa.combatstart,"PLAYER_REGEN_DISABLED","CombatStart")
+
+		self:SetDefeat(oa.defeat)
 	end
 	-- For the empty encounter
 	self:ShowFirstHW()
@@ -459,11 +508,12 @@ end
 -- Start the current encounter
 function addon:StartEncounter(...)
 	if self:IsRunning() then return end
-	self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED","UNIT_DIED")
+	self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 	self.callbacks:Fire("StartEncounter",...)
 	self:StartTimer()
 	self:StartSortedTracing()
 	self:UpdatePaneVisibility()
+	self:PauseScanning()
 end
 
 -- Stop the current encounter
@@ -475,6 +525,8 @@ function addon:StopEncounter()
 	self:StopSortedTracing()
 	self:StopTimer()
 	self:UpdatePaneVisibility()
+	self:ResumeScanning()
+	self:ResetDefeatTbl()
 end
 
 do
@@ -665,34 +717,31 @@ do
 	end
 
 	local ScanHandle
+	function addon:PauseScanning() 
+		if ScanHandle then self:CancelTimer(ScanHandle); ScanHandle = nil end 
+	end
+
+	function addon:ResumeScanning() 
+		if not ScanHandle then ScanHandle = self:ScheduleRepeatingTimer("ScanUpdate",5) end 
+	end
+
 	function addon:UpdateTriggers()
 		-- Clear trigger tables
 		wipe(TRGS_NPCID)
 		wipe(TRGS_YELL)
 		self:UnregisterEvent("CHAT_MSG_MONSTER_YELL")
 		self:CancelTimer(ScanHandle,true)
+		ScanHandle = nil
 		-- Build trigger lists
 		local scan, yell = BuildTriggerLists()
 		self.TriggerZone = scan or yell
 		-- Start invokers
-		if scan then ScanHandle = self:ScheduleRepeatingTimer("ScanUpdate",2) end
+		if scan then ScanHandle = self:ScheduleRepeatingTimer("ScanUpdate",5) end
 		if yell then self:RegisterEvent("CHAT_MSG_MONSTER_YELL") end
 	end
 	addon:ThrottleFunc("UpdateTriggers",1,true)
 end
 
-function addon:CHAT_MSG_MONSTER_YELL(_,msg,...)
-	--@debug@
-	debug("CHAT_MSG_MONSTER_YELL",msg,...)
-	--@end-debug@
-	for fragment,key in pairs(TRGS_YELL) do
-		if find(msg,fragment) then
-			self:SetActiveEncounter(key)
-			self:StopEncounter()
-			self:StartEncounter(msg)
-		end
-	end
-end
 
 function addon:Scan()
 	for _,unit in pairs(Roster.unit_to_unittarget) do
@@ -1297,19 +1346,6 @@ local SeenNIDS = {}
 addon.SortedCache = SortedCache
 addon.SeenNIDS = SeenNIDS
 --@end-debug@
-
-function addon:UNIT_DIED(_, _,eventtype, _, _, _, dstGUID)
-	if eventtype ~= "UNIT_DIED" then return end
-	for i,hw in ipairs(HW) do
-		local npcid = NID[dstGUID]
-		if hw:IsOpen() and hw:GetGoal() == npcid then
-			hw:SetInfoBundle(DEAD,0)
-			local k = search(SortedCache,npcid,1)
-			if k then SortedCache[k][2] = 0 end
-			break
-		end
-	end
-end
 
 -- Currently, only four are needed. We don't want to clutter the screen
 local UNKNOWN = _G.UNKNOWN
@@ -1945,6 +1981,52 @@ do
 			else
 				defaults[var].enabled = winData.defaultEnabled
 			end
+		end
+	end
+end
+
+---------------------------------------------
+-- SHARED EVENTS
+---------------------------------------------
+
+function addon:COMBAT_LOG_EVENT_UNFILTERED(_, _,eventtype, _, _, _, dstGUID)
+	if eventtype ~= "UNIT_DIED" then return end
+	local npcid = NID[dstGUID]
+	if not npcid then return end
+
+	-- Health watchers
+	for i,hw in ipairs(HW) do
+		if hw:IsOpen() and hw:GetGoal() == npcid then
+			hw:SetInfoBundle(DEAD,0)
+			local k = search(SortedCache,npcid,1)
+			if k then SortedCache[k][2] = 0 end
+			break
+		end
+	end
+
+	if not DEFEAT_NID then return end
+	if type(DEFEAT_NID) == "number" and DEFEAT_NID == npcid then 
+		addon:TriggerDefeat()
+	else -- table
+		if type(DEFEAT_NID[npcid]) == "boolean" then DEFEAT_NID[npcid] = true 
+		else return end
+		local flag = true
+		for k,v in pairs(DEFEAT_NID) do
+			if not v then flag = false; break end
+		end
+		if flag then addon:TriggerDefeat() end
+	end
+end
+
+function addon:CHAT_MSG_MONSTER_YELL(_,msg,...)
+	--@debug@
+	debug("CHAT_MSG_MONSTER_YELL",msg,...)
+	--@end-debug@
+	for fragment,key in pairs(TRGS_YELL) do
+		if find(msg,fragment) then
+			self:SetActiveEncounter(key)
+			self:StopEncounter()
+			self:StartEncounter(msg)
 		end
 	end
 end

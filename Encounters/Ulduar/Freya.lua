@@ -2,7 +2,7 @@ do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 
 	local data = {
-		version = 300,
+		version = 301,
 		key = "freya", 
 		zone = L["Ulduar"], 
 		name = L["Freya"], 
@@ -21,6 +21,7 @@ do
 			tracerstart = true,
 			tracerstop = true,
 			combatstop = true,
+			defeat = L["^His hold on me dissipates"],
 		},
 		userdata = {
 			spawntime = {10,60,loop=false},

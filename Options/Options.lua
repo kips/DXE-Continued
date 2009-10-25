@@ -487,7 +487,7 @@ local function InitializeOptions()
 			function handler:GetSounds()
 				table.wipe(sounds)
 				for id,name in pairs(db.profile.Sounds) do
-					sounds[id] = id
+					if id:find("^ALERT") then sounds[id] = id end
 				end
 				sounds["None"] = L["None"]
 				return sounds
@@ -1112,7 +1112,7 @@ local function InitializeOptions()
 			end
 
 			local sounds = {}
-			for id,name in pairs(db.profile.Sounds) do sounds[id] = id end
+			for id,name in pairs(db.profile.Sounds) do if id:find("^ALERT") then sounds[id] = id end end
 			sounds["None"] = L["None"]
 
 			local intro_desc = L["You can fire local or raid bars. Local bars are only seen by you. Raid bars are seen by you and raid members; You have to be a raid officer to fire raid bars"]

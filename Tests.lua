@@ -1,5 +1,37 @@
 local addon = DXE
+
 --[[
+local map = {1,2,3,4,5,6,7,8,9,"A","B","C","D","E","F"}
+map[0] = "0"
+
+local function tohex(num,...)
+	if num == 0 then
+		return table.concat({...})
+	else
+		return tohex(math.floor(num / 16), map[num % 16], ...)
+	end
+end
+
+local function npcid(num) return "0x005000"..tohex(num).."000000" end
+
+function addon:ANUBDEATHTEST()
+	addon:COMBAT_LOG_EVENT_UNFILTERED(_, _,"UNIT_DIED", _, _, _, npcid(34564))
+end
+
+function addon:HORSEMENTEST()
+	local _ = nil
+	local eventtype = "UNIT_DIED"
+	
+	local nid1 = npcid(16064)
+	local nid2 = npcid(30549)
+	local nid3 = npcid(16065)
+	local nid4 = npcid(16063)
+	addon:COMBAT_LOG_EVENT_UNFILTERED(_, _,eventtype, _, _, _, nid1)
+	addon:COMBAT_LOG_EVENT_UNFILTERED(_, _,eventtype, _, _, _, nid2)
+	addon:COMBAT_LOG_EVENT_UNFILTERED(_, _,eventtype, _, _, _, nid3)
+	addon:COMBAT_LOG_EVENT_UNFILTERED(_, _,eventtype, _, _, _, nid4)
+end
+
 
 function addon:YOGGTEST()
 	self:SetActiveEncounter("yoggsaron")
