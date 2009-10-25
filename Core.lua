@@ -86,7 +86,7 @@ local defaults = {
 
 local addon = LibStub("AceAddon-3.0"):NewAddon("DXE","AceEvent-3.0","AceTimer-3.0","AceComm-3.0","AceSerializer-3.0")
 _G.DXE = addon
-addon.version = 392
+addon.version = 393
 addon:SetDefaultModuleState(false)
 addon.callbacks = LibStub("CallbackHandler-1.0"):New(addon)
 addon.defaults = defaults
@@ -2007,9 +2007,8 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED(_, _,eventtype, _, _, _, dstGUID)
 	if not DEFEAT_NID then return end
 	if type(DEFEAT_NID) == "number" and DEFEAT_NID == npcid then 
 		addon:TriggerDefeat()
-	else -- table
-		if type(DEFEAT_NID[npcid]) == "boolean" then DEFEAT_NID[npcid] = true 
-		else return end
+	elseif type(DEFEAT_NID) == "table" and DEFEAT_NID[npcid] == false then 
+		DEFEAT_NID[npcid] = true
 		local flag = true
 		for k,v in pairs(DEFEAT_NID) do
 			if not v then flag = false; break end
