@@ -12,6 +12,7 @@ local debugDefaults = {
 	RAID_ROSTER_UPDATE = false,
 	PARTY_MEMBERS_CHANGED = false,
 	BlockBossEmotes = false,
+	TriggerDefeat = false,
 }
 --@end-debug@
 
@@ -86,7 +87,7 @@ local defaults = {
 
 local addon = LibStub("AceAddon-3.0"):NewAddon("DXE","AceEvent-3.0","AceTimer-3.0","AceComm-3.0","AceSerializer-3.0")
 _G.DXE = addon
-addon.version = 393
+addon.version = 394
 addon:SetDefaultModuleState(false)
 addon.callbacks = LibStub("CallbackHandler-1.0"):New(addon)
 addon.defaults = defaults
@@ -340,6 +341,7 @@ local CE
 local RDB
 
 local DEFEAT_NID
+local DEFEAT_NIDS
 
 local RegisterQueue = {}
 local Initialized = false
@@ -428,6 +430,7 @@ do
 	function addon:ResetDefeat()
 		wipe(DEFEAT_TBL)
 		DEFEAT_NID = nil
+		DEFEAT_NIDS = nil
 		DEFEAT_YELL = nil
 		frame:UnregisterEvent("CHAT_MSG_MONSTER_YELL")
 	end
@@ -439,6 +442,9 @@ do
 	function addon:TriggerDefeat()
 		self:StopEncounter()
 		PlaySoundFile(SM:Fetch("sound",pfl.Sounds.VICTORY))
+		--@debug@
+		debug("TriggerDefeat","key: %s",CE.key)
+		--@end-debug@
 	end
 
 	function addon:SetDefeat(defeat)
@@ -449,7 +455,7 @@ do
 			DEFEAT_YELL = defeat
 		elseif type(defeat) == "table" then
 			for k,v in ipairs(defeat) do DEFEAT_TBL[v] = false end
-			DEFEAT_NID = DEFEAT_TBL
+			DEFEAT_NIDS = DEFEAT_TBL
 		end
 
 		if DEFEAT_YELL then frame:RegisterEvent("CHAT_MSG_MONSTER_YELL") end
@@ -2005,12 +2011,12 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED(_, _,eventtype, _, _, _, dstGUID)
 	end
 
 	if not DEFEAT_NID then return end
-	if type(DEFEAT_NID) == "number" and DEFEAT_NID == npcid then 
+	if DEFEAT_NID == npcid then 
 		addon:TriggerDefeat()
-	elseif type(DEFEAT_NID) == "table" and DEFEAT_NID[npcid] == false then 
-		DEFEAT_NID[npcid] = true
+	elseif DEFEAT_NIDS and DEFEAT_NIDS[npcid] == false then 
+		DEFEAT_NIDS[npcid] = true
 		local flag = true
-		for k,v in pairs(DEFEAT_NID) do
+		for k,v in pairs(DEFEAT_NIDS) do
 			if not v then flag = false; break end
 		end
 		if flag then addon:TriggerDefeat() end
