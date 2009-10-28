@@ -1,10 +1,10 @@
 ## Interface: 30300
-## Title: DXE |cff99ff33Icecrown|r
-## Notes: Deus Vox Encounters |cff99ff33Icecrown|r
+## Title: DXE |cff99ff33Citadel|r
+## Notes: Deus Vox Encounters |cff99ff33Citadel|r
 ## Author: Kollektiv
 ## LoadOnDemand: 1
 ## Dependencies: DXE
-## X-DXE-Category: Icecrown
+## X-DXE-Category: Citadel
 ## X-DXE-Zone: Icecrown Citadel
 
 Locales.lua

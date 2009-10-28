@@ -48,7 +48,7 @@
 
 <Script file="Encounters\Kalimdor\Onyxia.lua"/>
 
-<Script file="Encounters\Icecrown\Festergut.lua"/>
-<Script file="Encounters\Icecrown\Marrowgar.lua"/>
+<Script file="Encounters\Citadel\Festergut.lua"/>
+<Script file="Encounters\Citadel\Marrowgar.lua"/>
 
 </Ui>

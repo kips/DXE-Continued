@@ -4,7 +4,7 @@ do
 		version = 1,
 		key = "festergut", 
 		zone = L["Icecrown Citadel"], 
-		category = L["Icecrown"], 
+		category = L["Citadel"], 
 		name = L["Festergut"], 
 		triggers = {
 			scan = {36626}, -- Festergut

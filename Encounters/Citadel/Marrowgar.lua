@@ -4,7 +4,7 @@ do
 		version = 1,
 		key = "marrowgar", 
 		zone = L["Icecrown Citadel"], 
-		category = L["Icecrown"], 
+		category = L["Citadel"], 
 		name = L["Marrowgar"], 
 		triggers = {
 			scan = {36612}, -- Lord Marrowgar
