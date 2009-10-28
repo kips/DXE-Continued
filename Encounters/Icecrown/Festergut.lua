@@ -159,7 +159,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_SUCCESS",
-				spellid = 71307,
+				spellid = 71307, -- Tooltip only displays 'Instant' as the description
 				execute = {
 					{
 						"quash","vilegascd",
