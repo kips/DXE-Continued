@@ -13,6 +13,8 @@ do
 		onactivate = {
 			combatstop = true,
 			tracing = {36626}, -- Festergut
+		},
+		userdata = {
 			inhaletime = {28.9, 33.8, loop = false},
 			sporetime = {13.6, 35, loop = false},
 			pungenttime = {116, 105, loop = false},
@@ -72,7 +74,7 @@ do
 				time = 20,
 				flashtime = 5,
 				color1 = "ORANGE",
-				icon = ST[71307],
+				icon = ST[71288],
 			},
 			vilegaswarn = {
 				varname = format(L["%s Warning"],SN[71307]),
@@ -81,7 +83,7 @@ do
 				time = 3,
 				color1 = "GREEN",
 				sound = "ALERT3",
-				icon = ST[71307],
+				icon = ST[71288],
 			},
 			pungentblightwarn ={
 				varname = format(L["%s Cast"],SN[71219]),
@@ -135,6 +137,7 @@ do
 				spellid = 71221,
 				execute = {
 					{
+						"quash","gassporecd",
 						"alert","gassporedur",
 						"alert","gassporecd",
 					},
@@ -159,6 +162,7 @@ do
 				spellid = 71307,
 				execute = {
 					{
+						"quash","vilegascd",
 						"alert","vilegascd",
 						"alert","vilegaswarn",
 					},
