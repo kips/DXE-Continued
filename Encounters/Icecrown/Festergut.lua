@@ -68,18 +68,18 @@ do
 				icon = ST[71221],
 			},
 			vilegascd = {
-				varname = format(L["%s Cooldown"],SN[71307]),
+				varname = format(L["%s Cooldown"],SN[71218]),
 				type = "dropdown",
-				text = format(L["%s Cooldown"],SN[71307]),
+				text = format(L["%s Cooldown"],SN[71218]),
 				time = 20,
 				flashtime = 5,
 				color1 = "ORANGE",
 				icon = ST[71288],
 			},
 			vilegaswarn = {
-				varname = format(L["%s Warning"],SN[71307]),
+				varname = format(L["%s Warning"],SN[71218]),
 				type = "simple",
-				text = format(L["%s Casted"],SN[71307]).."!",
+				text = format(L["%s Casted"],SN[71218]).."!",
 				time = 3,
 				color1 = "GREEN",
 				sound = "ALERT3",
@@ -159,7 +159,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_SUCCESS",
-				spellid = 71307, -- Tooltip only displays 'Instant' as the description
+				spellid = 71218, -- Note: Don't use 71307
 				execute = {
 					{
 						"quash","vilegascd",
