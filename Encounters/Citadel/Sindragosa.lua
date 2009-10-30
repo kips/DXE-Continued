@@ -2,17 +2,17 @@ do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
 		version = 1,
-		key = "marrowgar", 
+		key = "sindragosa", 
 		zone = L["Icecrown Citadel"], 
 		category = L["Citadel"], 
-		name = L["Marrowgar"], 
+		name = L["Sindragosa"], 
 		triggers = {
-			scan = {36612}, -- Lord Marrowgar
-			yell = L["^The Scourge will wash over this world"],
+			scan = {36853}, -- Sindragosa
+			yell = L["^You are fools to have come to this place"],
 		},
 		onactivate = {
 			combatstop = true,
-			tracing = {36612}, -- Lord Marrowgar
+			tracing = {36853}, -- Sindragosa
 		},
 	}
 

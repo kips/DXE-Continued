@@ -48,7 +48,17 @@
 
 <Script file="Encounters\Kalimdor\Onyxia.lua"/>
 
+<Script file="Encounters\Citadel\Council.lua"/>
+<Script file="Encounters\Citadel\Deathwhisper.lua"/>
+<Script file="Encounters\Citadel\Deathbringer.lua"/>
 <Script file="Encounters\Citadel\Festergut.lua"/>
+<Script file="Encounters\Citadel\Gunship_Battle.lua"/>
+<Script file="Encounters\Citadel\Lanathel.lua"/>
+<Script file="Encounters\Citadel\Lich_King.lua"/>
 <Script file="Encounters\Citadel\Marrowgar.lua"/>
+<Script file="Encounters\Citadel\Putricide.lua"/>
+<Script file="Encounters\Citadel\Rotface.lua"/>
+<Script file="Encounters\Citadel\Sindragosa.lua"/>
+<Script file="Encounters\Citadel\Valithria.lua"/>
 
 </Ui>

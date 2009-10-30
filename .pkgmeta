@@ -65,3 +65,4 @@ move-folders:
     DXE/Encounters/Northrend: DXE_Northrend
     DXE/Encounters/Coliseum: DXE_Coliseum
     DXE/Encounters/Kalimdor: DXE_Kalimdor
+    DXE/Encounters/Citadel: DXE_Citadel

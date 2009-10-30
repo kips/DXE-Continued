@@ -1,0 +1,23 @@
+## Interface: 30300
+## Title: DXE |cff99ff33Icecrown Citadel|r
+## Notes: Deus Vox Encounters |cff99ff33Icecrown Citadel|r
+## Author: Kollektiv
+## LoadOnDemand: 1
+## Dependencies: DXE
+## X-DXE-Category: Citadel
+## X-DXE-Zone: Icecrown Citadel
+
+Locales.lua
+
+Council.lua
+Deathwhisper.lua
+Deathbringer.lua
+Festergut.lua
+Gunship_Battle.lua
+Lanathel.lua
+Lich_King.lua
+Marrowgar.lua
+Putricide.lua
+Rotface.lua
+Sindragosa.lua
+Valithria.lua
