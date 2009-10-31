@@ -707,8 +707,13 @@ do
 	local COMMTYPE = "AlertsRaidBar"
 
 	local function fire(text,time,color,icon)
-		if time > DROPDOWN_THRES then module:Dropdown(ID_PREFIX..text,text,time,DROPDOWN_THRES,pfl.CustomSound,color,nil,nil,icon)
-		else module:CenterPopup(ID_PREFIX..text,text,time,nil,pfl.CustomSound,color,nil,nil,icon) end
+		local id = ID_PREFIX..text
+		module:QuashByPattern(id)
+		if time > DROPDOWN_THRES then 
+			module:Dropdown(id,text,time,DROPDOWN_THRES,pfl.CustomSound,color,nil,nil,icon)
+		else 
+			module:CenterPopup(id,text,time,nil,pfl.CustomSound,color,nil,nil,icon) 
+		end
 	end
 
 	local function parse(msg,slash)
