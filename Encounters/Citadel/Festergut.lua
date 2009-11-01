@@ -122,7 +122,9 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
-				spellid = 69165,
+				spellid = {
+					69165, -- 25
+				},
 				execute = {
 					{
 						"alert","inhaleblightcd",
@@ -134,7 +136,9 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_SUCCESS",
-				spellid = 71221,
+				spellid = {
+					71221, -- 25
+				},
 				execute = {
 					{
 						"quash","gassporecd",
@@ -147,7 +151,9 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellid = 71221,
+				spellid = {
+					71221, -- 25
+				},
 				execute = {
 					{
 						"expect",{"#4#","==","&playerguid&"},
@@ -159,7 +165,9 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_SUCCESS",
-				spellid = 71218, -- Note: Don't use 71307
+				spellid = { -- Note: Don't use 71307
+					71218, -- 25
+				},
 				execute = {
 					{
 						"quash","vilegascd",
@@ -172,7 +180,9 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellid = 71218,
+				spellid = {
+					71218, -- 25
+				},
 				execute = {
 					{
 						"raidicon","vilegasmark",
@@ -183,7 +193,9 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
-				spellid = 71219,
+				spellid = {
+					71219, -- 25
+				},
 				execute = {
 					{
 						"alert","pungentblightcd",
