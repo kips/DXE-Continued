@@ -13,9 +13,16 @@ do
 		onactivate = {
 			combatstop = true,
 			tracing = {36853}, -- Sindragosa
+			defeat = 36853, -- Sindragosa
 		},
 		userdata = {
 			chilledtext = "",
+			airtime = {63.5,110,loop = false},
+		},
+		onstart = {
+			{
+				"alert","aircd",
+			},
 		},
 		alerts = {
 			icetombcast = {
@@ -87,6 +94,15 @@ do
 				--color1 = ,
 				icon = ST[70106],
 			},
+			aircd = {
+				varname = format(L["%s Cooldown"],L["Air Phase"]),
+				type = "dropdown",
+				text = format("Next %s",L["Air Phase"]),
+				time = "<airtime>",
+				flashtime = 10,
+				--color1 = ,
+				icon = ST[45134],
+			},
 			airdur = {
 				varname = format(L["%s Duration"],L["Air Phase"]),
 				type = "dropdown",
@@ -137,10 +153,13 @@ do
 					-- Air phase
 					{
 						"expect",{"#1#","find",L["^Your incursion ends here"]},
+						"quash","aircd",
+						"alert","aircd",
 					},
 					-- Last Phase
 					{
 						"expect",{"#1#","find",L["^Now, feel my master's limitless power"]},
+						"quash","aircd",
 					},
 				},
 			},
