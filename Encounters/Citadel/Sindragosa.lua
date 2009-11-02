@@ -25,7 +25,7 @@ do
 			},
 		},
 		alerts = {
-			icetombcast = {
+			icetombwarn = {
 				varname = format(L["%s Cast"],SN[69712]),
 				type = "centerpopup",
 				text = format(L["%s Cast"],SN[69712]),
@@ -116,7 +116,7 @@ do
 				varname = format(L["%s ETA"],SN[71053]),
 				type = "centerpopup",
 				text = format(L["%s Hits"],SN[71053]),
-				time = 5.85, -- ranges from 5.3 to 6.5
+				time = 5.85, -- average: ranges from 5.3 to 6.5
 				flashtime = 5.85,
 				--color1 = ,
 				sound = "ALERT5",
@@ -172,7 +172,7 @@ do
 				},
 				execute = {
 					{
-						"alert","icetombcast",
+						"alert","icetombwarn",
 					},
 				},
 			},
