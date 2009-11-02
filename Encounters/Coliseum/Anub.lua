@@ -26,7 +26,7 @@ do
 				"set",{nerubiantime = 5.5},
 				"expect",{"&difficulty&",">=","3"},
 				"alert","shadowstrikecd",
-				"scheduletimer",{"fireshadowstrike",30},
+				"scheduletimer",{"fireshadowstrike",30.5},
 			},
 		},
 		userdata = {
@@ -34,7 +34,7 @@ do
 			nerubiantime = 10.5,
 			leeching = 0,
 			burrowed = 0,
-			striketime = 30,
+			striketime = 30.5,
 		},
 		timers = {
 			firenerubian = {
@@ -54,7 +54,7 @@ do
 			fireshadowstrike = {
 				{
 					"alert","shadowstrikecd",
-					"scheduletimer",{"fireshadowstrike",30},
+					"scheduletimer",{"fireshadowstrike",30.5},
 				},
 			},
 		},
@@ -232,7 +232,7 @@ do
 						"alert","shadowstrikewarn",
 						"quash","shadowstrikecd",
 						"alert","shadowstrikecd",
-						"scheduletimer",{"fireshadowstrike",30},
+						"scheduletimer",{"fireshadowstrike",30.5},
 					},
 				},
 			},
@@ -313,7 +313,7 @@ do
 						"quash","shadowstrikecd",
 						"alert","shadowstrikecd",
 						"scheduletimer",{"fireshadowstrike","<striketime>"},
-						"set",{striketime = 30},
+						"set",{striketime = 30.5},
 					},
 				},
 			},
