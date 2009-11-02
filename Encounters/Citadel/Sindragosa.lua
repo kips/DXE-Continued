@@ -107,8 +107,7 @@ do
 				varname = format(L["%s Duration"],L["Air Phase"]),
 				type = "dropdown",
 				text = L["Air Phase"],
-				time = 51, -- 46 SPELL_CAST_START none of these are consistent if sindragosa is tanked on the side
-				-- find a trigger to determine exact one
+				time = 47,
 				flashtime = 10,
 				--color1 = ,
 				icon = ST[45134],
@@ -155,6 +154,7 @@ do
 						"expect",{"#1#","find",L["^Your incursion ends here"]},
 						"quash","aircd",
 						"alert","aircd",
+						"alert","airdur",
 					},
 					-- Last Phase
 					{
