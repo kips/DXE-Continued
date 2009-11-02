@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 33,
+		version = 34,
 		key = "anubcoliseum", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -34,6 +34,7 @@ do
 			nerubiantime = 10.5,
 			leeching = 0,
 			burrowed = 0,
+			striketime = 30,
 		},
 		timers = {
 			firenerubian = {
@@ -120,7 +121,7 @@ do
 				varname = format(L["%s Cooldown"],SN[66134]),
 				type = "dropdown", 
 				text = format(L["%s Cooldown"],SN[66134]),
-				time = 30,
+				time = "<striketime>",
 				flashtime = 10,
 				color1 = "VIOLET",
 				icon = ST[66135],
@@ -304,6 +305,15 @@ do
 						"expect",{"&difficulty&","<=","2"},
 						"quash","nerubiancd",
 						"canceltimer","firenerubian",
+					},
+					{
+						"expect",{"&difficulty&",">=","3"},
+						"expect",{"&timeleft|shadowstrikecd&",">","0"},
+						"set",{striketime = "&timeleft|shadowstrikecd|1.5&"},
+						"quash","shadowstrikecd",
+						"alert","shadowstrikecd",
+						"scheduletimer",{"fireshadowstrike","<striketime>"},
+						"set",{striketime = 30},
 					},
 				},
 			},

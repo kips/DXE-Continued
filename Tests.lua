@@ -93,6 +93,12 @@ end
 
 ]]
 
+--[[
+function addon:LEECHINGSWARMTEST()
+	self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_CAST_START",nil,nil,nil,nil,nil,nil,66118)
+end
+
+
 do
 	local t = {}
 	function addon:PENCOLDTEST()
@@ -108,6 +114,7 @@ do
 		end
 	end
 end
+]]
 
 
 --[[
