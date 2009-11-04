@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 299,
+		version = 300,
 		key = "ironcouncil", 
 		zone = L["Ulduar"], 
 		name = L["The Iron Council"], 
@@ -42,7 +42,7 @@ do
 				varname = L["Enrage"],
 				type = "dropdown",
 				text = L["Enrage"],
-				time = 600,
+				time = 900,
 				flashtime = 5,
 				color1 = "RED",
 				icon = ST[12317],
