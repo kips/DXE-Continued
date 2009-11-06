@@ -8,7 +8,10 @@ do
 		name = L["Gunship Battle"], 
 		title = L["Gunship Battle"], 
 		triggers = {
-			scan = 99999,
+			scan = {
+				36939, -- Saurfang
+				36948, -- Muradin
+			},
 			yell = {
 				L["^Cowardly dogs"], -- Alliance
 				-- Horde
