@@ -31,7 +31,7 @@ do
 				text = format(L["%s Cast"],SN[69712]),
 				time = 1,
 				flashtime = 1,
-				-- color1 = ,
+				color1 = "INDIGO",
 				sound = "ALERT1",
 				icon = ST[69712],
 			},
@@ -41,7 +41,7 @@ do
 				text = format(L["%s Duration"],SN[70126]),
 				time = 7,
 				flashtime = 7,
-				-- color1 = ,
+				color1 = "GOLD",
 				throttle = 2,
 				icon = ST[70126],
 			},
@@ -50,10 +50,10 @@ do
 				type = "simple",
 				text = format("%s: %s!",SN[70126],L["YOU"]).."!",
 				time = 3,
-				--color1 = ,
 				icon = ST[70126],
 				flashscreen = true,
 			},
+			--[[
 			icygripcd = {
 				varname = format(L["%s Cooldown"],SN[70117]),
 				type = "dropdown",
@@ -63,14 +63,14 @@ do
 				--color1 = ,
 				icon = ST[70117],
 			},
+			]]
 			blisteringcoldwarn = {
 				varname = format(L["%s Cast"],SN[71047]),
 				type = "centerpopup",
 				text = format(L["%s Cast"],SN[71047]),
 				time = 5,
 				flashtime = 5,
-				--color1 = ,
-				--color2 = ,
+				color1 = "ORANGE",
 				sound = "ALERT2",
 				icon = ST[71047],
 			},
@@ -80,7 +80,7 @@ do
 				text = format("%s: %s! %s!",SN[69762],L["YOU"],L["CAREFUL"]),
 				time = 30,
 				flashtime = 30,
-				--color1 = ,
+				color1 = "PURPLE",
 				flashscreen = true,
 				sound = "ALERT3",
 				icon = ST[69762],
@@ -91,7 +91,7 @@ do
 				text = "<chilledtext>",
 				time = 8,
 				flashtime = 8,
-				--color1 = ,
+				color1 = "CYAN",
 				icon = ST[70106],
 			},
 			aircd = {
@@ -100,8 +100,8 @@ do
 				text = format("Next %s",L["Air Phase"]),
 				time = "<airtime>",
 				flashtime = 10,
-				--color1 = ,
-				icon = ST[45134],
+				color1 = "YELLOW",
+				icon = "Interface\\Icons\\INV_Misc_Toy_09",
 			},
 			airdur = {
 				varname = format(L["%s Duration"],L["Air Phase"]),
@@ -109,8 +109,8 @@ do
 				text = L["Air Phase"],
 				time = 47,
 				flashtime = 10,
-				--color1 = ,
-				icon = ST[45134],
+				color1 = "MAGENTA",
+				icon = "Interface\\Icons\\INV_Misc_Toy_09",
 			},
 			frostbombwarn = {
 				varname = format(L["%s ETA"],SN[71053]),
@@ -118,7 +118,7 @@ do
 				text = format(L["%s Hits"],SN[71053]),
 				time = 5.85, -- average: ranges from 5.3 to 6.5
 				flashtime = 5.85,
-				--color1 = ,
+				color1 = "BLUE",
 				sound = "ALERT5",
 				icon = ST[71053],
 			},
@@ -128,7 +128,7 @@ do
 				text = format(L["%s Cast"],SN[71056]),
 				time = 1.5,
 				flashtime = 1.5,
-				--color1 = ,
+				color1 = "BROWN",
 				sound = "ALERT4",
 				icon = ST[71056],
 			},
@@ -207,6 +207,7 @@ do
 					},
 				},
 			},
+			--[[
 			-- Icy Grip
 			{
 				type = "combatevent",
@@ -220,6 +221,7 @@ do
 					},
 				},
 			},
+			]]
 			-- Blistering Cold
 			{
 				type = "combatevent",

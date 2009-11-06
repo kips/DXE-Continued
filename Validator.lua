@@ -147,6 +147,7 @@ local baseTables = {
 		combatstart = optboolean,
 		tracing = opttable,
 		sortedtracing = opttable,
+		defeat = optstringnumbertable,
 	},
 }
 
