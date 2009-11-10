@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 32,
+		version = 34,
 		key = "anubcoliseum", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -15,6 +15,7 @@ do
 		onactivate = {
 			tracing = {34564},
 			combatstop = true,
+			defeat = 34564,
 		},
 		onstart = {
 			{
@@ -25,7 +26,7 @@ do
 				"set",{nerubiantime = 5.5},
 				"expect",{"&difficulty&",">=","3"},
 				"alert","shadowstrikecd",
-				"scheduletimer",{"fireshadowstrike",30},
+				"scheduletimer",{"fireshadowstrike",30.5},
 			},
 		},
 		userdata = {
@@ -33,6 +34,7 @@ do
 			nerubiantime = 10.5,
 			leeching = 0,
 			burrowed = 0,
+			striketime = 30.5,
 		},
 		timers = {
 			firenerubian = {
@@ -52,7 +54,7 @@ do
 			fireshadowstrike = {
 				{
 					"alert","shadowstrikecd",
-					"scheduletimer",{"fireshadowstrike",30},
+					"scheduletimer",{"fireshadowstrike",30.5},
 				},
 			},
 		},
@@ -119,7 +121,7 @@ do
 				varname = format(L["%s Cooldown"],SN[66134]),
 				type = "dropdown", 
 				text = format(L["%s Cooldown"],SN[66134]),
-				time = 30,
+				time = "<striketime>",
 				flashtime = 10,
 				color1 = "VIOLET",
 				icon = ST[66135],
@@ -230,7 +232,7 @@ do
 						"alert","shadowstrikewarn",
 						"quash","shadowstrikecd",
 						"alert","shadowstrikecd",
-						"scheduletimer",{"fireshadowstrike",30},
+						"scheduletimer",{"fireshadowstrike",30.5},
 					},
 				},
 			},
@@ -303,6 +305,15 @@ do
 						"expect",{"&difficulty&","<=","2"},
 						"quash","nerubiancd",
 						"canceltimer","firenerubian",
+					},
+					{
+						"expect",{"&difficulty&",">=","3"},
+						"expect",{"&timeleft|shadowstrikecd&",">","0"},
+						"set",{striketime = "&timeleft|shadowstrikecd|1.5&"},
+						"quash","shadowstrikecd",
+						"alert","shadowstrikecd",
+						"scheduletimer",{"fireshadowstrike","<striketime>"},
+						"set",{striketime = 30.5},
 					},
 				},
 			},

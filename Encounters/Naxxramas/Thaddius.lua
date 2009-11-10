@@ -2,7 +2,7 @@ do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 
 	local data = {
-		version = 297,
+		version = 298,
 		key = "thaddius", 
 		zone = L["Naxxramas"], 
 		name = L["Thaddius"], 
@@ -23,6 +23,7 @@ do
 			tracerstart = true,
 			tracerstop = true,
 			combatstop = true,
+			defeat = 15928,
 		},
 		userdata = { 
 			dead = 0,

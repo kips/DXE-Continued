@@ -2,7 +2,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 309,
+		version = 312,
 		key = "mimiron", 
 		zone = L["Ulduar"], 
 		name = L["Mimiron"], 
@@ -21,6 +21,7 @@ do
 		onactivate = {
 			tracing = {33432}, -- Leviathan Mk II
 			combatstop = true,
+			defeat = L["^It would appear that I've made a slight miscalculation"],
 		},
 		userdata = {
 			plasmablasttime = {14,30,loop = false},
@@ -42,6 +43,9 @@ do
 				"set",{flametime = 27.5},
 				"scheduletimer",{"flames",6.5},
 			},
+		},
+		windows = {
+			proxwindow = true,
 		},
 		timers = {
 			flames = {

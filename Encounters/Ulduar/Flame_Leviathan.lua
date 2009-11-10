@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 298,
+		version = 299,
 		key = "flameleviathan", 
 		zone = L["Ulduar"], 
 		name = L["Flame Leviathan"], 
@@ -12,6 +12,7 @@ do
 		onactivate = {
 			tracing = {33113}, -- Flame Leviathan
 			combatstop = true,
+			defeat = 33113,
 		},
 		userdata = {},
 		onstart = {},

@@ -12,6 +12,7 @@ local debugDefaults = {
 	RAID_ROSTER_UPDATE = false,
 	PARTY_MEMBERS_CHANGED = false,
 	BlockBossEmotes = false,
+	TriggerDefeat = false,
 }
 --@end-debug@
 
@@ -75,6 +76,7 @@ local defaults = {
 			ALERT9 = "Neo Beep",
 			ALERT10 = "PvP Flag Taken",
 			ALERT11 = "Bad Press",
+			VICTORY = "FF1 Victory",
 		},
 	},
 }
@@ -85,7 +87,7 @@ local defaults = {
 
 local addon = LibStub("AceAddon-3.0"):NewAddon("DXE","AceEvent-3.0","AceTimer-3.0","AceComm-3.0","AceSerializer-3.0")
 _G.DXE = addon
-addon.version = 391
+addon.version = 398
 addon:SetDefaultModuleState(false)
 addon.callbacks = LibStub("CallbackHandler-1.0"):New(addon)
 addon.defaults = defaults
@@ -338,6 +340,9 @@ local CE
 -- Received database
 local RDB
 
+local DEFEAT_NID
+local DEFEAT_NIDS
+
 local RegisterQueue = {}
 local Initialized = false
 function addon:RegisterEncounter(data)
@@ -406,6 +411,57 @@ function addon:SetCombat(flag,event,func)
 	if flag then self:RegisterEvent(event,func) end
 end
 
+function addon:OpenWindows()
+	local encdb = pfl.Encounters[CE.key]
+	if encdb and encdb.proxwindow.enabled then
+		self:Proximity()
+	end
+end
+
+do
+	local frame = CreateFrame("Frame")
+	local DEFEAT_YELL
+	local DEFEAT_TBL = {}
+
+	frame:SetScript("OnEvent",function(self,event,msg)
+		if find(msg,DEFEAT_YELL) then addon:TriggerDefeat() end
+	end)
+
+	function addon:ResetDefeat()
+		wipe(DEFEAT_TBL)
+		DEFEAT_NID = nil
+		DEFEAT_NIDS = nil
+		DEFEAT_YELL = nil
+		frame:UnregisterEvent("CHAT_MSG_MONSTER_YELL")
+	end
+
+	function addon:ResetDefeatTbl() 
+		for k in pairs(DEFEAT_TBL) do DEFEAT_TBL[k] = false end
+	end
+
+	function addon:TriggerDefeat()
+		self:StopEncounter()
+		PlaySoundFile(SM:Fetch("sound",pfl.Sounds.VICTORY))
+		--@debug@
+		debug("TriggerDefeat","key: %s",CE.key)
+		--@end-debug@
+	end
+
+	function addon:SetDefeat(defeat)
+		if not defeat then return end
+		if type(defeat) == "number" then
+			DEFEAT_NID = defeat
+		elseif type(defeat) == "string" then
+			DEFEAT_YELL = defeat
+		elseif type(defeat) == "table" then
+			for k,v in ipairs(defeat) do DEFEAT_TBL[v] = false end
+			DEFEAT_NIDS = DEFEAT_TBL
+		end
+
+		if DEFEAT_YELL then frame:RegisterEvent("CHAT_MSG_MONSTER_YELL") end
+	end
+end
+
 --- Change the currently-active encounter.
 function addon:SetActiveEncounter(key)
 	--@debug@
@@ -424,11 +480,17 @@ function addon:SetActiveEncounter(key)
 	self:StopEncounter() 
 
 	self:UnregisterEvent("PLAYER_REGEN_ENABLED")
+	self:UnregisterEvent("PLAYER_REGEN_DISABLED")
 
 	self.Pane.SetFolderValue(key)
 
+	self:OpenWindows()
+
 	self:CloseAllHW()
 	self:ResetSortedTracing()
+
+	self:ResetDefeat()
+
 	if CE.onactivate then
 		local oa = CE.onactivate
 		self:SetTracerStart(oa.tracerstart)
@@ -440,6 +502,8 @@ function addon:SetActiveEncounter(key)
 
 		self:SetCombat(oa.combatstop,"PLAYER_REGEN_ENABLED","CombatStop")
 		self:SetCombat(oa.combatstart,"PLAYER_REGEN_DISABLED","CombatStart")
+
+		self:SetDefeat(oa.defeat)
 	end
 	-- For the empty encounter
 	self:ShowFirstHW()
@@ -450,11 +514,12 @@ end
 -- Start the current encounter
 function addon:StartEncounter(...)
 	if self:IsRunning() then return end
-	self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED","UNIT_DIED")
+	self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 	self.callbacks:Fire("StartEncounter",...)
 	self:StartTimer()
 	self:StartSortedTracing()
 	self:UpdatePaneVisibility()
+	self:PauseScanning()
 end
 
 -- Stop the current encounter
@@ -466,6 +531,8 @@ function addon:StopEncounter()
 	self:StopSortedTracing()
 	self:StopTimer()
 	self:UpdatePaneVisibility()
+	self:ResumeScanning()
+	self:ResetDefeatTbl()
 end
 
 do
@@ -656,34 +723,31 @@ do
 	end
 
 	local ScanHandle
+	function addon:PauseScanning() 
+		if ScanHandle then self:CancelTimer(ScanHandle); ScanHandle = nil end 
+	end
+
+	function addon:ResumeScanning() 
+		if not ScanHandle then ScanHandle = self:ScheduleRepeatingTimer("ScanUpdate",5) end 
+	end
+
 	function addon:UpdateTriggers()
 		-- Clear trigger tables
 		wipe(TRGS_NPCID)
 		wipe(TRGS_YELL)
 		self:UnregisterEvent("CHAT_MSG_MONSTER_YELL")
 		self:CancelTimer(ScanHandle,true)
+		ScanHandle = nil
 		-- Build trigger lists
 		local scan, yell = BuildTriggerLists()
 		self.TriggerZone = scan or yell
 		-- Start invokers
-		if scan then ScanHandle = self:ScheduleRepeatingTimer("ScanUpdate",2) end
+		if scan then ScanHandle = self:ScheduleRepeatingTimer("ScanUpdate",5) end
 		if yell then self:RegisterEvent("CHAT_MSG_MONSTER_YELL") end
 	end
 	addon:ThrottleFunc("UpdateTriggers",1,true)
 end
 
-function addon:CHAT_MSG_MONSTER_YELL(_,msg,...)
-	--@debug@
-	debug("CHAT_MSG_MONSTER_YELL",msg,...)
-	--@end-debug@
-	for fragment,key in pairs(TRGS_YELL) do
-		if find(msg,fragment) then
-			self:SetActiveEncounter(key)
-			self:StopEncounter()
-			self:StartEncounter(msg)
-		end
-	end
-end
 
 function addon:Scan()
 	for _,unit in pairs(Roster.unit_to_unittarget) do
@@ -1289,19 +1353,6 @@ addon.SortedCache = SortedCache
 addon.SeenNIDS = SeenNIDS
 --@end-debug@
 
-function addon:UNIT_DIED(_, _,eventtype, _, _, _, dstGUID)
-	if eventtype ~= "UNIT_DIED" then return end
-	for i,hw in ipairs(HW) do
-		local npcid = NID[dstGUID]
-		if hw:IsOpen() and hw:GetGoal() == npcid then
-			hw:SetInfoBundle(DEAD,0)
-			local k = search(SortedCache,npcid,1)
-			if k then SortedCache[k][2] = 0 end
-			break
-		end
-	end
-end
-
 -- Currently, only four are needed. We don't want to clutter the screen
 local UNKNOWN = _G.UNKNOWN
 function addon:CreateHealthWatchers(Pane)
@@ -1779,7 +1830,7 @@ function addon:CombatStop()
 	--@debug@
 	debug("CombatStop","Invoked")
 	--@end-debug@
-	if (UnitHealth("player") > 0 or UnitIsGhost("player")) and not UnitAffectingCombat("player") then
+	if UnitHealth("player") > 0 and not UnitAffectingCombat("player") then
 		-- If this doesn't work then scan the raid for units in combat
 		if dead then
 			self:ScheduleTimer("CombatStop",4)
@@ -1844,74 +1895,143 @@ end
 -- ENCOUNTER DEFAULTS
 ---------------------------------------------
 
-local OutputInfos = {
-	alerts = { 
-		L = L["Bars"], 
-		order = 100, 
-		defaultEnabled = true ,
-		defaults = {
-			color1 = "Clear",
-			color2 = "Off",
-			sound = "None",
-			flashscreen = false,
-			counter = false,
+do
+	local EncDefaults = {
+		alerts = { 
+			L = L["Bars"], 
+			order = 100, 
+			defaultEnabled = true ,
+			defaults = {
+				color1 = "Clear",
+				color2 = "Off",
+				sound = "None",
+				flashscreen = false,
+				counter = false,
+			},
 		},
-	},
-	raidicons = { 
-		L = L["Raid Icons"], 
-		order = 200, 
-		defaultEnabled = true,
-		defaults = {},
-	},
-	arrows = { 
-		L = L["Arrows"], 
-		order = 300, 
-		defaultEnabled = true,
-		defaults = {
-			sound = "None",
+		raidicons = { 
+			L = L["Raid Icons"], 
+			order = 200, 
+			defaultEnabled = true,
+			defaults = {},
 		},
-	},
-	announces = {
-		L = L["Announces"],
-		order = 400,
-		defaultEnabled = true,
-		defaults = {},
-	},
-}
+		arrows = { 
+			L = L["Arrows"], 
+			order = 300, 
+			defaultEnabled = true,
+			defaults = {
+				sound = "None",
+			},
+		},
+		announces = {
+			L = L["Announces"],
+			order = 400,
+			defaultEnabled = true,
+			defaults = {},
+		},
 
-addon.OutputInfos = OutputInfos
+		-- always add options
+		windows = {
+			L = L["Windows"],
+			order = 500,
+			override = true,
+			list = {
+				proxwindow = {
+					defaultEnabled = false,
+					varname = L["Proximity"],
+				},
+			}
+		}
+	}
 
-function addon:AddEncounterDefaults(data)
-	local defaults = {}
-	self.defaults.profile.Encounters[data.key] = defaults
+	addon.EncDefaults = EncDefaults
 
-	------------------------------------------------------------
-	-- Sound upgrading from versions < 375
-	if pfl.Encounters[data.key] then
-		for var,info in pairs(pfl.Encounters[data.key]) do
-			if type(info) == "table" then
-				if info.sound and info.sound:find("^DXE ALERT%d+") then
-					info.sound = (info.sound:gsub("DXE ",""))
+	function addon:AddEncounterDefaults(data)
+		local defaults = {}
+		self.defaults.profile.Encounters[data.key] = defaults
+
+		------------------------------------------------------------
+		-- Sound upgrading from versions < 375
+		if pfl.Encounters[data.key] then
+			for var,info in pairs(pfl.Encounters[data.key]) do
+				if type(info) == "table" then
+					if info.sound and info.sound:find("^DXE ALERT%d+") then
+						info.sound = (info.sound:gsub("DXE ",""))
+					end
+				elseif type(info) == "boolean" then
+					-- It should never be a boolean
+					pfl.Encounters[data.key][var] = nil
 				end
-			elseif type(info) == "boolean" then
-				-- It should never be a boolean
-				pfl.Encounters[data.key][var] = nil
+			end
+		end
+		------------------------------------------------------------
+		
+		for optionType,optionInfo in pairs(EncDefaults) do
+			local optionData = data[optionType]
+			if optionData and not optionInfo.override then
+				for var,info in pairs(optionData) do
+					defaults[var] = {}
+					-- Add setting defaults
+					defaults[var].enabled = optionInfo.defaultEnabled
+					for k,varDefault in pairs(EncDefaults[optionType].defaults) do
+						defaults[var][k] = info[k] or varDefault
+					end
+				end
+			end
+		end
+
+		for var,winData in pairs(EncDefaults.windows.list) do
+			defaults[var] = {}
+			if data.windows and data.windows[var] then
+				defaults[var].enabled = data.windows[var]
+			else
+				defaults[var].enabled = winData.defaultEnabled
 			end
 		end
 	end
-	------------------------------------------------------------
-	
-	for outputType,outputInfo in pairs(OutputInfos) do
-		local outputData = data[outputType]
-		if outputData then
-			for var,info in pairs(outputData) do
-				defaults[var] = {}
-				-- Add setting defaults
-				defaults[var].enabled = outputInfo.defaultEnabled
-				for k,varDefault in pairs(OutputInfos[outputType].defaults) do
-					defaults[var][k] = info[k] or varDefault
-				end
-			end
+end
+
+---------------------------------------------
+-- SHARED EVENTS
+---------------------------------------------
+
+function addon:COMBAT_LOG_EVENT_UNFILTERED(_, _,eventtype, _, _, _, dstGUID)
+	if eventtype ~= "UNIT_DIED" then return end
+	local npcid = NID[dstGUID]
+	if not npcid then return end
+
+	-- Health watchers
+	for i,hw in ipairs(HW) do
+		if hw:IsOpen() and hw:GetGoal() == npcid then
+			hw:SetInfoBundle(DEAD,0)
+			local k = search(SortedCache,npcid,1)
+			if k then SortedCache[k][2] = 0 end
+			break
+		end
+	end
+
+	if not DEFEAT_NID then return end
+	if DEFEAT_NID == npcid then 
+		addon:TriggerDefeat()
+	elseif DEFEAT_NIDS and DEFEAT_NIDS[npcid] == false then 
+		DEFEAT_NIDS[npcid] = true
+		local flag = true
+		for k,v in pairs(DEFEAT_NIDS) do
+			if not v then flag = false; break end
+		end
+		if flag then addon:TriggerDefeat() end
+	end
+end
+
+function addon:CHAT_MSG_MONSTER_YELL(_,msg,...)
+	--@debug@
+	debug("CHAT_MSG_MONSTER_YELL",msg,...)
+	--@end-debug@
+	for fragment,key in pairs(TRGS_YELL) do
+		if find(msg,fragment) then
+			self:SetActiveEncounter(key)
+			self:StopEncounter()
+			self:StartEncounter(msg)
 		end
 	end
 end

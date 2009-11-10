@@ -46,6 +46,7 @@ local baseKeys = {
 	userdata = opttable,
 	events = opttable,
 	alerts = opttable,
+	windows = opttable,
 	arrows = opttable,
 	raidicons = opttable,
 	announces = opttable,

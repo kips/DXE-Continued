@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 297,
+		version = 299,
 		key = "razorscale", 
 		zone = L["Ulduar"], 
 		name = L["Razorscale"], 
@@ -17,6 +17,7 @@ do
 		onactivate = {
 			tracing = {33186}, -- Razorscale
 			combatstop = true,
+			defeat = 33186,
 		},
 		onstart = {
 			{
@@ -75,6 +76,15 @@ do
 				sound = "ALERT4",
 				icon = ST[45753],
 			},
+			harpoonwarn = {
+				varname = format(L["%s Warning"],SN[43993]),
+				type = "simple",
+				text = format(L["%s Ready"],SN[43993]).."!",
+				time = 3,
+				sound = "ALERT5",
+				color1 = "ORANGE",
+				icon = ST[56570],
+			},
 		},
 		events = {
 			-- Devouring Flame
@@ -117,6 +127,10 @@ do
 						"expect",{"#1#","find",L["grounded permanently!$"]},
 						"quash","chaindur",
 						"alert","permlandwarn",
+					},
+					{
+						"expect",{"#1#","find",L["^Harpoon Turret is ready"]},
+						"alert","harpoonwarn",
 					},
 				},
 			},

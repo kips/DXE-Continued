@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 320,
+		version = 321,
 		key = "jaraxxus", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -16,6 +16,7 @@ do
 			tracing = {34780,34826},
 			tracerstart = true,
 			combatstop = true,
+			defeat = 34780,
 		},
 		userdata = {
 			eruptiontime = {80,120, loop = false},
@@ -42,6 +43,9 @@ do
 				"alert","eruptioncd",
 				"alert","fleshcd",
 			},
+		},
+		windows = {
+			proxwindow = true,
 		},
 		alerts = {
 			enragecd = {

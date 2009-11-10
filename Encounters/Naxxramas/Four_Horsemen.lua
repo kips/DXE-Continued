@@ -2,7 +2,7 @@ do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 
 	local data = {
-		version = 297,
+		version = 298,
 		key = "fourhorsemen", 
 		zone = L["Naxxramas"], 
 		name = L["The Four Horsemen"],
@@ -23,6 +23,12 @@ do
 			},
 			tracerstart = true,
 			combatstop = true,
+			defeat = {
+				16064, -- Thane Korth'azz
+				30549, -- Baron Rivendare
+				16065, -- Lady Blaumeux
+				16063, -- Sir Zeliek
+			},
 		},
 		userdata = {},
 		onstart = {},

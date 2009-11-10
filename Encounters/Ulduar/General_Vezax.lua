@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 305,
+		version = 307,
 		key = "generalvezax", 
 		zone = L["Ulduar"], 
 		name = L["General Vezax"], 
@@ -13,6 +13,7 @@ do
 			tracerstart = true,
 			tracerstop = true,
 			combatstop = true,
+			defeat = 33271,
 		},
 		userdata = {
 			shadowcrashmessage = "",
@@ -24,6 +25,9 @@ do
 				"alert","enragecd",
 				"alert","animuscd",
 			},
+		},
+		windows = {
+			proxwindow = true,
 		},
 		alerts = {
 			enragecd = {

@@ -2,7 +2,7 @@ do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 
 	local data = {
-		version = 299,
+		version = 300,
 		key = "xt002", 
 		zone = L["Ulduar"], 
 		name = L["XT-002 Deconstructor"], 
@@ -14,6 +14,7 @@ do
 			tracerstart = true,
 			tracerstop = true,
 			combatstop = true,
+			defeat = 33293,
 		},
 		userdata = {
 			heartbroken = "0",

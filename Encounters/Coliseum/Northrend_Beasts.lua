@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 333,
+		version = 334,
 		key = "northrendbeasts", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -17,6 +17,7 @@ do
 		},
 		onactivate = {
 			tracing = {34796}, -- Gormok
+			defeat = 34797,
 			combatstop = true,
 		},
 		userdata = {
@@ -50,6 +51,9 @@ do
 				"alert","zerotoone",
 				"scheduletimer",{"fireenrage",22},
 			},
+		},
+		windows = {
+			proxwindow = true,
 		},
 		alerts = {
 			enragecd = {

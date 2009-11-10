@@ -2,7 +2,7 @@ do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 
 	local data = {
-		version = 309,
+		version = 310,
 		key = "ignis", 
 		zone = L["Ulduar"], 
 		name = L["Ignis the Furnace Master"], 
@@ -14,6 +14,7 @@ do
 			tracerstart = true,
 			tracerstop = true,
 			combatstop = true,
+			defeat = 33118,
 		},
 		userdata = {
 			flamejetstime = {24,22.3,loop = false},

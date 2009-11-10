@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 305,
+		version = 306,
 		key = "yoggsaron", 
 		zone = L["Ulduar"], 
 		name = L["Yogg-Saron"], 
@@ -20,6 +20,7 @@ do
 		onactivate = {
 			tracing = {33134}, -- Sara
 			combatstop = true,
+			defeat = 33288,
 		},
 		userdata = {
 			portaltime = {73,90,loop = false},

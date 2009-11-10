@@ -2,7 +2,7 @@ do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 
 	local data = {
-		version = 297,
+		version = 298,
 		key = "auriaya", 
 		zone = L["Ulduar"], 
 		name = L["Auriaya"], 
@@ -21,6 +21,7 @@ do
 			tracerstart = true,
 			tracerstop = true,
 			combatstop = true,
+			defeat = 33515,
 		},
 		userdata = {
 			screechtime = 32,

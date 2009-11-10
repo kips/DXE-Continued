@@ -14,6 +14,7 @@ do
 			tracerstart = true,
 			tracerstop = true,
 			combatstop = true,
+			defeat = 16011,
 		},
 		userdata = { 
 			sporetimer = 15,
