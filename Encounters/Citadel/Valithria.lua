@@ -7,12 +7,37 @@ do
 		category = L["Citadel"], 
 		name = L["Valithria"], 
 		triggers = {
-			--scan = ,
+			scan = 36789,
 			yell = L["^Heroes, lend me your aid"],
 		},
 		onactivate = {
 			combatstop = true,
-			--tracing = ,
+			tracing = {36789},
+		},
+		onstart = {
+			{
+				"alert","portalcd",
+			},
+		},
+		alerts = {
+			portalcd = {
+				varname = format(L["%s Cooldown"],L["Portals"]),
+				type = "dropdown",
+				text = format(L["%s Cooldown"],L["Portals"]),
+				time = 45,
+				flashtime = 10,
+				sound = "ALERT1",
+				color1 = "GREEN",
+				icon = ST[57676],
+			},
+			portalwarn = {
+				varname = format(L["%s Warning"],L["Portals"]),
+				type = "simple",
+				text = format(L["%s Spawned"],L["Portals"]).."!",
+				time = 3,
+				sound = "ALERT2",
+				icon = ST[57676],
+			},
 		},
 		events = {
 			{
@@ -21,6 +46,8 @@ do
 				execute = {
 					{
 						"expect",{"#1#","find",L["^I have opened a portal into the Dream"]},
+						"alert","portalwarn",
+						"alert","portalcd",
 					},
 				},
 			},
