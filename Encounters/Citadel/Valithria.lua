@@ -38,6 +38,17 @@ do
 				sound = "ALERT2",
 				icon = ST[57676],
 			},
+			manavoidself = {
+				varname = format(L["%s on self"],SN[71743]),
+				type = "simple",
+				text = format("%s: %s! %s!",SN[71743],L["YOU"],L["MOVE AWAY"]),
+				time = 3,
+				sound = "ALERT3",
+				color1 = "PURPLE",
+				flashscreen = true,
+				throttle = 2,
+				icon = ST[71743],
+			},
 		},
 		events = {
 			{
@@ -48,6 +59,18 @@ do
 						"expect",{"#1#","find",L["^I have opened a portal into the Dream"]},
 						"alert","portalwarn",
 						"alert","portalcd",
+					},
+				},
+			},
+			-- Mana Void
+			{
+				type = "combatevent",
+				eventtype = "SPELL_MISSED",
+				spellid = 71743,
+				execute = {
+					{
+						"expect",{"#4#","==","&playerguid&"},
+						"alert","manavoidself",
 					},
 				},
 			},
