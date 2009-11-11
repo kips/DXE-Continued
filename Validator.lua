@@ -71,6 +71,8 @@ local baseLineKeys = {
 	removearrow = isstring,
 	removeallarrows = isboolean,
 	announce = isstring,
+	invoke = istable,
+	defeat = isboolean,
 }
 
 local alertBaseKeys = {
@@ -157,6 +159,7 @@ local eventBaseKeys = {
 	event = optstring,
 	eventtype = optstring,
 	spellid = opttablenumber,
+	spellid2 = opttablenumber,
 	execute = istable,
 }
 
@@ -290,7 +293,9 @@ local function validateSortedTracing(tbl,errlvl,...)
 	end
 end
 
-local function validateCommandLine(data,type,info,errlvl,...)
+local validateCommandLine, validateCommandList, validateCommandBundle
+
+function validateCommandLine(data,type,info,errlvl,...)
 	local oktype = baseLineKeys[type]
 	if not oktype then
 		err(": unknown command line type",errlvl,...)
@@ -373,10 +378,12 @@ local function validateCommandLine(data,type,info,errlvl,...)
 		end
 	elseif type == "removeraidicon" then
 		validateReplaces(data,info,errlvl,type,...)
+	elseif type == "invoke" then
+		validateCommandBundle(data,info,errlvl,type,...)
 	end
 end
 
-local function validateCommandList(data,list,errlvl,...)
+function validateCommandList(data,list,errlvl,...)
 	for k=1,#list,2 do
 		validateVal(list[k],isstring,errlvl,k,...)
 		validateVal(list[k+1],isstringtableboolean,errlvl,k+1,...)
@@ -384,7 +391,7 @@ local function validateCommandList(data,list,errlvl,...)
 	end
 end
 
-local function validateCommandBundle(data,bundle,errlvl,...)
+function validateCommandBundle(data,bundle,errlvl,...)
 	errlvl=(errlvl or 0)+1
 	validateIsArray(bundle,errlvl,...)
 	for k,list in ipairs(bundle) do
@@ -525,6 +532,23 @@ local function validateAnnounces(data,announces,errlvl,...)
 	end
 end
 
+local function validateSpellID(data,info,errlvl,k,...)
+	if info[k] and type(info[k]) == "number" then
+		local exists = GetSpellInfo(info[k])
+		if not exists then
+			err("["..info[k].."]: unknown spell identifier",errlvl,k,...)
+		end
+	elseif info[k] and type(info[k]) == "table" then
+		validateIsArray(info[k],errlvl,k,...)
+		for i,spellid in ipairs(info[k]) do
+			local exists = GetSpellInfo(spellid)
+			if not exists then
+				err("["..spellid.."]: unknown spell identifier",errlvl,i,k,...)
+			end
+		end
+	end
+end
+
 local function validateEvent(data,info,errlvl,...)
 	for k in pairs(info) do
 		if not eventBaseKeys[k] then
@@ -543,21 +567,8 @@ local function validateEvent(data,info,errlvl,...)
 			if info.eventtype and not eventtypes[info.eventtype] then
 				err(": invalid eventtype value - got '"..info.eventtype.."'",errlvl,"eventtype",...)
 			end
-		elseif k == "spellid" then
-			if info.spellid and type(info.spellid) == "number" then
-				local exists = GetSpellInfo(info.spellid)
-				if not exists then
-					err("["..info.spellid.."]: unknown spellid",errlvl,k,...)
-				end
-			elseif info.spellid and type(info.spellid) == "table" then
-				validateIsArray(info.spellid,errlvl,"spellid",...)
-				for i,spellid in ipairs(info.spellid) do
-					local exists = GetSpellInfo(spellid)
-					if not exists then
-						err("["..spellid.."]: unknown spellid",errlvl,i,k,...)
-					end
-				end
-			end
+		elseif k == "spellid" or k == "spellid2" then
+			validateSpellID(data,info,errlvl,k,...)
 		elseif k == "execute" then
 			validateCommandBundle(data,info.execute,errlvl,"execute",...)
 		end

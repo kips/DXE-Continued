@@ -22,6 +22,8 @@
 		arrow 				= "<arrow>"
 		removearrow 		= "<token>"
 		removeallarrows	= [BOOLEAN]
+		invoke            = command bundle
+		defeat            = [BOOLEAN]
 ]]
 
 local addon = DXE
@@ -81,7 +83,8 @@ local Alerts = addon.Alerts
 local Arrows = addon.Arrows
 local RaidIcons = addon.RaidIcons
 -- Hold event info
-local RegEvents,CombatEvents = {},{}
+local RegEvents,CombatEvents,CombatEvents2 = {},{},{}
+COMBATEVENTS2 = CombatEvents2
 
 --@debu@
 local debug
@@ -138,7 +141,7 @@ end
 
 function module:OnStart(_,...)
 	if not CE then return end
-	if next(CombatEvents) then
+	if next(CombatEvents) or next(CombatEvents2) then
 		self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED","COMBAT_EVENT")
 	end
 	for event in pairs(RegEvents) do
@@ -635,17 +638,28 @@ end
 -- INVOKING
 ---------------------------------------------
 
--- @param bundle Command bundles
--- @param ... arguments passed with the event
-function module:InvokeCommands(bundle,...)
-	SetTuple(...)
-	for _,list in ipairs(bundle) do
-		for i=1,#list,2 do
-			local type,info = list[i],list[i+1]
-			local handler = handlers[type]
-			-- Make sure handler exists in case of an unsupported command
-			if handler and not handler(info) then break end
+do
+	local flag = true
+
+	-- @param bundle Command bundles
+	-- @param ... arguments passed with the event
+	function module:InvokeCommands(bundle,...)
+		if flag then SetTuple(...) end
+		for _,list in ipairs(bundle) do
+			for i=1,#list,2 do
+				local type,info = list[i],list[i+1]
+				local handler = handlers[type]
+				-- Make sure handler exists in case of an unsupported command
+				if handler and not handler(info) then break end
+			end
 		end
+	end
+
+	-- @ADD TO HANDLERS
+	handlers.invoke = function(info)
+		-- tuple has already been set
+		flag = false; module:InvokeCommands(info); flag = true
+		return true
 	end
 end
 
@@ -655,11 +669,19 @@ end
 
 --event, timestamp, eventtype, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, spellID, spellName,...
 function module:COMBAT_EVENT(event,timestamp,eventtype,...)
-	if not CombatEvents[eventtype] then return end
-	local spellID = select(7,...)
-	local bundle = CombatEvents[eventtype]["*"] or CombatEvents[eventtype][spellID]
-	if bundle then
-		self:InvokeCommands(bundle,...)
+	if CombatEvents[eventtype] then
+		local spellID = select(7,...)
+		local bundle = CombatEvents[eventtype]["*"] or CombatEvents[eventtype][spellID]
+		if bundle then self:InvokeCommands(bundle,...) end
+	end
+
+	-- Usually used for SPELL_INTERRUPT
+	if CombatEvents2[eventtype] then
+		local spellID = select(10,...)
+		if spellID then 
+			local bundle = CombatEvents2[eventtype][spellID]
+			if bundle then self:InvokeCommands(bundle,...) end
+		end
 	end
 end
 
@@ -677,29 +699,36 @@ local REG_ALIASES = {
 	WHISPER = "CHAT_MSG_RAID_BOSS_WHISPER",
 }
 
-function module:AddEventData()
-	if not CE.events then return end
-	-- Iterate over events table
-	for _,info in ipairs(CE.events) do
-		if info.type == "combatevent" then
-			-- Register combat log event
-			CombatEvents[info.eventtype] = CombatEvents[info.eventtype] or {}
-			if not info.spellid then
-				CombatEvents[info.eventtype]["*"] = info.execute
-			else
-				if type(info.spellid) == "table" then
-					for _,spellid in ipairs(info.spellid) do
-						CombatEvents[info.eventtype][spellid] = info.execute
-					end
-				else
-					CombatEvents[info.eventtype][info.spellid] = info.execute
-				end
+do
+	local function add(tbl,k,info)
+		tbl[info.eventtype] = tbl[info.eventtype] or {}
+		if type(info[k]) == "table" then
+			for _,v in ipairs(info[k]) do
+				tbl[info.eventtype][v] = info.execute
 			end
-		elseif info.type == "event" then
-			local event = REG_ALIASES[info.event] or info.event
-			-- Register regular event
-			-- Add execute list to the appropriate key
-			RegEvents[event] = info.execute
+		else
+			tbl[info.eventtype][info[k]] = info.execute
+		end
+	end
+
+	function module:AddEventData()
+		if not CE.events then return end
+		-- Iterate over events table
+		for _,info in ipairs(CE.events) do
+			if info.type == "combatevent" then
+				-- Register combat log event
+				if not info.spellid and not info.spellid2 then
+					CombatEvents[info.eventtype] = CombatEvents[info.eventtype] or {}
+					CombatEvents[info.eventtype]["*"] = info.execute
+				end
+				if info.spellid then add(CombatEvents,"spellid",info) end
+				if info.spellid2 then add(CombatEvents2,"spellid2",info) end
+			elseif info.type == "event" then
+				local event = REG_ALIASES[info.event] or info.event
+				-- Register regular event
+				-- Add execute list to the appropriate key
+				RegEvents[event] = info.execute
+			end
 		end
 	end
 end
@@ -707,6 +736,7 @@ end
 function module:WipeEvents()
 	wipe(RegEvents)
 	for k,v in pairs(CombatEvents) do CombatEvents[k] = nil end
+	for k,v in pairs(CombatEvents2) do CombatEvents2[k] = nil end
 	self:UnregisterAllEvents()
 end
 
