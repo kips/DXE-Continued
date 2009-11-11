@@ -72,6 +72,7 @@ local baseLineKeys = {
 	removeallarrows = isboolean,
 	announce = isstring,
 	invoke = istable,
+	defeat = isboolean,
 }
 
 local alertBaseKeys = {

@@ -23,6 +23,7 @@
 		removearrow 		= "<token>"
 		removeallarrows	= [BOOLEAN]
 		invoke            = command bundle
+		defeat            = [BOOLEAN]
 ]]
 
 local addon = DXE
