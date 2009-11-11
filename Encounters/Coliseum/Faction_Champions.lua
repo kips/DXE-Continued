@@ -52,7 +52,7 @@ do
 
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 6,
+		version = 8,
 		key = "factionchampions", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -249,22 +249,10 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_INTERRUPT",
+				spellid2 = {68145,65816,68147,68146},
 				execute = {
-					-- This is terribly inefficient
 					{
-						"expect",{"&npcid|#4#& #10#","==",NID_WARLOCK.." 68145"},
-						"quash","hellfirewarn",
-					},
-					{
-						"expect",{"&npcid|#4#& #10#","==",NID_WARLOCK.." 65816"},
-						"quash","hellfirewarn",
-					},
-					{
-						"expect",{"&npcid|#4#& #10#","==",NID_WARLOCK.." 68147"},
-						"quash","hellfirewarn",
-					},
-					{
-						"expect",{"&npcid|#4#& #10#","==",NID_WARLOCK.." 68146"},
+						"expect",{"&npcid|#4#&","==",NID_WARLOCK},
 						"quash","hellfirewarn",
 					},
 				},
