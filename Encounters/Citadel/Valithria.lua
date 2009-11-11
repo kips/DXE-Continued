@@ -8,11 +8,33 @@ do
 		name = L["Valithria"], 
 		triggers = {
 			--scan = ,
-			--yell = ,
+			yell = L["^Heroes, lend me your aid"],
 		},
 		onactivate = {
 			combatstop = true,
 			--tracing = ,
+		},
+		events = {
+			{
+				type = "event",
+				event = "YELL",
+				execute = {
+					{
+						"expect",{"#1#","find",L["^I have opened a portal into the Dream"]},
+					},
+				},
+			},
+			-- Dreamwalker's Rage
+			{
+				type = "combatevent",
+				eventtype = "SPELL_CAST_START",
+				spellid = 71189,
+				execute = {
+					{
+						"defeat",true
+					},
+				},
+			},
 		},
 	}
 
