@@ -99,7 +99,10 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_SUCCESS",
-				spellid = 69076,
+				spellid = {
+					69076,
+					70834, -- 25
+				},
 				execute = {
 					{
 						"quash","bonestormcd",
