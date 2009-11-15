@@ -3,16 +3,17 @@ do
 	local data = {
 		version = 1,
 		key = "lanathel", 
-		zone = L["Icecrown Citadel"], 
+		zone = L["The Sanctum of Blood"], -- "Icecrown Citadel"
 		category = L["Citadel"], 
 		name = L["Lana'thel"], 
 		triggers = {
-			--scan = ,
+			scan = 37955,
 			--yell = ,
 		},
 		onactivate = {
+			tracerstart = true,
 			combatstop = true,
-			--tracing = ,
+			tracing = {37955},
 		},
 	}
 

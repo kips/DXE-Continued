@@ -8,9 +8,10 @@ do
 		name = L["Festergut"], 
 		triggers = {
 			scan = {36626}, -- Festergut
-			yell = L["^Just an ordinary gas cloud, but watch"],
+			--yell = L["^Just an ordinary gas cloud, but watch"],
 		},
 		onactivate = {
+			tracerstart = true,
 			combatstop = true,
 			tracing = {36626}, -- Festergut
 		},
@@ -19,7 +20,24 @@ do
 			sporetime = {13.6, 35, loop = false},
 			pungenttime = {116, 105, loop = false},
 		},
+		onstart = {
+			{
+				"alert","gassporecd",
+				"alert","inhaleblightcd",
+				"alert","pungentblightcd",
+				"alert","enragecd",
+			},
+		},
 		alerts = {
+			enragecd = {
+				varname = L["Enrage"],
+				type = "dropdown",
+				text = L["Enrage"],
+				time = 300,
+				flashtime = 10,
+				color1 = "RED",
+				icon = ST[12317],
+			},
 			inhaleblightcd = {
 				varname = format(L["%s Cooldown"],SN[69165]),
 				type = "dropdown",
@@ -84,6 +102,7 @@ do
 				color1 = "GREEN",
 				sound = "ALERT3",
 				icon = ST[71288],
+				throttle = 2,
 			},
 			pungentblightwarn ={
 				varname = format(L["%s Cast"],SN[71219]),
@@ -114,7 +133,7 @@ do
 				reset = 3,
 				unit = "#5#",
 				icon = 1,
-				total = 3,
+				total = 5,
 			},
 		},
 		events = {
