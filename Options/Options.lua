@@ -1218,7 +1218,7 @@ local function InitializeOptions()
 				local warning_settings_group = {
 					type = "group",
 					name = "",
-					order = 200,
+					order = 300,
 					disabled = function() return not Alerts.db.profile.WarningAnchor or not Alerts.db.profile.WarningBars end,
 					args = {
 						WarningScale = {
@@ -1288,8 +1288,15 @@ local function InitializeOptions()
 						type = "toggle",
 						name = L["Enable Warning Messages"],
 						desc = L["Output to an additional interface"],
-						width = "full",
 						order = 50,
+						width = "full",
+					},
+					SinkIcon = {
+						order = 51,
+						type = "toggle",
+						name = L["Show Icon"],
+						desc = L["Display an icon to the left of a warning message"],
+						disabled = function() return not Alerts.db.profile.WarningMessages end
 					},
 					Output = Alerts:GetSinkAce3OptionsDataTable(),
 				},

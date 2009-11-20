@@ -21,6 +21,7 @@ local defaults = {
 		WarningAlpha = 0.75,
 		WarningBarWidth = 275,
 		SinkStorage = {},
+		SinkIcon = true,
 		RedirectCenter = false,
 		RedirectThreshold = 5,
 		-- Flash
@@ -685,6 +686,7 @@ function module:Simple(text, totalTime, sound, c1, flashscreen, icon)
 
 	if pfl.WarningMessages then
 		local c = c1Data or Colors.WHITE
+		if not pfl.SinkIcon then icon = nil end
 		self:Pour(text,c.r,c.g,c.b,nil,nil,nil,nil,nil,icon)
 	end
 end
