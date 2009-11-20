@@ -5,7 +5,7 @@ do
 	local LE = SN[67223] -- Light Essence
 
 	local data = {
-		version = 15,
+		version = 16,
 		key = "twinvalkyr", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -107,6 +107,15 @@ do
 				color1 = "YELLOW",
 				icon = ST[67259],
 			},
+			twinspactwarn = {
+				varname = format(L["%s Cast"],SN[67303]),
+				text = format(L["%s Cast"],SN[67303]),
+				type = "centerpopup",
+				time = 15,
+				flashtime = 15,
+				color1 = "ORANGE",
+				icon = ST[67308],
+			},
 			switchtodarkwarn = {
 				varname = format(L["%s Warning"],format(L["Switch to %s"],DE)),
 				text = format(L["Switch to %s"],DE):upper().."!",
@@ -177,6 +186,46 @@ do
 			},
 		},
 		events = {
+			-- Twin's Pact
+			{
+				type = "combatevent",
+				eventtype = "SPELL_CAST_START",
+				spellid = {
+					67305,
+					67304,
+					67303,
+					65875,
+					65876,
+					67308,
+					67307,
+					67306,
+				},
+				execute = {
+					{
+						"alert","twinspactwarn",
+					},
+				},
+			},
+			-- Twin's Pact interrupt
+			{
+				type = "combatevent",
+				eventtype = "SPELL_INTERRUPT",
+				spellid2 = {
+					67305,
+					67304,
+					67303,
+					65875,
+					65876,
+					67308,
+					67307,
+					67306,
+				},
+				execute = {
+					{
+						"quash","twinspactwarn",
+					},
+				},
+			},
 			-- Empowered Light
 			{
 				type = "combatevent",
