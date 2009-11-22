@@ -2,7 +2,7 @@ do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 
 	local data = {
-		version = 300,
+		version = 301,
 		key = "xt002", 
 		zone = L["Ulduar"], 
 		name = L["XT-002 Deconstructor"], 
@@ -109,7 +109,7 @@ do
 				color2 = "RED",
 				icon = ST[63849],
 			},
-			hardmodealert = {
+			hardmodewarn = {
 				varname = format(L["%s Activation"],L["Hard Mode"]),
 				type = "simple",
 				text = format(L["%s Activated"],L["Hard Mode"]).."!",
@@ -208,7 +208,7 @@ do
 						"quash","exposedwarn",
 						"canceltimer","heartunexposed",
 						"tracing",{33293},
-						"alert","hardmodealert",
+						"alert","hardmodewarn",
 						"set",{heartbroken = "1"},
 					},
 				},

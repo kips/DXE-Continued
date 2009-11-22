@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 299,
+		version = 300,
 		key = "hodir", 
 		zone = L["Ulduar"], 
 		name = L["Hodir"], 
@@ -20,7 +20,7 @@ do
 			{
 				"alert","enragecd",
 				"alert","flashfreezecd",
-				"alert","hardmodeends",
+				"alert","hardmodeendscd",
 			},
 		},
 		alerts = {
@@ -67,7 +67,7 @@ do
 				color2 = "MAGENTA",
 				icon = ST[63512],
 			},
-			hardmodeends = {
+			hardmodeendscd = {
 				varname = format(L["%s Timer"],L["Hard Mode"]),
 				type = "dropdown",
 				text = format(L["%s Ends"],L["Hard Mode"]),

@@ -55,7 +55,7 @@ do
 				sound = "ALERT1", 
 				icon = ST[20573],
 			},
-			hardmodeactivation = {
+			hardmodeactivationwarn = {
 				varname = format(L["%s Warning"],L["Hard Mode"]),
 				type = "simple", 
 				text = format(L["%s Activated"],L["Hard Mode"]),
@@ -134,7 +134,7 @@ do
 					-- Hard mode activation
 					{
 						"expect",{"#1#","find",L["^Impossible!"]},
-						"alert","hardmodeactivation",
+						"alert","hardmodeactivationwarn",
 					},
 				},
 			},

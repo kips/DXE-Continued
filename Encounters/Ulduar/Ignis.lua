@@ -2,7 +2,7 @@ do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 
 	local data = {
-		version = 310,
+		version = 311,
 		key = "ignis", 
 		zone = L["Ulduar"], 
 		name = L["Ignis the Furnace Master"], 
@@ -23,7 +23,7 @@ do
 		onstart = {
 			{
 				"alert","flamejetscd",
-				"alert","hardmodeends",
+				"alert","hardmodeendscd",
 			},
 		},
 		alerts = {
@@ -79,7 +79,7 @@ do
 				sound = "ALERT4",
 				icon = ST[62717],
 			},
-			hardmodeends = {
+			hardmodeendscd = {
 				varname = format("%s Timer",L["Hard Mode"]),
 				type = "dropdown",
 				text = format("%s Ends",L["Hard Mode"]),

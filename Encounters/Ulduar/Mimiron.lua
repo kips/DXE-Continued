@@ -37,7 +37,7 @@ do
 			-- Hard mode activation
 			{
 				"expect",{"#1#","find",L["^Self%-destruct sequence initiated"]},
-				"alert","hardmodetimer",
+				"alert","hardmodecd",
 				"alert","flamesuppressantcd",
 				"alert","flamecd",
 				"set",{flametime = 27.5},
@@ -259,7 +259,7 @@ do
 				icon = ST[3648],
 			},
 			-- Hard Mode
-			hardmodetimer = {
+			hardmodecd = {
 				varname = format(L["%s Timer"],L["Hard Mode"]),
 				type = "dropdown",
 				text = L["Raid Wipe"],
