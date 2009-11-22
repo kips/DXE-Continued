@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 334,
+		version = 335,
 		key = "northrendbeasts", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -228,7 +228,7 @@ do
 				color1 = "GREY",
 				icon = ST[66758],
 			},
-			crashcast = {
+			crashwarn = {
 				varname = format(L["%s Cast"],SN[66683]),
 				type = "centerpopup",
 				text = format(L["%s Cast"],SN[66683]),
@@ -720,7 +720,7 @@ do
 				},
 				execute = {
 					{
-						"alert","crashcast",
+						"alert","crashwarn",
 						"alert","crashcd",
 					},
 				},
