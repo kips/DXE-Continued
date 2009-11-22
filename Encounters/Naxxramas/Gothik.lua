@@ -2,7 +2,7 @@ do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 
 	local data = {
-		version = 298,
+		version = 299,
 		key = "gothiktheharvester",
 		zone = L["Naxxramas"],
 		name = L["Gothik the Harvester"],
@@ -18,11 +18,11 @@ do
 		userdata = {},
 		onstart = {
 			{
-				"alert","gothikcomesdown",
+				"alert","gothikcomesdowncd",
 			}
 		},
 		alerts = {
-			gothikcomesdown = {
+			gothikcomesdowncd = {
 				varname = format(L["%s Arrival"],L["Gothik the Harvester"]),
 				type = "dropdown",
 				text = L["Arrival"],
