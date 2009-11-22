@@ -2,7 +2,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 312,
+		version = 313,
 		key = "mimiron", 
 		zone = L["Ulduar"], 
 		name = L["Mimiron"], 
@@ -78,7 +78,7 @@ do
 			},
 			startfrostbombexplodes = {
 				{
-					"alert","frostbombexplodes",
+					"alert","frostbombexplodeswarn",
 				},
 			},
 			startplasmablastdur = {
@@ -115,7 +115,7 @@ do
 				color1 = "BLUE",
 				icon = ST[64623],
 			},
-			frostbombexplodes = {
+			frostbombexplodeswarn = {
 				type = "centerpopup",
 				varname = format(L["%s Timer"],SN[64623]),
 				text = format(L["%s Explodes"],SN[64623]).."!",
