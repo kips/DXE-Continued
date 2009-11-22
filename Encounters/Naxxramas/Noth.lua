@@ -2,7 +2,7 @@ do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 
 	local data = {
-		version = 298,
+		version = 299,
 		key = "noththeplaguebringer", 
 		zone = L["Naxxramas"], 
 		name = L["Noth the Plaguebringer"], 
@@ -26,7 +26,7 @@ do
 		},
 		onstart = {
 			{
-				"alert","teleportbalc",
+				"alert","teleportbalccd",
 				"expect",{"&difficulty&","==","2"},
 				"alert","blinkcd",
 			}
@@ -42,7 +42,7 @@ do
 				color1 = "MAGENTA", 
 				icon = ST[29208],
 			},
-			teleportbalc = {
+			teleportbalccd = {
 				varname = L["Teleport to Balcony"], 
 				type = "dropdown", 
 				text = L["Teleport to Balcony"], 
@@ -52,7 +52,7 @@ do
 				sound = "ALERT2",
 				icon = ST[66548],
 			},
-			teleportroom = {
+			teleportroomcd = {
 				varname = L["Teleport to Room"], 
 				type = "dropdown", 
 				text = L["Teleport to Room"], 
@@ -95,11 +95,11 @@ do
 					{
 						"expect",{"#1#","find",L["teleports to the balcony"]},
 						"quash","blinkcd",
-						"alert","teleportroom", 
+						"alert","teleportroomcd", 
 					},
 					{
 						"expect",{"#1#","find",L["teleports back into battle"]},
-						"alert","teleportbalc", 
+						"alert","teleportbalccd", 
 					},
 				},
 			},
