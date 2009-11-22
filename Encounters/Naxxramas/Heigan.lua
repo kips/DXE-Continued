@@ -19,11 +19,11 @@ do
 		userdata = {},
 		onstart = {
 			{
-				"alert","dancebegins",
+				"alert","dancebeginscd",
 			}
 		},
 		alerts = {
-			dancebegins = {
+			dancebeginscd = {
 				varname = format(L["%s Begins"],L["Dance"]),
 				type = "dropdown", 
 				text = format(L["%s Begins"],L["Dance"]),
@@ -33,7 +33,7 @@ do
 				color1 = "MAGENTA",
 				icon = ST[29516],
 			},
-			danceends = {
+			danceendscd = {
 				varname = format(L["%s Ends"],L["Dance"]),
 				type = "dropdown", 
 				text = format(L["%s Ends"],L["Dance"]),
@@ -47,7 +47,7 @@ do
 		timers = {
 			backonfloor = {
 				{
-					"alert","dancebegins",
+					"alert","dancebeginscd",
 				}
 			}
 		},
@@ -59,7 +59,7 @@ do
 				execute = {
 					{
 						"expect",{"#1#","find",L["^The end is upon you"]},
-						"alert","danceends", 
+						"alert","danceendscd", 
 						"scheduletimer",{"backonfloor", 45},
 					},
 				},
