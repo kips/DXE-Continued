@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 299,
+		version = 300,
 		key = "archavon", 
 		zone = L["Vault of Archavon"],
 		category = L["Northrend"],
@@ -63,7 +63,7 @@ do
 				flashscreen = true,
 				icon = ST[58695],
 			},
-			shardswarnother = {
+			shardswarnothers = {
 				varname = format(L["%s on others"],SN[58695]),
 				type = "centerpopup",
 				time = 3,
@@ -92,7 +92,7 @@ do
 				},
 				{
 					"expect",{"&tft_unitexists& &tft_isplayer&","==","1 nil"},
-					"alert","shardswarnother",
+					"alert","shardswarnothers",
 				},
 			},
 		},

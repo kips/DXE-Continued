@@ -4,7 +4,7 @@ do
 	local L_Grobbulus = L["Grobbulus"]
 
 	local data = {
-		version = 298,
+		version = 299,
 		key = "grobbulus",
 		zone = L["Naxxramas"],
 		name = L_Grobbulus,
@@ -46,7 +46,7 @@ do
 				flashscreen = true,
 				icon = ST[28169],
 			},
-			injectionwarnother = {
+			injectionwarnothers = {
 				varname = format(L["%s on others"],L["Injection"]),
 				type = "centerpopup",
 				text = format("%s: #5#",L["Injection"]),
@@ -77,7 +77,7 @@ do
 					},
 					{
 						"expect",{"#4#", "~=", "&playerguid&"},
-						"alert","injectionwarnother",
+						"alert","injectionwarnothers",
 					},
 				},
 			},

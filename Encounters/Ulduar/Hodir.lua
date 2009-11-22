@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 300,
+		version = 301,
 		key = "hodir", 
 		zone = L["Ulduar"], 
 		name = L["Hodir"], 
@@ -88,7 +88,7 @@ do
 				flashscreen = true,
 				icon = ST[65133],
 			},
-			stormcloudwarnother = {
+			stormcloudwarnothers = {
 				varname = format(L["%s on others"],SN[65133]),
 				type = "simple",
 				text = format("%s: #5#",SN[65133]),
@@ -152,7 +152,7 @@ do
 					},
 					{
 						"expect",{"#4#","~=","&playerguid&"},
-						"alert","stormcloudwarnother",
+						"alert","stormcloudwarnothers",
 						"arrow","stormcloudarrow",
 					},
 				},

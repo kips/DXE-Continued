@@ -130,7 +130,7 @@ do
 				flashscreen = true,
 				icon = ST[61887],
 			},
-			tendrilswarnother = {
+			tendrilswarnothers = {
 				varname = format(L["%s on others"],SN[61887]),
 				type = "simple",
 				text = format("%s: <previoustarget>",SN[61887]),
@@ -161,7 +161,7 @@ do
 				flashscreen = true,
 				icon = ST[64637],
 			},
-			overwhelmdurother = {
+			overwhelmdurothers = {
 				varname = format(L["%s on others"],L["Overwhelm"]),
 				type = "centerpopup",
 				text = format("%s: #5#",L["Overwhelm"]),
@@ -189,7 +189,7 @@ do
 					"expect",{"&tft3_unitexists& &tft3_isplayer&","==","1 nil"},
 					"expect",{"&tft3_unitname&","~=","<previoustarget>"},
 					"set",{previoustarget = "&tft3_unitname&"},
-					"alert","tendrilswarnother",
+					"alert","tendrilswarnothers",
 				},
 				{
 					"scheduletimer",{"tendriltargets",0.2},
@@ -294,7 +294,7 @@ do
 					},
 					{
 						"expect",{"&playerguid&","~=","#4#"},
-						"alert","overwhelmdurother",
+						"alert","overwhelmdurothers",
 					},
 				},
 			},

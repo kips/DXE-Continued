@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 34,
+		version = 35,
 		key = "anubcoliseum", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -79,7 +79,7 @@ do
 				color2 = "GREY",
 				icon = ST[67574],
 			},
-			pursueother = {
+			pursueothers = {
 				varname = format(L["%s on others"],SN[62374]),
 				type = "centerpopup",
 				text = format("%s: #5#!",SN[62374]),
@@ -145,7 +145,7 @@ do
 				color1 = "INDIGO",
 				icon = ST[66333],
 			},
-			slashother = {
+			slashothers = {
 				varname = format(L["%s on others"],SN[66012]),
 				type = "centerpopup",
 				time = 3,
@@ -262,7 +262,7 @@ do
 					},
 					{
 						"expect",{"#4#","~=","&playerguid&"},
-						"alert","pursueother",
+						"alert","pursueothers",
 						"arrow","pursuedarrow",
 					},
 				},
@@ -282,7 +282,7 @@ do
 					},
 					{
 						"expect",{"#4#","~=","&playerguid&"},
-						"quash","pursueother",
+						"quash","pursueothers",
 						"removearrow","#5#",
 					},
 				},
@@ -365,7 +365,7 @@ do
 				execute = {
 					{
 						"expect",{"#4#","~=","&playerguid&"},
-						"alert","slashother",
+						"alert","slashothers",
 					},
 				},
 			},

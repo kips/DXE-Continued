@@ -48,7 +48,7 @@ do
 				flashscreen = true,
 				icon = ST[63024],
 			},
-			gravitywarnother = {
+			gravitywarnothers = {
 				varname = format(L["%s on others"],SN[63024]),
 				type = "centerpopup",
 				text = format("%s: #5#",SN[63024]),
@@ -68,7 +68,7 @@ do
 				flashscreen = true,
 				icon = ST[63018],
 			},
-			lightwarnother = {
+			lightwarnothers = {
 				varname = format(L["%s on others"],SN[63018]),
 				type = "centerpopup",
 				text = format("%s: #5#",SN[63018]),
@@ -151,7 +151,7 @@ do
 					},
 					{
 						"expect",{"#4#", "~=", "&playerguid&"},
-						"alert","gravitywarnother",
+						"alert","gravitywarnothers",
 					},
 				},
 			},
@@ -168,7 +168,7 @@ do
 					},
 					{
 						"expect",{"#4#", "~=", "&playerguid&"},
-						"alert","lightwarnother",
+						"alert","lightwarnothers",
 					},
 				},
 			},

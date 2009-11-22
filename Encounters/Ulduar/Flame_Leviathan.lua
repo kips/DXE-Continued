@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 299,
+		version = 300,
 		key = "flameleviathan", 
 		zone = L["Ulduar"], 
 		name = L["Flame Leviathan"], 
@@ -40,7 +40,7 @@ do
 				color2 = "ORANGE",
 				icon = ST[62396],
 			},
-			pursuedurother = {
+			pursuedurothers = {
 				varname = format(L["%s on others"],SN[62374]),
 				type = "centerpopup", 
 				text = format("%s: #5#",SN[62374]),
@@ -110,7 +110,7 @@ do
 					{
 						"expect",{"#1#","find",L["pursues"]},
 						"expect",{"#5#","~=","&playername&"},
-						"alert","pursuedurother",
+						"alert","pursuedurothers",
 					},
 				},
 			},
