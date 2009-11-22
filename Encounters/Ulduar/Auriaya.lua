@@ -2,7 +2,7 @@ do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 
 	local data = {
-		version = 298,
+		version = 299,
 		key = "auriaya", 
 		zone = L["Ulduar"], 
 		name = L["Auriaya"], 
@@ -30,7 +30,7 @@ do
 		onstart = {
 			{
 				"alert","enragecd",
-				"alert","feraldefenderspawn",
+				"alert","feraldefendercd",
 				"alert","screechcd",
 				"set",{screechtime = 35},
 			},
@@ -104,7 +104,7 @@ do
 				sound = "ALERT8",
 				icon = ST[64396],
 			},
-			feraldefenderspawn = {
+			feraldefendercd = {
 				varname = format(L["%s Spawn"],L["Feral Defender"]),
 				text = format(L["%s Spawn"],L["Feral Defender"]),
 				type = "dropdown",
