@@ -48,7 +48,7 @@ do
 				"set",{enragetext = L["Enrage"]},
 			},
 			{
-				"alert","zerotoone",
+				"alert","zerotoonecd",
 				"scheduletimer",{"fireenrage",22},
 			},
 		},
@@ -269,7 +269,7 @@ do
 				flashscreen = true,
 			},
 			--- Phase Changes
-			zerotoone = {
+			zerotoonecd = {
 				varname = format(L["%s Timer"],L["Phase One"]),
 				type = "centerpopup",
 				text = format(L["%s Begins"],L["Phase One"]),
@@ -278,7 +278,7 @@ do
 				color1 = "MIDGREY",
 				icon = ST[3648],
 			},
-			onetotwo = {
+			onetotwocd = {
 				varname = format(L["%s Timer"],L["Phase Two"]),
 				type = "centerpopup",
 				text = format(L["%s Begins"],L["Phase Two"]),
@@ -287,7 +287,7 @@ do
 				color1 = "MIDGREY",
 				icon = ST[3648],
 			},
-			twotothree = {
+			twotothreecd = {
 				varname = format(L["%s Timer"],L["Phase Three"]),
 				type = "centerpopup",
 				text = format(L["%s Begins"],L["Phase Three"]),
@@ -757,7 +757,7 @@ do
 						-- Gormok dies
 						"expect",{"#1#","find",L["^Steel yourselves, heroes, for the twin terrors"]},
 						"tracing",{35144,34799},
-						"alert","onetotwo",
+						"alert","onetotwocd",
 						"scheduletimer",{"reset",15},
 						"scheduletimer",{"firemolten",15},
 						"expect",{"&difficulty&",">=","3"},
@@ -769,7 +769,7 @@ do
 					{
 						"expect",{"#1#","find",L["^The air itself freezes with the introduction"]},
 						"tracing",{34797}, -- Icehowl
-						"alert","twotothree",
+						"alert","twotothreecd",
 						"scheduletimer",{"reset",10},
 						"scheduletimer",{"firecrash",10},
 						"expect",{"&difficulty&",">=","3"},

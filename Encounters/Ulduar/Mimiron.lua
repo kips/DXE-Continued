@@ -231,7 +231,7 @@ do
 				icon = ST[64436],
 			},
 			--- Phase Changes
-			onetotwo = {
+			onetotwocd = {
 				varname = format(L["%s Timer"],L["Phase Two"]),
 				type = "dropdown",
 				text = format(L["%s Begins"],L["Phase Two"]),
@@ -240,7 +240,7 @@ do
 				color1 = "RED",
 				icon = ST[3648],
 			},
-			twotothree = {
+			twotothreecd = {
 				varname = format(L["%s Timer"],L["Phase Three"]),
 				type = "dropdown",
 				text = format(L["%s Begins"],L["Phase Three"]),
@@ -249,7 +249,7 @@ do
 				color1 = "RED",
 				icon = ST[3648],
 			},
-			threetofour = {
+			threetofourcd = {
 				varname = format(L["%s Timer"],L["Phase Four"]),
 				type = "dropdown",
 				text = format(L["%s Begins"],L["Phase Four"]),
@@ -294,7 +294,7 @@ do
 						"canceltimer","startplasmablastdur",
 						"scheduletimer",{"startbarragecd",40},
 						"tracing",{33651}, -- VX-001
-						"alert","onetotwo",
+						"alert","onetotwocd",
 					},
 					-- Transition from Phase 2 to Phase 3
 					{
@@ -307,7 +307,7 @@ do
 						"canceltimer","startbarragedur",
 						"canceltimer","startbarragecd",
 						"canceltimer","startfrostbombexplodes",
-						"alert","twotothree",
+						"alert","twotothreecd",
 					},
 					-- Transition from Phase 3 to Phase 4
 					{
@@ -318,7 +318,7 @@ do
 						"tracing",{33432,33651,33670}, -- Leviathan Mk II, VX-001, Aerial Command Unit
 						"scheduletimer",{"startbarragecd",14},
 						"scheduletimer",{"startblastcd",25},
-						"alert","threetofour",
+						"alert","threetofourcd",
 					},
 				},
 			},
