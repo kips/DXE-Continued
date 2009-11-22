@@ -4,7 +4,7 @@ do
 	local L_AnubRekhan = L["Anub'Rekhan"]
 
 	local data = {
-		version = 298,
+		version = 299,
 		key = "anubrekhan", 
 		zone = L["Naxxramas"], 
 		name = L_AnubRekhan, 
@@ -41,7 +41,7 @@ do
 				color1 = "GREEN", 
 				icon = ST[28785],
 			},
-			locustswarmcast = {
+			locustswarmwarn = {
 				varname = format(L["%s Cast"],SN[28785]), 
 				type = "centerpopup", 
 				text = format(L["%s Cast"],SN[28785]), 
@@ -50,7 +50,7 @@ do
 				color1 = "GREY", 
 				icon = ST[28785],
 			},
-			locustswarmgain = {
+			locustswarmdur = {
 				varname = format(L["%s Duration"],SN[28785]), 
 				type = "centerpopup", 
 				text = format(L["%s Duration"],SN[28785]), 
@@ -61,7 +61,7 @@ do
 			},
 		},
 		events = {
-			-- Locust swarm gain
+			-- Locust Swarm duration
 			{
 				type = "combatevent", 
 				eventtype = "SPELL_AURA_APPLIED", 
@@ -69,20 +69,20 @@ do
 				execute = {
 					{
 						"expect",{"&npcid|#4#&","==","15956"}, -- Anub'Rekhan
-						"alert","locustswarmgain",
+						"alert","locustswarmdur",
 						"quash","locustswarmcd",
 						"alert","locustswarmcd", 
 					},
 				},
 			},
-			-- Locust swarm cast
+			-- Locust Swarm cast
 			{
 				type = "combatevent", 
 				eventtype = "SPELL_CAST_START", 
 				spellid = {28785,54021}, 
 				execute = {
 					{
-						"alert","locustswarmcast",
+						"alert","locustswarmwarn",
 					},
 				},
 			},
