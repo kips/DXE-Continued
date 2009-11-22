@@ -7,7 +7,7 @@ do
 	local L_Tenebron = L["Tenebron"]
 
 	local data = {
-		version = 298,
+		version = 299,
 		key = "sartharion", 
 		zone = L["The Obsidian Sanctum"], 
 		category = L["Northrend"],
@@ -113,7 +113,7 @@ do
 				sound = "ALERT4",
 				icon = ST[56908],
 			},
-			shadronarrives = {
+			shadronarrivescd = {
 				type = "dropdown",
 				varname = format(L["%s Arrival"],L_Shadron),
 				text = format(L["%s Arrives"],L_Shadron),
@@ -121,7 +121,7 @@ do
 				color1 = "DCYAN",
 				icon = ST[58105],
 			},
-			tenebronarrives = {
+			tenebronarrivescd = {
 				type = "dropdown",
 				varname = format(L["%s Arrival"],L_Tenebron),
 				text = format(L["%s Arrives"],L_Tenebron),
@@ -129,7 +129,7 @@ do
 				color1 = "CYAN",
 				icon = ST[61248],
 			},
-			vesperonarrives = {
+			vesperonarrivescd = {
 				type = "dropdown",
 				varname = format(L["%s Arrival"],L_Vesperon),
 				text = format(L["%s Arrives"],L_Vesperon),
@@ -207,19 +207,19 @@ do
 						-- Shadron
 						"expect",{"#7# <shadrontimer>","==","58105 0"},
 						"set",{shadrontimer = 1},
-						"alert","shadronarrives",
+						"alert","shadronarrivescd",
 					},
 					{
 						-- Tenebron
 						"expect",{"#7# <tenebrontimer>","==","61248 0"},
 						"set",{tenebrontimer = 1},
-						"alert","tenebronarrives",
+						"alert","tenebronarrivescd",
 					},
 					{
 						-- Vesperon
 						"expect",{"#7# <vesperontimer>","==","61251 0"},
 						"set",{vesperontimer = 1},
-						"alert","vesperonarrives",
+						"alert","vesperonarrivescd",
 					},
 				},
 			},
