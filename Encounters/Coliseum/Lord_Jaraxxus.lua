@@ -145,7 +145,7 @@ do
 				sound = "ALERT4",
 				icon = ST[66228],
 			},
-			mistresstimer = {
+			mistresswarn = {
 				varname = format(L["%s Timer"],L["Mistress of Pain"]),
 				text = format(L["%s Spawns"],L["Mistress of Pain"]).."!",
 				type = "centerpopup",
@@ -316,7 +316,7 @@ do
 				execute = {
 					{
 						"alert","portalcd",
-						"alert","mistresstimer",
+						"alert","mistresswarn",
 					},
 				},
 			},

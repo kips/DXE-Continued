@@ -2,7 +2,7 @@ do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 
 	local data = {
-		version = 298,
+		version = 299,
 		key = "loatheb", 
 		zone = L["Naxxramas"], 
 		name = L["Loatheb"], 
@@ -21,13 +21,13 @@ do
 		},
 		onstart = {
 			{
-				"alert","sporespawn",
+				"alert","sporespawncd",
 				"expect",{"&difficulty&","==","1"},
 				"set",{sporetimer = 30},
 			}
 		},
 		alerts = {
-			necroaura = {
+			necroauradur = {
 				varname = format(L["%s Duration"],SN[55593]),
 				type = "dropdown", 
 				text = format(L["%s Fades"],SN[55593]),
@@ -37,7 +37,7 @@ do
 				color1 = "MAGENTA", 
 				icon = ST[55593],
 			},
-			openheals = {
+			openhealsdur = {
 				varname = format(L["%s Duration"],SN[37455]),
 				type = "centerpopup", 
 				text = L["Open Healing"], 
@@ -46,7 +46,7 @@ do
 				color1 = "GREEN", 
 				icon = ST[53765],
 			},
-			sporespawn = {
+			sporespawncd = {
 				varname = format(L["%s Timer"],SN[29234]),
 				type = "dropdown", 
 				text = SN[29234],
@@ -61,8 +61,8 @@ do
 		timers = {
 			healtime = {
 				{
-					"quash","necroaura",
-					"alert","openheals",
+					"quash","necroauradur",
+					"alert","openhealsdur",
 				},
 			},
 		},
@@ -74,7 +74,7 @@ do
 				spellid = 55593, 
 				execute = {
 					{
-						"alert","necroaura", 
+						"alert","necroauradur", 
 						"scheduletimer",{"healtime", 17},
 					},
 				},
@@ -86,7 +86,7 @@ do
 				spellid = 29234, 
 				execute = {
 					{
-						"alert","sporespawn", 
+						"alert","sporespawncd", 
 					},
 				},
 			},
