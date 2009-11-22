@@ -2,7 +2,7 @@ do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 
 	local data = {
-		version = 298,
+		version = 299,
 		key = "kelthuzad", 
 		zone = L["Naxxramas"], 
 		name = L["Kel'Thuzad"], 
@@ -27,7 +27,7 @@ do
 		userdata = {},
 		onstart = {
 			{
-				"alert","ktarrives",
+				"alert","ktarrivescd",
 			}
 		},
 		windows = {
@@ -63,7 +63,7 @@ do
 				flashscreen = true,
 				icon = ST[29870],
 			},
-			ktarrives = {
+			ktarrivescd = {
 				varname = format(L["%s Arrival"],L["Kel'Thuzad"]),
 				type = "dropdown", 
 				text = format(L["%s Arrives"],L["Kel'Thuzad"]),
