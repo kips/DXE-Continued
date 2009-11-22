@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 306,
+		version = 308,
 		key = "yoggsaron", 
 		zone = L["Ulduar"], 
 		name = L["Yogg-Saron"], 
@@ -126,7 +126,7 @@ do
 				flashscreen = true,
 				icon = ST[63830],
 			},
-			crushertentaclespawn = {
+			crushertentaclewarn = {
 				varname = format(L["%s Spawns"],L["Crusher Tentacle"]),
 				type = "dropdown",
 				text = format(L["%s Spawns"],L["Crusher Tentacle"]).."!",
@@ -272,14 +272,14 @@ do
 						"expect",{"#1#","find",L["^I am the lucid dream"]},
 						"tracing",{33288,33890}, -- Yogg-Saron, Brain of Yogg-Saron
 						"alert","portalcd",
-						"alert","crushertentaclespawn",
+						"alert","crushertentaclewarn",
 						"set",{phase = "2"},
 					},
 					-- Phase 3
 					{
 						"expect",{"#1#","find",L["^Look upon the true face"]},
 						"tracing",{33288}, -- Yogg-Saron
-						"quash","crushertentaclespawn",
+						"quash","crushertentaclewarn",
 						"quash","inducewarn",
 						"quash","portalcd",
 						"quash","weakeneddur",
@@ -305,10 +305,10 @@ do
 						"alert","weakeneddur",
 						"quash","inducewarn",
 
-						"expect",{"&timeleft|weakeneddur&",">","&timeleft|crushertentaclespawn&"},
+						"expect",{"&timeleft|weakeneddur&",">","&timeleft|crushertentaclewarn&"},
 						"set",{crushertime = "&timeleft|weakeneddur|5&"},
-						"quash","crushertentaclespawn",
-						"alert","crushertentaclespawn",
+						"quash","crushertentaclewarn",
+						"alert","crushertentaclewarn",
 					},
 				},
 			},
@@ -372,8 +372,8 @@ do
 				execute = {
 					{
 						"expect",{"<phase>","==","2"},
-						"quash","crushertentaclespawn",
-						"alert","crushertentaclespawn",
+						"quash","crushertentaclewarn",
+						"alert","crushertentaclewarn",
 					},
 				},
 			},
