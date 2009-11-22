@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 304,
+		version = 305,
 		key = "thorim", 
 		zone = L["Ulduar"], 
 		name = L["Thorim"], 
@@ -85,7 +85,7 @@ do
 				color2 = "ORANGE",
 				icon = ST[62131],
 			},
-			frostnovacast = {
+			frostnovawarn = {
 				varname = format(L["%s Cast"],SN[122]),
 				type = "centerpopup",
 				text = format(L["%s Cast"],SN[122]),
@@ -167,7 +167,7 @@ do
 				spellid = {62605,62597},
 				execute = {
 					{
-						"alert","frostnovacast",
+						"alert","frostnovawarn",
 					},
 				},
 			},
