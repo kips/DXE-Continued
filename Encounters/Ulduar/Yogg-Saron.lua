@@ -165,7 +165,7 @@ do
 				color1 = "BROWN",
 				icon = ST[64189],
 			},
-			deafeningcast = {
+			deafeningwarn = {
 				varname = format(L["%s Cast"],SN[64189]),
 				type = "centerpopup",
 				text = format(L["%s Cast"],SN[64189]),
@@ -385,7 +385,7 @@ do
 				execute = {
 					{
 						"quash","deafeningcd",
-						"alert","deafeningcast",
+						"alert","deafeningwarn",
 						"alert","deafeningcd",
 					},
 				},
