@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 300,
+		version = 301,
 		key = "ironcouncil", 
 		zone = L["Ulduar"], 
 		name = L["The Iron Council"], 
@@ -47,7 +47,7 @@ do
 				color1 = "RED",
 				icon = ST[12317],
 			},
-			fusionpunchcast = {
+			fusionpunchwarn = {
 				varname = format(L["%s Cast"],SN[61903]),
 				type = "centerpopup",
 				text = format(L["%s Cast"],SN[61903]),
@@ -306,7 +306,7 @@ do
 				execute = {
 					{
 						"alert","fusionpunchcd",
-						"alert","fusionpunchcast",
+						"alert","fusionpunchwarn",
 					},
 				},
 			},
@@ -318,7 +318,7 @@ do
 					{
 						"expect",{"&npcid|#4#&","==","32867"}, -- Steelbreaker
 						"quash","fusionpunchcd",
-						"quash","fusionpunchcast",
+						"quash","fusionpunchwarn",
 					},
 					{
 						"expect",{"&npcid|#4#&","==","32857"}, -- Stormcaller Brundir
