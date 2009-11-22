@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 298,
+		version = 299,
 		key = "malygos", 
 		zone = L["The Eye of Eternity"], 
 		category = L["Northrend"],
@@ -71,7 +71,7 @@ do
 				flashscreen = true,
 				icon = ST[56505],
 			},
-			deepbreath = {
+			deepbreathwarn = {
 				varname = format(L["%s Cooldown"],L["Deep Breath"]), 
 				type = "dropdown", 
 				text = format(L["Next %s"],L["Deep Breath"]),
@@ -90,7 +90,7 @@ do
 				color1 = "BLUE", 
 				icon = ST[56105],
 			},
-			powerspark = {
+			powersparkcd = {
 				varname = format(L["%s Spawns"],L["Power Spark"]),
 				type = "dropdown", 
 				text = format(L["Next %s"],L["Power Spark"]),
@@ -111,8 +111,8 @@ do
 					{
 						"alert","vortexdur", 
 						"alert","vortexcd", 
-						"quash","powerspark",
-						"alert","powerspark",
+						"quash","powersparkcd",
+						"alert","powersparkcd",
 					},
 				},
 			},
@@ -149,13 +149,13 @@ do
 						"expect",{"#1#","find",L["I had hoped to end your lives quickly"]},
 						"quash","vortexdur",
 						"quash","vortexcd",
-						"quash","powerspark",
+						"quash","powersparkcd",
 						"set",{phase = 2},
-						"alert","deepbreath",
+						"alert","deepbreathwarn",
 					},
 					{
 						"expect",{"#1#", "find", L["ENOUGH!"]},
-						"quash","deepbreath",
+						"quash","deepbreathwarn",
 						"set",{phase = 3},
 					},
 				},
@@ -167,12 +167,12 @@ do
 				execute = {
 					{
 						"expect",{"<phase>","==","1"},
-						"quash","powerspark",
-						"alert","powerspark",
+						"quash","powersparkcd",
+						"alert","powersparkcd",
 					},
 					{
 						"expect",{"<phase>","==","2"},
-						"alert","deepbreath",
+						"alert","deepbreathwarn",
 					},
 				},
 			},
