@@ -1,6 +1,7 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
 
+<!--
 <Script file="Encounters\Naxxramas\Anub.lua"/>
 <Script file="Encounters\Naxxramas\Faerlina.lua"/>
 <Script file="Encounters\Naxxramas\Four_Horsemen.lua"/>
@@ -16,6 +17,7 @@
 <Script file="Encounters\Naxxramas\Razuvious.lua"/>
 <Script file="Encounters\Naxxramas\Sapphiron.lua"/>
 <Script file="Encounters\Naxxramas\Thaddius.lua"/>
+-->
 
 <Script file="Encounters\Northrend\Malygos.lua"/>
 <Script file="Encounters\Northrend\Sartharion.lua"/>

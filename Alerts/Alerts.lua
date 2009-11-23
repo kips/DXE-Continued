@@ -24,6 +24,7 @@ local defaults = {
 		SinkIcon = true,
 		RedirectCenter = false,
 		RedirectThreshold = 5,
+		BeforeThreshold = 5,
 		-- Flash
 		FlashAlpha = 0.6,
 		FlashDuration = 0.8,
@@ -68,6 +69,7 @@ local Colors = addon.Media.Colors
 local GetTime,PlaySoundFile = GetTime,PlaySoundFile
 local ipairs,pairs,next,remove = ipairs,pairs,next,table.remove
 local util = addon.util
+local find = string.find
 
 local ANIMATION_TIME = 0.3
 local FADE_TIME = 2
@@ -126,6 +128,46 @@ end
 
 function module:OnDisable()
 	self:QuashAll()
+end
+
+---------------------------------------
+-- UTILITY
+---------------------------------------
+
+local SM = LibStub("LibSharedMedia-3.0")
+local Sounds = addon.Media.Sounds
+local floor = math.floor
+local ceil = math.ceil
+local gsub = string.gsub
+
+local function GetMedia(sound,c1,c2)
+	return Sounds:GetFile(sound),Colors[c1],Colors[c2]
+end
+
+local function GetMessageEra(id)
+	local popup = find(id,"dur$") or find(id,"warn$") or find(id,"self$")
+	local before = find(id,"cd$") or find(id,"dur$")
+	return popup,before
+end
+
+local function MMSS(time)
+	local min = floor(time/60)
+	local sec = ceil(time % 60)
+	return ("%d:%02d"):format(min,sec)
+end
+
+local function Pour(text,icon,color)
+	color = color or Colors.WHITE
+	if not pfl.SinkIcon then icon = nil end
+	module:Pour(text,color.r,color.g,color.b,nil,nil,nil,nil,nil,icon)
+end
+
+local function colortext_helper(prefix,word)
+	return prefix..CN[word]
+end
+
+local function ColorText(text)
+	return (gsub(text,"(.+: )([^!.]+)",colortext_helper))
 end
 
 ---------------------------------------------
@@ -227,6 +269,7 @@ function prototype:Destroy()
 	self.timer:Show()
 	self.icon:Hide()
 	self.icon.t:SetTexture("")
+	self.bmsg = nil
 end
 
 do
@@ -356,15 +399,21 @@ end
 do
 	local function CountdownFunc(self,time)
 		local timeleft = self.data.endTime - time
-		self.data.timeleft = timeleft
+		local data = self.data
+		data.timeleft = timeleft
 		if timeleft < 0 then 
 			self.countFunc = nil
 			self.timer:SetTime(0)
 			return 
 		end
 		self.timer:SetTime(timeleft)
-		local value = 1 - (timeleft / self.data.totalTime)
+		local value = 1 - (timeleft / data.totalTime)
 		self.statusbar:SetValue(pfl.BarFillDirection == "FILL" and value or 1 - value)
+
+		if pfl.WarningMessages and self.bmsg and timeleft <= pfl.BeforeThreshold then
+			self.bmsg = nil
+			Pour(self.text:GetText().." - "..MMSS(timeleft),data.icon,data.c1)
+		end
 	end
 
 	local cos = math.cos
@@ -382,6 +431,11 @@ do
 		self.statusbar:SetValue(pfl.BarFillDirection == "FILL" and value or 1 - value)
 		if timeleft < data.flashTime then 
 			self.statusbar:SetStatusBarColor(util.blend(data.c1, data.c2, 0.5*(cos(timeleft*12) + 1))) 
+		end
+
+		if pfl.WarningMessages and self.bmsg and timeleft <= pfl.BeforeThreshold then
+			self.bmsg = nil
+			Pour(self.text:GetText().." - "..MMSS(timeleft),data.icon,data.c1)
 		end
 	end
 
@@ -421,16 +475,8 @@ function prototype:SetFlashScreen(flashscreen)
 	self.data.flashscreen = flashscreen
 end
 
-do
-	local gsub = string.gsub
-	local function colorname(prefix,word)
-		return prefix..CN[word]
-	end
-
-	function prototype:SetText(text)
-		text = gsub(text,"(.+: )([^!.]+)",colorname)
-		self.text:SetText(text)
-	end
+function prototype:SetText(text)
+	self.text:SetText(text)
 end
 
 function prototype:SetIcon(texture)
@@ -440,6 +486,8 @@ function prototype:SetIcon(texture)
 	self.icon:Show()
 	self.icon.t:SetTexture(texture)
 end
+
+function prototype:FireBeforeMsg() self.bmsg = true end
 
 local function SkinBar(bar)
 	if pfl.HideIcons then bar.icon:Hide() 
@@ -592,16 +640,6 @@ local function GetBar()
 end
 
 ---------------------------------------
--- UTILITY
----------------------------------------
-
-local SM = LibStub("LibSharedMedia-3.0")
-local Sounds = addon.Media.Sounds
-local function GetMedia(sound,c1,c2)
-	return Sounds:GetFile(sound),Colors[c1],Colors[c2]
-end
-
----------------------------------------
 -- API
 ---------------------------------------
 
@@ -609,7 +647,6 @@ function module:QuashAll()
 	for bar in pairs(Active) do bar:Destroy() end
 end
 
-local find = string.find
 function module:QuashByPattern(pattern)
 	for bar in pairs(Active) do
 		if bar.data.id and find(bar.data.id,pattern) then
@@ -631,6 +668,7 @@ function module:Dropdown(id, text, totalTime, flashTime, sound, c1, c2, flashscr
 	if pfl.DisableDropdowns then self:CenterPopup(id, text, totalTime, flashTime, sound, c1, c2, flashscreen, icon) return end
 	local soundFile,c1Data,c2Data = GetMedia(sound,c1,c2)
 	local bar = GetBar()
+	text = ColorText(text)
 	bar:SetID(id)
 	bar:SetIcon(icon)
 	bar:SetTimeleft(totalTime)
@@ -646,11 +684,19 @@ function module:Dropdown(id, text, totalTime, flashTime, sound, c1, c2, flashscr
 		else bar:ScheduleTimer("TranslateToCenter",waitTime) end
 	end
 	bar:ScheduleTimer("Fade",totalTime)
+	if pfl.WarningMessages then
+		local popup,before = GetMessageEra(id)
+		if popup then Pour(text.." - "..MMSS(totalTime),icon,c1Data) end
+		if before and totalTime > pfl.BeforeThreshold + 5 then 
+			bar:FireBeforeMsg() 
+		end
+	end
 end
 
 function module:CenterPopup(id, text, totalTime, flashTime, sound, c1, c2, flashscreen, icon)
 	local soundFile,c1Data,c2Data = GetMedia(sound,c1,c2)
 	local bar = GetBar()
+	text = ColorText(text)
 	bar:SetID(id)
 	bar:SetIcon(icon)
 	bar:SetTimeleft(totalTime)
@@ -665,12 +711,20 @@ function module:CenterPopup(id, text, totalTime, flashTime, sound, c1, c2, flash
 	end
 	bar:ScheduleTimer("Fade",totalTime)
 	if flashscreen then self:FlashScreen(c1Data) end
+	if pfl.WarningMessages then
+		local popup,before = GetMessageEra(id)
+		if popup then Pour(text.." - "..MMSS(totalTime),icon,c1Data) end
+		if before and totalTime > pfl.BeforeThreshold + 5 then 
+			bar:FireBeforeMsg()
+		end
+	end
 end
 
 function module:Simple(text, totalTime, sound, c1, flashscreen, icon)
 	local soundFile,c1Data = GetMedia(sound,c1)
 	if soundFile and not pfl.DisableSounds then PlaySoundFile(soundFile) end
 	if flashscreen then self:FlashScreen(c1Data) end
+	text = ColorText(text)
 	if pfl.WarningBars then
 		local bar = GetBar()
 		if c1Data then 
@@ -684,11 +738,7 @@ function module:Simple(text, totalTime, sound, c1, flashscreen, icon)
 		bar:ScheduleTimer("Fade",totalTime)
 	end
 
-	if pfl.WarningMessages then
-		local c = c1Data or Colors.WHITE
-		if not pfl.SinkIcon then icon = nil end
-		self:Pour(text,c.r,c.g,c.b,nil,nil,nil,nil,nil,icon)
-	end
+	if pfl.WarningMessages then Pour(text,icon,c1Data) end
 end
 
 ---------------------------------------------
@@ -764,8 +814,8 @@ end
 ---------------------------------------------
 
 function module:BarTest()
-	self:CenterPopup("AlertTest1", "Decimating. Life Tap Now!", 10, 5, "DXE ALERT1", "DCYAN", nil, nil, addon.ST[28374])
-	self:Dropdown("AlertTest2", "Bigger City Opening", 20, 5, "DXE ALERT2", "BLUE", "ORANGE", nil, addon.ST[64813])
+	self:CenterPopup("alerttestdur", "Decimate Duration", 10, 5, "DXE ALERT1", "DCYAN", nil, nil, addon.ST[28374])
+	self:Dropdown("alerttestcd", "Opening Cooldown", 20, 5, "DXE ALERT2", "BLUE", "ORANGE", nil, addon.ST[64813])
 	self:Simple("Just Kill It!",3,"DXE ALERT3","RED", nil, addon.ST[53351])
 end
 
