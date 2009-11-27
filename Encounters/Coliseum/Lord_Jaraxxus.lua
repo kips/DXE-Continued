@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 321,
+		version = 322,
 		key = "jaraxxus", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -100,7 +100,7 @@ do
 				sound = "ALERT2",
 				icon = ST[67051],
 			},
-			fleshothers = {
+			fleshwarn = {
 				varname = format(L["%s on others"],SN[67051]),
 				text = format("%s: #5#!",SN[67051]),
 				type = "centerpopup",
@@ -259,7 +259,7 @@ do
 					},
 					{
 						"expect",{"#4#","~=","&playerguid&"},
-						"alert","fleshothers",
+						"alert","fleshwarn",
 					},
 				},
 			},
@@ -283,7 +283,7 @@ do
 					},
 					{
 						"expect",{"#4#","~=","&playerguid&"},
-						"quash","fleshothers",
+						"quash","fleshwarn",
 					},
 				},
 			},

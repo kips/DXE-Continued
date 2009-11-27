@@ -687,9 +687,7 @@ function module:Dropdown(id, text, totalTime, flashTime, sound, c1, c2, flashscr
 	if pfl.WarningMessages then
 		local popup,before = GetMessageEra(id)
 		if popup then Pour(text.." - "..MMSS(totalTime),icon,c1Data) end
-		if before and totalTime > pfl.BeforeThreshold + 5 then 
-			bar:FireBeforeMsg() 
-		end
+		if before then bar:FireBeforeMsg() end
 	end
 end
 

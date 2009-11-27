@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 35,
+		version = 36,
 		key = "anubcoliseum", 
 		zone = L["Trial of the Crusader"], 
 		category = L["Coliseum"],
@@ -145,7 +145,7 @@ do
 				color1 = "INDIGO",
 				icon = ST[66333],
 			},
-			slashothers = {
+			slashwarn = {
 				varname = format(L["%s on others"],SN[66012]),
 				type = "centerpopup",
 				time = 3,
@@ -365,7 +365,7 @@ do
 				execute = {
 					{
 						"expect",{"#4#","~=","&playerguid&"},
-						"alert","slashothers",
+						"alert","slashwarn",
 					},
 				},
 			},
