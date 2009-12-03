@@ -157,19 +157,19 @@ local function MMSS(time)
 	return ("%d:%02d"):format(min,sec)
 end
 
-local function Pour(text,icon,color)
-	color = color or Colors.WHITE
-	if pfl.ClrWarningText then text = ColorText(text) end
-	if not pfl.SinkIcon then icon = nil end
-	module:Pour(text,color.r,color.g,color.b,nil,nil,nil,nil,nil,icon)
-end
-
 local function colortext_helper(prefix,word)
 	return prefix..CN[word]
 end
 
 local function ColorText(text)
 	return (gsub(text,"(.+: )([^!.]+)",colortext_helper))
+end
+
+local function Pour(text,icon,color)
+	color = color or Colors.WHITE
+	if pfl.ClrWarningText then text = ColorText(text) end
+	if not pfl.SinkIcon then icon = nil end
+	module:Pour(text,color.r,color.g,color.b,nil,nil,nil,nil,nil,icon)
 end
 
 ---------------------------------------------
