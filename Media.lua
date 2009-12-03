@@ -84,9 +84,10 @@ do
 		["Bad Press"] = "Sound\\Spells\\SimonGame_Visual_BadPress.wav",
 		["FF1 Victory"] = "Interface\\AddOns\\DXE\\Sounds\\FF1_Victory.mp3",
 	}
+	local sound_defaults = addon.defaults.profile.Sounds
 
 	function Sounds:GetFile(id) 
-		return id == "None" and "Interface\\Quiet.mp3" or SM:Fetch("sound",pfl.Sounds[id])
+		return id == "None" and "Interface\\Quiet.mp3" or SM:Fetch("sound",sound_defaults[id] and pfl.Sounds[id] or pfl.CustomSounds[id])
 	end
 
 	Media.Sounds = Sounds

@@ -78,6 +78,7 @@ local defaults = {
 			ALERT11 = "Bad Press",
 			VICTORY = "FF1 Victory",
 		},
+		CustomSounds = {},
 	},
 }
 

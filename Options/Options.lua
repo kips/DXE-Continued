@@ -64,6 +64,27 @@ local function InitializeOptions()
 	end
 
 	---------------------------------------------
+	-- UTILITY
+	---------------------------------------------
+
+	local GetSounds
+
+	do
+		local sounds = {}
+		function GetSounds()
+			table.wipe(sounds)
+			for id,name in pairs(db.profile.Sounds) do
+				if id:find("^ALERT") then sounds[id] = id end
+			end
+			for id,name in pairs(db.profile.CustomSounds) do
+				sounds[id] = id
+			end
+			sounds["None"] = L["None"]
+			return sounds
+		end
+	end
+
+	---------------------------------------------
 	-- GENERAL 
 	---------------------------------------------
 
@@ -482,6 +503,7 @@ local function InitializeOptions()
 
 		-- ADVANCED MODE
 
+		--[[
 		do
 			local sounds = {}
 			function handler:GetSounds()
@@ -489,10 +511,16 @@ local function InitializeOptions()
 				for id,name in pairs(db.profile.Sounds) do
 					if id:find("^ALERT") then sounds[id] = id end
 				end
+				for id,name in pairs(db.profile.CustomSounds) do
+					sounds[id] = id
+				end
 				sounds["None"] = L["None"]
 				return sounds
 			end
 		end
+		]]
+
+		--handler.GetSounds = GetSounds
 
 		local AdvancedItems = {
 			VersionHeader = {
@@ -534,7 +562,7 @@ local function InitializeOptions()
 						type = "select",
 						name = L["Sound"],
 						order = 300,
-						values = "GetSounds",
+						values = GetSounds,
 					},
 					blank = genblank(350),
 					flashscreen = {
@@ -586,7 +614,7 @@ local function InitializeOptions()
 						type = "select",
 						name = L["Sound"],
 						order = 100,
-						values = "GetSounds",
+						values = GetSounds,
 					},
 				},
 			}
@@ -640,9 +668,9 @@ local function InitializeOptions()
 				local stgs = db.profile.Encounters[key][var]
 
 				if info.type == "dropdown" then
-					addon.Alerts:Dropdown(info.var,info.varname,10,5,stgs.sound,stgs.color1,stgs.color2,stgs.flashscreen,info.icon)
+					addon.Alerts:Dropdown(var,info.varname,10,5,stgs.sound,stgs.color1,stgs.color2,stgs.flashscreen,info.icon)
 				elseif info.type == "centerpopup" then
-					addon.Alerts:CenterPopup(name,info.varname,10,5,stgs.sound,stgs.color1,stgs.color2,stgs.flashscreen,info.icon)
+					addon.Alerts:CenterPopup(var,info.varname,10,5,stgs.sound,stgs.color1,stgs.color2,stgs.flashscreen,info.icon)
 				elseif info.type == "simple" then
 					addon.Alerts:Simple(info.varname,5,stgs.sound,stgs.color1,stgs.flashscreen,info.icon)
 				end
@@ -1111,9 +1139,11 @@ local function InitializeOptions()
 				colors[k] = hex
 			end
 
+			--[[
 			local sounds = {}
 			for id,name in pairs(db.profile.Sounds) do if id:find("^ALERT") then sounds[id] = id end end
 			sounds["None"] = L["None"]
+			]]
 
 			local intro_desc = L["You can fire local or raid bars. Local bars are only seen by you. Raid bars are seen by you and raid members; You have to be a raid officer to fire raid bars"]
 			local howto_desc = L["Slash commands: |cffffff00/dxelb time text|r (local bar) or |cffffff00/dxerb time text|r (raid bar): |cffffff00time|r can be in the format |cffffd200minutes:seconds|r or |cffffd200seconds|r"]
@@ -1149,7 +1179,7 @@ local function InitializeOptions()
 						type = "select",
 						name = L["Sound"],
 						desc = L["The sound that plays when a custom bar is fired"],
-						values = sounds,
+						values = GetSounds,
 					},
 					howto_desc = {
 						type = "description",
@@ -1715,13 +1745,26 @@ local function InitializeOptions()
 	---------------------------------------------
 
 	do
-		local soundids = {}
-
-		for k,v in pairs(addon.defaults.profile.Sounds) do
-			soundids[k] = k
+		local sounds = {}
+		-- Same function at the very top of this function, without adding None
+		local function GetSounds()
+			table.wipe(sounds)
+			for id,name in pairs(db.profile.Sounds) do
+				if id:find("^ALERT") then sounds[id] = id end
+			end
+			for id,name in pairs(db.profile.CustomSounds) do
+				sounds[id] = id
+			end
+			return sounds
 		end
 
+
 		local label = "ALERT1"
+		local add_sound_label = ""
+		local remove_sound_label = ""
+		local remove_list = {}
+
+		local sound_defaults = addon.defaults.profile.Sounds
 
 		local sounds_group = {
 			type = "group",
@@ -1739,13 +1782,19 @@ local function InitializeOptions()
 					order = 2,
 					get = function() return label end,
 					set = function(info,v) label = v end,
-					values = soundids,
+					values = GetSounds,
 				},
 				reset = {
 					type = "execute",
 					name = L["Reset"],
 					desc = L["Sets the selected sound label back to its default value"],
-					func = function() db.profile.Sounds[label] = addon.defaults.profile.Sounds[label] end,
+					func = function() 
+						if sound_defaults[label] then
+							db.profile.Sounds[label] = sound_defaults[label] 
+						else
+							db.profile.CustomSounds[label] = "None"
+						end
+					end,
 					order = 3
 				},
 				desc2 = {
@@ -1757,10 +1806,75 @@ local function InitializeOptions()
 					name = function() return format(L["Sound File for %s"],label) end,
 					order = 5,
 					type = "select",
-					get = function(info) return db.profile.Sounds[label] end,
-					set = function(info,v) db.profile.Sounds[label] = v end,
+					get = function(info) return sound_defaults[label] and db.profile.Sounds[label] or db.profile.CustomSounds[label] end,
+					set = function(info,v) 
+						if sound_defaults[label] then
+							db.profile.Sounds[label] = v 
+						else
+							db.profile.CustomSounds[label] = v
+						end
+					end,
 					dialogControl = "LSM30_Sound",
 					values = addon.SM:HashTable("sound"),
+				},
+				sound_label_header = {
+					type = "header",
+					name = L["Add Sound Label"],
+					order = 6,
+				},
+				add_desc = {
+					type = "description",
+					name = L["You can add your own sound label. Each sound label is associated with a certain sound file. Consult SharedMedia's documentation if you would like to add your own sound file. After adding a sound label, it will appear in the Sound Label list. You can then select a sound file to associate with it. Subsequently, the sound label will be available in the encounter options"],
+					order = 7,
+				},
+				sound_label_input = {
+					type = "input",
+					name = L["Label name"],
+					order = 8,
+					get = function(info) return add_sound_label end,
+					set = function(info,v) add_sound_label = v end,
+				},
+				sound_label_add = {
+					type = "execute",
+					name = L["Add"],
+					order = 9,
+					func = function()
+						db.profile.CustomSounds[add_sound_label] = "None"
+						label = add_sound_label
+						add_sound_label = ""
+					end,
+					disabled = function() return add_sound_label == "" end
+				},
+				remove_desc = {
+					type = "description",
+					name = "\n"..L["You can remove custom sounds labels. Select a sound label from the dropdown and then click remove"],
+					order = 9.5,
+				},
+				sound_label_list = {
+					type = "select",
+					order = 10,
+					name = L["Custom Sound Labels"],
+					get = function()
+						return remove_sound_label
+					end,
+					set = function(info,v)
+						remove_sound_label = v
+					end,
+					values = function()
+						table.wipe(remove_list)
+						for k,v in pairs(db.profile.CustomSounds) do remove_list[k] = k end
+						return remove_list
+					end,
+				},
+				sound_label_remove = {
+					type = "execute",
+					name = L["Remove"],
+					order = 11,
+					func = function()
+						db.profile.CustomSounds[remove_sound_label] = nil
+						remove_sound_label = ""
+					end,
+					disabled = function() return remove_sound_label == "" end,
 				},
 			},
 		}
