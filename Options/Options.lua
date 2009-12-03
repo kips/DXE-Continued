@@ -1307,6 +1307,7 @@ local function InitializeOptions()
 				warning_bars_args.warning_settings_group = warning_settings_group
 			end
 
+			local warning_disabled = function() return not Alerts.db.profile.WarningMessages end
 
 			local warning_message_group = {
 				type = "group",
@@ -1314,19 +1315,41 @@ local function InitializeOptions()
 				order = 200,
 				inline = true,
 				args = {
+					warning_desc = {
+						type = "description",
+						name = L["Alerts are split into three categories: cooldown, simple, and duration. Cooldown alerts will fire a message before they end. Simple alerts will fire a message when they popup. Duration alerts will fire a message when they popup and before they end. Also, duration alerts will not fire a before message if it is within five seconds of the popup message"],
+						order = 1,
+					},
 					WarningMessages = {
 						type = "toggle",
 						name = L["Enable Warning Messages"],
 						desc = L["Output to an additional interface"],
-						order = 50,
+						order = 2,
 						width = "full",
 					},
 					SinkIcon = {
-						order = 51,
+						order = 3,
 						type = "toggle",
 						name = L["Show Icon"],
 						desc = L["Display an icon to the left of a warning message"],
-						disabled = function() return not Alerts.db.profile.WarningMessages end
+						disabled = warning_disabled,
+					},
+					BeforeThreshold = {
+						order = 4,
+						type = "range",
+						name = L["Before Threshold"],
+						desc = L["How many seconds before an alert ends to fire a warning message. This only applies to cooldown and duration type alerts"],
+						min = 1,
+						max = 15,
+						step = 1,
+						disabled = warning_disabled,
+					},
+					ClrWarningText = {
+						order = 5,
+						type = "toggle",
+						name = L["Color Text"],
+						desc = L["Class colors text"],
+						disabled = warning_disabled,
 					},
 					Output = Alerts:GetSinkAce3OptionsDataTable(),
 				},
@@ -1872,6 +1895,9 @@ local function InitializeOptions()
 					order = 11,
 					func = function()
 						db.profile.CustomSounds[remove_sound_label] = nil
+						if label == remove_sound_label then
+							label = "ALERT1"
+						end
 						remove_sound_label = ""
 					end,
 					disabled = function() return remove_sound_label == "" end,

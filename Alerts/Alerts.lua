@@ -25,6 +25,7 @@ local defaults = {
 		RedirectCenter = false,
 		RedirectThreshold = 5,
 		BeforeThreshold = 5,
+		ClrWarningText = true,
 		-- Flash
 		FlashAlpha = 0.6,
 		FlashDuration = 0.8,
@@ -158,6 +159,7 @@ end
 
 local function Pour(text,icon,color)
 	color = color or Colors.WHITE
+	if pfl.ClrWarningText then text = ColorText(text) end
 	if not pfl.SinkIcon then icon = nil end
 	module:Pour(text,color.r,color.g,color.b,nil,nil,nil,nil,nil,icon)
 end
@@ -476,7 +478,7 @@ function prototype:SetFlashScreen(flashscreen)
 end
 
 function prototype:SetText(text)
-	self.text:SetText(text)
+	self.text:SetText(ColorText(text))
 end
 
 function prototype:SetIcon(texture)
@@ -668,7 +670,6 @@ function module:Dropdown(id, text, totalTime, flashTime, sound, c1, c2, flashscr
 	if pfl.DisableDropdowns then self:CenterPopup(id, text, totalTime, flashTime, sound, c1, c2, flashscreen, icon) return end
 	local soundFile,c1Data,c2Data = GetMedia(sound,c1,c2)
 	local bar = GetBar()
-	text = ColorText(text)
 	bar:SetID(id)
 	bar:SetIcon(icon)
 	bar:SetTimeleft(totalTime)
@@ -694,7 +695,6 @@ end
 function module:CenterPopup(id, text, totalTime, flashTime, sound, c1, c2, flashscreen, icon)
 	local soundFile,c1Data,c2Data = GetMedia(sound,c1,c2)
 	local bar = GetBar()
-	text = ColorText(text)
 	bar:SetID(id)
 	bar:SetIcon(icon)
 	bar:SetTimeleft(totalTime)
@@ -722,7 +722,6 @@ function module:Simple(text, totalTime, sound, c1, flashscreen, icon)
 	local soundFile,c1Data = GetMedia(sound,c1)
 	if soundFile and not pfl.DisableSounds then PlaySoundFile(soundFile) end
 	if flashscreen then self:FlashScreen(c1Data) end
-	text = ColorText(text)
 	if pfl.WarningBars then
 		local bar = GetBar()
 		if c1Data then 
