@@ -1295,57 +1295,79 @@ local function InitializeOptions()
 			warning_bars_args.warning_settings_group = warning_settings_group
 		end
 
-		local warning_disabled = function() return not Alerts.db.profile.WarningMessages end
 		local warning_message_group = {
 			type = "group",
 			name = L["Warning Messages"],
 			order = 140,
 			args = {
-				warning_desc = {
-					type = "description",
-					name = L["Alerts are split into three categories: cooldown, simple, and duration. Cooldown alerts will fire a message before they end. Simple alerts will fire a message when they popup. Duration alerts will fire a message when they popup and before they end. Also, duration alerts will not fire a before message if it is within five seconds of the popup message"],
-					order = 1,
-				},
 				WarningMessages = {
 					type = "toggle",
 					name = L["Enable Warning Messages"],
 					desc = L["Output to an additional interface"],
-					order = 2,
+					order = 1,
 					width = "full",
 				},
-				SinkIcon = {
-					order = 3,
-					type = "toggle",
-					name = L["Show Icon"],
-					desc = L["Display an icon to the left of a warning message"],
-					disabled = warning_disabled,
-					width = "full",
+				inner_group = {
+					type = "group",
+					name = "",
+					disabled = function() return not Alerts.db.profile.WarningMessages end,
+					inline = true,
+					args = {
+						warning_desc = {
+							type = "description",
+							name = L["Alerts are split into three categories: cooldowns, durations, and warnings. Cooldown and duration alerts can fire a message before they end and when they popup. Warning alerts can only fire a message when they popup. Alerts suffixed self can only fire a popup message even if it is a duration"].."\n",
+							order = 2,
+						},
+						ClrWarningText = {
+							order = 3,
+							type = "toggle",
+							name = L["Color Text"],
+							desc = L["Class colors text"],
+							width = "full",
+						},
+						SinkIcon = {
+							order = 4,
+							type = "toggle",
+							name = L["Show Icon"],
+							desc = L["Display an icon to the left of a warning message"],
+							width = "full",
+						},
+						BeforeThreshold = {
+							order = 5,
+							type = "range",
+							name = L["Before End Threshold"],
+							desc = L["How many seconds before an alert ends to fire a warning message. This only applies to cooldown and duration type alerts"],
+							min = 1,
+							max = 15,
+							step = 1,
+						},
+						filter_group = {
+							type = "group",
+							order = 6,
+							name = L["Show messages for"].."...",
+							inline = true,
+							args = {
+								filter_desc = {
+									type = "description",
+									name = L["Enabling |cffffd200X popups|r will make it fire a message on appearance. Enabling |cffffd200X before ending|r will make it fire a message before ending based on before end threshold"],
+									order = 1,
+								},
+								CdPopupMessage = {type = "toggle", name = L["Cooldown popups"], order = 2, width = "full"},
+								CdBeforeMessage = {type = "toggle", name = L["Cooldowns before ending"], order = 3, width = "full"},
+								DurPopupMessage = {type = "toggle", name = L["Duration popups"], order = 4, width = "full"},
+								DurBeforeMessage = {type = "toggle", name = L["Durations before ending"], order = 5, width = "full"},
+								WarnPopupMessage = {type = "toggle", name = L["Warning popups"], order = 6, width = "full"},
+							}
+						},
+						Output = Alerts:GetSinkAce3OptionsDataTable(),
+					},
 				},
-				ClrWarningText = {
-					order = 4,
-					type = "toggle",
-					name = L["Color Text"],
-					desc = L["Class colors text"],
-					disabled = warning_disabled,
-					width = "full",
-				},
-				BeforeThreshold = {
-					order = 5,
-					type = "range",
-					name = L["Before Threshold"],
-					desc = L["How many seconds before an alert ends to fire a warning message. This only applies to cooldown and duration type alerts"],
-					min = 1,
-					max = 15,
-					step = 1,
-					disabled = warning_disabled,
-				},
-				Output = Alerts:GetSinkAce3OptionsDataTable(),
 			},
 		}
 		alerts_args.warning_message_group = warning_message_group
-
-		warning_message_group.args.Output.disabled = function() return not Alerts.db.profile.WarningMessages end
-		warning_message_group.args.Output.inline = true
+		warning_message_group.args.inner_group.args.Output.disabled = function() return not Alerts.db.profile.WarningMessages end
+		warning_message_group.args.inner_group.args.Output.inline = true
+		warning_message_group.args.inner_group.args.Output.order = -1
 
 		local sounds_group = {
 			type = "group",
@@ -1779,7 +1801,7 @@ local function InitializeOptions()
 
 		local sounds_group = {
 			type = "group",
-			name = L["Sounds"],
+			name = L["Sound Labels"],
 			order = 295,
 			args = {
 				desc1 = {

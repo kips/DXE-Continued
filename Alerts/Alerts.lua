@@ -12,7 +12,7 @@ local defaults = {
 		CenterGrowth = "DOWN",
 		CenterAlpha = 0.75,
 		CenterBarWidth = 275,
-		-- Warning
+		-- Warning Bars
 		WarningBars = true,
 		WarningAnchor = false,
 		WarningMessages = false,
@@ -20,12 +20,18 @@ local defaults = {
 		WarningGrowth = "DOWN",
 		WarningAlpha = 0.75,
 		WarningBarWidth = 275,
-		SinkStorage = {},
-		SinkIcon = true,
 		RedirectCenter = false,
 		RedirectThreshold = 5,
+		-- Warning Messages
 		BeforeThreshold = 5,
 		ClrWarningText = true,
+		SinkStorage = {},
+		SinkIcon = true,
+		CdPopupMessage = false,
+		CdBeforeMessage = true,
+		DurPopupMessage = true,
+		DurBeforeMessage = true,
+		WarnPopupMessage = true,
 		-- Flash
 		FlashAlpha = 0.6,
 		FlashDuration = 0.8,
@@ -146,8 +152,20 @@ local function GetMedia(sound,c1,c2)
 end
 
 local function GetMessageEra(id)
-	local popup = find(id,"dur$") or find(id,"warn$") or find(id,"self$")
-	local before = find(id,"cd$") or find(id,"dur$")
+	local popup,before
+
+	if find(id,"cd$") then
+		popup = pfl.CdPopupMessage
+		before = pfl.CdBeforeMessage
+	elseif find(id,"dur$") then 
+		popup = pfl.DurPopupMessage
+		before = pfl.DurBeforeMessage
+	elseif find(id,"self$") then
+		popup = pfl.DurPopupMessage
+	elseif find(id,"warn$") then
+		popup = pfl.WarnPopupMessage
+	end
+
 	return popup,before
 end
 
@@ -712,9 +730,7 @@ function module:CenterPopup(id, text, totalTime, flashTime, sound, c1, c2, flash
 	if pfl.WarningMessages then
 		local popup,before = GetMessageEra(id)
 		if popup then Pour(text.." - "..MMSS(totalTime),icon,c1Data) end
-		if before and totalTime > pfl.BeforeThreshold + 5 then 
-			bar:FireBeforeMsg()
-		end
+		if before then bar:FireBeforeMsg() end
 	end
 end
 
@@ -735,7 +751,7 @@ function module:Simple(text, totalTime, sound, c1, flashscreen, icon)
 		bar:ScheduleTimer("Fade",totalTime)
 	end
 
-	if pfl.WarningMessages then Pour(text,icon,c1Data) end
+	if pfl.WarningMessages and pfl.WarnPopupMessage then Pour(text,icon,c1Data) end
 end
 
 ---------------------------------------------
