@@ -1197,167 +1197,155 @@ local function InitializeOptions()
 			bars_args.custom_group = custom_group
 		end
 
-		local warning_group = {
-			type = "group",
-			name = L["Warnings"],
-			order = 800,
-			args = {},
-		}
-
-		bars_args.warning_group = warning_group
-
 		-- WARNINGS
-		do
-			local warning_args = warning_group.args
-
-			local warning_bar_group = {
-				type = "group",
-				name = L["Warning Bars"],
-				order = 100,
-				inline = true,
-				args = {
-					WarningBars = {
-						type = "toggle",
-						order = 100,
-						name = L["Enable Warning Bars"],
-						set = SetNoRefresh,
-					},
-					warning_bars = {
-						type = "group",
-						name = L["Warning Anchor"],
-						order = 200,
-						disabled = function() return not Alerts.db.profile.WarningBars end,
-						args = {
-							WarningAnchor = {
-								order = 100,
-								type = "toggle",
-								name = L["Enable Warning Anchor"],
-								desc = L["Anchors all warning bars to the warning anchor instead of the center anchor"],
-								width = "full",
-							},
-						}
-					},
+		local warning_bar_group = {
+			type = "group",
+			name = L["Warning Bars"],
+			order = 800,
+			args = {
+				WarningBars = {
+					type = "toggle",
+					order = 100,
+					name = L["Enable Warning Bars"],
+					set = SetNoRefresh,
 				},
-			}
-
-			warning_args.warning_bar_group = warning_bar_group
-
-			do
-				local warning_bars_args = warning_bar_group.args.warning_bars.args
-							
-				local warning_settings_group = {
+				warning_bars = {
 					type = "group",
-					name = "",
-					order = 300,
-					disabled = function() return not Alerts.db.profile.WarningAnchor or not Alerts.db.profile.WarningBars end,
+					name = L["Warning Anchor"],
+					order = 200,
+					inline = true,
+					disabled = function() return not Alerts.db.profile.WarningBars end,
 					args = {
-						WarningScale = {
+						WarningAnchor = {
 							order = 100,
-							type = "range",
-							name = L["Bar Scale"],
-							desc = L["Adjust the size of warning bars"],
-							min = 0.5,
-							max = 1.5,
-							step = 0.05,
-						},
-						WarningAlpha = {
-							type = "range",
-							name = L["Bar Alpha"],
-							desc = L["Adjust the transparency of warning bars"],
-							order = 200,
-							min = 0.1,
-							max = 1,
-							step = 0.05,
-						},
-						WarningBarWidth = {
-							order = 300,
-							type = "range",
-							name = L["Bar Width"],
-							desc = L["Adjust the width of warning bars"],
-							min = 220,
-							max = 1000,
-							step = 1,
-						},
-						WarningGrowth = {
-							order = 400,
-							type = "select",
-							name = L["Bar Growth"],
-							desc = L["The direction warning bars grow"],
-							values = {DOWN = L["Down"], UP = L["Up"]},
-						},
-						RedirectCenter = {
-							order = 500,
 							type = "toggle",
-							name = L["Redirect center bars"],
-							desc = L["Anchor a center bar to the warnings anchor if its duration is less than or equal to threshold time"],
+							name = L["Enable Warning Anchor"],
+							desc = L["Anchors all warning bars to the warning anchor instead of the center anchor"],
 							width = "full",
 						},
-						RedirectThreshold = {
-							order = 600,
-							type = "range",
-							name = L["Threshold time"],
-							desc = L["If a center bar's duration is less than or equal to this then it anchors to the warnings anchor"],
-							min = 1,
-							max = 15,
-							step = 1,
-							disabled = function() return not Alerts.db.profile.WarningBars or not Alerts.db.profile.WarningAnchor or not Alerts.db.profile.RedirectCenter end
-						},
-					},
-				}
-				warning_bars_args.warning_settings_group = warning_settings_group
-			end
+					}
+				},
+			},
+		}
 
-			local warning_disabled = function() return not Alerts.db.profile.WarningMessages end
+		bars_args.warning_bar_group = warning_bar_group
 
-			local warning_message_group = {
+		do
+			local warning_bars_args = warning_bar_group.args.warning_bars.args
+						
+			local warning_settings_group = {
 				type = "group",
-				name = L["Warning Messages"],
-				order = 200,
-				inline = true,
+				name = "",
+				order = 300,
+				disabled = function() return not Alerts.db.profile.WarningAnchor or not Alerts.db.profile.WarningBars end,
 				args = {
-					warning_desc = {
-						type = "description",
-						name = L["Alerts are split into three categories: cooldown, simple, and duration. Cooldown alerts will fire a message before they end. Simple alerts will fire a message when they popup. Duration alerts will fire a message when they popup and before they end. Also, duration alerts will not fire a before message if it is within five seconds of the popup message"],
-						order = 1,
+					WarningScale = {
+						order = 100,
+						type = "range",
+						name = L["Bar Scale"],
+						desc = L["Adjust the size of warning bars"],
+						min = 0.5,
+						max = 1.5,
+						step = 0.05,
 					},
-					WarningMessages = {
+					WarningAlpha = {
+						type = "range",
+						name = L["Bar Alpha"],
+						desc = L["Adjust the transparency of warning bars"],
+						order = 200,
+						min = 0.1,
+						max = 1,
+						step = 0.05,
+					},
+					WarningBarWidth = {
+						order = 300,
+						type = "range",
+						name = L["Bar Width"],
+						desc = L["Adjust the width of warning bars"],
+						min = 220,
+						max = 1000,
+						step = 1,
+					},
+					WarningGrowth = {
+						order = 400,
+						type = "select",
+						name = L["Bar Growth"],
+						desc = L["The direction warning bars grow"],
+						values = {DOWN = L["Down"], UP = L["Up"]},
+					},
+					RedirectCenter = {
+						order = 500,
 						type = "toggle",
-						name = L["Enable Warning Messages"],
-						desc = L["Output to an additional interface"],
-						order = 2,
+						name = L["Redirect center bars"],
+						desc = L["Anchor a center bar to the warnings anchor if its duration is less than or equal to threshold time"],
 						width = "full",
 					},
-					SinkIcon = {
-						order = 3,
-						type = "toggle",
-						name = L["Show Icon"],
-						desc = L["Display an icon to the left of a warning message"],
-						disabled = warning_disabled,
-					},
-					BeforeThreshold = {
-						order = 4,
+					RedirectThreshold = {
+						order = 600,
 						type = "range",
-						name = L["Before Threshold"],
-						desc = L["How many seconds before an alert ends to fire a warning message. This only applies to cooldown and duration type alerts"],
+						name = L["Threshold time"],
+						desc = L["If a center bar's duration is less than or equal to this then it anchors to the warnings anchor"],
 						min = 1,
 						max = 15,
 						step = 1,
-						disabled = warning_disabled,
+						disabled = function() return not Alerts.db.profile.WarningBars or not Alerts.db.profile.WarningAnchor or not Alerts.db.profile.RedirectCenter end
 					},
-					ClrWarningText = {
-						order = 5,
-						type = "toggle",
-						name = L["Color Text"],
-						desc = L["Class colors text"],
-						disabled = warning_disabled,
-					},
-					Output = Alerts:GetSinkAce3OptionsDataTable(),
 				},
 			}
-			warning_args.warning_message_group = warning_message_group
-
-			warning_message_group.args.Output.disabled = function() return not Alerts.db.profile.WarningMessages end
+			warning_bars_args.warning_settings_group = warning_settings_group
 		end
+
+		local warning_disabled = function() return not Alerts.db.profile.WarningMessages end
+		local warning_message_group = {
+			type = "group",
+			name = L["Warning Messages"],
+			order = 140,
+			args = {
+				warning_desc = {
+					type = "description",
+					name = L["Alerts are split into three categories: cooldown, simple, and duration. Cooldown alerts will fire a message before they end. Simple alerts will fire a message when they popup. Duration alerts will fire a message when they popup and before they end. Also, duration alerts will not fire a before message if it is within five seconds of the popup message"],
+					order = 1,
+				},
+				WarningMessages = {
+					type = "toggle",
+					name = L["Enable Warning Messages"],
+					desc = L["Output to an additional interface"],
+					order = 2,
+					width = "full",
+				},
+				SinkIcon = {
+					order = 3,
+					type = "toggle",
+					name = L["Show Icon"],
+					desc = L["Display an icon to the left of a warning message"],
+					disabled = warning_disabled,
+					width = "full",
+				},
+				ClrWarningText = {
+					order = 4,
+					type = "toggle",
+					name = L["Color Text"],
+					desc = L["Class colors text"],
+					disabled = warning_disabled,
+					width = "full",
+				},
+				BeforeThreshold = {
+					order = 5,
+					type = "range",
+					name = L["Before Threshold"],
+					desc = L["How many seconds before an alert ends to fire a warning message. This only applies to cooldown and duration type alerts"],
+					min = 1,
+					max = 15,
+					step = 1,
+					disabled = warning_disabled,
+				},
+				Output = Alerts:GetSinkAce3OptionsDataTable(),
+			},
+		}
+		alerts_args.warning_message_group = warning_message_group
+
+		warning_message_group.args.Output.disabled = function() return not Alerts.db.profile.WarningMessages end
+		warning_message_group.args.Output.inline = true
 
 		local sounds_group = {
 			type = "group",
