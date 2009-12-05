@@ -3,7 +3,7 @@ do
 	local data = {
 		version = 1,
 		key = "lanathel", 
-		zone = L["The Sanctum of Blood"], -- "Icecrown Citadel"
+		zone = L["Iceecrown Citadel"],
 		category = L["Citadel"], 
 		name = L["Lana'thel"], 
 		triggers = {
