@@ -16,21 +16,33 @@ do
 		},
 		userdata = {
 			bonetime = {45,90,loop = false},
+			graveyardtime = {18,60,loop = true},
 		},
 		onstart = {
 			{
 				"alert","graveyardcd",
+				"alert","bonestormcd",
 			},
 		},
 		alerts = {
+			bonestormwarn = {
+				varname = format(L["%s Cast"],SN[69076]),
+				type = "centerpopup",
+				text = format(L["%s Cast"],SN[69076]),
+				time = 3,
+				flashtime = 3,
+				color1 = "GREEN",
+				sound = "ALERT5",
+				icon = ST[69076],
+			},
+			-- duration is underministic 36.1, 37.3, 42.6, 34.4
 			bonestormdur = {
 				varname = format(L["%s Duration"],SN[69076]),
 				type = "centerpopup",
-				text = format(L["%s Duration"],SN[69076]),
-				time = 30,
-				flashtime = 30,
+				text = format(L["%s Ends Soon"],SN[69076]),
+				time = 34,
+				flashtime = 34,
 				color1 = "BROWN",
-				sound = "ALERT5",
 				icon = ST[69075],
 			},
 			bonestormcd = {
@@ -67,7 +79,7 @@ do
 				varname = format(L["%s Cooldown"],SN[70826]),
 				type = "dropdown",
 				text = format(L["%s Cooldown"],SN[70826]),
-				time = 18,
+				time = "<graveyardtime>",
 				flashtime = 7,
 				color1 = "PURPLE",
 				icon = ST[70826],
@@ -95,13 +107,25 @@ do
 			},
 		},
 		events = {
-			-- Bone Storm
+			-- Bone Storm cast
 			{
 				type = "combatevent",
-				eventtype = "SPELL_CAST_SUCCESS",
+				eventtype = "SPELL_CAST_START",
+				spellid = {
+					69076, -- 25 hard
+				},
+				execute = {
+					{
+						"alert","bonestormwarn",
+					},
+				},
+			},
+			-- Bone Storm duration and cooldown
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
 				spellid = {
 					69076,
-					70834, -- 25
 				},
 				execute = {
 					{
@@ -111,11 +135,27 @@ do
 					},
 				},
 			},
-			-- Cold Flame self
+			-- Bone Storm removal
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_REMOVED",
+				spellid = {
+					69076,
+				},
+				execute = {
+					{
+						"quash","bonestormdur",
+					},
+				},
+			},
+			-- Coldflame self
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellid = 70823,
+				spellid = {
+					70823, -- 25
+					70825, -- 25 hard
+				},
 				execute = {
 					{
 						"expect",{"#4#","==","&playerguid&"},
@@ -127,7 +167,10 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
-				spellid = 70826,
+				spellid = {
+					70826, -- 25
+					72089, -- 25 hard
+				},
 				execute = {
 					{
 						"alert","graveyardwarn",
@@ -142,6 +185,7 @@ do
 				spellid = 69062,
 				execute = {
 					{
+						"expect",{"#2#","~=","&playerguid&"},
 						"raidicon","impalemark",
 						"arrow","impalearrow",
 					},
@@ -154,6 +198,7 @@ do
 				spellid = 69065, -- different spellid from SPELL_SUMMON
 				execute = {
 					{
+						"expect",{"#2#","~=","&playerguid&"},
 						"removeraidicon","#2#",
 						"removearrow","#2#",
 					},
