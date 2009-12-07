@@ -58,6 +58,7 @@
 <Script file="Encounters\Citadel\Marrowgar.lua"/>
 <Script file="Encounters\Citadel\Putricide.lua"/>
 <Script file="Encounters\Citadel\Rotface.lua"/>
+<Script file="Encounters\Citadel\Saurfang.lua"/>
 <Script file="Encounters\Citadel\Sindragosa.lua"/>
 <Script file="Encounters\Citadel\Valithria.lua"/>
 
