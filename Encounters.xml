@@ -48,7 +48,7 @@
 
 <Script file="Encounters\Kalimdor\Onyxia.lua"/>
 
-<Script file="Encounters\Citadel\Council.lua"/>
+<Script file="Encounters\Citadel\Blood_Princes.lua"/>
 <Script file="Encounters\Citadel\Deathwhisper.lua"/>
 <Script file="Encounters\Citadel\Deathbringer.lua"/>
 <Script file="Encounters\Citadel\Festergut.lua"/>

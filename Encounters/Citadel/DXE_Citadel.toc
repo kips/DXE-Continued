@@ -9,7 +9,7 @@
 
 Locales.lua
 
-Council.lua
+Blood_Princes.lua
 Deathwhisper.lua
 Festergut.lua
 Gunship_Battle.lua

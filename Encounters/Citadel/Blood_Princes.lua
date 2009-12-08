@@ -5,7 +5,7 @@ do
 		key = "bloodprincecouncil", 
 		zone = L["Icecrown Citadel"], 
 		category = L["Citadel"], 
-		name = L["Council"], 
+		name = L["Blood Princes"], 
 		triggers = {
 			--scan = ,
 			--yell = ,

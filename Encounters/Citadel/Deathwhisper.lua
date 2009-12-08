@@ -7,12 +7,15 @@ do
 		category = L["Citadel"], 
 		name = L["Deathwhisper"], 
 		triggers = {
-			--scan = ,
+			scan = {
+				36855, -- Lady Deathwhisper
+			},
 			--yell = ,
 		},
 		onactivate = {
+			tracerstart = true,
 			combatstop = true,
-			--tracing = ,
+			tracing = {36855}, -- Lady Deathwhisper
 		},
 	}
 
