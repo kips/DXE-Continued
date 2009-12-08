@@ -10,12 +10,37 @@ do
 			scan = {
 				36855, -- Lady Deathwhisper
 			},
-			--yell = ,
+			yell = L["^What is this disturbance"],
 		},
 		onactivate = {
-			tracerstart = true,
 			combatstop = true,
 			tracing = {36855}, -- Lady Deathwhisper
+		},
+		alerts = {
+			dndself = {
+				varname = format(L["%s on self"],SN[71001]),
+				text = format("%s: %s!",SN[71001],L["YOU"]),
+				type = "simple",
+				time = 3,
+				sound = "ALERT1",
+				color1 = "PURPLE",
+				icon = ST[71001],
+				flashscreen = true,
+			},
+		},
+		events = {
+			-- Death and Decay self
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellid = 71001,
+				execute = {
+					{
+						"expect",{"#4#","==","&playerguid&"},
+						"alert","dndself",
+					},
+				},
+			},
 		},
 	}
 
