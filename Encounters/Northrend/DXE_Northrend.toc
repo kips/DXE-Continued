@@ -1,4 +1,4 @@
-## Interface: 30200
+## Interface: 30300
 ## Title: DXE |cff99ff33Northrend|r
 ## Notes: Deus Vox Encounters |cff99ff33Northrend|r
 ## Author: Kollektiv

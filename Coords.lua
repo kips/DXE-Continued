@@ -84,6 +84,15 @@ MapDims= {
 	VaultofArchavon = {
 		[1] = {w = 842.2254908359, h = 561.59878021123},
 	},
+	IcecrownCitadel = {
+		[1] = {w = 1262.8025621533, h = 841.91669450207}, -- The Lower Citadel
+		[2] = {w = 993.25701607873, h = 662.58829476644}, -- The Rampart of Skulls
+		[3] = {w = 181.83564716405, h = 121.29684810833}, -- Deathbringer's Rise
+		[4] = {w = 720.60965618252, h = 481.1621506613}, -- The Frost Queen's Lair
+		[5] = {w = 1069.6156745738, h = 713.83371679543}, -- The Upper Reaches
+		[6] = {w = 348.05218433541, h = 232.05964286208}, -- Royal Quarters
+		-- [7] = {w = 0, h = 0},
+	},
 	--@debug@
 	Ironforge = {
 		[0] = {w = 790.574581, h = 527.049720},
