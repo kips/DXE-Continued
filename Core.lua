@@ -121,10 +121,8 @@ local SN = setmetatable({},{
 		if type(k) ~= "number" then return "nil" end
 		local name = GetSpellInfo(k)
 		if not name then 
-			--[===[@non-debug@
+			geterrorhandler()("Invalid spell name attempted to be retrieved") 
 			return tostring(k)
-			--@end-non-debug@]===]
-			error("Invalid spell name attempted to be retrieved") 
 		end
 		return name 
 	end,
@@ -136,10 +134,8 @@ local ST = setmetatable({},{
 		if type(k) ~= "number" then return "nil" end
 		local texture = select(3,GetSpellInfo(k))
 		if not texture then
-			--[===[@non-debug@
+			geterrorhandler()("Invalid spell texture attempted to be retrieved") 
 			return "Interface\\Buttons\\WHITE8X8"
-			--@end-non-debug@]===]
-			error("Invalid spell texture attempted to be retrieved") 
 		end
 		return texture
 	end,
