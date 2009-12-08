@@ -88,7 +88,7 @@ local defaults = {
 
 local addon = LibStub("AceAddon-3.0"):NewAddon("DXE","AceEvent-3.0","AceTimer-3.0","AceComm-3.0","AceSerializer-3.0")
 _G.DXE = addon
-addon.version = 404
+addon.version = 405
 addon:SetDefaultModuleState(false)
 addon.callbacks = LibStub("CallbackHandler-1.0"):New(addon)
 addon.defaults = defaults
@@ -120,7 +120,12 @@ local SN = setmetatable({},{
 	__index = function(t,k)
 		if type(k) ~= "number" then return "nil" end
 		local name = GetSpellInfo(k)
-		if not name then error("Invalid spell name attempted to be retrieved") end
+		if not name then 
+			--[===[@non-debug@
+			return tostring(k)
+			--@end-non-debug@]===]
+			error("Invalid spell name attempted to be retrieved") 
+		end
 		return name 
 	end,
 })
@@ -130,7 +135,12 @@ local ST = setmetatable({},{
 	__index = function(t,k)
 		if type(k) ~= "number" then return "nil" end
 		local texture = select(3,GetSpellInfo(k))
-		if not texture then error("Invalid spell texture attempted to be retrieved") end
+		if not texture then
+			--[===[@non-debug@
+			return "Interface\\Buttons\\WHITE8X8"
+			--@end-non-debug@]===]
+			error("Invalid spell texture attempted to be retrieved") 
+		end
 		return texture
 	end,
 })
