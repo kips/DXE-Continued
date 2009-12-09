@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 1,
+		version = 2,
 		key = "deathwhisper", 
 		zone = L["Icecrown Citadel"], 
 		category = L["Citadel"], 
@@ -33,7 +33,10 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellid = 71001,
+				spellid = {
+					71001,
+					72108, -- 25
+				},
 				execute = {
 					{
 						"expect",{"#4#","==","&playerguid&"},
