@@ -251,6 +251,8 @@ end
 do
 	-- 18 yards
 	local bandages = {
+		[34722] = true, -- Heavy Frostweave Bandage
+		[34721] = true, -- Frostweave Bandage
 		[21991] = true, -- Heavy Netherweave Bandage
 		[21990] = true, -- Netherweave Bandage
 		[14530] = true, -- Heavy Runecloth Bandage
