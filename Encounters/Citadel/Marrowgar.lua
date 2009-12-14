@@ -13,12 +13,18 @@ do
 		onactivate = {
 			combatstop = true,
 			tracing = {36612}, -- Lord Marrowgar
+			defeat = 36612,
 		},
 		userdata = {
 			bonetime = {45,90,loop = false},
 			graveyardtime = {18,60,loop = true},
+			bonedurtime = 18.5,
 		},
 		onstart = {
+			{
+				"expect",{"&difficulty&",">=","3"},
+				"set",{bonedurtime = 34},
+			},
 			{
 				"alert","graveyardcd",
 				"alert","bonestormcd",
@@ -40,8 +46,8 @@ do
 				varname = format(L["%s Duration"],SN[69076]),
 				type = "centerpopup",
 				text = format(L["%s Ends Soon"],SN[69076]),
-				time = 34,
-				flashtime = 34,
+				time = "<bonedurtime>",
+				flashtime = 15,
 				color1 = "BROWN",
 				icon = ST[69075],
 			},
