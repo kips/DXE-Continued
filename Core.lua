@@ -507,7 +507,7 @@ function addon:SetActiveEncounter(key)
 
 		-- Either could exist but not both
 		self:SetSortedTracing(oa.sortedtracing)
-		self:SetTracing(oa.tracing)
+		self:SetTracing(oa.tracing or oa.unittracing)
 
 		self:SetCombat(oa.combatstop,"PLAYER_REGEN_ENABLED","CombatStop")
 		self:SetCombat(oa.combatstart,"PLAYER_REGEN_DISABLED","CombatStart")
@@ -1369,16 +1369,23 @@ function addon:CreateHealthWatchers(Pane)
 	local function OnMouseUp() Pane:StopMovingOrSizing(); addon:SavePosition(Pane) end
 
 	local function OnAcquired(self,event,unit) 
-		local npcid = self:GetGoal()
+		local goal = self:GetGoal()
 		if not self:IsTitleSet() then
-			-- Should only enter once per name
-			local name = UnitName(unit)
-			if name ~= UNKNOWN then
-				gbl.L_NPC[npcid] = name
-				self:SetTitle(name)
+			if type(goal) == "number" then
+				-- Should only enter once per name
+				local name = UnitName(unit)
+				if name ~= UNKNOWN then
+					gbl.L_NPC[goal] = name
+					self:SetTitle(name)
+				end
+			elseif type(goal) == "string" then
+				local name = UnitName(goal)
+				if name ~= UNKNOWN then
+					self:SetTitle(name)
+				end
 			end
 		end
-		addon.callbacks:Fire("HW_TRACER_ACQUIRED",unit,npcid) 
+		addon.callbacks:Fire("HW_TRACER_ACQUIRED",unit,goal) 
 	end
 
 	for i=1,4 do 
@@ -1531,18 +1538,22 @@ do
 	end
 end
 
-function addon:SetTracing(npcids)
-	if not npcids then return end
+function addon:SetTracing(targets)
+	if not targets then return end
 	self:ResetSortedTracing()
 	local n = 0
-	for i,npcid in ipairs(npcids) do
+	for i,tgt in ipairs(targets) do
 		-- Prevents overwriting
 		local hw = HW[i]
-		if hw:GetGoal() ~= npcid then
-			hw:SetTitle(gbl.L_NPC[npcid] or "...")
+		if hw:GetGoal() ~= tgt then
+			hw:SetTitle(gbl.L_NPC[tgt] or "...")
 			hw:SetInfoBundle("",1)
 			hw:ApplyNeutralColor()
-			hw:Track("npcid",npcid)
+			if type(tgt) == "number" then
+				hw:Track("npcid",tgt)
+			elseif type(tgt) == "string" then
+				hw:Track("unit",tgt)
+			end
 			hw:Open()
 			hw:Show()
 		end

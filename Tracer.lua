@@ -20,8 +20,9 @@ local Tracer,prototype = {},{}
 addon.Tracer = Tracer
 
 local trackInfos = {
-	npcid = { goalType = "number", attribute = function(unit) return NID[UnitGUID(unit)] end },
-	name = { goalType = "string", attribute = UnitName },
+	npcid = { func = "Execute", goalType = "number", attribute = function(unit) return NID[UnitGUID(unit)] end },
+	name = { func = "Execute", goalType = "string", attribute = UnitName },
+	unit = { func = "Execute2", goalType = "string", attribute = UnitExists },
 }
 
 function Tracer:New()
@@ -92,6 +93,22 @@ function prototype:Execute()
 	end
 end
 
+function prototype:Execute2()
+	self.first = nil
+	local flag = self.attribute(self.goal)
+	if flag then
+		self.first = self.goal
+		if self.s == LOST then
+			self.s = ACQUIRED
+			self:Fire("TRACER_ACQUIRED")
+		end
+		self:Fire("TRACER_UPDATE")
+	elseif self.s == ACQUIRED then
+		self.s = LOST
+		self:Fire("TRACER_LOST")
+	end
+end
+
 ----------------------------------
 -- API
 ----------------------------------
@@ -103,6 +120,7 @@ function prototype:Track(trackType, goal)
 	assert(type(goal) == info.goalType)
 	--@end-debug@
 	self.attribute = info.attribute
+	self.func = info.func
 	self.goal = goal
 end
 
@@ -116,7 +134,7 @@ function prototype:Open()
 	assert(self.goal)
 	assert(self.attribute)
 	--@end-debug@
-	self.handle = self:ScheduleRepeatingTimer("Execute", DELAY)
+	self.handle = self:ScheduleRepeatingTimer(self.func, DELAY)
 end
 
 function prototype:Close()
@@ -125,6 +143,7 @@ function prototype:Close()
 	self:CancelTimer(self.handle,true)
 	self.handle = nil
 	self.first = nil
+	self.func = nil
 	self.s = LOST
 end
 

@@ -150,6 +150,7 @@ local baseTables = {
 		combatstart = optboolean,
 		tracing = opttable,
 		sortedtracing = opttable,
+		unittracing = opttable,
 		defeat = optstringnumbertable,
 	},
 }
@@ -290,6 +291,17 @@ local function validateSortedTracing(tbl,errlvl,...)
 	end
 	for k,v in ipairs(tbl) do
 		validateVal(v,isnumber,errlvl,"sortedtracing",...)
+	end
+end
+
+local function validateUnitTracing(tbl,errlvl,...)
+	errlvl=(errlvl or 0)+1
+	validateIsArray(tbl,errlvl,"unittracing",...)
+	if #tbl == 0 then
+		err(": got an empty array",errlvl,"unittracing",...)
+	end
+	for k,v in ipairs(tbl) do
+		validateVal(v,isstring,errlvl,"unittracing",...)
 	end
 end
 
@@ -620,9 +632,14 @@ local function validate(data,errlvl,...)
 						validateTracing(data.onactivate.tracing,errlvl,tblName,...)
 					elseif k == "sortedtracing" and data.onactivate.sortedtracing then
 						validateSortedTracing(data.onactivate.sortedtracing,errlvl,tblName,...)
+					elseif k == "unittracing" and data.onactivate.unittracing then
+						validateUnitTracing(data.onactivate.unittracing,errlvl,tblName,...)
 					end
-					if data.onactivate.tracing and data.onactivate.sortedtracing then
-						err(": cannot have tracing and sortedtracing at the same time",errlvl,tblName,...)
+					local onactivate = data.onactivate
+					if (onactivate.tracing and onactivate.sortedtracing) 
+						 or (onactivate.tracing and onactivate.unittracing) 
+						 or (onactivate.sortedtracing and onactivate.unittracing) then
+						err(": cannot have tracing and/or sortedtracing and/or unittracing at the same time",errlvl,tblName,...)
 					end
 				end
 			end

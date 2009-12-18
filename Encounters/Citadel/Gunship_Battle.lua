@@ -1,4 +1,6 @@
 do
+	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
+
 	local faction = UnitFactionGroup("player")
 
 	local defeat_msg
@@ -8,7 +10,6 @@ do
 		defeat_msg = L["^The Alliance falter"]
 	end
 
-	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
 		version = 2,
 		key = "gunshipbattle", 
@@ -28,7 +29,7 @@ do
 		},
 		onactivate = {
 			combatstop = true,
-			--tracing = ,
+			unittracing = {"boss1","boss2"},
 			defeat = defeat_msg,
 		},
 		alerts = {

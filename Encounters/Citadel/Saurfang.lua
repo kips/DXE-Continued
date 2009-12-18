@@ -64,6 +64,9 @@ do
 				icon = ST[72293],
 			},
 		},
+		windows = {
+			proxwindow = true,
+		},
 		events = {
 			-- Call Blood Beast
 			{
