@@ -32,6 +32,7 @@ do
 		onactivate = {
 			combatstop = true,
 			tracing = {36855}, -- Lady Deathwhisper
+			defeat = 36855, -- Lady Deathwhisper
 		},
 		alerts = {
 			dndself = {

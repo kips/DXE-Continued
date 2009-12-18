@@ -26,6 +26,7 @@ do
 			tracerstart = true,
 			combatstop = true,
 			tracing = {37813}, -- Deathbringer Saurfang
+			defeat = 37813,
 		},
 		alerts = {
 			bloodbeastwarn = {
