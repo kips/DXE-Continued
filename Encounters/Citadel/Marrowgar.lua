@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 2,
+		version = 3,
 		key = "marrowgar", 
 		zone = L["Icecrown Citadel"], 
 		category = L["Citadel"], 
@@ -161,6 +161,7 @@ do
 				spellid = {
 					70823, -- 25
 					70825, -- 25 hard
+					69146, -- 10
 				},
 				execute = {
 					{
@@ -176,6 +177,7 @@ do
 				spellid = {
 					70826, -- 25
 					72089, -- 25 hard
+					69057, -- 10
 				},
 				execute = {
 					{
@@ -188,7 +190,10 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_SUMMON",
-				spellid = 69062,
+				spellid = {
+					69062, -- 10, 25
+					72670, -- 10
+				},
 				execute = {
 					{
 						"expect",{"#2#","~=","&playerguid&"},
