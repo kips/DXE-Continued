@@ -17,7 +17,6 @@
 <Script file="Encounters\Naxxramas\Razuvious.lua"/>
 <Script file="Encounters\Naxxramas\Sapphiron.lua"/>
 <Script file="Encounters\Naxxramas\Thaddius.lua"/>
--->
 
 <Script file="Encounters\Northrend\Malygos.lua"/>
 <Script file="Encounters\Northrend\Sartharion.lua"/>
@@ -39,6 +38,7 @@
 <Script file="Encounters\Ulduar\Thorim.lua"/>
 <Script file="Encounters\Ulduar\XT002.lua"/>
 <Script file="Encounters\Ulduar\Yogg-Saron.lua"/>
+-->
 
 <Script file="Encounters\Coliseum\Anub.lua"/>
 <Script file="Encounters\Coliseum\Faction_Champions.lua"/>

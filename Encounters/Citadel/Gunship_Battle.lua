@@ -1,7 +1,16 @@
 do
+	local faction = UnitFactionGroup("player")
+
+	local defeat_msg
+	if faction == "Alliance" then
+		defeat_msg = L["^Don't say I didn't warn ya"]
+	elseif faction == "Horde" then
+		defeat_msg = L["^The Alliance falter"]
+	end
+
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 1,
+		version = 2,
 		key = "gunshipbattle", 
 		zone = L["Icecrown Citadel"], 
 		category = L["Citadel"], 
@@ -14,12 +23,13 @@ do
 			},
 			yell = {
 				L["^Cowardly dogs"], -- Alliance
-				-- Horde
+				L["^ALLIANCE GUNSHIP"], -- Horde
 			},
 		},
 		onactivate = {
 			combatstop = true,
 			--tracing = ,
+			defeat = defeat_msg,
 		},
 		alerts = {
 			belowzerowarn = {
