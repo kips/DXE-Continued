@@ -1531,24 +1531,38 @@ local function InitializeOptions()
 			get = function(info) return Arrows.db.profile[info[#info]] end,
 			set = function(info,v) Arrows.db.profile[info[#info]] = v; Arrows:RefreshArrows() end,
 			args = {
-				TestArrows = {
-					name = L["Test Arrows"],
-					type = "execute",
+				Enable = {
+					type = "toggle",
+					name = L["Enable"],
 					order = 1,
-					desc = L["Displays all arrows and then rotates them for ten seconds"],
-					func = function() 
-						for k,arrow in ipairs(addon.Arrows.frames) do
-							arrow:Test()
-						end
-					end,
 				},
-				Scale = {
-					name = L["Scale"],
-					desc = L["Adjust the scale of arrows"],
-					type = "range",
-					min = 0.3,
-					max = 2,
-					step = 0.1
+				enable_group = {
+					type = "group",
+					order = 2,
+					name = "",
+					inline = true,
+					disabled = function() return not Arrows.db.profile.Enable end,
+					args = {
+						TestArrows = {
+							name = L["Test Arrows"],
+							type = "execute",
+							order = 1,
+							desc = L["Displays all arrows and then rotates them for ten seconds"],
+							func = function() 
+								for k,arrow in ipairs(addon.Arrows.frames) do
+									arrow:Test()
+								end
+							end,
+						},
+						Scale = {
+							name = L["Scale"],
+							desc = L["Adjust the scale of arrows"],
+							type = "range",
+							min = 0.3,
+							max = 2,
+							step = 0.1
+						},
+					},
 				},
 			},
 		}

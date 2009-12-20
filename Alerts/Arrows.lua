@@ -1,5 +1,6 @@
 local defaults = {
 	profile = {
+		Enable = true,
 		Scale = 1,
 	}
 }
@@ -270,6 +271,7 @@ end
 ---------------------------------------
 
 function module:AddTarget(unit,persist,action,msg,spell,sound,fixed)
+	if not pfl.Enable then return end
 	--@debug@
 	assert(type(unit) == "string")
 	assert(type(persist) == "number")
@@ -291,6 +293,7 @@ function module:AddTarget(unit,persist,action,msg,spell,sound,fixed)
 end
 
 function module:RemoveTarget(unit)
+	if not pfl.Enable then return end
 	for i,arrow in ipairs(frames) do
 		if arrow.unit and UnitIsUnit(arrow.unit,unit) then
 			arrow:Destroy()
@@ -300,6 +303,7 @@ function module:RemoveTarget(unit)
 end
 
 function module:RemoveAll()
+	if not pfl.Enable then return end
 	for i,arrow in ipairs(frames) do
 		if arrow.unit then
 			arrow:Destroy()
