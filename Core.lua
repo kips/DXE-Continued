@@ -89,7 +89,7 @@ local defaults = {
 
 local addon = LibStub("AceAddon-3.0"):NewAddon("DXE","AceEvent-3.0","AceTimer-3.0","AceComm-3.0","AceSerializer-3.0")
 _G.DXE = addon
-addon.version = 409
+addon.version = 410
 addon:SetDefaultModuleState(false)
 addon.callbacks = LibStub("CallbackHandler-1.0"):New(addon)
 addon.defaults = defaults
@@ -1846,6 +1846,7 @@ end
 ---------------------------------------------
 
 local dead
+local laststarted = 0
 -- PLAYER_REGEN_ENABLED
 function addon:CombatStop()
 	--@debug@
@@ -1860,7 +1861,12 @@ function addon:CombatStop()
 		end
 		local key = self:Scan()
 		if not key then
-			self:StopEncounter()	
+			-- Shouldn't wipe in less than 4 seconds after engaging
+			if GetTime() > laststarted + 4 then
+				self:StopEncounter()
+			else
+				self:ScheduleTimer("CombatStop",5)
+			end
 			return
 		end
 		self:ScheduleTimer("CombatStop",2)
@@ -1874,6 +1880,7 @@ end
 function addon:CombatStart()
 	local key = self:Scan()
 	if key then 
+		laststarted = GetTime()
 		self:StartEncounter()
 	elseif UnitAffectingCombat("player") then
 		self:ScheduleTimer("CombatStart", 0.2)
