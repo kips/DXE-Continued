@@ -58,6 +58,7 @@ local defaults = {
 			TitleBarColor = {0,0,0.82,1},
 		},
 		Proximity = {
+			AutoPopup = true,
 			BarAlpha = 0.4,
 			Range = 10,
 			Delay = 0.05,
@@ -423,7 +424,7 @@ end
 function addon:OpenWindows()
 	local encdb = pfl.Encounters[CE.key]
 	if encdb and encdb.proxwindow.enabled then
-		self:Proximity()
+		self:Proximity(true)
 	end
 end
 

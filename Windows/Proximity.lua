@@ -181,7 +181,8 @@ local function CreateWindow()
 	CreateWindow = nil
 end
 
-function addon:Proximity()
+function addon:Proximity(popup)
+	if popup and not pfl.Proximity.AutoPopup then return end
 	if window then window:Show()
 	else CreateWindow() end
 end

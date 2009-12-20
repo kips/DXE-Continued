@@ -1740,6 +1740,13 @@ local function InitializeOptions()
 					order = 1,
 					name = L["The proximity window uses map coordinates of players to calculate distances. This relies on knowing the dimensions, in game yards, of each map. If the dimension of a map is not known, it will default to the closest range rounded up to 10, 11, or 18 game yards"].."\n",
 				},
+				AutoPopup = {
+					type = "toggle",
+					order = 50,
+					width = "full",
+					name = L["Auto Popup"],
+					desc = L["Automatically show the proximity window if the option is enabled in an encounter (Encounters > ... > Windows > Proximity)"],
+				},
 				Range = {
 					type = "range",
 					order = 100,
