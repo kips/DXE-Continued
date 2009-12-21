@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 2,
+		version = 3,
 		key = "saurfang", 
 		zone = L["Icecrown Citadel"], 
 		category = L["Citadel"], 
@@ -21,6 +21,7 @@ do
 		userdata = {
 			bloodbeasttime = 30,
 			bloodtext = "",
+			markfallentext = "",
 		},
 		onactivate = {
 			tracerstart = true,
@@ -52,15 +53,25 @@ do
 				text = "<bloodtext>",
 				time = 3,
 				color1 = "BROWN",
+				sound = "ALERT3",
 				icon = ST[72410],
 			},
 			markfallenwarn = {
-				varname = format(L["%s Cast"],SN[72293]),
+				varname = format(L["%s Cast"],SN[28836]),
 				type = "centerpopup",
 				text = format(L["%s Cast"],SN[72293]),
 				time = 1.5,
 				flashtime = 1.5,
 				color1 = "ORANGE",
+				sound = "ALERT1",
+				icon = ST[72293],
+			},
+			markfallen2warn = {
+				varname = format(L["%s Warning"],SN[28836]),
+				type = "simple",
+				text = "<markfallentext>",
+				time = 3,
+				sound = "ALERT4",
 				icon = ST[72293],
 			},
 		},
@@ -114,7 +125,24 @@ do
 						"alert","markfallenwarn",
 					},
 				},
-				
+			},
+			-- Mark of the Fallen applications
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellid = 72293,
+				execute = {
+					{
+						"expect",{"#4#","==","&playerguid&"},
+						"set",{markfallentext = format("%s: %s!",SN[72293],L["YOU"])},
+						"alert","markfallen2warn",
+					},
+					{
+						"expect",{"#4#","~=","&playerguid&"},
+						"set",{markfallentext = format("%s: #5#!",SN[72293])},
+						"alert","markfallen2warn",
+					},
+				},
 			},
 		},
 	}
