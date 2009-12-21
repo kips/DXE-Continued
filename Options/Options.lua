@@ -283,6 +283,19 @@ local function InitializeOptions()
 						max = 2,
 						step = 0.1,
 					},
+					Width = {
+						order = 310,
+						type = "range",
+						name = L["Width"],
+						desc = L["Adjust the width of the pane"],
+						set = function(info, v)
+							db.profile.Pane.Width = v
+							addon:SetPaneWidth()
+						end,
+						min = 175,
+						max = 500,
+						step = 1,
+					},
 					font_header = {
 						type = "header",
 						name = L["Font"],

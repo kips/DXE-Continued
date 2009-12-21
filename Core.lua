@@ -40,6 +40,7 @@ local defaults = {
 		Pane = {
 			Show = true,
 			Scale = 1, 
+			Width = 220,
 			OnlyInRaid = false, 
 			OnlyInParty = false,
 			OnlyInRaidInstance = false,
@@ -1148,9 +1149,8 @@ do
 end
 
 ---------------------------------------------
--- PANE
+-- CONFIG
 ---------------------------------------------
-local Pane
 
 function addon:ToggleConfig()
 	--[===[@non-debug@
@@ -1159,6 +1159,11 @@ function addon:ToggleConfig()
 	--@end-non-debug@]===]
 	addon.Options:ToggleConfig()
 end
+
+---------------------------------------------
+-- PANE
+---------------------------------------------
+local Pane
 
 function addon:ScalePaneAndCenter()
 	local x,y = Pane:GetCenter()
@@ -1172,39 +1177,41 @@ function addon:ScalePaneAndCenter()
 	addon:SavePosition(Pane)
 end
 
-do
-	function addon:UpdatePaneVisibility()
-		if pfl.Pane.Show then
-			local op = 0
-			local instanceType = select(2,IsInInstance())
-			op = op + (pfl.Pane.OnlyInRaid and (addon.GroupType == "RAID"	and 1  or 0) or 1)
-			op = op + (pfl.Pane.OnlyInParty and ((addon.GroupType == "PARTY" or addon.GroupType == "RAID") and 2 or 0) or  2)
-			op = op + (pfl.Pane.OnlyInRaidInstance	and (instanceType == "raid" and 4  or 0) or 4)
-			op = op + (pfl.Pane.OnlyInPartyInstance and (instanceType == "party"	and 8  or 0) or 8)
-			op = op + (pfl.Pane.OnlyIfRunning and (self:IsRunning() and 16 or 0) or 16)
-			local show = op == 31
-			Pane[show and "Show" or "Hide"](Pane)
+function addon:SetPaneWidth()
+	Pane:SetWidth(pfl.Pane.Width)
+end
 
-			-- Fading
-			UIFrameFadeRemoveFrame(Pane)
-			local fadeTable = Pane.fadeTable
-			fadeTable.fadeTimer = 0
-			local a = pfl.Pane.OnlyOnMouseover and (addon.Pane.MouseIsOver and 1 or 0) or 1
-			local p_a = Pane:GetAlpha()
-			if not show and p_a > 0 then
-				fadeTable.startAlpha = p_a
-				fadeTable.endAlpha = 0
-				fadeTable.finishedFunc = Pane.Hide
-				UIFrameFade(Pane,fadeTable)
-			elseif show and a ~= p_a then
-				fadeTable.startAlpha = p_a
-				fadeTable.endAlpha = a
-				UIFrameFade(Pane,fadeTable)
-			end
-		else
-			self.Pane:SetAlpha(0)
-			self.Pane:Hide()
+function addon:UpdatePaneVisibility()
+	if pfl.Pane.Show then
+		local op = 0
+		local instanceType = select(2,IsInInstance())
+		op = op + (pfl.Pane.OnlyInRaid and (addon.GroupType == "RAID"	and 1  or 0) or 1)
+		op = op + (pfl.Pane.OnlyInParty and ((addon.GroupType == "PARTY" or addon.GroupType == "RAID") and 2 or 0) or  2)
+		op = op + (pfl.Pane.OnlyInRaidInstance	and (instanceType == "raid" and 4  or 0) or 4)
+		op = op + (pfl.Pane.OnlyInPartyInstance and (instanceType == "party"	and 8  or 0) or 8)
+		op = op + (pfl.Pane.OnlyIfRunning and (self:IsRunning() and 16 or 0) or 16)
+		local show = op == 31
+		Pane[show and "Show" or "Hide"](Pane)
+
+		-- Fading
+		UIFrameFadeRemoveFrame(Pane)
+		local fadeTable = Pane.fadeTable
+		fadeTable.fadeTimer = 0
+		local a = pfl.Pane.OnlyOnMouseover and (addon.Pane.MouseIsOver and 1 or 0) or 1
+		local p_a = Pane:GetAlpha()
+		if not show and p_a > 0 then
+			fadeTable.startAlpha = p_a
+			fadeTable.endAlpha = 0
+			fadeTable.finishedFunc = Pane.Hide
+			UIFrameFade(Pane,fadeTable)
+		elseif show and a ~= p_a then
+			fadeTable.startAlpha = p_a
+			fadeTable.endAlpha = a
+			UIFrameFade(Pane,fadeTable)
 		end
+	else
+		self.Pane:SetAlpha(0)
+		self.Pane:Hide()
 	end
 end
 
@@ -1244,7 +1251,7 @@ function addon:CreatePane()
 	Pane.border = CreateFrame("Frame",nil,Pane)
 	Pane.border:SetAllPoints(true)
 	addon:RegisterBorder(Pane.border)
-	Pane:SetWidth(220)
+	Pane:SetWidth(pfl.Pane.Width)
 	Pane:SetHeight(25)
 	Pane:EnableMouse(true)
 	Pane:SetMovable(true)
@@ -1568,24 +1575,34 @@ function addon:SetTracing(targets)
 end
 
 function addon:LayoutHealthWatchers()
-	local anchor,point,relpoint = Pane
+	local anchor = Pane
+	local point, point2
+	local relpoint, relpoint2
 	local growth = pfl.Pane.BarGrowth
 	if growth == "AUTOMATIC" then
 		local midY = (GetScreenHeight()/2)*UIParent:GetEffectiveScale()
 		local x,y = Pane:GetCenter()
 		local s = Pane:GetEffectiveScale()
 		x,y = x*s,y*s
-		point = y > midY and "TOP" or "BOTTOM"
-		relpoint = y > midY and "BOTTOM" or "TOP"
+		if y > midY then
+			point,relpoint = "TOPLEFT","BOTTOMLEFT"
+			point2,relpoint2 = "TOPRIGHT","BOTTOMRIGHT"
+		else
+			point,relpoint = "BOTTOMLEFT","TOPLEFT"
+			point2,relpoint2 = "BOTTOMRIGHT","TOPRIGHT"
+		end
 	elseif growth == "UP" then
-		point,relpoint = "BOTTOM","TOP"
+		point,relpoint = "BOTTOMLEFT","TOPLEFT"
+		point2,relpoint2 = "BOTTOMRIGHT","TOPRIGHT"
 	elseif growth == "DOWN" then
-		point,relpoint = "TOP","BOTTOM"
+		point,relpoint = "TOPLEFT","BOTTOMLEFT"
+		point2,relpoint2 = "TOPRIGHT","BOTTOMRIGHT"
 	end
 	for i,hw in ipairs(self.HW) do
 		if hw:IsShown() then
 			hw:ClearAllPoints()
 			hw:SetPoint(point,anchor,relpoint)
+			hw:SetPoint(point2,anchor,relpoint2)
 			anchor = hw
 		end
 	end
