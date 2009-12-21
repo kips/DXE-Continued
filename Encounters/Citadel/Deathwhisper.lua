@@ -14,6 +14,7 @@ do
 		},
 		userdata = {
 			culttime = {7,60,loop = false},
+			insignificancetext = "",
 		},
 		onstart = {
 			{
@@ -64,6 +65,15 @@ do
 				color1 = "TEAL",
 				icon = ST[70842],
 			},
+			insignificancewarn = {
+				varname = format(L["%s Warning"],SN[71204]),
+				text = "<insignificancetext>",
+				type = "simple",
+				time = 3,
+				sound = "ALERT4",
+				color1 = "TAN",
+				icon = ST[71204],
+			},
 		},
 		events = {
 			-- Death and Decay self
@@ -91,6 +101,42 @@ do
 						"alert","manabarrierwarn",
 						"quash","cultcd",
 						"canceltimer","firecult",
+					},
+				},
+			},
+			-- Touch of Insignificance
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellid = 71204,
+				execute = {
+					{
+						"expect",{"#4#","==","&playerguid&"},
+						"set",{insignificancetext = format("%s: %s!",SN[71204],L["YOU"])},
+						"alert","insignificancewarn",
+					},
+					{
+						"expect",{"#4#","~=","&playerguid&"},
+						"set",{insignificancetext = format("%s: #5#!",SN[71204])},
+						"alert","insignificancewarn",
+					},
+				},
+			},
+			-- Touch of Insignificance stacks
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED_DOSE",
+				spellid = 71204,
+				execute = {
+					{
+						"expect",{"#4#","==","&playerguid&"},
+						"set",{insignificancetext = format("%s: %s! %s!",SN[71204],L["YOU"],format(L["%s Stacks"],"#11#"))},
+						"alert","insignificancewarn",
+					},
+					{
+						"expect",{"#4#","~=","&playerguid&"},
+						"set",{insignificancetext = format("%s: #5#! %s!",SN[71204],format(L["%s Stacks"],"#11#"))},
+						"alert","insignificancewarn",
 					},
 				},
 			},
