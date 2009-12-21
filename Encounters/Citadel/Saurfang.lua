@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 3,
+		version = 4,
 		key = "saurfang", 
 		zone = L["Icecrown Citadel"], 
 		category = L["Citadel"], 
@@ -10,16 +10,8 @@ do
 			scan = {
 				37813, -- Deathbringer Saurfang
 			},
-			--yell = ,
-		},
-		onstart = {
-			{
-				"expect",{"&difficulty&",">=","3"},
-				"set",{bloodbeasttime = 40}, -- TODO: verify normal mode time
-			},
 		},
 		userdata = {
-			bloodbeasttime = 30,
 			bloodtext = "",
 			markfallentext = "",
 		},
@@ -42,7 +34,7 @@ do
 				varname = format(L["%s Cooldown"],SN[72172]),
 				type = "dropdown",
 				text = format(L["%s Cooldown"],SN[72172]),
-				time = "<bloodbeasttime>",
+				time = 40,
 				flashtime = 10,
 				color1 = "PURPLE",
 				icon = ST[72173],
@@ -146,6 +138,5 @@ do
 			},
 		},
 	}
-	-- mark of the fallen champion warning cooldown
 	DXE:RegisterEncounter(data)
 end

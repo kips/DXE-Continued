@@ -1547,6 +1547,7 @@ local function InitializeOptions()
 				Enable = {
 					type = "toggle",
 					name = L["Enable"],
+					desc = L["Enable the use of directional arrows"],
 					order = 1,
 				},
 				enable_group = {
