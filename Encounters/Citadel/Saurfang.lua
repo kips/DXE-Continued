@@ -63,8 +63,18 @@ do
 				type = "simple",
 				text = "<markfallentext>",
 				time = 3,
+				color1 = "PEACH",
 				sound = "ALERT4",
 				icon = ST[72293],
+			},
+			frenzywarn = {
+				varname = format(L["%s Warning"],SN[72737]),
+				type = "simple",
+				text = format(L["%s Warning"],SN[72737]),
+				time = 3,
+				sound = "ALERT6",
+				color1 = "ORANGE",
+				icon = ST[72737],
 			},
 		},
 		windows = {
@@ -133,6 +143,17 @@ do
 						"expect",{"#4#","~=","&playerguid&"},
 						"set",{markfallentext = format("%s: #5#!",SN[72293])},
 						"alert","markfallen2warn",
+					},
+				},
+			},
+			-- Frenzy
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellid = 72737,
+				execute = {
+					{
+						"alert","frenzywarn",
 					},
 				},
 			},
