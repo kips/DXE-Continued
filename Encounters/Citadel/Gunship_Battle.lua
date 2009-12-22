@@ -40,6 +40,7 @@ do
 		},
 		userdata = {
 			portaltime = {12,60,loop = false}, -- TODO: initial time
+			battlefurytext = "",
 		},
 		onstart = {
 			{
@@ -66,6 +67,15 @@ do
 				color1 = "GOLD",
 				sound = "ALERT1",
 				icon = portal_icon,
+			},
+			battlefurydur = {
+				varname = format(L["%s Duration"],SN[69638]),
+				type = "centerpopup",
+				text = "<battlefurytext>",
+				time = 20,
+				flashtime = 20,
+				color1 = "ORANGE",
+				icon = ST[69638],
 			},
 		},
 		events = {
@@ -99,6 +109,37 @@ do
 					{
 						"expect",{"#1#","==",portal_msg},
 						"alert","portalcd",
+					},
+				},
+			},
+			-- Battle Fury
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellid = {
+					69638, -- 10
+					72306, -- 25
+				},
+				execute = {
+					{
+						"set",{battlefurytext = format("%s: #2#!",SN[69638])},
+						"alert","battlefurydur",
+					},
+				},
+			},
+			-- Battle Fury applications
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED_DOSE",
+				spellid = {
+					69638, -- 10
+					72306, -- 25
+				},
+				execute = {
+					{
+						"quash","battlefurydur",
+						"set",{battlefurytext = format("%s: #2#! %s!",SN[69638], format(L["%s Stacks"],"#11#"))},
+						"alert","battlefurydur",
 					},
 				},
 			},
