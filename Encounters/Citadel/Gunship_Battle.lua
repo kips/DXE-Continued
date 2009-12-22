@@ -6,7 +6,7 @@ do
 	local defeat_msg,portal_msg,add,portal_icon
 	if faction == "Alliance" then
 		defeat_msg = L["^Don't say I didn't warn ya"]
-		portalmsg = L["^Reavers, Sergeants, attack"]
+		portal_msg = L["^Reavers, Sergeants, attack"]
 		add = L["Reaver"]
 		portal_icon = "Interface\\Icons\\achievement_pvp_h_04"
 	elseif faction == "Horde" then
@@ -17,7 +17,7 @@ do
 	end
 
 	local data = {
-		version = 3,
+		version = 4,
 		key = "gunshipbattle", 
 		zone = L["Icecrown Citadel"], 
 		category = L["Citadel"], 
