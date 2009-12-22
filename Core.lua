@@ -1862,45 +1862,47 @@ end
 -- REGEN START/STOPPING
 ---------------------------------------------
 
-local dead
-local laststarted = 0
--- PLAYER_REGEN_ENABLED
-function addon:CombatStop()
-	--@debug@
-	debug("CombatStop","Invoked")
-	--@end-debug@
-	if UnitHealth("player") > 0 and not UnitAffectingCombat("player") then
-		-- If this doesn't work then scan the raid for units in combat
-		if dead then
-			self:ScheduleTimer("CombatStop",4)
-			dead = nil
-			return
-		end
-		local key = self:Scan()
-		if not key then
-			-- Shouldn't wipe in less than 4 seconds after engaging
-			if GetTime() > laststarted + 4 then
-				self:StopEncounter()
-			else
-				self:ScheduleTimer("CombatStop",5)
+do
+	local dead
+	local started = 0
+	-- PLAYER_REGEN_ENABLED
+	function addon:CombatStop()
+		--@debug@
+		debug("CombatStop","Invoked")
+		--@end-debug@
+		if UnitHealth("player") > 0 and not UnitAffectingCombat("player") then
+			-- If this doesn't work then scan the raid for units in combat
+			if dead then
+				self:ScheduleTimer("CombatStop",4)
+				dead = nil
+				return
 			end
-			return
+			local key = self:Scan()
+			if not key then
+				-- Shouldn't wipe in less than 4 seconds after engaging
+				if GetTime() > started + 4 then
+					self:StopEncounter()
+				else
+					self:ScheduleTimer("CombatStop",5)
+				end
+				return
+			end
+			self:ScheduleTimer("CombatStop",2)
+		elseif UnitIsDead("player") then
+			dead = true
+			self:ScheduleTimer("CombatStop",2)
 		end
-		self:ScheduleTimer("CombatStop",2)
-	elseif UnitIsDead("player") then
-		dead = true
-		self:ScheduleTimer("CombatStop",2)
 	end
-end
 
--- PLAYER_REGEN_DISABLED
-function addon:CombatStart()
-	local key = self:Scan()
-	if key then 
-		laststarted = GetTime()
-		self:StartEncounter()
-	elseif UnitAffectingCombat("player") then
-		self:ScheduleTimer("CombatStart", 0.2)
+	-- PLAYER_REGEN_DISABLED
+	function addon:CombatStart()
+		local key = self:Scan()
+		if key then 
+			started = GetTime()
+			self:StartEncounter()
+		elseif UnitAffectingCombat("player") then
+			self:ScheduleTimer("CombatStart", 0.2)
+		end
 	end
 end
 
