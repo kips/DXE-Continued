@@ -15,6 +15,7 @@ do
 		userdata = {
 			culttime = {7,60,loop = false},
 			insignificancetext = "",
+			torportext = "",
 		},
 		onstart = {
 			{
@@ -73,6 +74,15 @@ do
 				sound = "ALERT4",
 				color1 = "TAN",
 				icon = ST[71204],
+			},
+			torporwarn = {
+				varname = format(L["%s Warning"],SN[71237]),
+				text = "<torportext>",
+				type = "simple",
+				time = 3,
+				color1 = "PURPLE",
+				sound = "ALERT5",
+				icon = ST[71237],
 			},
 		},
 		events = {
@@ -137,6 +147,24 @@ do
 						"expect",{"#4#","~=","&playerguid&"},
 						"set",{insignificancetext = format("%s: #5#! %s!",SN[71204],format(L["%s Stacks"],"#11#"))},
 						"alert","insignificancewarn",
+					},
+				},
+			},
+			-- Curse of Torpor
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellid = 71237, -- 10/25
+				execute = {
+					{
+						"expect",{"#4#","==","&playerguid&"},
+						"set",{torportext = format("%s: %s!",SN[71237],L["YOU"])},
+						"alert","torporwarn",
+					},
+					{
+						"expect",{"#4#","~=","&playerguid&"},
+						"set",{torportext = format("%s: #5#!",SN[71237])},
+						"alert","torporwarn",
 					},
 				},
 			},
