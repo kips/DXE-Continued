@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 4,
+		version = 5,
 		key = "marrowgar", 
 		zone = L["Icecrown Citadel"], 
 		category = L["Citadel"], 
@@ -17,7 +17,7 @@ do
 		},
 		userdata = {
 			bonetime = {45,90,loop = false},
-			graveyardtime = {18,60,loop = true},
+			graveyardtime = {16,18.5,loop = true},
 			bonedurtime = 18.5,
 		},
 		onstart = {
