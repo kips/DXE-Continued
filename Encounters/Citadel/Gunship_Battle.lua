@@ -3,21 +3,23 @@ do
 
 	local faction = UnitFactionGroup("player")
 
-	local defeat_msg,portal_msg,add,portal_icon
+	local defeat_msg,portal_msg,add,portal_icon,faction_npc
 	if faction == "Alliance" then
 		defeat_msg = L["^Don't say I didn't warn ya"]
 		portal_msg = L["^Reavers, Sergeants, attack"]
 		add = L["Reaver"]
 		portal_icon = "Interface\\Icons\\achievement_pvp_h_04"
+		faction_npc = "36939" -- Saurfang
 	elseif faction == "Horde" then
 		defeat_msg = L["^The Alliance falter"]
 		portal_msg = L["^Marines, Sergeants, attack"]
 		add = L["Marine"] 
 		portal_icon = "Interface\\Icons\\achievement_pvp_a_04"
+		faction_npc = "36948" -- Muradin
 	end
 
 	local data = {
-		version = 4,
+		version = 5,
 		key = "gunshipbattle", 
 		zone = L["Icecrown Citadel"], 
 		category = L["Citadel"], 
@@ -107,7 +109,7 @@ do
 				event = "YELL",
 				execute = {
 					{
-						"expect",{"#1#","==",portal_msg},
+						"expect",{"#1#","find",portal_msg},
 						"alert","portalcd",
 					},
 				},
@@ -122,6 +124,7 @@ do
 				},
 				execute = {
 					{
+						"expect",{"&npcid|#4#&","==",faction_npc},
 						"set",{battlefurytext = format("%s: #2#!",SN[69638])},
 						"alert","battlefurydur",
 					},
@@ -137,8 +140,9 @@ do
 				},
 				execute = {
 					{
+						"expect",{"&npcid|#4#&","==",faction_npc},
 						"quash","battlefurydur",
-						"set",{battlefurytext = format("%s: #2#! %s!",SN[69638], format(L["%s Stacks"],"#11#"))},
+						"set",{battlefurytext = format("%s - %s!",SN[69638], format(L["%s Stacks"],"#11#"))},
 						"alert","battlefurydur",
 					},
 				},
