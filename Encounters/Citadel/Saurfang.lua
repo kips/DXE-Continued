@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 4,
+		version = 5,
 		key = "saurfang", 
 		zone = L["Icecrown Citadel"], 
 		category = L["Citadel"], 
@@ -51,7 +51,7 @@ do
 			markfallenwarn = {
 				varname = format(L["%s Cast"],SN[28836]),
 				type = "centerpopup",
-				text = format(L["%s Cast"],SN[72293]),
+				text = format(L["%s Cast"],SN[28836]),
 				time = 1.5,
 				flashtime = 1.5,
 				color1 = "ORANGE",
@@ -136,12 +136,12 @@ do
 				execute = {
 					{
 						"expect",{"#4#","==","&playerguid&"},
-						"set",{markfallentext = format("%s: %s!",SN[72293],L["YOU"])},
+						"set",{markfallentext = format("%s: %s!",SN[28836],L["YOU"])},
 						"alert","markfallen2warn",
 					},
 					{
 						"expect",{"#4#","~=","&playerguid&"},
-						"set",{markfallentext = format("%s: #5#!",SN[72293])},
+						"set",{markfallentext = format("%s: #5#!",SN[28836])},
 						"alert","markfallen2warn",
 					},
 				},
