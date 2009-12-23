@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 5,
+		version = 6,
 		key = "deathwhisper", 
 		zone = L["Icecrown Citadel"], 
 		category = L["Citadel"], 
@@ -122,12 +122,12 @@ do
 				execute = {
 					{
 						"expect",{"#4#","==","&playerguid&"},
-						"set",{insignificancetext = format("%s: %s!",SN[71204],L["YOU"])},
+						"set",{insignificancetext = format("%s: %s!",L["Touch"],L["YOU"])},
 						"alert","insignificancewarn",
 					},
 					{
 						"expect",{"#4#","~=","&playerguid&"},
-						"set",{insignificancetext = format("%s: #5#!",SN[71204])},
+						"set",{insignificancetext = format("%s: #5#!",L["Touch"])},
 						"alert","insignificancewarn",
 					},
 				},
@@ -140,12 +140,12 @@ do
 				execute = {
 					{
 						"expect",{"#4#","==","&playerguid&"},
-						"set",{insignificancetext = format("%s: %s! %s!",SN[71204],L["YOU"],format(L["%s Stacks"],"#11#"))},
+						"set",{insignificancetext = format("%s: %s! %s!",L["Touch"],L["YOU"],format(L["%s Stacks"],"#11#"))},
 						"alert","insignificancewarn",
 					},
 					{
 						"expect",{"#4#","~=","&playerguid&"},
-						"set",{insignificancetext = format("%s: #5#! %s!",SN[71204],format(L["%s Stacks"],"#11#"))},
+						"set",{insignificancetext = format("%s: #5#! %s!",L["Touch"],format(L["%s Stacks"],"#11#"))},
 						"alert","insignificancewarn",
 					},
 				},
