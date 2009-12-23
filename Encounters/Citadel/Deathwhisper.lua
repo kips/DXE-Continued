@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 6,
+		version = 7,
 		key = "deathwhisper", 
 		zone = L["Icecrown Citadel"], 
 		category = L["Citadel"], 
@@ -84,6 +84,15 @@ do
 				sound = "ALERT5",
 				icon = ST[71237],
 			},
+			dominatewarn = {
+				varname = format(L["%s Warning"],SN[71289]),
+				text = format("%s: #5#!",SN[71289]),
+				type = "simple",
+				time = 3,
+				color1 = "GREY",
+				sound = "ALERT6",
+				icon = ST[71289],
+			},
 		},
 		events = {
 			-- Death and Decay self
@@ -165,6 +174,18 @@ do
 						"expect",{"#4#","~=","&playerguid&"},
 						"set",{torportext = format("%s: #5#!",SN[71237])},
 						"alert","torporwarn",
+					},
+				},
+			},
+			-- Dominate Mind
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellid = 71289,
+				execute = {
+					{
+						"expect",{"#4#","~=","&playerguid&"},
+						"alert","dominatewarn",
 					},
 				},
 			},
