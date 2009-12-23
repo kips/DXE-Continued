@@ -1,13 +1,13 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 3,
+		version = 4,
 		key = "marrowgar", 
 		zone = L["Icecrown Citadel"], 
 		category = L["Citadel"], 
 		name = L["Marrowgar"], 
 		triggers = {
-			scan = {36612}, -- Lord Marrowgar
+			scan = {36612}, -- Lord Marrowgar 
 			yell = L["^The Scourge will wash over this world"],
 		},
 		onactivate = {
@@ -210,8 +210,8 @@ do
 				execute = {
 					{
 						"expect",{"#2#","~=","&playerguid&"},
-						"removeraidicon","#2#",
-						"removearrow","#2#",
+						"removeraidicon","#5#",
+						"removearrow","#5#",
 					},
 				},
 			},
