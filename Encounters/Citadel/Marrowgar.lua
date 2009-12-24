@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 5,
+		version = 6,
 		key = "marrowgar", 
 		zone = L["Icecrown Citadel"], 
 		category = L["Citadel"], 
@@ -196,7 +196,7 @@ do
 				},
 				execute = {
 					{
-						"expect",{"#2#","~=","&playerguid&"},
+						"expect",{"#4#","~=","&playerguid&"},
 						"raidicon","impalemark",
 						"arrow","impalearrow",
 					},
