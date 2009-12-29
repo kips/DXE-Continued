@@ -62,4 +62,6 @@
 <Script file="Encounters\Citadel\Sindragosa.lua"/>
 <Script file="Encounters\Citadel\Valithria.lua"/>
 
+<Script file="Encounters\Citadel\Trash.lua"/>
+
 </Ui>

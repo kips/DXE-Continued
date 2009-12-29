@@ -21,3 +21,5 @@ Rotface.lua
 Saurfang.lua
 Sindragosa.lua
 Valithria.lua
+
+Trash.lua
