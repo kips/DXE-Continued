@@ -8,13 +8,39 @@ do
 		name = L["Trash"], 
 		title = L["Trash"],
 		triggers = {
-			--scan = ,
-			--yell = ,
+			scan = {
+				37007, -- Deathbound Ward
+			},
 		},
 		onactivate = {
 			combatstart = true,
 			combatstop = true,
-			--tracing = ,
+		},
+		alerts = {
+			disruptshout = {
+				varname = format(L["%s Cast"],SN[71022]),
+				type = "centerpopup",
+				text = format(L["%s Cast"],SN[71022]),
+				time = 3,
+				flashtime = 3,
+				color1 = "ORANGE",
+				sound = "ALERT5",
+				flashscreen = true,
+				icon = ST[71022],
+			},
+		},
+		events = {
+			-- Disrupting Shout
+			{
+				type = "combatevent",
+				eventtype = "SPELL_CAST_START",
+				spellid = 71022, -- 10/25
+				execute = {
+					{
+						"alert","disruptshout"
+					},
+				}
+			}
 		},
 	}
 
