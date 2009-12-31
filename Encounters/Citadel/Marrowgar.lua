@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 6,
+		version = 7,
 		key = "marrowgar", 
 		zone = L["Icecrown Citadel"], 
 		category = L["Citadel"], 
@@ -196,7 +196,7 @@ do
 				},
 				execute = {
 					{
-						"expect",{"#4#","~=","&playerguid&"},
+						"expect",{"#1#","~=","&playerguid&"},
 						"raidicon","impalemark",
 						"arrow","impalearrow",
 					},
@@ -209,7 +209,7 @@ do
 				spellid = 69065, -- different spellid from SPELL_SUMMON
 				execute = {
 					{
-						"expect",{"#2#","~=","&playerguid&"},
+						"expect",{"#4#","~=","&playerguid&"},
 						"removeraidicon","#5#",
 						"removearrow","#5#",
 					},
