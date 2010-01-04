@@ -516,25 +516,6 @@ local function InitializeOptions()
 
 		-- ADVANCED MODE
 
-		--[[
-		do
-			local sounds = {}
-			function handler:GetSounds()
-				table.wipe(sounds)
-				for id,name in pairs(db.profile.Sounds) do
-					if id:find("^ALERT") then sounds[id] = id end
-				end
-				for id,name in pairs(db.profile.CustomSounds) do
-					sounds[id] = id
-				end
-				sounds["None"] = L["None"]
-				return sounds
-			end
-		end
-		]]
-
-		--handler.GetSounds = GetSounds
-
 		local AdvancedItems = {
 			VersionHeader = {
 				type = "header",
@@ -1151,12 +1132,6 @@ local function InitializeOptions()
 				local hex = ("|cff%02x%02x%02x%s|r"):format(c.r*255,c.g*255,c.b*255,L[k])
 				colors[k] = hex
 			end
-
-			--[[
-			local sounds = {}
-			for id,name in pairs(db.profile.Sounds) do if id:find("^ALERT") then sounds[id] = id end end
-			sounds["None"] = L["None"]
-			]]
 
 			local intro_desc = L["You can fire local or raid bars. Local bars are only seen by you. Raid bars are seen by you and raid members; You have to be a raid officer to fire raid bars"]
 			local howto_desc = L["Slash commands: |cffffff00/dxelb time text|r (local bar) or |cffffff00/dxerb time text|r (raid bar): |cffffff00time|r can be in the format |cffffd200minutes:seconds|r or |cffffd200seconds|r"]
@@ -1818,7 +1793,7 @@ local function InitializeOptions()
 		local function GetSounds()
 			table.wipe(sounds)
 			for id,name in pairs(db.profile.Sounds) do
-				if id:find("^ALERT") then sounds[id] = id end
+				if id:find("^ALERT") or id == "VICTORY" then sounds[id] = id end
 			end
 			for id,name in pairs(db.profile.CustomSounds) do
 				sounds[id] = id
