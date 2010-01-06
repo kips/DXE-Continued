@@ -1,24 +1,25 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 1,
+		version = 3,
 		key = "festergut", 
 		zone = L["Icecrown Citadel"], 
 		category = L["Citadel"], 
 		name = L["Festergut"], 
 		triggers = {
 			scan = {36626}, -- Festergut
-			--yell = L["^Just an ordinary gas cloud, but watch"],
 		},
 		onactivate = {
 			tracerstart = true,
 			combatstop = true,
 			tracing = {36626}, -- Festergut
+			defeat = 36626,
 		},
 		userdata = {
 			inhaletime = {28.9, 33.8, loop = false},
 			sporetime = {13.6, 35, loop = false},
-			pungenttime = {116, 105, loop = false},
+			pungenttime = {133, 138, loop = false},
+			gastrictext = "",
 		},
 		onstart = {
 			{
@@ -124,6 +125,17 @@ do
 				flashtime = 10,
 				icon = ST[71219],
 			},
+			gastricbloatwarn = {
+				varname = format(L["%s Warning"],SN[72551]),
+				type = "simple",
+				text = "<gastrictext>",
+				time = 3,
+				color1 = "GOLD",
+				icon = ST[72551],
+			},
+		},
+		windows = {
+			proxwindow = true,
 		},
 		raidicons = {
 			vilegasmark = {
@@ -219,6 +231,42 @@ do
 					{
 						"alert","pungentblightcd",
 						"alert","pungentblightwarn",
+					},
+				},
+			},
+			-- Gastric Bloat
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellid = 72551,
+				execute = {
+					{
+						"expect",{"#4#","==","&playerguid&"},
+						"set",{gastrictext = format("%s: %s!",SN[72551],L["YOU"])},
+						"alert","gastricbloatwarn",
+					},
+					{
+						"expect",{"#4#","~=","&playerguid&"},
+						"set",{gastrictext = format("%s: #5#!",SN[72551])},
+						"alert","gastricbloatwarn",
+					},
+				},
+			},
+			-- Gastric Bloat applications
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED_DOSE",
+				spellid = 72551,
+				execute = {
+					{
+						"expect",{"#4#","==","&playerguid&"},
+						"set",{gastrictext = format("%s: %s! %s!",SN[72551],L["YOU"],format(L["%s Stacks"],"#11#"))},
+						"alert","gastricbloatwarn",
+					},
+					{
+						"expect",{"#4#","~=","&playerguid&"},
+						"set",{gastrictext = format("%s: #5#! %s!",SN[72551],format(L["%s Stacks"],"#11#")) },
+						"alert","gastricbloatwarn",
 					},
 				},
 			},

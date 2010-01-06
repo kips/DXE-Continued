@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 5,
+		version = 6,
 		key = "saurfang", 
 		zone = L["Icecrown Citadel"], 
 		category = L["Citadel"], 
@@ -77,6 +77,17 @@ do
 				icon = ST[72737],
 			},
 		},
+		raidicons = {
+			fallenmark = {
+				varname = SN[72293],
+				type = "MULTIFRIENDLY",
+				persist = 1000,
+				reset = 1000,
+				unit = "#5#",
+				icon = 1,
+				total = 8,
+			}
+		},
 		windows = {
 			proxwindow = true,
 		},
@@ -134,6 +145,9 @@ do
 				eventtype = "SPELL_AURA_APPLIED",
 				spellid = 72293,
 				execute = {
+					{
+						"raidicon","fallenmark",
+					},
 					{
 						"expect",{"#4#","==","&playerguid&"},
 						"set",{markfallentext = format("%s: %s!",SN[28836],L["YOU"])},

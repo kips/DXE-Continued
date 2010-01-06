@@ -71,8 +71,10 @@ function module:MarkFriendly(unit,icon,persist)
 end
 
 -- Actual icon is chosen by increasing icon parameter
-function module:MultiMarkFriendly(var,unit,icon,persist,reset)
+function module:MultiMarkFriendly(var,unit,icon,persist,reset,total)
 	local ix = cnt[var] or 0
+	-- maxed out
+	if ix >= total then return end
 	self:MarkFriendly(unit,icon + ix,persist)
 	cnt[var] = ix + 1
 	if not rsts[var] then

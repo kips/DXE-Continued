@@ -1,19 +1,19 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 1,
+		version = 2,
 		key = "icctrash", 
 		zone = L["Icecrown Citadel"], 
 		category = L["Citadel"], 
-		name = L["Trash"], 
-		title = L["Trash"],
+		name = format(L["%s (T)"],L["Deathbound Ward"]), 
 		triggers = {
 			scan = {
 				37007, -- Deathbound Ward
 			},
 		},
 		onactivate = {
-			combatstart = true,
+			tracing = {37007}, -- Deathbound Ward
+			tracerstart = true,
 			combatstop = true,
 		},
 		alerts = {

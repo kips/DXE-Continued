@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 7,
+		version = 8,
 		key = "deathwhisper", 
 		zone = L["Icecrown Citadel"], 
 		category = L["Citadel"], 
@@ -15,7 +15,6 @@ do
 		userdata = {
 			culttime = {7,60,loop = false},
 			insignificancetext = "",
-			torportext = "",
 		},
 		onstart = {
 			{
@@ -75,9 +74,18 @@ do
 				color1 = "TAN",
 				icon = ST[71204],
 			},
+			torporself = {
+				varname = format(L["%s on self"],SN[71237]),
+				text = format("%s: %s!",SN[71237],L["YOU"]),
+				type = "simple",
+				time = 3,
+				color1 = "PURPLE",
+				sound = "ALERT5",
+				icon = ST[71237],
+			},
 			torporwarn = {
-				varname = format(L["%s Warning"],SN[71237]),
-				text = "<torportext>",
+				varname = format(L["%s on others"],SN[71237]),
+				text = format("%s: #5#!",SN[71237]),
 				type = "simple",
 				time = 3,
 				color1 = "PURPLE",
@@ -167,12 +175,10 @@ do
 				execute = {
 					{
 						"expect",{"#4#","==","&playerguid&"},
-						"set",{torportext = format("%s: %s!",SN[71237],L["YOU"])},
-						"alert","torporwarn",
+						"alert","torporself",
 					},
 					{
 						"expect",{"#4#","~=","&playerguid&"},
-						"set",{torportext = format("%s: #5#!",SN[71237])},
 						"alert","torporwarn",
 					},
 				},

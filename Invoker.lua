@@ -597,7 +597,7 @@ do
 				if raidInfo.type == "FRIENDLY" then
 					RaidIcons:MarkFriendly(unit,raidInfo.icon,raidInfo.persist) 
 				elseif raidInfo.type == "MULTIFRIENDLY" then
-					RaidIcons:MultiMarkFriendly(info,unit,raidInfo.icon,raidInfo.persist,raidInfo.reset)
+					RaidIcons:MultiMarkFriendly(info,unit,raidInfo.icon,raidInfo.persist,raidInfo.reset,raidInfo.total)
 				end
 			end
 		end
