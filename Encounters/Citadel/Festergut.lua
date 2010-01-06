@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 3,
+		version = 4,
 		key = "festergut", 
 		zone = L["Icecrown Citadel"], 
 		category = L["Citadel"], 
@@ -17,7 +17,7 @@ do
 		},
 		userdata = {
 			inhaletime = {28.9, 33.8, loop = false},
-			sporetime = {13.6, 35, loop = false},
+			sporetime = {21,40,40,51, loop=false}, -- placeholder
 			pungenttime = {133, 138, loop = false},
 			gastrictext = "",
 		},
@@ -27,6 +27,7 @@ do
 				"alert","inhaleblightcd",
 				"alert","pungentblightcd",
 				"alert","enragecd",
+				"set",{sporetime = {40,40,40,51,loop = true}},
 			},
 		},
 		alerts = {
@@ -73,7 +74,7 @@ do
 				text = format(L["%s Duration"],SN[71221]),
 				time = 12,
 				flashtime = 12,
-				color1 = "BLUE",
+				color1 = "MAGENTA",
 				sound = "ALERT2",
 				flashscreen = true,
 				icon = ST[71221],
@@ -83,7 +84,6 @@ do
 				type = "simple",
 				text = format("%s: %s!",SN[71221],L["YOU"]).."!",
 				time = 3,
-				flashscreen = true,
 				icon = ST[71221],
 			},
 			vilegascd = {
