@@ -227,6 +227,9 @@ do
 				eventtype = "SPELL_CAST_START",
 				spellid = {
 					71219, -- 25
+					69195,
+					73031,
+					73032,
 				},
 				execute = {
 					{
