@@ -16,7 +16,7 @@ do
 			defeat = 36626,
 		},
 		userdata = {
-			inhaletime = {28.9, 33.8, loop = false},
+			inhaletime = {29, 33.5, loop = false}, -- placeholder
 			sporetime = {21,40,40,51, loop=false}, -- placeholder
 			pungenttime = {133, 138, loop = false},
 			gastrictext = "",
@@ -28,6 +28,7 @@ do
 				"alert","pungentblightcd",
 				"alert","enragecd",
 				"set",{sporetime = {40,40,40,51,loop = true}},
+				"set",{inhaletime = {33.5,33.5,33.5,68, loop = true}},
 			},
 		},
 		alerts = {
