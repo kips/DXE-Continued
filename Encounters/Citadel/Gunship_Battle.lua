@@ -19,7 +19,7 @@ do
 	end
 
 	local data = {
-		version = 5,
+		version = 6,
 		key = "gunshipbattle", 
 		zone = L["Icecrown Citadel"], 
 		category = L["Citadel"], 
@@ -142,7 +142,7 @@ do
 					{
 						"expect",{"&npcid|#4#&","==",faction_npc},
 						"quash","battlefurydur",
-						"set",{battlefurytext = format("%s - %s!",SN[69638], format(L["%s Stacks"],"#11#"))},
+						"set",{battlefurytext = format("%s => %s!",SN[69638], format(L["%s Stacks"],"#11#"))},
 						"alert","battlefurydur",
 					},
 				},
