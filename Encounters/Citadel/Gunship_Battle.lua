@@ -19,7 +19,7 @@ do
 	end
 
 	local data = {
-		version = 6,
+		version = 7,
 		key = "gunshipbattle", 
 		zone = L["Icecrown Citadel"], 
 		category = L["Citadel"], 
@@ -42,14 +42,26 @@ do
 		},
 		userdata = {
 			portaltime = {11.5,60,loop = false}, -- TODO: initial time
+			belowzerotime = {34,47,loop = false},
 			battlefurytext = "",
 		},
 		onstart = {
 			{
 				"alert","portalcd",
+				"alert","belowzerocd",
 			},
 		},
 		alerts = {
+			belowzerocd = {
+				varname = format(L["%s Cooldown"],SN[69705]),
+				type = "dropdown",
+				text = format(L["%s Cooldown"],SN[69705]),
+				time = "<belowzerotime>",
+				flashtime = 10,
+				sound = "ALERT2",
+				color1 = "INDIGO",
+				icon = ST[69705],
+			},
 			belowzerowarn = {
 				varname = format(L["%s Channel"],SN[69705]),
 				type = "centerpopup",
@@ -89,6 +101,7 @@ do
 				execute = {
 					{
 						"alert","belowzerowarn",
+						"alert","belowzerocd",
 					},
 				},
 			},
