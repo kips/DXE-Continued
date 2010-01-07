@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 6,
+		version = 7,
 		key = "saurfang", 
 		zone = L["Icecrown Citadel"], 
 		category = L["Citadel"], 
@@ -20,6 +20,11 @@ do
 			combatstop = true,
 			tracing = {37813}, -- Deathbringer Saurfang
 			defeat = 37813,
+		},
+		onstart = {
+			{
+				"alert","bloodbeastcd",
+			},
 		},
 		alerts = {
 			bloodbeastwarn = {
