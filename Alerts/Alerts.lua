@@ -201,7 +201,6 @@ do
 	flash:SetFrameStrata("BACKGROUND")
 	local t = flash:CreateTexture(nil,"BACKGROUND")
 	t:SetAllPoints(true)
-	t:SetBlendMode("ADD")
 	flash:SetAllPoints(true)
 	flash:Hide()
 	
