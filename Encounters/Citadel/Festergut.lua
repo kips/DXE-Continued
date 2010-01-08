@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 4,
+		version = 5,
 		key = "festergut", 
 		zone = L["Icecrown Citadel"], 
 		category = L["Citadel"], 
@@ -170,6 +170,7 @@ do
 				eventtype = "SPELL_CAST_SUCCESS",
 				spellid = {
 					71221, -- 25
+					69278, -- 10
 				},
 				execute = {
 					{
@@ -185,6 +186,7 @@ do
 				eventtype = "SPELL_AURA_APPLIED",
 				spellid = {
 					71221, -- 25
+					69279, -- 10
 				},
 				execute = {
 					{
@@ -199,6 +201,7 @@ do
 				eventtype = "SPELL_CAST_SUCCESS",
 				spellid = { -- Note: Don't use 71307
 					71218, -- 25
+					69240, -- 10
 				},
 				execute = {
 					{
@@ -214,6 +217,7 @@ do
 				eventtype = "SPELL_AURA_APPLIED",
 				spellid = {
 					71218, -- 25
+					69240, -- 10
 				},
 				execute = {
 					{
@@ -242,7 +246,10 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellid = 72551,
+				spellid = {
+					72551, -- 25
+					72219, -- 10
+				},
 				execute = {
 					{
 						"expect",{"#4#","==","&playerguid&"},
@@ -260,7 +267,10 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED_DOSE",
-				spellid = 72551,
+				spellid = {
+					72551, -- 25
+					72219, -- 10
+				},
 				execute = {
 					{
 						"expect",{"#4#","==","&playerguid&"},
