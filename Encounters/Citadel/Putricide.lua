@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 3,
+		version = 4,
 		key = "putricide", 
 		zone = L["Icecrown Citadel"], 
 		category = L["Citadel"], 
@@ -154,6 +154,17 @@ do
 			},
 		},
 		events = {
+			-- Malleable Goo
+			{
+				type = "combatevent",
+				eventtype = "SPELL_CAST_SUCCESS",
+				spellid = 72615,
+				execute = {
+					{
+						"alert","malleablegoowarn",
+					},
+				},
+			},
 			-- Choking Gas Bomb
 			{
 				type = "combatevent",
@@ -292,13 +303,6 @@ do
 			},
 		},
 	}
-	-- cd "<101.8> [CLEU] SPELL_SUMMON:0xF150008F4600CBD4:Professor Putricide:133704:0xF13000933A00D1AA:Growing Ooze Puddle:2600:70342:Slime Puddle:40:", -- [17846]
-	-- warning and cd "<147.5> [CLEU] SPELL_CAST_SUCCESS:0xF150008F46008ED7:Professor Putricide:133704:0x0000000000000000:nil:-2147483648:71255:Choking Gas Bomb:1:", -- [35599]
-
-	-- how long does it take a choking gas bomb to explode
-
-	-- unstable experiment cd after tear gas?
-	-- how long does tear gas last?
 
 	DXE:RegisterEncounter(data)
 end
