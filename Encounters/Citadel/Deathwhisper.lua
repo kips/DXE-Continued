@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 9,
+		version = 10,
 		key = "deathwhisper", 
 		zone = L["Icecrown Citadel"], 
 		category = L["Citadel"], 
@@ -109,15 +109,6 @@ do
 				color1 = "BLUE",
 				sound = "ALERT7",
 				icon = ST[72007],
-			},
-			shadowboltwarn = {
-				varname = format(L["%s Cast"],SN[72008]),
-				text = format(L["%s Cast"],SN[72008]),
-				type = "centerpopup",
-				time = 2,
-				color1 = "VIOLET",
-				sound = "ALERT7",
-				icon = ST[72008],
 			},
 		},
 		events = {
@@ -231,41 +222,13 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_INTERRUPT",
-				spellid = {
+				spellid2 = {
 					71420, -- 10
 					72007, -- 25
 				},
 				execute = {
 					{
 						"quash","frostboltwarn",
-					},
-				},
-			},
-			-- Shadow Bolt
-			{
-				type = "combatevent",
-				eventtype = "SPELL_CAST_START",
-				spellid = {
-					71254, -- 10
-					72008, -- 25
-				},
-				execute = {
-					{
-						"alert","shadowboltwarn",
-					},
-				},
-			},
-			-- Shadow Bolt interrupt
-			{
-				type = "combatevent",
-				eventtype = "SPELL_INTERRUPT",
-				spellid = {
-					71254, -- 10
-					72008, -- 25
-				},
-				execute = {
-					{
-						"quash","shadowboltwarn",
 					},
 				},
 			},
