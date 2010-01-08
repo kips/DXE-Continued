@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 4,
+		version = 5,
 		key = "putricide", 
 		zone = L["Icecrown Citadel"], 
 		category = L["Citadel"], 
@@ -158,7 +158,10 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_SUCCESS",
-				spellid = 72615,
+				spellid = {
+					72615, -- 25
+					72295, -- 10
+				},
 				execute = {
 					{
 						"alert","malleablegoowarn",
@@ -192,7 +195,10 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
-				spellid = 72455,
+				spellid = {
+					72455, -- 25
+					70672, -- 10
+				},
 				execute = {
 					{
 						"quash","oozeaggrocd",
@@ -204,7 +210,10 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellid = 72455,
+				spellid = {
+					72455, -- 25
+					70672, -- 10
+				},
 				execute = {
 					{
 						"raidicon","gaseousbloatmark",
@@ -225,7 +234,10 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_REMOVED",
-				spellid = 72455,
+				spellid = {
+					72455, -- 25
+					70672, -- 10
+				},
 				execute = {
 					{
 						"removeraidicon","#5#",
@@ -236,7 +248,10 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
-				spellid = 72836,
+				spellid = {
+					72836, -- 25
+					70447, -- 10
+				},
 				execute = {
 					{
 						"quash","oozeaggrocd",
@@ -248,7 +263,10 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellid = 72836,
+				spellid = {
+					72836, -- 25
+					70447, -- 10
+				},
 				execute = {
 					{
 						"raidicon","oozeadhesivemark",
@@ -264,7 +282,10 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_REMOVED",
-				spellid = 72836,
+				spellid = {
+					72836, -- 25
+					70447, -- 10
+				},
 				execute = {
 					{
 						"removeraidicon","#5#",
@@ -293,7 +314,10 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_DAMAGE",
-				spellid = 72456,
+				spellid = {
+					72456, -- 25
+					70346, -- 10 Slime Puddle
+				},
 				execute = {
 					{
 						"expect",{"#4#","==","&playerguid&"},
