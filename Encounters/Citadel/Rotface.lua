@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 3,
+		version = 4,
 		key = "rotface", 
 		zone = L["Icecrown Citadel"], 
 		category = L["Citadel"], 
@@ -33,7 +33,7 @@ do
 				time = 12,
 				flashtime = 12,
 				color1 = "GREEN",
-				color2 = "MAGENTA",
+				color2 = "PEACH",
 				sound = "ALERT1",
 				icon = ST[69674],
 				flashscreen = true,
@@ -141,7 +141,7 @@ do
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
 				spellid = {
-					69674,
+					69674, -- 10
 					71224, -- 25
 				},
 				execute = {
@@ -163,7 +163,7 @@ do
 				type = "combatevent",
 				eventtype = "SPELL_AURA_REMOVED",
 				spellid = {
-					69674,
+					69674, -- 10
 					71224, -- 25
 				},
 				execute = {
@@ -189,7 +189,10 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_DAMAGE",
-				spellid = 71213, -- 25
+				spellid = {
+					71213, -- 25
+					69507, -- 10
+				},
 				execute = {
 					{
 						"expect",{"#4#","==","&playerguid&"},
@@ -201,7 +204,10 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_DAMAGE",
-				spellid = 71215, -- 25
+				spellid = {
+					71215, -- 25
+					69789, -- 10
+				},
 				execute = {
 					{
 						"expect",{"#4#","==","&playerguid&"},
@@ -224,7 +230,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED_DOSE",
-				spellid = 69558,
+				spellid = 69558, -- 10/25
 				execute = {
 					{
 						"expect",{"#11#",">=","3"},
