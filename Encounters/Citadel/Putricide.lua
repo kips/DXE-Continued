@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 5,
+		version = 6,
 		key = "putricide", 
 		zone = L["Icecrown Citadel"], 
 		category = L["Citadel"], 
@@ -20,11 +20,16 @@ do
 		onstart = {
 			{
 				"alert","enragecd",
+				"alert","unstableexperimentcd",
+				"set",{experimenttime = 37.5},
 			},
 		},
 		userdata = {
 			oozeaggrotext = {format(L["%s Aggros"],L["Volatile Ooze"]),format(L["%s Aggros"],L["Gas Cloud"]),loop = true},
 			bloattext = "",
+			experimenttime = 25.5,
+			malleabletime = 6,
+			gasbombtime = 16,
 		},
 		alerts = {
 			enragecd = {
@@ -50,9 +55,9 @@ do
 				varname = format(L["%s Cooldown"],SN[71966]),
 				type = "dropdown",
 				text = format(L["%s Cooldown"],SN[71966]),
-				color1 = "PINK",
-				time = 37.5,
+				time = "<experimenttime>",
 				flashtime = 10,
+				color1 = "PINK",
 				icon = ST[71966],
 			},
 			mutatedslimeself = {
@@ -111,13 +116,21 @@ do
 				icon = ST[72455],
 				flashscreen = true,
 			},
-			gasbombexplodes = {
+			gasbombwarn = {
 				varname = format(L["%s Explodes"],SN[71255]),
 				type = "centerpopup",
 				text = format(L["%s Explodes"],SN[71255]),
 				time = 10,
 				sound = "ALERT5",
 				color1 = "YELLOW",
+				icon = ST[71255],
+			},
+			gasbombcd = {
+				varname = format(L["%s Cooldown"],SN[71255]),
+				type = "centerpopup",
+				text = format(L["%s Cooldown"],SN[71255]),
+				time = "<gasbombtime>",
+				color1 = "GOLD",
 				icon = ST[71255],
 			},
 			malleablegoowarn = {
@@ -128,6 +141,31 @@ do
 				sound = "ALERT6",
 				color1 = "BLACK",
 				icon = ST[72615],
+			},
+			malleablegoocd = {
+				varname = format(L["%s Cooldown"],SN[72615]),
+				type = "dropdown",
+				text = format(L["%s Cooldown"],SN[72615]),
+				time = "<malleabletime>",
+				color1 = "GREY",
+				icon = ST[72615],
+			},
+			teargaswarn = {
+				varname = format(L["%s Cast"],SN[71617]),
+				type = "centerpopup",
+				text = format(L["%s Cast"],SN[71617]),
+				time = 2.5,
+				sound = "ALERT7",
+				color1 = "INDIGO",
+				icon = ST[71617],
+			},
+			teargasdur = {
+				varname = format(L["%s Duration"],SN[71617]),
+				type = "centerpopup",
+				text = format(L["%s Ends Soon"],SN[71617]),
+				time = 16,
+				color1 = "INDIGO",
+				icon = ST[71617],
 			},
 		},
 		raidicons = {
@@ -164,7 +202,9 @@ do
 				},
 				execute = {
 					{
+						"quash","malleablegoocd",
 						"alert","malleablegoowarn",
+						"alert","malleablegoocd",
 					},
 				},
 			},
@@ -175,22 +215,54 @@ do
 				spellid = 71255,
 				execute = {
 					{
-						"alert","gasbombexplodes",
+						"quash","gasbombcd",
+						"alert","gasbombwarn",
+						"alert","gasbombcd",
 					},
 				},
 			},
-			--[[
 			-- Tear Gas
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
-				spellid = 71617,
+				spellid = 71617, -- 10/25
 				execute = {
 					{
+						"quash","oozeaggrocd", -- don't cancel timer
+						"quash","malleablegoocd",
+						"quash","unstableexperimentcd",
+						"alert","teargaswarn",
 					},
 				},
 			},
-			]]
+			-- Tear Gas duration
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellid = 71615,
+				execute = {
+					{
+						"expect",{"#4#","==","&playerguid&"},
+						"alert","teargasdur",
+					},
+				},
+			},
+			-- Tear Gas removal
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_REMOVED",
+				spellid = 71615,
+				execute = {
+					{
+						"expect",{"#4#","==","&playerguid&"},
+						"set",{malleabletime = 6, experimenttime = 20, gasbombtime = 16},
+						"alert","malleablegoocd",
+						"alert","unstableexperimentcd",
+						"alert","gasbombcd",
+						"set",{malleabletime = 25.5, experimenttime = 37.5, gasbombtime = 35.5},
+					},
+				},
+			},
 			-- Gaseous Bloat
 			{
 				type = "combatevent",
