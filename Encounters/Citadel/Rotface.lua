@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 4,
+		version = 5,
 		key = "rotface", 
 		zone = L["Icecrown Citadel"], 
 		category = L["Citadel"], 
@@ -23,9 +23,19 @@ do
 		onstart = {
 			{
 				"alert","slimespraycd",
+				"alert","enragecd",
 			},
 		},
 		alerts = {
+			enragecd = {
+				varname = L["Enrage"],
+				type = "dropdown",
+				text = L["Enrage"],
+				time = 420,
+				flashtime = 10,
+				color1 = "RED",
+				icon = ST[12317],
+			},
 			infectionself = {
 				varname = format(L["%s on self"],SN[69674]),
 				type = "centerpopup",

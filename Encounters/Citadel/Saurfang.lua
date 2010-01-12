@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 7,
+		version = 8,
 		key = "saurfang", 
 		zone = L["Icecrown Citadel"], 
 		category = L["Citadel"], 
@@ -24,9 +24,19 @@ do
 		onstart = {
 			{
 				"alert","bloodbeastcd",
+				"alert","enragecd",
 			},
 		},
 		alerts = {
+			enragecd = {
+				varname = L["Enrage"],
+				type = "dropdown",
+				text = L["Enrage"],
+				time = 480,
+				flashtime = 10,
+				color1 = "RED",
+				icon = ST[12317],
+			},
 			bloodbeastwarn = {
 				varname = format(L["%s Warning"],SN[72172]),
 				text = format(L["%s Casted"],SN[72172]).."!",

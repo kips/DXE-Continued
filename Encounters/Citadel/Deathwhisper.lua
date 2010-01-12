@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 10,
+		version = 11,
 		key = "deathwhisper", 
 		zone = L["Icecrown Citadel"], 
 		category = L["Citadel"], 
@@ -19,6 +19,7 @@ do
 		onstart = {
 			{
 				"alert","cultcd",
+				"alert","enragecd",
 				"scheduletimer",{"firecult",7},
 			},
 		},
@@ -36,6 +37,15 @@ do
 			defeat = 36855, -- Lady Deathwhisper
 		},
 		alerts = {
+			enragecd = {
+				varname = L["Enrage"],
+				type = "dropdown",
+				text = L["Enrage"],
+				time = 600,
+				flashtime = 10,
+				color1 = "RED",
+				icon = ST[12317],
+			},
 			dndself = {
 				varname = format(L["%s on self"],SN[71001]),
 				text = format("%s: %s!",SN[71001],L["YOU"]),
