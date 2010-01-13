@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 7,
+		version = 8,
 		key = "putricide", 
 		zone = L["Icecrown Citadel"], 
 		category = L["Citadel"], 
@@ -130,6 +130,7 @@ do
 				type = "dropdown",
 				text = format(L["%s Cooldown"],SN[71255]),
 				time = "<gasbombtime>",
+				flashtime = 5,
 				color1 = "GOLD",
 				icon = ST[71255],
 			},
@@ -147,6 +148,7 @@ do
 				type = "dropdown",
 				text = format(L["%s Cooldown"],SN[72615]),
 				time = "<malleabletime>",
+				flashtime = 5,
 				color1 = "GREY",
 				icon = ST[72615],
 			},
@@ -231,6 +233,7 @@ do
 						"quash","oozeaggrocd", -- don't cancel timer
 						"quash","malleablegoocd",
 						"quash","unstableexperimentcd",
+						"quash","gasbombcd",
 						"alert","teargaswarn",
 					},
 				},
