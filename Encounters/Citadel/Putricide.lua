@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 6,
+		version = 7,
 		key = "putricide", 
 		zone = L["Icecrown Citadel"], 
 		category = L["Citadel"], 
@@ -27,7 +27,7 @@ do
 		userdata = {
 			oozeaggrotext = {format(L["%s Aggros"],L["Volatile Ooze"]),format(L["%s Aggros"],L["Gas Cloud"]),loop = true},
 			bloattext = "",
-			experimenttime = 25.5,
+			experimenttime = 25,
 			malleabletime = 6,
 			gasbombtime = 16,
 		},
@@ -127,7 +127,7 @@ do
 			},
 			gasbombcd = {
 				varname = format(L["%s Cooldown"],SN[71255]),
-				type = "centerpopup",
+				type = "dropdown",
 				text = format(L["%s Cooldown"],SN[71255]),
 				time = "<gasbombtime>",
 				color1 = "GOLD",

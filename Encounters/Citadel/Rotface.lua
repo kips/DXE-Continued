@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 5,
+		version = 6,
 		key = "rotface", 
 		zone = L["Icecrown Citadel"], 
 		category = L["Citadel"], 
@@ -243,7 +243,6 @@ do
 				spellid = 69558, -- 10/25
 				execute = {
 					{
-						"expect",{"#11#",">=","3"},
 						"alert","unstableoozestackwarn",
 					},
 				},
