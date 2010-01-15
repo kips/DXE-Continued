@@ -5,7 +5,7 @@ do
 		key = "anubcoliseum", 
 		zone = L.zone["Trial of the Crusader"], 
 		category = L.zone["Coliseum"],
-		name = L["Anub'arak"], 
+		name = L.npc_coliseum["Anub'arak"], 
 		triggers = {
 			scan = {
 				34564, -- Anub

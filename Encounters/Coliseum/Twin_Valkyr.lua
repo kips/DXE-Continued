@@ -9,7 +9,7 @@ do
 		key = "twinvalkyr", 
 		zone = L.zone["Trial of the Crusader"], 
 		category = L.zone["Coliseum"],
-		name = L["Twin Val'kyr"], 
+		name = L.npc_coliseum["Twin Val'kyr"], 
 		triggers = {
 			scan = {
 				34496, -- Eydis Darkbane

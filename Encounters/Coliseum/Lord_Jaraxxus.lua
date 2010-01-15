@@ -5,7 +5,7 @@ do
 		key = "jaraxxus", 
 		zone = L.zone["Trial of the Crusader"], 
 		category = L.zone["Coliseum"],
-		name = L["Lord Jaraxxus"], 
+		name = L.npc_coliseum["Lord Jaraxxus"], 
 		triggers = {
 			scan = {
 				34780, -- Jaraxxus

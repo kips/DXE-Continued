@@ -5,7 +5,7 @@ do
 		key = "northrendbeasts", 
 		zone = L.zone["Trial of the Crusader"], 
 		category = L.zone["Coliseum"],
-		name = L["Northrend Beasts"], 
+		name = L.npc_coliseum["Northrend Beasts"], 
 		triggers = {
 			scan = {
 				34796, -- Gormok
