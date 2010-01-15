@@ -54,8 +54,8 @@ do
 	local data = {
 		version = 8,
 		key = "factionchampions", 
-		zone = L["Trial of the Crusader"], 
-		category = L["Coliseum"],
+		zone = L.zone["Trial of the Crusader"], 
+		category = L.zone["Coliseum"],
 		name = L["Faction Champions"], 
 		title = L["Faction Champions"],
 		triggers = {

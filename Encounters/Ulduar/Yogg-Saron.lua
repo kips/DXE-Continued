@@ -3,7 +3,7 @@ do
 	local data = {
 		version = 308,
 		key = "yoggsaron", 
-		zone = L["Ulduar"], 
+		zone = L.zone["Ulduar"], 
 		name = L["Yogg-Saron"], 
 		triggers = {
 			yell = L["^The time to strike at the head of the beast"],

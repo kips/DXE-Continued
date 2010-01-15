@@ -3,8 +3,8 @@ do
 	local data = {
 		version = 36,
 		key = "anubcoliseum", 
-		zone = L["Trial of the Crusader"], 
-		category = L["Coliseum"],
+		zone = L.zone["Trial of the Crusader"], 
+		category = L.zone["Coliseum"],
 		name = L["Anub'arak"], 
 		triggers = {
 			scan = {

@@ -3,8 +3,8 @@ do
 	local data = {
 		version = 4,
 		key = "onyxia", 
-		zone = L["Onyxia's Lair"],
-		category = L["Kalimdor"],
+		zone = L.zone["Onyxia's Lair"],
+		category = L.zone["Kalimdor"],
 		name = L["Onyxia"], 
 		triggers = {
 			yell = L["^How fortuitous. Usually, I must leave my"],

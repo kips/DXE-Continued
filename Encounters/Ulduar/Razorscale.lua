@@ -3,7 +3,7 @@ do
 	local data = {
 		version = 299,
 		key = "razorscale", 
-		zone = L["Ulduar"], 
+		zone = L.zone["Ulduar"], 
 		name = L["Razorscale"], 
 		triggers = {
 			scan = {

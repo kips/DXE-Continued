@@ -9,8 +9,8 @@ do
 	local data = {
 		version = 299,
 		key = "sartharion", 
-		zone = L["The Obsidian Sanctum"], 
-		category = L["Northrend"],
+		zone = L.zone["The Obsidian Sanctum"], 
+		category = L.zone["Northrend"],
 		name = L_Sartharion, 
 		triggers = {
 			scan = {

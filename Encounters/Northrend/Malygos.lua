@@ -3,8 +3,8 @@ do
 	local data = {
 		version = 299,
 		key = "malygos", 
-		zone = L["The Eye of Eternity"], 
-		category = L["Northrend"],
+		zone = L.zone["The Eye of Eternity"], 
+		category = L.zone["Northrend"],
 		name = L["Malygos"], 
 		triggers = {
 			scan = {

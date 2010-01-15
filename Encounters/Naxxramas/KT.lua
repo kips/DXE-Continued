@@ -4,7 +4,7 @@ do
 	local data = {
 		version = 299,
 		key = "kelthuzad", 
-		zone = L["Naxxramas"], 
+		zone = L.zone["Naxxramas"], 
 		name = L["Kel'Thuzad"], 
 		triggers = {
 			yell = "^Minions, servants, soldiers of the cold dark",

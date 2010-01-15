@@ -3,7 +3,7 @@ do
 	local data = {
 		version = 299,
 		key = "kologarn", 
-		zone = L["Ulduar"], 
+		zone = L.zone["Ulduar"], 
 		name = L["Kologarn"], 
 		triggers = {
 			scan = 32930, -- Kologarn

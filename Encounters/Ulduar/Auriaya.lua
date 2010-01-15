@@ -4,7 +4,7 @@ do
 	local data = {
 		version = 299,
 		key = "auriaya", 
-		zone = L["Ulduar"], 
+		zone = L.zone["Ulduar"], 
 		name = L["Auriaya"], 
 		triggers = {
 			scan = {

@@ -3,7 +3,7 @@ do
 	local data = {
 		version = 307,
 		key = "generalvezax", 
-		zone = L["Ulduar"], 
+		zone = L.zone["Ulduar"], 
 		name = L["General Vezax"], 
 		triggers = {
 			scan = {33271,33524}, -- Vezax, Animus

@@ -3,8 +3,8 @@ do
 	local data = {
 		version = 4,
 		key = "koralon", 
-		zone = L["Vault of Archavon"], 
-		category = L["Northrend"],
+		zone = L.zone["Vault of Archavon"], 
+		category = L.zone["Northrend"],
 		name = L["Koralon"], 
 		triggers = {
 			scan = {

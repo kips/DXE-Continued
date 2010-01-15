@@ -21,8 +21,8 @@ do
 	local data = {
 		version = 7,
 		key = "gunshipbattle", 
-		zone = L["Icecrown Citadel"], 
-		category = L["Citadel"], 
+		zone = L.zone["Icecrown Citadel"], 
+		category = L.zone["Citadel"], 
 		name = L["Gunship Battle"], 
 		title = L["Gunship Battle"], 
 		triggers = {

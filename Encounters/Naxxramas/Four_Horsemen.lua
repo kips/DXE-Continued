@@ -4,7 +4,7 @@ do
 	local data = {
 		version = 298,
 		key = "fourhorsemen", 
-		zone = L["Naxxramas"], 
+		zone = L.zone["Naxxramas"], 
 		name = L["The Four Horsemen"],
 		triggers = {
 			scan = {

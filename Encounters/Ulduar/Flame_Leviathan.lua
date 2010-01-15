@@ -3,7 +3,7 @@ do
 	local data = {
 		version = 300,
 		key = "flameleviathan", 
-		zone = L["Ulduar"], 
+		zone = L.zone["Ulduar"], 
 		name = L["Flame Leviathan"], 
 		triggers = {
 			scan = 33113, -- Flame Leviathan

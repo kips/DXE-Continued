@@ -3,8 +3,8 @@ do
 	local data = {
 		version = 1,
 		key = "sindragosa", 
-		zone = L["Icecrown Citadel"], 
-		category = L["Citadel"], 
+		zone = L.zone["Icecrown Citadel"], 
+		category = L.zone["Citadel"], 
 		name = L["Sindragosa"], 
 		triggers = {
 			scan = {36853}, -- Sindragosa

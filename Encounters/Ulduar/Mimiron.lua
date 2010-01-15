@@ -4,7 +4,7 @@ do
 	local data = {
 		version = 313,
 		key = "mimiron", 
-		zone = L["Ulduar"], 
+		zone = L.zone["Ulduar"], 
 		name = L["Mimiron"], 
 		triggers = {
 			yell = {L["^We haven't much time, friends"],L["^Self%-destruct sequence initiated"]},

@@ -7,8 +7,8 @@ do
 	local data = {
 		version = 16,
 		key = "twinvalkyr", 
-		zone = L["Trial of the Crusader"], 
-		category = L["Coliseum"],
+		zone = L.zone["Trial of the Crusader"], 
+		category = L.zone["Coliseum"],
 		name = L["Twin Val'kyr"], 
 		triggers = {
 			scan = {

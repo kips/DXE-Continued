@@ -6,7 +6,7 @@ do
 	local data = {
 		version = 299,
 		key = "grobbulus",
-		zone = L["Naxxramas"],
+		zone = L.zone["Naxxramas"],
 		name = L_Grobbulus,
 		triggers = {
 			scan = 15931, -- Grobbulus

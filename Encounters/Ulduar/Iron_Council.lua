@@ -3,7 +3,7 @@ do
 	local data = {
 		version = 301,
 		key = "ironcouncil", 
-		zone = L["Ulduar"], 
+		zone = L.zone["Ulduar"], 
 		name = L["The Iron Council"], 
 		triggers = {
 			scan = {

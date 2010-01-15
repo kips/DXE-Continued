@@ -3,8 +3,8 @@ do
 	local data = {
 		version = 7,
 		key = "marrowgar", 
-		zone = L["Icecrown Citadel"], 
-		category = L["Citadel"], 
+		zone = L.zone["Icecrown Citadel"], 
+		category = L.zone["Citadel"], 
 		name = L["Marrowgar"], 
 		triggers = {
 			scan = {36612}, -- Lord Marrowgar 

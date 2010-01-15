@@ -4,8 +4,8 @@ do
 	local data = {
 		version = 2,
 		key = "icctrash", 
-		zone = L["Icecrown Citadel"], 
-		category = L["Citadel"], 
+		zone = L.zone["Icecrown Citadel"], 
+		category = L.zone["Citadel"], 
 		name = format(L["%s (T)"],L["Deathbound Ward"]), 
 		triggers = {
 			scan = {
@@ -120,8 +120,8 @@ do
 		local data = {
 			version = 3,
 			key = "icctrashtwo",
-			zone = L["Icecrown Citadel"],
-			category = L["Citadel"],
+			zone = L.zone["Icecrown Citadel"],
+			category = L.zone["Citadel"],
 			name = format(L["%s (T)"],L["Stinky"]),
 			triggers = {
 				scan = {
@@ -159,8 +159,8 @@ do
 		local data = {
 			version = 1,
 			key = "icctrashthree",
-			zone = L["Icecrown Citadel"],
-			category = L["Citadel"],
+			zone = L.zone["Icecrown Citadel"],
+			category = L.zone["Citadel"],
 			name = format(L["%s (T)"],L["Precious"]),
 			triggers = {
 				scan = {
