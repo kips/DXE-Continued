@@ -5,7 +5,7 @@ do
 		version = 301,
 		key = "xt002", 
 		zone = L.zone["Ulduar"], 
-		name = L["XT-002 Deconstructor"], 
+		name = L.npc_ulduar["XT-002 Deconstructor"], 
 		triggers = {
 			scan = {33293,33329}, -- XT-002 Deconstructor, Heart of the Deconstructor
 		},

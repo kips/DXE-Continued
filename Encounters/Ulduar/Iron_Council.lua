@@ -4,7 +4,7 @@ do
 		version = 301,
 		key = "ironcouncil", 
 		zone = L.zone["Ulduar"], 
-		name = L["The Iron Council"], 
+		name = L.npc_ulduar["The Iron Council"], 
 		triggers = {
 			scan = {
 				32867, -- Steelbreaker

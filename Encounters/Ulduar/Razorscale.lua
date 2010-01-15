@@ -4,7 +4,7 @@ do
 		version = 299,
 		key = "razorscale", 
 		zone = L.zone["Ulduar"], 
-		name = L["Razorscale"], 
+		name = L.npc_ulduar["Razorscale"], 
 		triggers = {
 			scan = {
 				33186, -- Razorscale

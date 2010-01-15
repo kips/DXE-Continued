@@ -5,7 +5,7 @@ do
 		version = 313,
 		key = "mimiron", 
 		zone = L.zone["Ulduar"], 
-		name = L["Mimiron"], 
+		name = L.npc_ulduar["Mimiron"], 
 		triggers = {
 			yell = {L["^We haven't much time, friends"],L["^Self%-destruct sequence initiated"]},
 			scan = {

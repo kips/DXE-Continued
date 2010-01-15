@@ -5,7 +5,7 @@ do
 		version = 311,
 		key = "ignis", 
 		zone = L.zone["Ulduar"], 
-		name = L["Ignis the Furnace Master"], 
+		name = L.npc_ulduar["Ignis the Furnace Master"], 
 		triggers = {
 			scan = 33118, -- Ignis
 		},

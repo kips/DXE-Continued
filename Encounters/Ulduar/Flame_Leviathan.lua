@@ -4,7 +4,7 @@ do
 		version = 300,
 		key = "flameleviathan", 
 		zone = L.zone["Ulduar"], 
-		name = L["Flame Leviathan"], 
+		name = L.npc_ulduar["Flame Leviathan"], 
 		triggers = {
 			scan = 33113, -- Flame Leviathan
 			yell = L["^Hostile entities detected. Threat assessment protocol active"],

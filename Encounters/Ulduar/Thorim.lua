@@ -4,7 +4,7 @@ do
 		version = 305,
 		key = "thorim", 
 		zone = L.zone["Ulduar"], 
-		name = L["Thorim"], 
+		name = L.npc_ulduar["Thorim"], 
 		triggers = {
 			scan = {
 				32865, -- Thorim,

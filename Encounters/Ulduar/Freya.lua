@@ -5,7 +5,7 @@ do
 		version = 301,
 		key = "freya", 
 		zone = L.zone["Ulduar"], 
-		name = L["Freya"], 
+		name = L.npc_ulduar["Freya"], 
 		triggers = {
 			scan = {
 				32906, -- Freya

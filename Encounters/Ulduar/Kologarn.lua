@@ -4,7 +4,7 @@ do
 		version = 299,
 		key = "kologarn", 
 		zone = L.zone["Ulduar"], 
-		name = L["Kologarn"], 
+		name = L.npc_ulduar["Kologarn"], 
 		triggers = {
 			scan = 32930, -- Kologarn
 		},

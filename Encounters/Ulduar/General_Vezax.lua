@@ -4,7 +4,7 @@ do
 		version = 307,
 		key = "generalvezax", 
 		zone = L.zone["Ulduar"], 
-		name = L["General Vezax"], 
+		name = L.npc_ulduar["General Vezax"], 
 		triggers = {
 			scan = {33271,33524}, -- Vezax, Animus
 		},

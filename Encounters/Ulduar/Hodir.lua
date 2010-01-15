@@ -4,7 +4,7 @@ do
 		version = 301,
 		key = "hodir", 
 		zone = L.zone["Ulduar"], 
-		name = L["Hodir"], 
+		name = L.npc_ulduar["Hodir"], 
 		triggers = {
 			scan = 32845, -- Hodir
 		},

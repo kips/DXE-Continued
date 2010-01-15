@@ -4,7 +4,7 @@ do
 		version = 308,
 		key = "yoggsaron", 
 		zone = L.zone["Ulduar"], 
-		name = L["Yogg-Saron"], 
+		name = L.npc_ulduar["Yogg-Saron"], 
 		triggers = {
 			yell = L["^The time to strike at the head of the beast"],
 			scan = {
