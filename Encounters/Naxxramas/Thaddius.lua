@@ -12,7 +12,10 @@ do
 				15929, -- Stalagg
 				15930, -- Feugen
 			},
-			yell = {L["Stalagg crush you!"],L["Feed you to master!"]},
+			yell = {
+        L.chat_msg_triggers_naxxramas["Stalagg crush you!"],
+        L.chat_msg_triggers_naxxramas["Feed you to master!"]
+      },
 		},
 		onactivate = {
 			tracing = {
@@ -47,9 +50,9 @@ do
 		},
 		alerts = {
 			enragecd = {
-				varname = L["Enrage"],
+				varname = L.alerts["Enrage"],
 				type = "dropdown", 
-				text = L["Enrage"],
+				text = L.alerts["Enrage"],
 				time = 360, 
 				flashtime = 5, 
 				sound = "ALERT2", 
@@ -57,9 +60,9 @@ do
 				icon = ST[12317],
 			},
 			tankthrowcd = {
-				varname = format(L["%s Cooldown"],L["Tank Throw"]),
+				varname = format(L.alerts["%s Cooldown"],L.alerts["Tank Throw"]),
 				type = "dropdown", 
-				text = format(L["Next %s"],L["Tank Throw"]),
+				text = format(L.alerts["Next %s"],L.alerts["Tank Throw"]),
 				time = 20.6, 
 				flashtime = 3, 
 				sound = "ALERT2", 
@@ -67,9 +70,9 @@ do
 				icon = ST[52272],
 			},
 			polarityshiftwarn = {
-				varname = format(L["%s Cast"],SN[28089]),
+				varname = format(L.alerts["%s Cast"],SN[28089]),
 				type = "centerpopup", 
-				text = format(L["%s Cast"],SN[28089]),
+				text = format(L.alerts["%s Cast"],SN[28089]),
 				time = 3, 
 				flashtime = 3, 
 				sound = "ALERT1", 
@@ -104,7 +107,7 @@ do
 				event = "CHAT_MSG_RAID_BOSS_EMOTE", 
 				execute = {
 					{
-						"expect",{"#1#","find",L["overloads"]},
+						"expect",{"#1#","find",L.chat_msg_triggers_naxxramas["overloads"]},
 						"set",{dead = "INCR|1"},
 						"expect",{"<dead>",">=","2"},
 						"quash","tankthrowcd",

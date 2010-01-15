@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 
-	local L_AnubRekhan = L["Anub'Rekhan"]
+	local L_AnubRekhan = L.npc_naxxramas["Anub'Rekhan"]
 
 	local data = {
 		version = 299,
@@ -32,9 +32,9 @@ do
 		},
 		alerts = {
 			locustswarmcd = {
-				varname = format(L["%s Cooldown"],SN[28785]),
+				varname = format(L.alerts["%s Cooldown"],SN[28785]),
 				type = "dropdown", 
-				text = format(L["%s Cooldown"],SN[28785]), 
+				text = format(L.alerts["%s Cooldown"],SN[28785]), 
 				time = "<swarmcd>",
 				flashtime = 5, 
 				sound = "ALERT1", 
@@ -42,18 +42,18 @@ do
 				icon = ST[28785],
 			},
 			locustswarmwarn = {
-				varname = format(L["%s Cast"],SN[28785]), 
+				varname = format(L.alerts["%s Cast"],SN[28785]), 
 				type = "centerpopup", 
-				text = format(L["%s Cast"],SN[28785]), 
+				text = format(L.alerts["%s Cast"],SN[28785]), 
 				time = 3, 
 				sound = "ALERT3", 
 				color1 = "GREY", 
 				icon = ST[28785],
 			},
 			locustswarmdur = {
-				varname = format(L["%s Duration"],SN[28785]), 
+				varname = format(L.alerts["%s Duration"],SN[28785]), 
 				type = "centerpopup", 
-				text = format(L["%s Duration"],SN[28785]), 
+				text = format(L.alerts["%s Duration"],SN[28785]), 
 				time = 20, 
 				sound = "ALERT2", 
 				color1 = "YELLOW", 

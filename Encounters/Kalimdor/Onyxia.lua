@@ -19,8 +19,8 @@ do
 		},
 		alerts = {
 			bellowwarn = {
-				varname = format(L["%s Cast"],SN[18431]),
-				text = format(L["%s Cast"],SN[18431]),
+				varname = format(L.alerts["%s Cast"],SN[18431]),
+				text = format(L.alerts["%s Cast"],SN[18431]),
 				type = "centerpopup",
 				time = 2.5,
 				flashtime = 2.5,
@@ -30,8 +30,8 @@ do
 				icon = ST[39427],
 			},
 			breathwarn = {
-				varname = format(L["%s Cast"],SN[68970]),
-				text = format(L["%s Cast"],SN[68970]),
+				varname = format(L.alerts["%s Cast"],SN[68970]),
+				text = format(L.alerts["%s Cast"],SN[68970]),
 				type = "centerpopup",
 				time = 2,
 				flashtime = 2,
@@ -40,8 +40,8 @@ do
 				icon = ST[68970],
 			},
 			deepbreathwarn = {
-				varname = format(L["%s Cast"],L["Deep Breath"]),
-				text = format(L["%s Cast"],L["Deep Breath"]).." "..L["MOVE"].."!",
+				varname = format(L.alerts["%s Cast"],L.alerts["Deep Breath"]),
+				text = format(L.alerts["%s Cast"],L.alerts["Deep Breath"]).." "..L.alerts["MOVE"].."!",
 				type = "centerpopup",
 				time = 8,
 				flashtime = 8,
@@ -81,7 +81,7 @@ do
 				event = "EMOTE",
 				execute = {
 					{
-						"expect",{"#1#","find",L["deep breath"]},
+						"expect",{"#1#","find",L.chat_msg_triggers_kalimdor["deep breath"]},
 						"alert","deepbreathwarn",
 					},
 				},

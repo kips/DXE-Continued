@@ -1,10 +1,10 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 
-	local L_Sartharion = L["Sartharion"]
-	local L_Vesperon = L["Vesperon"]
-	local L_Shadron = L["Shadron"]
-	local L_Tenebron = L["Tenebron"]
+	local L_Sartharion = L.npc_northrend["Sartharion"]
+	local L_Vesperon = L.npc_northrend["Vesperon"]
+	local L_Shadron = L.npc_northrend["Shadron"]
+	local L_Tenebron = L.npc_northrend["Tenebron"]
 
 	local data = {
 		version = 299,
@@ -75,9 +75,9 @@ do
 		},
 		alerts = {
 			lavawallcd = {
-				varname = format(L["%s Cooldown"],L["Lava Wall"]),
+				varname = format(L.alerts["%s Cooldown"],L.alerts["Lava Wall"]),
 				type = "dropdown", 
-				text = format(L["%s Cooldown"],L["Lava Wall"]),
+				text = format(L.alerts["%s Cooldown"],L.alerts["Lava Wall"]),
 				time = 25, 
 				flashtime = 5, 
 				sound = "ALERT3", 
@@ -85,9 +85,9 @@ do
 				icon = ST[43114],
 			},
 			lavawallwarn = {
-				varname = format(L["%s Cast"],L["Lava Wall"]),
+				varname = format(L.alerts["%s Cast"],L.alerts["Lava Wall"]),
 				type = "centerpopup", 
-				text = format(L["Incoming %s"],L["Lava Wall"]).."!",
+				text = format(L.alerts["Incoming %s"],L.alerts["Lava Wall"]).."!",
 				time = 5, 
 				sound = "ALERT1", 
 				color1 = "RED", 
@@ -96,18 +96,18 @@ do
 				icon = ST[43114],
 			},
 			shadowfissurewarn = {
-				varname = format(L["%s Warning"],SN[59127]),
+				varname = format(L.alerts["%s Warning"],SN[59127]),
 				type = "simple", 
-				text = format(L["%s Spawned"],SN[59127]).."!",
+				text = format(L.alerts["%s Spawned"],SN[59127]).."!",
 				sound = "ALERT2",
 				color1 = "PURPLE",
 				time = 1.5, 
 				icon = ST[59127],
 			},
 			flamebreathwarn = {
-				varname = format(L["%s Cast"],SN[56908]),
+				varname = format(L.alerts["%s Cast"],SN[56908]),
 				type = "centerpopup",
-				text = format(L["%s Cast"],SN[56908]),
+				text = format(L.alerts["%s Cast"],SN[56908]),
 				time = 2,
 				color1 = "DCYAN",
 				sound = "ALERT4",
@@ -115,24 +115,24 @@ do
 			},
 			shadronarrivescd = {
 				type = "dropdown",
-				varname = format(L["%s Arrival"],L_Shadron),
-				text = format(L["%s Arrives"],L_Shadron),
+				varname = format(L.alerts["%s Arrival"],L_Shadron),
+				text = format(L.alerts["%s Arrives"],L_Shadron),
 				time = 80,
 				color1 = "DCYAN",
 				icon = ST[58105],
 			},
 			tenebronarrivescd = {
 				type = "dropdown",
-				varname = format(L["%s Arrival"],L_Tenebron),
-				text = format(L["%s Arrives"],L_Tenebron),
+				varname = format(L.alerts["%s Arrival"],L_Tenebron),
+				text = format(L.alerts["%s Arrives"],L_Tenebron),
 				time = 30,
 				color1 = "CYAN",
 				icon = ST[61248],
 			},
 			vesperonarrivescd = {
 				type = "dropdown",
-				varname = format(L["%s Arrival"],L_Vesperon),
-				text = format(L["%s Arrives"],L_Vesperon),
+				varname = format(L.alerts["%s Arrival"],L_Vesperon),
+				text = format(L.alerts["%s Arrives"],L_Vesperon),
 				time = 120,
 				color1 = "GREEN",
 				icon = ST[61251],
@@ -156,7 +156,7 @@ do
 				event = "CHAT_MSG_RAID_BOSS_EMOTE", 
 				execute = {
 					{
-						"expect",{"#1#","find",L["lava surrounding"]},
+						"expect",{"#1#","find",L.chat_msg_triggers_northrend["lava surrounding"]},
 						"alert","lavawallwarn",
 						"alert","lavawallcd", 
 					},
@@ -168,19 +168,19 @@ do
 				execute = {
 					-- Tenebron
 					{
-						"expect",{"#1#","find",L["It is amusing to watch you struggle. Very well, witness how it is done."]},
+						"expect",{"#1#","find",L.chat_msg_triggers_northrend["It is amusing to watch you struggle. Very well, witness how it is done."]},
 						"set",{tenebronarrived = 1},
 						"scheduletimer",{"updatetracers",0},
 					},
 					-- Shadron
 					{
-						"expect",{"#1#","find",L["I will take pity on you, Sartharion, just this once"]},
+						"expect",{"#1#","find",L.chat_msg_triggers_northrend["I will take pity on you, Sartharion, just this once"]},
 						"set",{shadronarrived = 1},
 						"scheduletimer",{"updatetracers",0},
 					},
 					-- Vesperon
 					{
-						"expect",{"#1#","find",L["Father was right about you, Sartharion, you ARE a weakling."]},
+						"expect",{"#1#","find",L.chat_msg_triggers_northrend["Father was right about you, Sartharion, you ARE a weakling."]},
 						"set",{vesperonarrived = 1},
 						"scheduletimer",{"updatetracers",0},
 					},

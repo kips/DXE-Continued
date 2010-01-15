@@ -25,9 +25,9 @@ do
 		},
 		alerts = {
 			spraycd = {
-				varname = format(L["%s Cooldown"],SN[29484]),
+				varname = format(L.alerts["%s Cooldown"],SN[29484]),
 				type = "dropdown", 
-				text = format(L["Next %s"],SN[29484]),
+				text = format(L.alerts["Next %s"],SN[29484]),
 				time = 40, 
 				flashtime = 5, 
 				sound = "ALERT1", 
@@ -35,9 +35,9 @@ do
 				icon = ST[29484],
 			},
 			spidercd = {
-				varname = format(L["%s Cooldown"],L["Spider"]),
+				varname = format(L.alerts["%s Cooldown"],L.alerts["Spider"]),
 				type = "dropdown", 
-				text = format(L["%s Spawns"],L["Spider"]),
+				text = format(L.alerts["%s Spawns"],L.alerts["Spider"]),
 				time = 30, 
 				flashtime = 5, 
 				sound = "ALERT2", 
@@ -45,9 +45,9 @@ do
 				icon = ST[51069],
 			},
 			enragewarn = {
-				varname = format(L["%s Warning"],L["Enrage"]),
+				varname = format(L.alerts["%s Warning"],L.alerts["Enrage"]),
 				type = "simple", 
-				text = format("%s!",L["Enraged"]),
+				text = format("%s!",L.alerts["Enraged"]),
 				time = 1.5, 
 				sound = "ALERT3",
 				icon = ST[12317],

@@ -33,9 +33,9 @@ do
 		},
 		alerts = {
 			blinkcd = {
-				varname = format(L["%s Cooldown"],SN[29208]),
+				varname = format(L.alerts["%s Cooldown"],SN[29208]),
 				type = "dropdown", 
-				text = format(L["%s Cooldown"],SN[29208]),
+				text = format(L.alerts["%s Cooldown"],SN[29208]),
 				time = 30, 
 				flashtime = 5, 
 				sound = "ALERT1", 
@@ -43,9 +43,9 @@ do
 				icon = ST[29208],
 			},
 			teleportbalccd = {
-				varname = L["Teleport to Balcony"], 
+				varname = L.alerts["Teleport to Balcony"], 
 				type = "dropdown", 
-				text = L["Teleport to Balcony"], 
+				text = L.alerts["Teleport to Balcony"], 
 				time = "<roomtime>", 
 				flashtime = 5, 
 				color1 = "RED",
@@ -53,9 +53,9 @@ do
 				icon = ST[66548],
 			},
 			teleportroomcd = {
-				varname = L["Teleport to Room"], 
+				varname = L.alerts["Teleport to Room"], 
 				type = "dropdown", 
-				text = L["Teleport to Room"], 
+				text = L.alerts["Teleport to Room"], 
 				time = "<balconytime>", 
 				flashtime = 5, 
 				color1 = "RED",
@@ -63,9 +63,9 @@ do
 				icon = ST[29231],
 			},
 			cursewarn = {
-				varname = format(L["%s Warning"],L["Curse"]),
+				varname = format(L.alerts["%s Warning"],L.alerts["Curse"]),
 				type = "simple", 
-				text = format(L["%s Casted"],L["Curse"]).."!",
+				text = format(L.alerts["%s Casted"],L.alerts["Curse"]).."!",
 				time = 1.5, 
 				sound = "ALERT3", 
 				icon = ST[29213],
@@ -89,16 +89,16 @@ do
 				event = "CHAT_MSG_RAID_BOSS_EMOTE", 
 				execute = {
 					{
-						"expect",{"#1#","find",L["blinks away"]},
+						"expect",{"#1#","find",L.chat_msg_triggers_naxxramas["blinks away"]},
 						"alert","blinkcd", 
 					},
 					{
-						"expect",{"#1#","find",L["teleports to the balcony"]},
+						"expect",{"#1#","find",L.chat_msg_triggers_naxxramas["teleports to the balcony"]},
 						"quash","blinkcd",
 						"alert","teleportroomcd", 
 					},
 					{
-						"expect",{"#1#","find",L["teleports back into battle"]},
+						"expect",{"#1#","find",L.chat_msg_triggers_naxxramas["teleports back into battle"]},
 						"alert","teleportbalccd", 
 					},
 				},

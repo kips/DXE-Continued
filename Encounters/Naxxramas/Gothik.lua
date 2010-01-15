@@ -8,7 +8,10 @@ do
 		name = L.npc_naxxramas["Gothik the Harvester"],
 		triggers = {
 			scan = 16060, -- Gothik the Harvester
-			yell = {L.chat_msg_triggers_naxxramas["^Foolishly you have sought"],L["^Teamanare shi rikk"]},
+			yell = {
+        L.chat_msg_triggers_naxxramas["^Foolishly you have sought"],
+        L.chat_msg_triggers_naxxramas["^Teamanare shi rikk"]
+      },
 		},
 		onactivate = {
 			tracing = {16060}, -- Gothik the Harvester
@@ -23,9 +26,9 @@ do
 		},
 		alerts = {
 			gothikcomesdowncd = {
-				varname = format(L["%s Arrival"],L["Gothik the Harvester"]),
+				varname = format(L.alerts["%s Arrival"],L.npc_naxxramas["Gothik the Harvester"]),
 				type = "dropdown",
-				text = L["Arrival"],
+				text = L.alerts["Arrival"],
 				time = 270,
 				flashtime = 5, 
 				color1 = "RED",

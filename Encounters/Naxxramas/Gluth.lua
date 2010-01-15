@@ -1,6 +1,6 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
-	local L_Gluth = L["Gluth"]
+	local L_Gluth = L.npc_naxxramas["Gluth"]
 	local data = {
 		version = 298,
 		key = "gluth",
@@ -24,9 +24,9 @@ do
 		},
 		alerts = {
 			decimatecd = {
-				varname = format(L["%s Cooldown"],SN[28374]),
+				varname = format(L.alerts["%s Cooldown"],SN[28374]),
 				type = "dropdown",
-				text = format(L["%s Cooldown"],SN[28374]),
+				text = format(L.alerts["%s Cooldown"],SN[28374]),
 				time = 105, 
 				flashtime = 5, 
 				sound = "ALERT1", 
@@ -35,9 +35,9 @@ do
 				icon = ST[28374],
 			},
 			enragewarn = {
-				varname = format(L["%s Warning"],L["Enrage"]),
+				varname = format(L.alerts["%s Warning"],L.alerts["Enrage"]),
 				type = "simple", 
-				text = format("%s!",L["Enraged"]),
+				text = format("%s!",L.alerts["Enraged"]),
 				time = 1.5,
 				color1 = "RED",
 				icon = ST[12317],

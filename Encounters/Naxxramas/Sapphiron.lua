@@ -27,9 +27,9 @@ do
 		},
 		alerts = {
 			enragecd = {
-				varname = L["Enrage"],
+				varname = L.alerts["Enrage"],
 				type = "dropdown",
-				text = L["Enrage"],
+				text = L.alerts["Enrage"],
 				time = 900,
 				flashtime = 5,
 				color1 = "RED",
@@ -37,9 +37,9 @@ do
 				icon = ST[12317],
 			},
 			lifedraincd = {
-				varname = format(L["%s Cooldown"],SN[28542]),
+				varname = format(L.alerts["%s Cooldown"],SN[28542]),
 				type = "dropdown", 
-				text = format(L["Next %s"],SN[28542]),
+				text = format(L.alerts["Next %s"],SN[28542]),
 				time = 23, 
 				flashtime = 5, 
 				sound = "ALERT3", 
@@ -47,9 +47,9 @@ do
 				icon = ST[28542],
 			},
 			airphasedur = {
-				varname = format(L["%s Duration"],L["Air Phase"]),
+				varname = format(L.alerts["%s Duration"],L.alerts["Air Phase"]),
 				type = "centerpopup", 
-				text = format(L["%s Duration"],L["Air Phase"]), 
+				text = format(L.alerts["%s Duration"],L.alerts["Air Phase"]), 
 				time = 15.5, 
 				flashtime = 5, 
 				sound = "ALERT2", 
@@ -57,9 +57,9 @@ do
 				icon = ST[51475],
 			},
 			deepbreathwarn = {
-				varname = format(L["%s Warning"],L["Deep Breath"]),
+				varname = format(L.alerts["%s Warning"],L.alerts["Deep Breath"]),
 				type = "centerpopup", 
-				text = format("%s! %s!",L["Deep Breath"],L["HIDE"]),
+				text = format("%s! %s!",L.alerts["Deep Breath"],L.alerts["HIDE"]),
 				time = 10, 
 				flashtime = 6.5, 
 				sound = "ALERT1", 
@@ -86,12 +86,12 @@ do
 				event = "CHAT_MSG_RAID_BOSS_EMOTE", 
 				execute = {
 					{
-						"expect",{"#1#","find",L["lifts"]},
+						"expect",{"#1#","find",L.chat_msg_triggers_naxxramas["lifts"]},
 						"alert","airphasedur", 
 						"quash","lifedraincd",
 					},
 					{
-						"expect",{"#1#","find",L["deep"]},
+						"expect",{"#1#","find",L.chat_msg_triggers_naxxramas["deep"]},
 						"quash","airphasedur",
 						"alert","deepbreathwarn", 
 					},

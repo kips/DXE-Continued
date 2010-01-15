@@ -41,8 +41,8 @@ do
 		},
 		alerts = {
 			enragecd = {
-				varname = L["Enrage"],
-				text = L["Enrage"],
+				varname = L.alerts["Enrage"],
+				text = L.alerts["Enrage"],
 				type = "dropdown",
 				time = "<enragetime>",
 				flashtime = 10,
@@ -50,8 +50,8 @@ do
 				icon = ST[12317],
 			},
 			darkvortexwarn = {
-				varname = format(L["%s Cast"],SN[67182]),
-				text = format(L["%s Cast"],SN[67182]),
+				varname = format(L.alerts["%s Cast"],SN[67182]),
+				text = format(L.alerts["%s Cast"],SN[67182]),
 				type = "centerpopup",
 				time = "<vortextime>",
 				flashtime = 6,
@@ -60,8 +60,8 @@ do
 				icon = ST[67184],
 			},
 			darkvortexdur = {
-				varname = format(L["%s Channel"],SN[67182]),
-				text = format(L["%s Channel"],SN[67182]),
+				varname = format(L.alerts["%s Channel"],SN[67182]),
+				text = format(L.alerts["%s Channel"],SN[67182]),
 				type = "centerpopup",
 				time = 5,
 				flashtime = 5,
@@ -69,8 +69,8 @@ do
 				icon = ST[67184],
 			},
 			lightvortexwarn = {
-				varname = format(L["%s Cast"],SN[67206]),
-				text = format(L["%s Cast"],SN[67206]),
+				varname = format(L.alerts["%s Cast"],SN[67206]),
+				text = format(L.alerts["%s Cast"],SN[67206]),
 				type = "centerpopup",
 				time = "<vortextime>",
 				flashtime = 6,
@@ -79,8 +79,8 @@ do
 				icon = ST[67208],
 			},
 			lightvortexdur = {
-				varname = format(L["%s Channel"],SN[67206]),
-				text = format(L["%s Channel"],SN[67206]),
+				varname = format(L.alerts["%s Channel"],SN[67206]),
+				text = format(L.alerts["%s Channel"],SN[67206]),
 				type = "centerpopup",
 				time = 5,
 				flashtime = 5,
@@ -88,7 +88,7 @@ do
 				icon = ST[67208],
 			},
 			shieldofdarknessdur = {
-				varname = format(L["%s Duration"],SN[67256]),
+				varname = format(L.alerts["%s Duration"],SN[67256]),
 				text = format("%s: #5#!",SN[67256]),
 				type = "centerpopup",
 				time = 15,
@@ -98,7 +98,7 @@ do
 				icon = ST[67256],
 			},
 			shieldoflightdur = {
-				varname = format(L["%s Duration"],SN[67259]),
+				varname = format(L.alerts["%s Duration"],SN[67259]),
 				text = format("%s: #5#!",SN[67259]),
 				type = "centerpopup",
 				time = 15,
@@ -108,8 +108,8 @@ do
 				icon = ST[67259],
 			},
 			twinspactwarn = {
-				varname = format(L["%s Cast"],SN[67303]),
-				text = format(L["%s Cast"],SN[67303]),
+				varname = format(L.alerts["%s Cast"],SN[67303]),
+				text = format(L.alerts["%s Cast"],SN[67303]),
 				type = "centerpopup",
 				time = 15,
 				flashtime = 15,
@@ -117,8 +117,8 @@ do
 				icon = ST[67308],
 			},
 			switchtodarkwarn = {
-				varname = format(L["%s Warning"],format(L["Switch to %s"],DE)),
-				text = format(L["Switch to %s"],DE):upper().."!",
+				varname = format(L.alerts["%s Warning"],format(L.alerts["Switch to %s"],DE)),
+				text = format(L.alerts["Switch to %s"],DE):upper().."!",
 				type = "simple",
 				time = 3,
 				color1 = "BLACK",
@@ -127,8 +127,8 @@ do
 				icon = ST[67176],
 			},
 			switchtolightwarn = {
-				varname = format(L["%s Warning"],format(L["Switch to %s"],LE)),
-				text = format(L["Switch to %s"],LE):upper().."!",
+				varname = format(L.alerts["%s Warning"],format(L.alerts["Switch to %s"],LE)),
+				text = format(L.alerts["Switch to %s"],LE):upper().."!",
 				type = "simple",
 				time = 3,
 				color1 = "WHITE",
@@ -137,8 +137,8 @@ do
 				icon = ST[67223],
 			},
 			shieldvortexcd = {
-				varname = format(L["%s Cooldown"],SN[56105].."/"..L["Shield"]),
-				text = format(L["Next %s"],SN[56105].."/"..L["Shield"]),
+				varname = format(L.alerts["%s Cooldown"],SN[56105].."/"..L.alerts["Shield"]),
+				text = format(L.alerts["Next %s"],SN[56105].."/"..L.alerts["Shield"]),
 				type = "dropdown",
 				time = 45,
 				flashtime = 10,
@@ -147,7 +147,7 @@ do
 				icon = ST[56105],
 			},
 			empoweredlightself = {
-				varname = format(L["%s on self"],SN[67217]),
+				varname = format(L.alerts["%s on self"],SN[67217]),
 				text = SN[67217].."!",
 				type = "centerpopup",
 				time = 15,
@@ -157,7 +157,7 @@ do
 				icon = ST[67217],
 			},
 			empowereddarkself = {
-				varname = format(L["%s on self"],SN[67214]),
+				varname = format(L.alerts["%s on self"],SN[67214]),
 				text = SN[67214].."!",
 				type = "centerpopup",
 				time = 20,
@@ -167,8 +167,8 @@ do
 				icon = ST[67214],
 			},
 			touchlightself = {
-				varname = format(L["%s on self"],SN[67298]),
-				text = format("%s: %s!",SN[67298],L["YOU"]),
+				varname = format(L.alerts["%s on self"],SN[67298]),
+				text = format("%s: %s!",SN[67298],L.alerts["YOU"]),
 				type = "centerpopup",
 				time = 20,
 				flashtime = 20,
@@ -176,8 +176,8 @@ do
 				icon = ST[67298],
 			},
 			touchdarkself = {
-				varname = format(L["%s on self"],SN[67283]),
-				text = format("%s: %s!",SN[67283],L["YOU"]),
+				varname = format(L.alerts["%s on self"],SN[67283]),
+				text = format("%s: %s!",SN[67283],L.alerts["YOU"]),
 				type = "centerpopup",
 				time = 20,
 				flashtime = 20,

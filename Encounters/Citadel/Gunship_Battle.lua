@@ -7,13 +7,13 @@ do
 	if faction == "Alliance" then
 		defeat_msg = L.chat_msg_triggers_citadel["^Don't say I didn't warn ya"]
 		portal_msg = L.chat_msg_triggers_citadel["^Reavers, Sergeants, attack"]
-		add = L["Reaver"]
+		add = L.alerts["Reaver"]
 		portal_icon = "Interface\\Icons\\achievement_pvp_h_04"
 		faction_npc = "36939" -- Saurfang
 	elseif faction == "Horde" then
 		defeat_msg = L.chat_msg_triggers_citadel["^The Alliance falter"]
 		portal_msg = L.chat_msg_triggers_citadel["^Marines, Sergeants, attack"]
-		add = L["Marine"] 
+		add = L.alerts["Marine"] 
 		portal_icon = "Interface\\Icons\\achievement_pvp_a_04"
 		faction_npc = "36948" -- Muradin
 	end
@@ -24,7 +24,7 @@ do
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
 		name = L.npc_citadel["Gunship Battle"], 
-		title = L["Gunship Battle"], 
+		title = L.npc_citadel["Gunship Battle"], 
 		triggers = {
 			scan = {
 				36939, -- Saurfang
@@ -53,9 +53,9 @@ do
 		},
 		alerts = {
 			belowzerocd = {
-				varname = format(L["%s Cooldown"],SN[69705]),
+				varname = format(L.alerts["%s Cooldown"],SN[69705]),
 				type = "dropdown",
-				text = format(L["%s Cooldown"],SN[69705]),
+				text = format(L.alerts["%s Cooldown"],SN[69705]),
 				time = "<belowzerotime>",
 				flashtime = 10,
 				sound = "ALERT2",
@@ -63,9 +63,9 @@ do
 				icon = ST[69705],
 			},
 			belowzerowarn = {
-				varname = format(L["%s Channel"],SN[69705]),
+				varname = format(L.alerts["%s Channel"],SN[69705]),
 				type = "centerpopup",
-				text = format(L["%s Channel"],SN[69705]),
+				text = format(L.alerts["%s Channel"],SN[69705]),
 				time = 900,
 				flashtime = 900,
 				color1 = "BLUE",
@@ -73,9 +73,9 @@ do
 				icon = ST[69705],
 			},
 			portalcd = {
-				varname = format(L["%s Spawns"],add.."/"..L["Sergeant"]),
+				varname = format(L.alerts["%s Spawns"],add.."/"..L.alerts["Sergeant"]),
 				type = "dropdown",
-				text = format(L["%s Spawns"],add.."/"..L["Sergeant"]),
+				text = format(L.alerts["%s Spawns"],add.."/"..L.alerts["Sergeant"]),
 				time = "<portaltime>",
 				flashtime = 10,
 				color1 = "GOLD",
@@ -83,7 +83,7 @@ do
 				icon = portal_icon,
 			},
 			battlefurydur = {
-				varname = format(L["%s Duration"],SN[69638]),
+				varname = format(L.alerts["%s Duration"],SN[69638]),
 				type = "centerpopup",
 				text = "<battlefurytext>",
 				time = 20,
@@ -155,7 +155,7 @@ do
 					{
 						"expect",{"&npcid|#4#&","==",faction_npc},
 						"quash","battlefurydur",
-						"set",{battlefurytext = format("%s => %s!",SN[69638], format(L["%s Stacks"],"#11#"))},
+						"set",{battlefurytext = format("%s => %s!",SN[69638], format(L.alerts["%s Stacks"],"#11#"))},
 						"alert","battlefurydur",
 					},
 				},

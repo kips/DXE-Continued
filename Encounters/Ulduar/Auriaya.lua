@@ -37,8 +37,8 @@ do
 		},
 		alerts = {
 			screechcd = {
-				varname = format(L["%s Cooldown"],SN[64386]),
-				text = format(L["%s Cooldown"],SN[64386]),
+				varname = format(L.alerts["%s Cooldown"],SN[64386]),
+				text = format(L.alerts["%s Cooldown"],SN[64386]),
 				type = "dropdown",
 				time = "<screechtime>",
 				flashtime = 5,
@@ -46,8 +46,8 @@ do
 				icon = ST[64386],
 			},
 			screechwarn = {
-				varname = format(L["%s Cast"],SN[64386]),
-				text = format(L["%s Cast"],SN[64386]),
+				varname = format(L.alerts["%s Cast"],SN[64386]),
+				text = format(L.alerts["%s Cast"],SN[64386]),
 				type = "centerpopup",
 				time = 2,
 				color1 = "BROWN",
@@ -55,18 +55,18 @@ do
 				icon = ST[64386],
 			},
 			sentinelwarn = {
-				varname = format(L["%s Cast"],SN[64389]),
+				varname = format(L.alerts["%s Cast"],SN[64389]),
 				type = "centerpopup",
-				text = format(L["%s Cast"],SN[64389]).."!",
+				text = format(L.alerts["%s Cast"],SN[64389]).."!",
 				time = 2,
 				color1 = "BLUE",
 				sound = "ALERT2",
 				icon = ST[64389],
 			},
 			sonicscreechwarn = {
-				varname = format(L["%s Cast"],SN[64422]),
+				varname = format(L.alerts["%s Cast"],SN[64422]),
 				type = "centerpopup",
-				text = format(L["%s Cast"],SN[64422]),
+				text = format(L.alerts["%s Cast"],SN[64422]),
 				time = 2.5,
 				color1 = "MAGENTA",
 				color2 = "MAGENTA",
@@ -74,9 +74,9 @@ do
 				icon = ST[64422],
 			},
 			sonicscreechcd = {
-				varname = format(L["%s Cooldown"],SN[64422]),
+				varname = format(L.alerts["%s Cooldown"],SN[64422]),
 				type = "dropdown",
-				text = format(L["%s Cooldown"],SN[64422]),
+				text = format(L.alerts["%s Cooldown"],SN[64422]),
 				time = 28,
 				flashtime = 5,
 				color1 = "YELLOW",
@@ -85,9 +85,9 @@ do
 				icon = ST[64422],
 			},
 			guardianswarmcd = {
-				varname = format(L["%s Cooldown"],SN[64396]),
+				varname = format(L.alerts["%s Cooldown"],SN[64396]),
 				type = "dropdown",
-				text = format(L["%s Cooldown"],SN[64396]),
+				text = format(L.alerts["%s Cooldown"],SN[64396]),
 				time = 37,
 				flashtime = 5,
 				color1 = "GREEN",
@@ -96,7 +96,7 @@ do
 				icon = ST[64396],
 			},
 			guardianswarmwarn = {
-				varname = format(L["%s Warning"],SN[64396]),
+				varname = format(L.alerts["%s Warning"],SN[64396]),
 				type = "simple",
 				text = format("%s: <guardianswarmtext>",SN[64396]),
 				time = 1.5,
@@ -105,8 +105,8 @@ do
 				icon = ST[64396],
 			},
 			feraldefendercd = {
-				varname = format(L["%s Spawn"],L["Feral Defender"]),
-				text = format(L["%s Spawn"],L["Feral Defender"]),
+				varname = format(L.alerts["%s Spawn"],L.npc_ulduar["Feral Defender"]),
+				text = format(L.alerts["%s Spawn"],L.npc_ulduar["Feral Defender"]),
 				type = "dropdown",
 				time = 60,
 				flashtime = 5,
@@ -116,9 +116,9 @@ do
 				icon = ST[64449],
 			},
 			enragecd = {
-				varname = L["Enrage"],
+				varname = L.alerts["Enrage"],
 				type = "dropdown",
-				text = L["Enrage"],
+				text = L.alerts["Enrage"],
 				time = 600,
 				flashtime = 5,
 				color1 = "RED",
@@ -182,7 +182,7 @@ do
 				execute = {
 					{
 						"expect",{"&playerguid&","==","#4#"},
-						"set",{guardianswarmtext = L["YOU"].."!"},
+						"set",{guardianswarmtext = L.alerts["YOU"].."!"},
 					},
 					{
 						"expect",{"&playerguid&","~=","#4#"},

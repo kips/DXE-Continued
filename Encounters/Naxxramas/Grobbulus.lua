@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 
-	local L_Grobbulus = L["Grobbulus"]
+	local L_Grobbulus = L.npc_naxxramas["Grobbulus"]
 
 	local data = {
 		version = 299,
@@ -26,18 +26,18 @@ do
 		},
 		alerts = {
 			enragecd = {
-				varname = format(L["%s Cooldown"],L["Enrage"]),
+				varname = format(L.alerts["%s Cooldown"],L.alerts["Enrage"]),
 				type = "dropdown",
-				text = L["Enrage"],
+				text = L.alerts["Enrage"],
 				time = 360,
 				flashtime = 5,
 				color1 = "RED",
 				icon = ST[12317],
 			},
 			injectionwarnself = {
-				varname = format(L["%s on self"],L["Injection"]),
+				varname = format(L.alerts["%s on self"],L.alerts["Injection"]),
 				type = "centerpopup",
-				text = format("%s: %s! %s!",L["Injection"],L["YOU"],L["MOVE"]),
+				text = format("%s: %s! %s!",L.alerts["Injection"],L.alerts["YOU"],L.alerts["MOVE"]),
 				time = 10,
 				flashtime = 10,
 				sound = "ALERT1",
@@ -47,17 +47,17 @@ do
 				icon = ST[28169],
 			},
 			injectionwarnothers = {
-				varname = format(L["%s on others"],L["Injection"]),
+				varname = format(L.alerts["%s on others"],L.alerts["Injection"]),
 				type = "centerpopup",
-				text = format("%s: #5#",L["Injection"]),
+				text = format("%s: #5#",L.alerts["Injection"]),
 				time = 10,
 				color1 = "ORANGE",
 				icon = ST[28169],
 			},
 			cloudcd = {
-				varname = format(L["%s Cooldown"],SN[28240]),
+				varname = format(L.alerts["%s Cooldown"],SN[28240]),
 				type = "dropdown",
-				text = format(L["Next %s"],SN[28240]),
+				text = format(L.alerts["Next %s"],SN[28240]),
 				time = 15,
 				flashtime = 5,
 				color1 = "GREEN",

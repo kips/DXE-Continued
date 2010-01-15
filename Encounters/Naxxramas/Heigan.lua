@@ -24,9 +24,9 @@ do
 		},
 		alerts = {
 			dancebeginscd = {
-				varname = format(L["%s Begins"],L["Dance"]),
+				varname = format(L.alerts["%s Begins"],L.alerts["Dance"]),
 				type = "dropdown", 
-				text = format(L["%s Begins"],L["Dance"]),
+				text = format(L.alerts["%s Begins"],L.alerts["Dance"]),
 				time = 90, 
 				flashtime = 5, 
 				sound = "ALERT1", 
@@ -34,9 +34,9 @@ do
 				icon = ST[29516],
 			},
 			danceendscd = {
-				varname = format(L["%s Ends"],L["Dance"]),
+				varname = format(L.alerts["%s Ends"],L.alerts["Dance"]),
 				type = "dropdown", 
-				text = format(L["%s Ends"],L["Dance"]),
+				text = format(L.alerts["%s Ends"],L.alerts["Dance"]),
 				time = 45, 
 				flashtime = 5, 
 				sound = "ALERT2", 

@@ -21,9 +21,9 @@ do
 		},
 		alerts = {
 			portalcd = {
-				varname = format(L["%s Cooldown"],L["Portals"]),
+				varname = format(L.alerts["%s Cooldown"],L.alerts["Portals"]),
 				type = "dropdown",
-				text = format(L["%s Cooldown"],L["Portals"]),
+				text = format(L.alerts["%s Cooldown"],L.alerts["Portals"]),
 				time = 45,
 				flashtime = 10,
 				sound = "ALERT1",
@@ -31,17 +31,17 @@ do
 				icon = ST[57676],
 			},
 			portalwarn = {
-				varname = format(L["%s Warning"],L["Portals"]),
+				varname = format(L.alerts["%s Warning"],L.alerts["Portals"]),
 				type = "simple",
-				text = format(L["%s Spawned"],L["Portals"]).."!",
+				text = format(L.alerts["%s Spawned"],L.alerts["Portals"]).."!",
 				time = 3,
 				sound = "ALERT2",
 				icon = ST[57676],
 			},
 			manavoidself = {
-				varname = format(L["%s on self"],SN[71743]),
+				varname = format(L.alerts["%s on self"],SN[71743]),
 				type = "simple",
-				text = format("%s: %s! %s!",SN[71743],L["YOU"],L["MOVE AWAY"]),
+				text = format("%s: %s! %s!",SN[71743],L.alerts["YOU"],L.alerts["MOVE AWAY"]),
 				time = 3,
 				sound = "ALERT3",
 				color1 = "PURPLE",

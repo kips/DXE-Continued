@@ -28,9 +28,9 @@ do
 		},
 		alerts = {
 			necroauradur = {
-				varname = format(L["%s Duration"],SN[55593]),
+				varname = format(L.alerts["%s Duration"],SN[55593]),
 				type = "dropdown", 
-				text = format(L["%s Fades"],SN[55593]),
+				text = format(L.alerts["%s Fades"],SN[55593]),
 				time = 17, 
 				flashtime = 7, 
 				sound = "ALERT2", 
@@ -38,16 +38,16 @@ do
 				icon = ST[55593],
 			},
 			openhealsdur = {
-				varname = format(L["%s Duration"],SN[37455]),
+				varname = format(L.alerts["%s Duration"],SN[37455]),
 				type = "centerpopup", 
-				text = L["Open Healing"], 
+				text = L.alerts["Open Healing"], 
 				time = 3, 
 				sound = "ALERT3", 
 				color1 = "GREEN", 
 				icon = ST[53765],
 			},
 			sporespawncd = {
-				varname = format(L["%s Timer"],SN[29234]),
+				varname = format(L.alerts["%s Timer"],SN[29234]),
 				type = "dropdown", 
 				text = SN[29234],
 				time = "<sporetimer>", 

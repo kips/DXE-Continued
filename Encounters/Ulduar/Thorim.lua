@@ -18,7 +18,7 @@ do
 		onactivate = {
 			tracing = {32872,32873}, -- Runic Colossus, Ancient Rune Giant
 			combatstop = true,
-			defeat = L["Stay your arms"],
+			defeat = L.alerts["Stay your arms"],
 		},
 		userdata = {
 			chargetime = 34,
@@ -36,9 +36,9 @@ do
 		},
 		alerts = {
 			enragecd = {
-				varname = L["Enrage"], 
+				varname = L.alerts["Enrage"], 
 				type = "dropdown", 
-				text = L["Enrage"], 
+				text = L.alerts["Enrage"], 
 				time = "<enragetime>",
 				flashtime = 5, 
 				sound = "ALERT1", 
@@ -46,9 +46,9 @@ do
 				icon = ST[12317],
 			},
 			hardmodecd = {
-				varname = format(L["%s Timeleft"],L["Hard Mode"]),
+				varname = format(L.alerts["%s Timeleft"],L.alerts["Hard Mode"]),
 				type = "dropdown", 
-				text = format(L["%s Ends"],L["Hard Mode"]),
+				text = format(L.alerts["%s Ends"],L.alerts["Hard Mode"]),
 				time = 172.5, 
 				flashtime = 5, 
 				color1 = "GREY",
@@ -56,17 +56,17 @@ do
 				icon = ST[20573],
 			},
 			hardmodeactivationwarn = {
-				varname = format(L["%s Warning"],L["Hard Mode"]),
+				varname = format(L.alerts["%s Warning"],L.alerts["Hard Mode"]),
 				type = "simple", 
-				text = format(L["%s Activated"],L["Hard Mode"]),
+				text = format(L.alerts["%s Activated"],L.alerts["Hard Mode"]),
 				time = 1.5, 
 				sound = "ALERT1", 
 				icon = ST[62972],
 			},
 			chargecd = {
-				varname = format(L["%s Cooldown"],SN[62279]),
+				varname = format(L.alerts["%s Cooldown"],SN[62279]),
 				type = "dropdown", 
-				text = format(L["Next %s"],SN[62279]),
+				text = format(L.alerts["Next %s"],SN[62279]),
 				time = "<chargetime>", 
 				flashtime = 7, 
 				sound = "ALERT2",
@@ -75,9 +75,9 @@ do
 				counter = true,
 			},
 			chainlightningcd = {
-				varname = format(L["%s Cooldown"],SN[62131]),
+				varname = format(L.alerts["%s Cooldown"],SN[62131]),
 				type = "dropdown",
-				text = format(L["%s Cooldown"],SN[62131]),
+				text = format(L.alerts["%s Cooldown"],SN[62131]),
 				time = 10,
 				flashtime = 5,
 				sound = "ALERT3",
@@ -86,9 +86,9 @@ do
 				icon = ST[62131],
 			},
 			frostnovawarn = {
-				varname = format(L["%s Cast"],SN[122]),
+				varname = format(L.alerts["%s Cast"],SN[122]),
 				type = "centerpopup",
-				text = format(L["%s Cast"],SN[122]),
+				text = format(L.alerts["%s Cast"],SN[122]),
 				time = 2.5,
 				flashtime = 2.5,
 				sound = "ALERT4",
@@ -97,9 +97,9 @@ do
 				icon = ST[122],
 			},
 			strikecd = {
-				varname = format(L["%s Cooldown"],SN[62130]),
+				varname = format(L.alerts["%s Cooldown"],SN[62130]),
 				type = "dropdown",
-				text = format(L["Next %s"],SN[62130]),
+				text = format(L.alerts["Next %s"],SN[62130]),
 				time = 25,
 				flashtime = 5,
 				sound = "ALERT5",
@@ -108,7 +108,7 @@ do
 				icon = ST[62130],
 			},
 			strikewarn = {
-				varname = format(L["%s Warning"],SN[62130]),
+				varname = format(L.alerts["%s Warning"],SN[62130]),
 				type = "simple",
 				text = "<striketext>",
 				time = 3,
@@ -191,7 +191,7 @@ do
 				execute = {
 					{
 						"expect",{"#4#","==","&playerguid&"},
-						"set",{striketext = format("%s: %s!",SN[62130],L["YOU"])},
+						"set",{striketext = format("%s: %s!",SN[62130],L.alerts["YOU"])},
 						"alert","strikewarn",
 					},
 					{

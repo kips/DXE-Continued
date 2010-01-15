@@ -27,9 +27,9 @@ do
 		},
 		alerts = {
 			shoutcd = {
-				varname = format(L["%s Cooldown"],SN[55543]),
+				varname = format(L.alerts["%s Cooldown"],SN[55543]),
 				type = "dropdown", 
-				text = format(L["Next %s"],SN[55543]),
+				text = format(L.alerts["Next %s"],SN[55543]),
 				time = 15, 
 				flashtime = 5, 
 				sound = "ALERT1", 
@@ -37,9 +37,9 @@ do
 				icon = ST[55543],
 			},
 			tauntdur = {
-				varname = format(L["%s Duration"],SN[355]),
+				varname = format(L.alerts["%s Duration"],SN[355]),
 				type = "dropdown", 
-				text = format(L["%s Duration"],SN[355]),
+				text = format(L.alerts["%s Duration"],SN[355]),
 				time = 20, 
 				flashtime = 5, 
 				sound = "ALERT2", 
@@ -47,9 +47,9 @@ do
 				icon = ST[355],
 			},
 			shieldwalldur = {
-				varname = format(L["%s Duration"],SN[871]),
+				varname = format(L.alerts["%s Duration"],SN[871]),
 				type = "dropdown", 
-				text = format(L["%s Duration"],SN[871]),
+				text = format(L.alerts["%s Duration"],SN[871]),
 				time = 20, 
 				flashtime = 5, 
 				sound = "ALERT3", 

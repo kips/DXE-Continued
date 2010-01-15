@@ -26,9 +26,9 @@ do
 		},
 		alerts = {
 			enragecd = {
-				varname = L["Enrage"],
+				varname = L.alerts["Enrage"],
 				type = "dropdown",
-				text = L["Enrage"],
+				text = L.alerts["Enrage"],
 				time = 600,
 				flashtime = 5,
 				sound = "ALERT5",
@@ -37,9 +37,9 @@ do
 				icon = ST[12317],
 			},
 			gravitywarnself = {
-				varname = format(L["%s on self"],SN[63024]),
+				varname = format(L.alerts["%s on self"],SN[63024]),
 				type = "centerpopup",
-				text = format("%s: %s! %s!",SN[63024],L["YOU"],L["MOVE"]),
+				text = format("%s: %s! %s!",SN[63024],L.alerts["YOU"],L.alerts["MOVE"]),
 				time = 9,
 				flashtime = 9,
 				sound = "ALERT1",
@@ -49,7 +49,7 @@ do
 				icon = ST[63024],
 			},
 			gravitywarnothers = {
-				varname = format(L["%s on others"],SN[63024]),
+				varname = format(L.alerts["%s on others"],SN[63024]),
 				type = "centerpopup",
 				text = format("%s: #5#",SN[63024]),
 				time = 9,
@@ -57,9 +57,9 @@ do
 				icon = ST[63024],
 			},
 			lightwarnself = {
-				varname = format(L["%s on self"],SN[63018]),
+				varname = format(L.alerts["%s on self"],SN[63018]),
 				type = "centerpopup",
-				text = format("%s: %s! %s!",SN[63018],L["YOU"],L["MOVE"]),
+				text = format("%s: %s! %s!",SN[63018],L.alerts["YOU"],L.alerts["MOVE"]),
 				time = 9,
 				flashtime = 9,
 				sound = "ALERT3",
@@ -69,7 +69,7 @@ do
 				icon = ST[63018],
 			},
 			lightwarnothers = {
-				varname = format(L["%s on others"],SN[63018]),
+				varname = format(L.alerts["%s on others"],SN[63018]),
 				type = "centerpopup",
 				text = format("%s: #5#",SN[63018]),
 				time = 9,
@@ -77,9 +77,9 @@ do
 				icon = ST[63018],
 			},
 			tympanicwarn = {
-				varname = format(L["%s Cast"],SN[62776]),
+				varname = format(L.alerts["%s Cast"],SN[62776]),
 				type = "centerpopup",
-				text = format(L["%s Cast"],L["Tantrum"]),
+				text = format(L.alerts["%s Cast"],L.alerts["Tantrum"]),
 				time = 12,
 				flashtime = 12,
 				color1 = "YELLOW",
@@ -88,9 +88,9 @@ do
 				icon = ST[62776],
 			},
 			tympaniccd = {
-				varname = format(L["%s Cooldown"],SN[62776]),
+				varname = format(L.alerts["%s Cooldown"],SN[62776]),
 				type = "dropdown",
-				text = format(L["%s Cooldown"],L["Tantrum"]),
+				text = format(L.alerts["%s Cooldown"],L.alerts["Tantrum"]),
 				time = 64,
 				flashtime = 5,
 				color1 = "ORANGE",
@@ -99,9 +99,9 @@ do
 				icon = ST[62776],
 			},
 			exposedwarn = {
-				varname = format(L["%s Timer"],L["Heart"]),
+				varname = format(L.alerts["%s Timer"],L.alerts["Heart"]),
 				type = "centerpopup",
-				text = format(L["%s Exposed"],L["Heart"]).."!",
+				text = format(L.alerts["%s Exposed"],L.alerts["Heart"]).."!",
 				time = 30,
 				flashtime = 30,
 				sound = "ALERT4",
@@ -110,9 +110,9 @@ do
 				icon = ST[63849],
 			},
 			hardmodewarn = {
-				varname = format(L["%s Activation"],L["Hard Mode"]),
+				varname = format(L.alerts["%s Activation"],L.alerts["Hard Mode"]),
 				type = "simple",
-				text = format(L["%s Activated"],L["Hard Mode"]).."!",
+				text = format(L.alerts["%s Activated"],L.alerts["Hard Mode"]).."!",
 				time = 1.5,
 				sound = "ALERT5",
 				icon = ST[62972],
@@ -127,14 +127,14 @@ do
 		},
 		announces = {
 			lightsay = {
-				varname = format(L["Say %s on self"],SN[63018]),
+				varname = format(L.alerts["Say %s on self"],SN[63018]),
 				type = "SAY",
-				msg = format(L["%s on Me"],SN[63018]).."!",
+				msg = format(L.alerts["%s on Me"],SN[63018]).."!",
 			},
 			gravitysay = {
-				varname = format(L["Say %s on self"],SN[63024]),
+				varname = format(L.alerts["Say %s on self"],SN[63024]),
 				type = "SAY",
-				msg = format(L["%s on Me"],SN[63024]).."!",
+				msg = format(L.alerts["%s on Me"],SN[63024]).."!",
 			},
 		},
 		events = {
