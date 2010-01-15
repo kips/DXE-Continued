@@ -5,7 +5,7 @@ do
 		version = 298,
 		key = "fourhorsemen", 
 		zone = L.zone["Naxxramas"], 
-		name = L["The Four Horsemen"],
+		name = L.npc_naxxramas["The Four Horsemen"],
 		triggers = {
 			scan = {
 				16064, -- Thane Korth'azz

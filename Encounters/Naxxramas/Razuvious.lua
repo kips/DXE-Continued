@@ -5,7 +5,7 @@ do
 		version = 298,
 		key = "instructorrazuvious", 
 		zone = L.zone["Naxxramas"], 
-		name = L["Instructor Razuvious"], 
+		name = L.npc_naxxramas["Instructor Razuvious"], 
 		triggers = {
 			scan = {
 				16061, -- Razuvious

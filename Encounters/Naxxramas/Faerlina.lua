@@ -5,7 +5,7 @@ do
 		version = 298,
 		key = "grandwidowfaerlina", 
 		zone = L.zone["Naxxramas"], 
-		name = L["Grand Widow Faerlina"],
+		name = L.npc_naxxramas["Grand Widow Faerlina"],
 		triggers = {
 			scan = 15953, -- Grand Widow Faerlina
 		},

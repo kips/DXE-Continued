@@ -5,7 +5,7 @@ do
 		version = 299,
 		key = "kelthuzad", 
 		zone = L.zone["Naxxramas"], 
-		name = L["Kel'Thuzad"], 
+		name = L.npc_naxxramas["Kel'Thuzad"], 
 		triggers = {
 			yell = "^Minions, servants, soldiers of the cold dark",
 			scan = {

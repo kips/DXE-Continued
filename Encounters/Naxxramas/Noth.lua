@@ -5,7 +5,7 @@ do
 		version = 299,
 		key = "noththeplaguebringer", 
 		zone = L.zone["Naxxramas"], 
-		name = L["Noth the Plaguebringer"], 
+		name = L.npc_naxxramas["Noth the Plaguebringer"], 
 		triggers = {
 			scan = {
 				15954, -- Noth

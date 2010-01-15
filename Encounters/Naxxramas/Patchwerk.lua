@@ -5,7 +5,7 @@ do
 		version = 298,
 		key = "patchwerk", 
 		zone = L.zone["Naxxramas"], 
-		name = L["Patchwerk"], 
+		name = L.npc_naxxramas["Patchwerk"], 
 		triggers = {
 			scan = 16028, 
 		},

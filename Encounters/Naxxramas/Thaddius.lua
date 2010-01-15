@@ -5,7 +5,7 @@ do
 		version = 298,
 		key = "thaddius", 
 		zone = L.zone["Naxxramas"], 
-		name = L["Thaddius"], 
+		name = L.npc_naxxramas["Thaddius"], 
 		triggers = {
 			scan = {
 				15928, -- Thaddius

@@ -5,7 +5,7 @@ do
 		version = 299,
 		key = "loatheb", 
 		zone = L.zone["Naxxramas"], 
-		name = L["Loatheb"], 
+		name = L.npc_naxxramas["Loatheb"], 
 		triggers = {
 			scan = 16011, -- Loatheb
 		},

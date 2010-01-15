@@ -5,7 +5,7 @@ do
 		version = 299,
 		key = "heigantheunclean", 
 		zone = L.zone["Naxxramas"], 
-		name = L["Heigan the Unclean"], 
+		name = L.npc_naxxramas["Heigan the Unclean"], 
 		triggers = {
 			scan = 15936, -- Heigan the Unclean
 		},

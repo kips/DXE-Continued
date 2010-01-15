@@ -5,7 +5,7 @@ do
 		version = 298,
 		key = "sapphiron", 
 		zone = L.zone["Naxxramas"], 
-		name = L["Sapphiron"], 
+		name = L.npc_naxxramas["Sapphiron"], 
 		triggers = {
 			scan = 15989, -- Sapphiron
 		},
