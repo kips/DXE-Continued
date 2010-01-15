@@ -5,7 +5,7 @@ do
 		key = "malygos", 
 		zone = L.zone["The Eye of Eternity"], 
 		category = L.zone["Northrend"],
-		name = L["Malygos"], 
+		name = L.npc_northrend["Malygos"], 
 		triggers = {
 			scan = {
 				28859, -- Malygos

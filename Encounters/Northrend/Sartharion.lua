@@ -11,7 +11,7 @@ do
 		key = "sartharion", 
 		zone = L.zone["The Obsidian Sanctum"], 
 		category = L.zone["Northrend"],
-		name = L_Sartharion, 
+		name = L.npc_northrend_Sartharion, 
 		triggers = {
 			scan = {
 				28860, -- Sartharion

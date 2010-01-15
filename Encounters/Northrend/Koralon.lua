@@ -5,7 +5,7 @@ do
 		key = "koralon", 
 		zone = L.zone["Vault of Archavon"], 
 		category = L.zone["Northrend"],
-		name = L["Koralon"], 
+		name = L.npc_northrend["Koralon"], 
 		triggers = {
 			scan = {
 				35013, -- Koralon
