@@ -5,7 +5,7 @@ do
 		key = "onyxia", 
 		zone = L.zone["Onyxia's Lair"],
 		category = L.zone["Kalimdor"],
-		name = L["Onyxia"], 
+		name = L.npc_kalimdor["Onyxia"], 
 		triggers = {
 			yell = L["^How fortuitous. Usually, I must leave my"],
 			scan = {
