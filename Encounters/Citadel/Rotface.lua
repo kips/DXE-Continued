@@ -5,7 +5,7 @@ do
 		key = "rotface", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
-		name = L["Rotface"], 
+		name = L.npc_citadel["Rotface"], 
 		triggers = {
 			scan = {
 				36627, -- Rotface

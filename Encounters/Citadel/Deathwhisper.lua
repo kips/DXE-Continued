@@ -5,7 +5,7 @@ do
 		key = "deathwhisper", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
-		name = L["Deathwhisper"], 
+		name = L.npc_citadel["Deathwhisper"], 
 		triggers = {
 			scan = {
 				36855, -- Lady Deathwhisper

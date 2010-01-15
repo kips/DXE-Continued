@@ -5,7 +5,7 @@ do
 		key = "sindragosa", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
-		name = L["Sindragosa"], 
+		name = L.npc_citadel["Sindragosa"], 
 		triggers = {
 			scan = {36853}, -- Sindragosa
 			yell = L["^You are fools to have come to this place"],

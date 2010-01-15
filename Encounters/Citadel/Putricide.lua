@@ -5,7 +5,7 @@ do
 		key = "putricide", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
-		name = L["Putricide"], 
+		name = L.npc_citadel["Putricide"], 
 		triggers = {
 			scan = {
 				36678, -- Putricide

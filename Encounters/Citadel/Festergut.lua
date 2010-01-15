@@ -5,7 +5,7 @@ do
 		key = "festergut", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
-		name = L["Festergut"], 
+		name = L.npc_citadel["Festergut"], 
 		triggers = {
 			scan = {36626}, -- Festergut
 		},

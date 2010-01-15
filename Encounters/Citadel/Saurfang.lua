@@ -5,7 +5,7 @@ do
 		key = "saurfang", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
-		name = L["Saurfang"], 
+		name = L.npc_citadel["Saurfang"], 
 		triggers = {
 			scan = {
 				37813, -- Deathbringer Saurfang

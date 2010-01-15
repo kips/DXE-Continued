@@ -5,7 +5,7 @@ do
 		key = "lanathel", 
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"], 
-		name = L["Lana'thel"], 
+		name = L.npc_citadel["Lana'thel"], 
 		triggers = {
 			scan = 37955,
 			--yell = ,

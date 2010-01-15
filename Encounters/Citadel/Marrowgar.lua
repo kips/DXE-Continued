@@ -5,7 +5,7 @@ do
 		key = "marrowgar", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
-		name = L["Marrowgar"], 
+		name = L.npc_citadel["Marrowgar"], 
 		triggers = {
 			scan = {36612}, -- Lord Marrowgar 
 			yell = L["^The Scourge will wash over this world"],

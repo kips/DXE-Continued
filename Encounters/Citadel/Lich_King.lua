@@ -5,7 +5,7 @@ do
 		key = "lichking", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
-		name = L["Lich King"], 
+		name = L.npc_citadel["Lich King"], 
 		triggers = {
 			--scan = ,
 			--yell = ,

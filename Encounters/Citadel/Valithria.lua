@@ -5,7 +5,7 @@ do
 		key = "valithria", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
-		name = L["Valithria"], 
+		name = L.npc_citadel["Valithria"], 
 		triggers = {
 			scan = 36789,
 			yell = L["^Heroes, lend me your aid"],

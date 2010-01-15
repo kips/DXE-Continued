@@ -23,7 +23,7 @@ do
 		key = "gunshipbattle", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
-		name = L["Gunship Battle"], 
+		name = L.npc_citadel["Gunship Battle"], 
 		title = L["Gunship Battle"], 
 		triggers = {
 			scan = {
