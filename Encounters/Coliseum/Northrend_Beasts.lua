@@ -13,7 +13,7 @@ do
 				34799, -- Dreadscale
 				34797, -- Icehowl
 			}, 
-			yell = L["^Hailing from the deepest, darkest caverns of the Storm Peaks"]
+			yell = L.chat_msg_triggers_coliseum["^Hailing from the deepest, darkest caverns of the Storm Peaks"]
 		},
 		onactivate = {
 			tracing = {34796}, -- Gormok
@@ -731,19 +731,19 @@ do
 				event = "EMOTE",
 				execute = {
 					{
-						"expect",{"#1#","find",L["lets out a bellowing roar!$"]},
+						"expect",{"#1#","find",L.chat_msg_triggers_coliseum["lets out a bellowing roar!$"]},
 						"expect",{"#5#","~=","&playername&"},
 						"proximitycheck",{"#5#",18},
 						"alert","tramplewarnothers",
 						"arrow","tramplearrow",
 					},
 					{
-						"expect",{"#1#","find",L["lets out a bellowing roar!$"]},
+						"expect",{"#1#","find",L.chat_msg_triggers_coliseum["lets out a bellowing roar!$"]},
 						"expect",{"#5#","==","&playername&"},
 						"alert","tramplewarnself",
 					},
 					{
-						"expect",{"#1#","find",L["lets out a bellowing roar!$"]},
+						"expect",{"#1#","find",L.chat_msg_triggers_coliseum["lets out a bellowing roar!$"]},
 						"raidicon","tramplemark",
 					},
 				},
@@ -755,7 +755,7 @@ do
 				execute = {
 					{
 						-- Gormok dies
-						"expect",{"#1#","find",L["^Steel yourselves, heroes, for the twin terrors"]},
+						"expect",{"#1#","find",L.chat_msg_triggers_coliseum["^Steel yourselves, heroes, for the twin terrors"]},
 						"tracing",{35144,34799},
 						"alert","onetotwocd",
 						"scheduletimer",{"reset",15},
@@ -767,7 +767,7 @@ do
 					},
 					-- Jormungars die
 					{
-						"expect",{"#1#","find",L["^The air itself freezes with the introduction"]},
+						"expect",{"#1#","find",L.chat_msg_triggers_coliseum["^The air itself freezes with the introduction"]},
 						"tracing",{34797}, -- Icehowl
 						"alert","twotothreecd",
 						"scheduletimer",{"reset",10},

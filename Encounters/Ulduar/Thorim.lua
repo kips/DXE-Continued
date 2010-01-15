@@ -13,7 +13,7 @@ do
 				32873, -- Ancient Rune Giant,
 				32874, -- Iron Ring Guard,
 			},
-			yell = L["^Interlopers! You mortals who"],
+			yell = L.chat_msg_triggers_ulduar["^Interlopers! You mortals who"],
 		},
 		onactivate = {
 			tracing = {32872,32873}, -- Runic Colossus, Ancient Rune Giant
@@ -123,7 +123,7 @@ do
 				execute = {
 					-- Phase 2
 					{
-						"expect",{"#1#","find",L["^Impertinent"]},
+						"expect",{"#1#","find",L.chat_msg_triggers_ulduar["^Impertinent"]},
 						"quash","hardmodecd",
 						"quash","enragecd",
 						"alert","enragecd",
@@ -133,7 +133,7 @@ do
 					},
 					-- Hard mode activation
 					{
-						"expect",{"#1#","find",L["^Impossible!"]},
+						"expect",{"#1#","find",L.chat_msg_triggers_ulduar["^Impossible!"]},
 						"alert","hardmodeactivationwarn",
 					},
 				},

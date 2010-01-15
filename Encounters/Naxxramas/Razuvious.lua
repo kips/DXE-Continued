@@ -11,7 +11,7 @@ do
 				16061, -- Razuvious
 				16803, -- Death Knight Understudy
 			}, 
-			yell = L["^The time for practice is over!"],
+			yell = L.chat_msg_triggers_naxxramas["^The time for practice is over!"],
 		},
 		onactivate = {
 			tracerstop = true,

@@ -182,7 +182,7 @@ do
 				event = "WHISPER",
 				execute = {
 					{
-						"expect",{"#1#","find",L["fixes his eyes on you!$"]},
+						"expect",{"#1#","find",L.chat_msg_triggers_northrend["fixes his eyes on you!$"]},
 						"alert","presurgewarn",
 					},
 				},

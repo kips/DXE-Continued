@@ -7,7 +7,7 @@ do
 		zone = L.zone["Ulduar"], 
 		name = L.npc_ulduar["Mimiron"], 
 		triggers = {
-			yell = {L["^We haven't much time, friends"],L["^Self%-destruct sequence initiated"]},
+			yell = {L.chat_msg_triggers_ulduar["^We haven't much time, friends"],L["^Self%-destruct sequence initiated"]},
 			scan = {
 				33432, -- Leviathan MK II
 				33350, -- Mimiron
@@ -21,7 +21,7 @@ do
 		onactivate = {
 			tracing = {33432}, -- Leviathan Mk II
 			combatstop = true,
-			defeat = L["^It would appear that I've made a slight miscalculation"],
+			defeat = L.chat_msg_triggers_ulduar["^It would appear that I've made a slight miscalculation"],
 		},
 		userdata = {
 			plasmablasttime = {14,30,loop = false},
@@ -36,7 +36,7 @@ do
 			},
 			-- Hard mode activation
 			{
-				"expect",{"#1#","find",L["^Self%-destruct sequence initiated"]},
+				"expect",{"#1#","find",L.chat_msg_triggers_ulduar["^Self%-destruct sequence initiated"]},
 				"alert","hardmodecd",
 				"alert","flamesuppressantcd",
 				"alert","flamecd",
@@ -285,7 +285,7 @@ do
 				execute = {
 					-- Transition from Phase 1 to Phase 2
 					{
-						"expect",{"#1#","find",L["^WONDERFUL! Positively"]},
+						"expect",{"#1#","find",L.chat_msg_triggers_ulduar["^WONDERFUL! Positively"]},
 						"set",{phase = "2"},
 						"quash","plasmablastcd",
 						"quash","flamesuppressantcd",
@@ -298,7 +298,7 @@ do
 					},
 					-- Transition from Phase 2 to Phase 3
 					{
-						"expect",{"#1#","find",L["^Thank you, friends!"]},
+						"expect",{"#1#","find",L.chat_msg_triggers_ulduar["^Thank you, friends!"]},
 						"set",{phase = "3"},
 						"tracing",{33670}, -- Aerial Command Unit
 						"quash","laserbarragecd",
@@ -311,7 +311,7 @@ do
 					},
 					-- Transition from Phase 3 to Phase 4
 					{
-						"expect",{"#1#","find",L["^Preliminary testing phase complete"]},
+						"expect",{"#1#","find",L.chat_msg_triggers_ulduar["^Preliminary testing phase complete"]},
 						"quash","weakeneddur",
 						"set",{phase = "4"},
 						"set",{flametime = 18},

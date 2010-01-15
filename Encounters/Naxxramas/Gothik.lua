@@ -8,7 +8,7 @@ do
 		name = L.npc_naxxramas["Gothik the Harvester"],
 		triggers = {
 			scan = 16060, -- Gothik the Harvester
-			yell = {L["^Foolishly you have sought"],L["^Teamanare shi rikk"]},
+			yell = {L.chat_msg_triggers_naxxramas["^Foolishly you have sought"],L["^Teamanare shi rikk"]},
 		},
 		onactivate = {
 			tracing = {16060}, -- Gothik the Harvester

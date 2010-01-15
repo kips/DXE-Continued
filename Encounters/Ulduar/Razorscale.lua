@@ -12,7 +12,7 @@ do
 				33846, -- Dark Rune Sentinel
 				33453, -- Dark Rune Watcher
 			}, 
-			yell = L["^Be on the lookout! Mole machines"],
+			yell = L.chat_msg_triggers_ulduar["^Be on the lookout! Mole machines"],
 		},
 		onactivate = {
 			tracing = {33186}, -- Razorscale
@@ -105,12 +105,12 @@ do
 				execute = {
 					-- Razorscale gets chained
 					{
-						"expect",{"#1#","find",L["^Move quickly"]},
+						"expect",{"#1#","find",L.chat_msg_triggers_ulduar["^Move quickly"]},
 						"alert","chaindur",
 					},
 					-- Razorscale lifts off
 					{
-						"expect",{"#1#","find",L["^Give us a moment to"]},
+						"expect",{"#1#","find",L.chat_msg_triggers_ulduar["^Give us a moment to"]},
 						"quash","chaindur",
 					},
 				},
@@ -120,16 +120,16 @@ do
 				event = "EMOTE",
 				execute = {
 					{
-						"expect",{"#1#","find",L["deep breath...$"]},
+						"expect",{"#1#","find",L.chat_msg_triggers_ulduar["deep breath...$"]},
 						"alert","breathwarn",
 					},
 					{
-						"expect",{"#1#","find",L["grounded permanently!$"]},
+						"expect",{"#1#","find",L.chat_msg_triggers_ulduar["grounded permanently!$"]},
 						"quash","chaindur",
 						"alert","permlandwarn",
 					},
 					{
-						"expect",{"#1#","find",L["^Harpoon Turret is ready"]},
+						"expect",{"#1#","find",L.chat_msg_triggers_ulduar["^Harpoon Turret is ready"]},
 						"alert","harpoonwarn",
 					},
 				},

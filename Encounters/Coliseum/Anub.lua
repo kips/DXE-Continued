@@ -10,7 +10,7 @@ do
 			scan = {
 				34564, -- Anub
 			}, 
-			yell = L["^This place will serve as"], 
+			yell = L.chat_msg_triggers_coliseum["^This place will serve as"], 
 		},
 		onactivate = {
 			tracing = {34564},
@@ -324,7 +324,7 @@ do
 				execute = {
 					-- Burrows
 					{
-						"expect",{"#1#","find",L["burrows into the ground!$"]},
+						"expect",{"#1#","find",L.chat_msg_triggers_coliseum["burrows into the ground!$"]},
 						"set",{burrowed = 1},
 						"alert","burrowdur",
 						"quash","slashcd",
@@ -335,7 +335,7 @@ do
 					},
 					-- Emerges
 					{
-						"expect",{"#1#","find",L["emerges from the ground!$"]},
+						"expect",{"#1#","find",L.chat_msg_triggers_coliseum["emerges from the ground!$"]},
 						"set",{burrowed = 0},
 						"alert","burrowcd",
 						"set",{nerubiantime = 5.5},

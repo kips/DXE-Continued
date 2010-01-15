@@ -13,7 +13,7 @@ do
          tracerstart = true,
          tracerstop = true,
 			combatstop = true,
-			defeat = L["^I have seen worlds bathed in the"],
+			defeat = L.chat_msg_triggers_ulduar["^I have seen worlds bathed in the"],
 		},
 		userdata = {
 			cosmicsmashtime = 25,

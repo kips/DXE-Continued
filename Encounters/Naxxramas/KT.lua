@@ -132,7 +132,7 @@ do
 				event = "CHAT_MSG_MONSTER_YELL", 
 				execute = {
 					{
-						"expect",{"#1#","find",L["^Very well. Warriors of the frozen wastes, rise up!"]},
+						"expect",{"#1#","find",L.chat_msg_triggers_naxxramas["^Very well. Warriors of the frozen wastes, rise up!"]},
 						"alert","guardianswarn", 
 					},
 				},

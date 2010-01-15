@@ -5,14 +5,14 @@ do
 
 	local defeat_msg,portal_msg,add,portal_icon,faction_npc
 	if faction == "Alliance" then
-		defeat_msg = L["^Don't say I didn't warn ya"]
-		portal_msg = L["^Reavers, Sergeants, attack"]
+		defeat_msg = L.chat_msg_triggers_citadel["^Don't say I didn't warn ya"]
+		portal_msg = L.chat_msg_triggers_citadel["^Reavers, Sergeants, attack"]
 		add = L["Reaver"]
 		portal_icon = "Interface\\Icons\\achievement_pvp_h_04"
 		faction_npc = "36939" -- Saurfang
 	elseif faction == "Horde" then
-		defeat_msg = L["^The Alliance falter"]
-		portal_msg = L["^Marines, Sergeants, attack"]
+		defeat_msg = L.chat_msg_triggers_citadel["^The Alliance falter"]
+		portal_msg = L.chat_msg_triggers_citadel["^Marines, Sergeants, attack"]
 		add = L["Marine"] 
 		portal_icon = "Interface\\Icons\\achievement_pvp_a_04"
 		faction_npc = "36948" -- Muradin
@@ -31,8 +31,8 @@ do
 				36948, -- Muradin
 			},
 			yell = {
-				L["^Cowardly dogs"], -- Alliance
-				L["^ALLIANCE GUNSHIP"], -- Horde
+				L.chat_msg_triggers_citadel["^Cowardly dogs"], -- Alliance
+				L.chat_msg_triggers_citadel["^ALLIANCE GUNSHIP"], -- Horde
 			},
 		},
 		onactivate = {

@@ -7,7 +7,7 @@ do
 		name = L.npc_ulduar["Flame Leviathan"], 
 		triggers = {
 			scan = 33113, -- Flame Leviathan
-			yell = L["^Hostile entities detected. Threat assessment protocol active"],
+			yell = L.chat_msg_triggers_ulduar["^Hostile entities detected. Threat assessment protocol active"],
 		},
 		onactivate = {
 			tracing = {33113}, -- Flame Leviathan
