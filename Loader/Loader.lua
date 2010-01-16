@@ -56,7 +56,7 @@ end
 
 local function AddZoneModule(name,zone,...)
 	if not zone then return end
-	zone = L[zone:trim()]
+	zone = L.zone[zone:trim()]
 	Z_MODS[zone] = Z_MODS[zone] or {}
 	Z_MODS[zone][name] = true
 	return AddZoneModule(name,...)
@@ -73,7 +73,7 @@ function module:PLAYER_LOGIN()
 			local bmeta = GetAddOnMetadata(i,"X-DXE-Boot")
 			if zmeta then
 				local cmeta = GetAddOnMetadata(i,"X-DXE-Category")
-				Z_MODS_LIST[name] = L[cmeta or zmeta]
+				Z_MODS_LIST[name] = L.zone[cmeta or zmeta]
 				AddZoneModule(name,strsplit(",",zmeta))
 			elseif tonumber(bmeta) == 1 then
 				B_MODS[name] = true
@@ -92,10 +92,10 @@ function module:SetupBroker()
 
 	local function refresh()
 		-- Refreshes Text
-		if GameTooltipTextLeft2:GetText() == L["|cffffff00Click|r to load"] then
+		if GameTooltipTextLeft2:GetText() == L.loader["|cffffff00Click|r to load"] then
 			GameTooltip:ClearLines()
-			GameTooltip:AddLine(L["Deus Vox Encounters"])
-			GameTooltip:AddLine(L["|cffffff00Click|r to toggle the settings window"],1,1,1)
+			GameTooltip:AddLine(L.loader["Deus Vox Encounters"])
+			GameTooltip:AddLine(L.loader["|cffffff00Click|r to toggle the settings window"],1,1,1)
 			GameTooltip:Show()
 		end
 	end
@@ -113,11 +113,11 @@ function module:SetupBroker()
 		end,
 		OnTooltipShow = function(tooltip)
 			if addon then
-				tooltip:AddLine(L["Deus Vox Encounters"])
-				tooltip:AddLine(L["|cffffff00Click|r to toggle the settings window"],1,1,1)
+				tooltip:AddLine(L.loader["Deus Vox Encounters"])
+				tooltip:AddLine(L.loader["|cffffff00Click|r to toggle the settings window"],1,1,1)
 			else
-				tooltip:AddLine(L["Deus Vox Encounters"])
-				tooltip:AddLine(L["|cffffff00Click|r to load"],1,1,1)
+				tooltip:AddLine(L.loader["Deus Vox Encounters"])
+				tooltip:AddLine(L.loader["|cffffff00Click|r to load"],1,1,1)
 			end
 		end,
 	})

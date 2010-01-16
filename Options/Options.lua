@@ -26,7 +26,7 @@ local function InitializeOptions()
 		args = {
 			dxe_header = {
 				type = "header",
-				name = format("%s - %s",L.options["Deus Vox Encounters"],L.options["Version"])..format(": |cff99ff33%d|r",addon.version),
+				name = format("%s - %s",L.loader["Deus Vox Encounters"],L.options["Version"])..format(": |cff99ff33%d|r",addon.version),
 				order = 1,
 				width = "full",
 			},
