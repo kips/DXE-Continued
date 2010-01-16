@@ -26,14 +26,14 @@ local function InitializeOptions()
 		args = {
 			dxe_header = {
 				type = "header",
-				name = format("%s - %s",L["Deus Vox Encounters"],L["Version"])..format(": |cff99ff33%d|r",addon.version),
+				name = format("%s - %s",L.options["Deus Vox Encounters"],L.options["Version"])..format(": |cff99ff33%d|r",addon.version),
 				order = 1,
 				width = "full",
 			},
 			Enabled = {
 				type = "toggle",
 				order = 100,
-				name = L["Enabled"],
+				name = L.options["Enabled"],
 				get = "IsEnabled",
 				width = "half",
 				set = function(info,val) db.profile.Enabled = val
@@ -55,8 +55,8 @@ local function InitializeOptions()
 		opts_args.ShowMinimap = {
 			type = "toggle",
 			order = 150,
-			name = L["Minimap"],
-			desc = L["Show minimap icon"],
+			name = L.options["Minimap"],
+			desc = L.options["Show minimap icon"],
 			get = function() return not DXEIconDB.hide end,
 			set = function(info,v) DXEIconDB.hide = not v; LDBIcon[DXEIconDB.hide and "Hide" or "Show"](LDBIcon,"DXE") end,
 			width = "half",
@@ -79,7 +79,7 @@ local function InitializeOptions()
 			for id,name in pairs(db.profile.CustomSounds) do
 				sounds[id] = id
 			end
-			sounds["None"] = L["None"]
+			sounds["None"] = L.options["None"]
 			return sounds
 		end
 	end
@@ -91,7 +91,7 @@ local function InitializeOptions()
 	do
 		local globals_group = {
 			type = "group",
-			name = L["Globals"],
+			name = L.options["Globals"],
 			order = 50,
 			get = function(info) 
 				local var = info[#info]
@@ -113,24 +113,24 @@ local function InitializeOptions()
 				BarTexture = {
 					type = "select",
 					order = 100,
-					name = L["Bar Texture"],
-					desc = L["Bar texture used throughout the addon"],
+					name = L.options["Bar Texture"],
+					desc = L.options["Bar texture used throughout the addon"],
 					values = SM:HashTable("statusbar"),
 					dialogControl = "LSM30_Statusbar",
 				},
 				Font = {
 					order = 200,
 					type = "select",
-					name = L["Font"],
-					desc = L["Font used throughout the addon"],
+					name = L.options["Font"],
+					desc = L.options["Font used throughout the addon"],
 					values = SM:HashTable("font"),
 					dialogControl = "LSM30_Font",
 				},
 				Border = {
 					order = 300,
 					type = "select",
-					name = L["Border"],
-					desc = L["Border used throughout the addon"],
+					name = L.options["Border"],
+					desc = L.options["Border used throughout the addon"],
 					values = SM:HashTable("border"),
 					dialogControl = "LSM30_Border",
 				},
@@ -138,15 +138,15 @@ local function InitializeOptions()
 				BackgroundColor = {
 					order = 400,
 					type = "color",
-					name = L["Background Color"],
-					desc = L["Background color used throughout the addon"],
+					name = L.options["Background Color"],
+					desc = L.options["Background color used throughout the addon"],
 					hasAlpha = true,
 				},
 				BorderColor = {
 					order = 500,
 					type = "color",
-					name = L["Border Color"],
-					desc = L["Border color used throughout the addon"],
+					name = L.options["Border Color"],
+					desc = L.options["Border color used throughout the addon"],
 					hasAlpha = true,
 				},
 			},
@@ -163,7 +163,7 @@ local function InitializeOptions()
 	do
 		local pane_group = {
 			type = "group",
-			name = L["Pane"],
+			name = L.options["Pane"],
 			order = 100,
 			get = function(info) 
 				local var = info[#info]
@@ -190,55 +190,55 @@ local function InitializeOptions()
 					Show = {
 						order = 100,
 						type = "toggle",
-						name = L["Show Pane"],
-						desc = L["Toggle the visibility of the pane"],
+						name = L.options["Show Pane"],
+						desc = L.options["Toggle the visibility of the pane"],
 						disabled = function() return false end,
 					},
 					showpane_desc = {
 						order = 150,
 						type = "description",
-						name = L["Show Pane"].."...",
+						name = L.options["Show Pane"].."...",
 					},
 					OnlyInRaid = {
 						order = 200,
 						type = "toggle",
-						name = L["Only in raids"],
-						desc = L["Show the pane only in raids"],
+						name = L.options["Only in raids"],
+						desc = L.options["Show the pane only in raids"],
 						width = "full",
 					},
 					OnlyInParty = {
 						order = 210,
 						type = "toggle",
-						name = L["Only in party"],
-						desc = L["Show the pane only in party"],
+						name = L.options["Only in party"],
+						desc = L.options["Show the pane only in party"],
 						width = "full",
 					},
 					OnlyInRaidInstance = {
 						order = 250,
 						type = "toggle",
-						name = L["Only in raid instances"],
-						desc = L["Show the pane only in raid instances"],
+						name = L.options["Only in raid instances"],
+						desc = L.options["Show the pane only in raid instances"],
 						width = "full",
 					},
 					OnlyInPartyInstance = {
 						order = 255,
 						type = "toggle",
-						name = L["Only in party instances"],
-						desc = L["Show the pane only in party instances"],
+						name = L.options["Only in party instances"],
+						desc = L.options["Show the pane only in party instances"],
 						width = "full",
 					},
 					OnlyIfRunning = {
 						order = 260,
 						type = "toggle",
-						name = L["Only if engaged"],
-						desc = L["Show the pane only if an encounter is running"],
+						name = L.options["Only if engaged"],
+						desc = L.options["Show the pane only if an encounter is running"],
 						width = "full",
 					},
 					OnlyOnMouseover = {
 						order = 261,
 						type = "toggle",
-						name = L["Only on mouseover"],
-						desc = L["Show the pane only if the mouse is over it"],
+						name = L.options["Only on mouseover"],
+						desc = L.options["Show the pane only if the mouse is over it"],
 						width = "full",
 					},
 				},
@@ -261,9 +261,9 @@ local function InitializeOptions()
 					BarGrowth = {
 						order = 200,
 						type = "select",
-						name = L["Bar Growth"],
-						desc = L["Direction health watcher bars grow. If set to automatic, they grow based on where the pane is"],
-						values = {AUTOMATIC = L["Automatic"], UP = L["Up"], DOWN = L["Down"]},
+						name = L.options["Bar Growth"],
+						desc = L.options["Direction health watcher bars grow. If set to automatic, they grow based on where the pane is"],
+						values = {AUTOMATIC = L.options["Automatic"], UP = L.options["Up"], DOWN = L.options["Down"]},
 						set = function(info,v)
 							db.profile.Pane.BarGrowth = v
 							addon:LayoutHealthWatchers()
@@ -273,8 +273,8 @@ local function InitializeOptions()
 					Scale = {
 						order = 300,
 						type = "range",
-						name = L["Scale"],
-						desc = L["Adjust the scale of the pane"],
+						name = L.options["Scale"],
+						desc = L.options["Adjust the scale of the pane"],
 						set = function(info,v)
 							db.profile.Pane.Scale = v
 							addon:ScalePaneAndCenter()
@@ -286,8 +286,8 @@ local function InitializeOptions()
 					Width = {
 						order = 310,
 						type = "range",
-						name = L["Width"],
-						desc = L["Adjust the width of the pane"],
+						name = L.options["Width"],
+						desc = L.options["Adjust the width of the pane"],
 						set = function(info, v)
 							db.profile.Pane.Width = v
 							addon:SetPaneWidth()
@@ -298,14 +298,14 @@ local function InitializeOptions()
 					},
 					font_header = {
 						type = "header",
-						name = L["Font"],
+						name = L.options["Font"],
 						order = 750,
 					},
 					TitleFontSize = {
 						order = 900,
 						type = "range",
-						name = L["Title Font Size"],
-						desc = L["Select a font size used on health watchers"],
+						name = L.options["Title Font Size"],
+						desc = L.options["Select a font size used on health watchers"],
 						min = 8,
 						max = 20,
 						step = 1,
@@ -313,8 +313,8 @@ local function InitializeOptions()
 					HealthFontSize = {
 						order = 1000,
 						type = "range",
-						name = L["Health Font Size"],
-						desc = L["Select a font size used on health watchers"],
+						name = L.options["Health Font Size"],
+						desc = L.options["Select a font size used on health watchers"],
 						min = 8,
 						max = 20,
 						step = 1,
@@ -322,25 +322,25 @@ local function InitializeOptions()
 					FontColor = {
 						order = 1100,
 						type = "color",
-						name = L["Font Color"],
-						desc = L["Set a font color used on health watchers"],
+						name = L.options["Font Color"],
+						desc = L.options["Set a font color used on health watchers"],
 					},
 					misc_header = {
 						type = "header",
-						name = L["Miscellaneous"],
+						name = L.options["Miscellaneous"],
 						order = 1200,
 					},
 					NeutralColor = {
 						order = 1300,
 						type = "color",
-						name = L["Neutral Color"],
-						desc = L["The color of the health bar when first shown"],
+						name = L.options["Neutral Color"],
+						desc = L.options["The color of the health bar when first shown"],
 					},
 					LostColor = {
 						order = 1400,
 						type = "color",
-						name = L["Lost Color"],
-						desc = L["The color of the health bar after losing the mob"],
+						name = L.options["Lost Color"],
+						desc = L.options["The color of the health bar after losing the mob"],
 					},
 				},
 			}
@@ -355,32 +355,32 @@ local function InitializeOptions()
 	do
 		local misc_group = {
 			type = "group",
-			name = L["Miscellaneous"],
+			name = L.options["Miscellaneous"],
 			get = function(info) return db.profile.Misc[info[#info]] end,
 			set = function(info,v) db.profile.Misc[info[#info]] = v end,
 			order = 300,
 			args = {
 				BlockRaidWarningFrame = {
 					type = "toggle",
-					name = L["Block raid warning frame messages from other boss mods"],
+					name = L.options["Block raid warning frame messages from other boss mods"],
 					order = 100,
 					width = "full",
 				},
 				BlockRaidWarningMessages = {
 					type = "toggle",
-					name = L["Block raid warning messages, in the chat log, from other boss mods"],
+					name = L.options["Block raid warning messages, in the chat log, from other boss mods"],
 					order = 200,
 					width = "full",
 				},
 				BlockBossEmoteFrame = {
 					type = "toggle",
-					name = L["Block boss emote frame messages"],
+					name = L.options["Block boss emote frame messages"],
 					order = 300,
 					width = "full",
 				},
 				BlockBossEmoteMessages = {
 					type = "toggle",
-					name = L["Block boss emote messages in the chat log"],
+					name = L.options["Block boss emote messages in the chat log"],
 					order = 400,
 					width = "full",
 				},
@@ -397,24 +397,24 @@ local function InitializeOptions()
 	do
 		local about_group = {
 			type = "group",
-			name = L["About"],
+			name = L.options["About"],
 			order = -2,
 			args = {
 				authors_desc = {
 					type = "description",
-					name = format("%s : %s",L["Authors"],"|cffffd200Kollektiv|r, |cffffd200Fariel|r"),
+					name = format("%s : %s",L.options["Authors"],"|cffffd200Kollektiv|r, |cffffd200Fariel|r"),
 					order = 100,
 				},
 				blank1 = genblank(150),
 				created_desc = {
 					type = "description",
-					name = format(L["Created for use by %s on %s"],"|cffffd200Deus Vox|r","|cffffff78US-Laughing Skull|r"),
+					name = format(L.options["Created for use by %s on %s"],"|cffffd200Deus Vox|r","|cffffff78US-Laughing Skull|r"),
 					order = 200,
 				},
 				blank2 = genblank(250),
 				visit_desc = {
 					type = "description",
-					name = format("%s: %s",L["Website"],"|cffffd244http://www.deusvox.net|r"),
+					name = format("%s: %s",L.options["Website"],"|cffffd244http://www.deusvox.net|r"),
 					order = 300,
 				},
 			},
@@ -431,7 +431,7 @@ local function InitializeOptions()
 		local handler = {}
 		local encs_group = {
 			type = "group",
-			name = L["Encounters"],
+			name = L.options["Encounters"],
 			order = 200,
 			childGroups = "tab",
 			handler = handler,
@@ -439,7 +439,7 @@ local function InitializeOptions()
 				simple_mode = {
 					type = "execute",
 					name = "Simple",
-					desc = L["This mode only allows you to enable or disable"],
+					desc = L.options["This mode only allows you to enable or disable"],
 					order = 1,
 					func = "SimpleMode",
 					width = "half",
@@ -447,13 +447,13 @@ local function InitializeOptions()
 				advanced_mode = {
 					type = "execute",
 					name = "Advanced",
-					desc = L["This mode has customization options"],
+					desc = L.options["This mode has customization options"],
 					order = 2,
 					func = "AdvancedMode",
 				},
 				modules = {
 					type = "select",
-					name = L["Modules"],
+					name = L.options["Modules"],
 					order = 3,
 					get = function() 
 						loadselect = loadselect or next(addon.Loader.Z_MODS_LIST)
@@ -464,7 +464,7 @@ local function InitializeOptions()
 				},
 				load = {
 					type = "execute",
-					name = L["Load"],
+					name = L.options["Load"],
 					order = 4,
 					func  = function() addon.Loader:Load(loadselect) end,
 					disabled = function() return not loadselect end,
@@ -520,15 +520,15 @@ local function InitializeOptions()
 			VersionHeader = {
 				type = "header",
 				name = function(info) 
-					local version = EDB[info[#info-1]].version or "|cff808080"..L["Unknown"].."|r"
-					return L["Version"]..": |cff99ff33"..version.."|r"
+					local version = EDB[info[#info-1]].version or "|cff808080"..L.options["Unknown"].."|r"
+					return L.options["Version"]..": |cff99ff33"..version.."|r"
 				end,
 				order = 1,
 				width = "full",
 			},
 			EnabledToggle = {
 				type = "toggle",
-				name = L["Enabled"],
+				name = L.options["Enabled"],
 				width = "half",
 				order = 1,										-- data.key     -- info.var
 				set = function(info,v) db.profile.Encounters[info[#info-3]][info[#info-1]].enabled = v end,
@@ -538,13 +538,13 @@ local function InitializeOptions()
 				alerts = {
 					color1 = {
 						type = "select",
-						name = L["Main Color"],
+						name = L.options["Main Color"],
 						order = 100,
 						values = "GetColor1",
 					},
 					color2 = {
 						type = "select",
-						name = L["Flash Color"],
+						name = L.options["Flash Color"],
 						order = 200,
 						values = "GetColor2",
 						disabled = function(info) 
@@ -554,30 +554,30 @@ local function InitializeOptions()
 					},
 					sound = {
 						type = "select",
-						name = L["Sound"],
+						name = L.options["Sound"],
 						order = 300,
 						values = GetSounds,
 					},
 					blank = genblank(350),
 					flashscreen = {
 						type = "toggle",
-						name = L["Flash screen"],
+						name = L.options["Flash screen"],
 						order = 400,
 					},
 					counter = {
 						type = "toggle",
-						name = L["Counter"],
+						name = L.options["Counter"],
 						order = 500,
 					},
 					test = {
 						type = "execute",
-						name = L["Test"],
+						name = L.options["Test"],
 						order = 600,
 						func = "TestAlert",
 					},
 					reset = {
 						type = "execute",
-						name = L["Reset"],
+						name = L.options["Reset"],
 						order = 700,
 						func = function(info)
 							local key,var = info[3],info[5]
@@ -596,9 +596,9 @@ local function InitializeOptions()
 							local varData = EDB[key].raidicons[var]
 							local type = varData.type
 							if type == "FRIENDLY" then
-								return format(L["Uses |cffffd200Icon %s|r"],varData.icon)
+								return format(L.options["Uses |cffffd200Icon %s|r"],varData.icon)
 							elseif type == "MULTIFRIENDLY" then
-								return format(L["Uses |cffffd200Icon %s|r to |cffffd200Icon %s|r"],varData.icon,varData.icon + varData.total - 1)
+								return format(L.options["Uses |cffffd200Icon %s|r to |cffffd200Icon %s|r"],varData.icon,varData.icon + varData.total - 1)
 							end
 						end,
 					},
@@ -606,7 +606,7 @@ local function InitializeOptions()
 				arrows = {
 					sound = {
 						type = "select",
-						name = L["Sound"],
+						name = L.options["Sound"],
 						order = 100,
 						values = GetSounds,
 					},
@@ -628,7 +628,7 @@ local function InitializeOptions()
 				colors1simple[k] = hex
 				colors2[k] = hex
 			end
-			colors1simple["Clear"] = L["Clear"]
+			colors1simple["Clear"] = L.options["Clear"]
 			colors2["Off"] = OFF
 
 			function handler:GetColor1(info)
@@ -703,7 +703,7 @@ local function InitializeOptions()
 						if AdvancedItems.Options[optionType] then
 							item_args.settings = {
 								type = "group",
-								name = L["Settings"],
+								name = L.options["Settings"],
 								order = 1,
 								inline = true,
 								disabled = "DisableSettings",
@@ -821,7 +821,7 @@ local function InitializeOptions()
 
 		local alerts_group = {
 			type = "group",
-			name = L["Alerts"],
+			name = L.options["Alerts"],
 			order = 200,
 			handler = Alerts,
 			childGroups = "tab",
@@ -846,31 +846,31 @@ local function InitializeOptions()
 
 		local bars_group = {
 			type = "group",
-			name = L["Bars"],
+			name = L.options["Bars"],
 			order = 100,
 			args = {
 			BarTest = {
 					type = "execute",
-					name = L["Test Bars"],
-					desc = L["Fires a dropdown, center popup, and simple alert bars"],
+					name = L.options["Test Bars"],
+					desc = L.options["Fires a dropdown, center popup, and simple alert bars"],
 					order = 100,
 					func = "BarTest",
 				},
 				BarFillDirection = {
 					order = 130,
 					type = "select",
-					name = L["Bar Fill Direction"],
-					desc = L["The direction bars fill"],
+					name = L.options["Bar Fill Direction"],
+					desc = L.options["The direction bars fill"],
 					values = {
-						FILL = L["Left to Right"],
-						DEPLETE = L["Right to Left"],
+						FILL = L.options["Left to Right"],
+						DEPLETE = L.options["Right to Left"],
 					},
 				},
 				BarHeight = {
 					order = 140,
 					type = "range",
-					name = L["Bar Height"],
-					desc = L["Select a bar height"],
+					name = L.options["Bar Height"],
+					desc = L.options["Select a bar height"],
 					min = 14,
 					max = 40,
 					step = 1,
@@ -878,14 +878,14 @@ local function InitializeOptions()
 				ShowBorder = {
 					order = 150,
 					type = "toggle",
-					name = L["Show Border"],
-					desc = L["Displays a border around the bar and its icon"],
+					name = L.options["Show Border"],
+					desc = L.options["Displays a border around the bar and its icon"],
 				},
 				DisableDropdowns = {
 					order = 160,
 					type = "toggle",
-					name = L["Disable Dropdowns"],
-					desc = L["Anchor bars onto the center anchor only"],
+					name = L.options["Disable Dropdowns"],
+					desc = L.options["Anchor bars onto the center anchor only"],
 					set = SetNoRefresh,
 				},
 			},
@@ -896,7 +896,7 @@ local function InitializeOptions()
 
 		local general_group = {
 			type = "group",
-			name = L["General"],
+			name = L.options["General"],
 			order = 100,
 			args = {
 				
@@ -905,25 +905,25 @@ local function InitializeOptions()
 
 		local font_group = {
 			type = "group",
-			name = L["Text"],
+			name = L.options["Text"],
 			order = 400,
 			args = {
 				font_desc = {
 					type = "header",
-					name = L["Adjust the text used on timer bars"].."\n",
+					name = L.options["Adjust the text used on timer bars"].."\n",
 					order = 1,
 				},
 				bartext_group = {
 					type = "group",
-					name = L["Bar Text"],
+					name = L.options["Bar Text"],
 					inline = true,
 					order = 1,
 					args = {
 						BarFontSize = {
 							order = 100,
 							type = "range",
-							name = L["Font Size"],
-							desc = L["Select a font size used on bar text"],
+							name = L.options["Font Size"],
+							desc = L.options["Select a font size used on bar text"],
 							min = 8,
 							max = 20,
 							step = 1,
@@ -931,38 +931,38 @@ local function InitializeOptions()
 						BarFontColor = {
 							order = 200,
 							type = "color",
-							name = L["Font Color"],
-							desc = L["Set a font color used on bar text"],
+							name = L.options["Font Color"],
+							desc = L.options["Set a font color used on bar text"],
 						},
 						BarTextJustification = {
 							order = 170,
 							type = "select",
-							name = L["Justification"],
-							desc = L["Select a text justification"],
+							name = L.options["Justification"],
+							desc = L.options["Select a text justification"],
 							values = {
-								LEFT = L["Left"],
-								CENTER = L["Center"],
-								RIGHT = L["Right"],
+								LEFT = L.options["Left"],
+								CENTER = L.options["Center"],
+								RIGHT = L.options["Right"],
 							},
 						},
 					},
 				},
 				timertext_group = {
 					type = "group",
-					name = L["Timer Text"],
+					name = L.options["Timer Text"],
 					order = 2,
 					inline = true,
 					args = {
 						timer_desc = {
 							type = "description",
-							name = L["Timer font sizes are determined by bar height"].."\n",
+							name = L.options["Timer font sizes are determined by bar height"].."\n",
 							order = 1,
 						},
 						TimerXOffset = {
 							order = 100,
 							type = "range",
-							name = L["Horizontal Offset"],
-							desc = L["The horizontal position of the timer"],
+							name = L.options["Horizontal Offset"],
+							desc = L.options["The horizontal position of the timer"],
 							min = -20,
 							max = 20,
 							step = 1,
@@ -970,8 +970,8 @@ local function InitializeOptions()
 						DecimalYOffset = {
 							order = 200,
 							type = "range",
-							name = L["Decimal Vertical Offset"],
-							desc = L["The vertical position of a timer's decimal text"],
+							name = L.options["Decimal Vertical Offset"],
+							desc = L.options["The vertical position of a timer's decimal text"],
 							min = -10,
 							max = 10,
 							step = 1,
@@ -979,8 +979,8 @@ local function InitializeOptions()
 						TimerFontColor = {
 							order = 300,
 							type = "color",
-							name = L["Font Color"],
-							desc = L["Set a font color used on bar timers"],
+							name = L.options["Font Color"],
+							desc = L.options["Set a font color used on bar timers"],
 						},
 					},
 				},
@@ -991,33 +991,33 @@ local function InitializeOptions()
 
 		local icon_group = {
 			type = "group",
-			name = L["Icon"],
+			name = L.options["Icon"],
 			order = 500,
 			args = {
 				icon_desc = {
 					type = "header",
-					name = L["Adjust the spell icon on timer bars"].."\n",
+					name = L.options["Adjust the spell icon on timer bars"].."\n",
 					order = 1,
 				},
 				HideIcons = {
 					order = 100,
 					type = "toggle",
-					name = L["Hide Icons"],
-					desc = L["Hide icons on bars"],
+					name = L.options["Hide Icons"],
+					desc = L.options["Hide icons on bars"],
 				},
 				IconPosition = {
 					order = 200,
 					type = "select",
-					name = L["Icon Position"],
-					desc = L["Select where to show icons on bars"],
-					values = {LEFT = L["Left"], RIGHT = L["Right"]},
+					name = L.options["Icon Position"],
+					desc = L.options["Select where to show icons on bars"],
+					values = {LEFT = L.options["Left"], RIGHT = L.options["Right"]},
 					disabled = function() return Alerts.db.profile.HideIcons end,
 				},
 				IconOffset = {
 					order = 300,
 					type = "range",
-					name = L["Icon Offset"],
-					desc = L["How far away the icon is from the bar"],
+					name = L.options["Icon Offset"],
+					desc = L.options["How far away the icon is from the bar"],
 					min = -4,
 					max = 10,
 					step = 0.1,
@@ -1030,28 +1030,28 @@ local function InitializeOptions()
 						
 		local top_group = {
 			type = "group",
-			name = L["Top Anchored Bars"],
+			name = L.options["Top Anchored Bars"],
 			order = 600,
 			disabled = function() return Alerts.db.profile.DisableDropdowns end,
 			args = {
 				top_desc = {
 					type = "header",
-					name = L["Adjust settings related to the top anchor"].."\n",
+					name = L.options["Adjust settings related to the top anchor"].."\n",
 					order = 1,
 				},
 				TopScale = {
 					order = 100,
 					type = "range",
-					name = L["Bar Scale"],
-					desc = L["Adjust the size of top bars"],
+					name = L.options["Bar Scale"],
+					desc = L.options["Adjust the size of top bars"],
 					min = 0.5,
 					max = 1.5,
 					step = 0.05,
 				},
 				TopAlpha = {
 					type = "range",
-					name = L["Bar Alpha"],
-					desc = L["Adjust the transparency of top bars"],
+					name = L.options["Bar Alpha"],
+					desc = L.options["Adjust the transparency of top bars"],
 					order = 200,
 					min = 0.1,
 					max = 1,
@@ -1060,8 +1060,8 @@ local function InitializeOptions()
 				TopBarWidth = {
 					order = 300,
 					type = "range",
-					name = L["Bar Width"],
-					desc = L["Adjust the width of top bars"],
+					name = L.options["Bar Width"],
+					desc = L.options["Adjust the width of top bars"],
 					min = 220,
 					max = 1000,
 					step = 1,
@@ -1069,9 +1069,9 @@ local function InitializeOptions()
 				TopGrowth = {
 					order = 400,
 					type = "select",
-					name = L["Bar Growth"],
-					desc = L["The direction top bars grow"],
-					values = {DOWN = L["Down"], UP = L["Up"]},
+					name = L.options["Bar Growth"],
+					desc = L.options["The direction top bars grow"],
+					values = {DOWN = L.options["Down"], UP = L.options["Up"]},
 				},
 			},
 		}
@@ -1079,27 +1079,27 @@ local function InitializeOptions()
 
 		local center_group = {
 			type = "group",
-			name = L["Center Anchored Bars"],
+			name = L.options["Center Anchored Bars"],
 			order = 700,
 			args = {
 				center_desc = {
 					type = "header",
-					name = L["Adjust settings related to the center anchor"].."\n",
+					name = L.options["Adjust settings related to the center anchor"].."\n",
 					order = 1,
 				},
 				CenterScale = {
 					order = 100,
 					type = "range",
-					name = L["Bar Scale"],
-					desc = L["Adjust the size of center bars"],
+					name = L.options["Bar Scale"],
+					desc = L.options["Adjust the size of center bars"],
 					min = 0.5,
 					max = 1.5,
 					step = 0.05,
 				},
 				CenterAlpha = {
 					type = "range",
-					name = L["Bar Alpha"],
-					desc = L["Adjust the transparency of center bars"],
+					name = L.options["Bar Alpha"],
+					desc = L.options["Adjust the transparency of center bars"],
 					order = 200,
 					min = 0.1,
 					max = 1,
@@ -1108,8 +1108,8 @@ local function InitializeOptions()
 				CenterBarWidth = {
 					order = 300,
 					type = "range",
-					name = L["Bar Width"],
-					desc = L["Adjust the width of center bars"],
+					name = L.options["Bar Width"],
+					desc = L.options["Adjust the width of center bars"],
 					min = 220,
 					max = 1000,
 					step = 1,
@@ -1117,9 +1117,9 @@ local function InitializeOptions()
 				CenterGrowth = {
 					order = 400,
 					type = "select",
-					name = L["Bar Growth"],
-					desc = L["The direction center bars grow"],
-					values = {DOWN = L["Down"], UP = L["Up"]},
+					name = L.options["Bar Growth"],
+					desc = L.options["The direction center bars grow"],
+					values = {DOWN = L.options["Down"], UP = L.options["Up"]},
 				},
 			},
 		}
@@ -1133,14 +1133,14 @@ local function InitializeOptions()
 				colors[k] = hex
 			end
 
-			local intro_desc = L["You can fire local or raid bars. Local bars are only seen by you. Raid bars are seen by you and raid members; You have to be a raid officer to fire raid bars"]
-			local howto_desc = L["Slash commands: |cffffff00/dxelb time text|r (local bar) or |cffffff00/dxerb time text|r (raid bar): |cffffff00time|r can be in the format |cffffd200minutes:seconds|r or |cffffd200seconds|r"]
+			local intro_desc = L.options["You can fire local or raid bars. Local bars are only seen by you. Raid bars are seen by you and raid members; You have to be a raid officer to fire raid bars"]
+			local howto_desc = L.options["Slash commands: |cffffff00/dxelb time text|r (local bar) or |cffffff00/dxerb time text|r (raid bar): |cffffff00time|r can be in the format |cffffd200minutes:seconds|r or |cffffd200seconds|r"]
 			local example1 = "/dxerb 15 Pulling in..."
 			local example2 = "/dxelb 6:00 Pizza Timer"
 
 			local custom_group = {
 				type = "group",
-				name = L["Custom Bars"],
+				name = L.options["Custom Bars"],
 				order = 750,
 				args = {
 					intro_desc = {
@@ -1151,22 +1151,22 @@ local function InitializeOptions()
 					CustomLocalClr = {
 						order = 2,
 						type = "select",
-						name = L["Local Bar Color"],
-						desc = L["The color of local bars that you fire"],
+						name = L.options["Local Bar Color"],
+						desc = L.options["The color of local bars that you fire"],
 						values = colors,
 					},
 					CustomRaidClr = {
 						order = 3,
 						type = "select",
-						name = L["Raid Bar Color"],
-						desc = L["The color of broadcasted raid bars fired by you or a raid member"],
+						name = L.options["Raid Bar Color"],
+						desc = L.options["The color of broadcasted raid bars fired by you or a raid member"],
 						values = colors,
 					},
 					CustomSound = {
 						order = 4,
 						type = "select",
-						name = L["Sound"],
-						desc = L["The sound that plays when a custom bar is fired"],
+						name = L.options["Sound"],
+						desc = L.options["The sound that plays when a custom bar is fired"],
 						values = GetSounds,
 					},
 					howto_desc = {
@@ -1177,7 +1177,7 @@ local function InitializeOptions()
 					examples_desc = {
 						type = "description",
 						order = 6,
-						name = "\n"..L["Examples"]..":\n\n   "..example1.."\n   "..example2,
+						name = "\n"..L.options["Examples"]..":\n\n   "..example1.."\n   "..example2,
 					},
 				},
 			}
@@ -1188,18 +1188,18 @@ local function InitializeOptions()
 		-- WARNINGS
 		local warning_bar_group = {
 			type = "group",
-			name = L["Warning Bars"],
+			name = L.options["Warning Bars"],
 			order = 800,
 			args = {
 				WarningBars = {
 					type = "toggle",
 					order = 100,
-					name = L["Enable Warning Bars"],
+					name = L.options["Enable Warning Bars"],
 					set = SetNoRefresh,
 				},
 				warning_bars = {
 					type = "group",
-					name = L["Warning Anchor"],
+					name = L.options["Warning Anchor"],
 					order = 200,
 					inline = true,
 					disabled = function() return not Alerts.db.profile.WarningBars end,
@@ -1207,8 +1207,8 @@ local function InitializeOptions()
 						WarningAnchor = {
 							order = 100,
 							type = "toggle",
-							name = L["Enable Warning Anchor"],
-							desc = L["Anchors all warning bars to the warning anchor instead of the center anchor"],
+							name = L.options["Enable Warning Anchor"],
+							desc = L.options["Anchors all warning bars to the warning anchor instead of the center anchor"],
 							width = "full",
 						},
 					}
@@ -1230,16 +1230,16 @@ local function InitializeOptions()
 					WarningScale = {
 						order = 100,
 						type = "range",
-						name = L["Bar Scale"],
-						desc = L["Adjust the size of warning bars"],
+						name = L.options["Bar Scale"],
+						desc = L.options["Adjust the size of warning bars"],
 						min = 0.5,
 						max = 1.5,
 						step = 0.05,
 					},
 					WarningAlpha = {
 						type = "range",
-						name = L["Bar Alpha"],
-						desc = L["Adjust the transparency of warning bars"],
+						name = L.options["Bar Alpha"],
+						desc = L.options["Adjust the transparency of warning bars"],
 						order = 200,
 						min = 0.1,
 						max = 1,
@@ -1248,8 +1248,8 @@ local function InitializeOptions()
 					WarningBarWidth = {
 						order = 300,
 						type = "range",
-						name = L["Bar Width"],
-						desc = L["Adjust the width of warning bars"],
+						name = L.options["Bar Width"],
+						desc = L.options["Adjust the width of warning bars"],
 						min = 220,
 						max = 1000,
 						step = 1,
@@ -1257,22 +1257,22 @@ local function InitializeOptions()
 					WarningGrowth = {
 						order = 400,
 						type = "select",
-						name = L["Bar Growth"],
-						desc = L["The direction warning bars grow"],
-						values = {DOWN = L["Down"], UP = L["Up"]},
+						name = L.options["Bar Growth"],
+						desc = L.options["The direction warning bars grow"],
+						values = {DOWN = L.options["Down"], UP = L.options["Up"]},
 					},
 					RedirectCenter = {
 						order = 500,
 						type = "toggle",
-						name = L["Redirect center bars"],
-						desc = L["Anchor a center bar to the warnings anchor if its duration is less than or equal to threshold time"],
+						name = L.options["Redirect center bars"],
+						desc = L.options["Anchor a center bar to the warnings anchor if its duration is less than or equal to threshold time"],
 						width = "full",
 					},
 					RedirectThreshold = {
 						order = 600,
 						type = "range",
-						name = L["Threshold time"],
-						desc = L["If a center bar's duration is less than or equal to this then it anchors to the warnings anchor"],
+						name = L.options["Threshold time"],
+						desc = L.options["If a center bar's duration is less than or equal to this then it anchors to the warnings anchor"],
 						min = 1,
 						max = 15,
 						step = 1,
@@ -1285,13 +1285,13 @@ local function InitializeOptions()
 
 		local warning_message_group = {
 			type = "group",
-			name = L["Warning Messages"],
+			name = L.options["Warning Messages"],
 			order = 140,
 			args = {
 				WarningMessages = {
 					type = "toggle",
-					name = L["Enable Warning Messages"],
-					desc = L["Output to an additional interface"],
+					name = L.options["Enable Warning Messages"],
+					desc = L.options["Output to an additional interface"],
 					order = 1,
 					width = "full",
 				},
@@ -1303,28 +1303,28 @@ local function InitializeOptions()
 					args = {
 						warning_desc = {
 							type = "description",
-							name = L["Alerts are split into three categories: cooldowns, durations, and warnings. Cooldown and duration alerts can fire a message before they end and when they popup. Warning alerts can only fire a message when they popup. Alerts suffixed self can only fire a popup message even if it is a duration"].."\n",
+							name = L.options["Alerts are split into three categories: cooldowns, durations, and warnings. Cooldown and duration alerts can fire a message before they end and when they popup. Warning alerts can only fire a message when they popup. Alerts suffixed self can only fire a popup message even if it is a duration"].."\n",
 							order = 2,
 						},
 						ClrWarningText = {
 							order = 3,
 							type = "toggle",
-							name = L["Color Text"],
-							desc = L["Class colors text"],
+							name = L.options["Color Text"],
+							desc = L.options["Class colors text"],
 							width = "full",
 						},
 						SinkIcon = {
 							order = 4,
 							type = "toggle",
-							name = L["Show Icon"],
-							desc = L["Display an icon to the left of a warning message"],
+							name = L.options["Show Icon"],
+							desc = L.options["Display an icon to the left of a warning message"],
 							width = "full",
 						},
 						BeforeThreshold = {
 							order = 5,
 							type = "range",
-							name = L["Before End Threshold"],
-							desc = L["How many seconds before an alert ends to fire a warning message. This only applies to cooldown and duration type alerts"],
+							name = L.options["Before End Threshold"],
+							desc = L.options["How many seconds before an alert ends to fire a warning message. This only applies to cooldown and duration type alerts"],
 							min = 1,
 							max = 15,
 							step = 1,
@@ -1332,19 +1332,19 @@ local function InitializeOptions()
 						filter_group = {
 							type = "group",
 							order = 6,
-							name = L["Show messages for"].."...",
+							name = L.options["Show messages for"].."...",
 							inline = true,
 							args = {
 								filter_desc = {
 									type = "description",
-									name = L["Enabling |cffffd200X popups|r will make it fire a message on appearance. Enabling |cffffd200X before ending|r will make it fire a message before ending based on before end threshold"],
+									name = L.options["Enabling |cffffd200X popups|r will make it fire a message on appearance. Enabling |cffffd200X before ending|r will make it fire a message before ending based on before end threshold"],
 									order = 1,
 								},
-								CdPopupMessage = {type = "toggle", name = L["Cooldown popups"], order = 2, width = "full"},
-								CdBeforeMessage = {type = "toggle", name = L["Cooldowns before ending"], order = 3, width = "full"},
-								DurPopupMessage = {type = "toggle", name = L["Duration popups"], order = 4, width = "full"},
-								DurBeforeMessage = {type = "toggle", name = L["Durations before ending"], order = 5, width = "full"},
-								WarnPopupMessage = {type = "toggle", name = L["Warning popups"], order = 6, width = "full"},
+								CdPopupMessage = {type = "toggle", name = L.options["Cooldown popups"], order = 2, width = "full"},
+								CdBeforeMessage = {type = "toggle", name = L.options["Cooldowns before ending"], order = 3, width = "full"},
+								DurPopupMessage = {type = "toggle", name = L.options["Duration popups"], order = 4, width = "full"},
+								DurBeforeMessage = {type = "toggle", name = L.options["Durations before ending"], order = 5, width = "full"},
+								WarnPopupMessage = {type = "toggle", name = L.options["Warning popups"], order = 6, width = "full"},
 							}
 						},
 						Output = Alerts:GetSinkAce3OptionsDataTable(),
@@ -1359,21 +1359,21 @@ local function InitializeOptions()
 
 		local sounds_group = {
 			type = "group",
-			name = L["Sounds"],
+			name = L.options["Sounds"],
 			order = 150,
 			set = SetNoRefresh,
 			args = {
 				DisableSounds = {
 					order = 100,
 					type = "toggle",
-					name = L["Mute all"],
-					desc = L["Silences all alert sounds"],
+					name = L.options["Mute all"],
+					desc = L.options["Silences all alert sounds"],
 				},
 				DisableAll = {
 					order = 200,
 					type = "execute",
-					name = L["Set all to None"],
-					desc = L["Sets every alert's sound to None. This affects currently loaded encounters"],
+					name = L.options["Set all to None"],
+					desc = L.options["Sets every alert's sound to None. This affects currently loaded encounters"],
 					func = function()
 						for key,tbl in pairs(db.profile.Encounters) do 
 							for var,stgs in pairs(tbl) do 
@@ -1385,15 +1385,15 @@ local function InitializeOptions()
 				},
 				curr_enc_group = {
 					type = "group",
-					name = L["Change encounter"],
+					name = L.options["Change encounter"],
 					order = 400,
 					inline = true,
 					args = {
 						SelectedEncounter = {
 							order = 100,
 							type = "select",
-							name = L["Select encounter"],
-							desc = L["The encounter to change"],
+							name = L.options["Select encounter"],
+							desc = L.options["The encounter to change"],
 							get = function() return SelectedEncounter end,
 							set = function(info,value) SelectedEncounter = value end,
 							values = function()
@@ -1407,8 +1407,8 @@ local function InitializeOptions()
 						DisableSelected = {
 							order = 200,
 							type = "execute",
-							name = L["Set selected to None"],
-							desc = L["Sets every alert's sound in the selected encounter to None"],
+							name = L.options["Set selected to None"],
+							desc = L.options["Sets every alert's sound in the selected encounter to None"],
 							disabled = function() return not SelectedEncounter end,
 							confirm = true,
 							func = function()
@@ -1426,19 +1426,19 @@ local function InitializeOptions()
 
 		local flash_group = {
 			type = "group",
-			name = L["Screen Flash"],
+			name = L.options["Screen Flash"],
 			order = 200,
 			args = {
 				flash_desc = {
 					type = "description",
-					name = L["The color of the flash becomes the main color of the alert. Colors for each alert are set in the Encounters section. If the color is set to 'Clear' it defaults to black"].."\n",
+					name = L.options["The color of the flash becomes the main color of the alert. Colors for each alert are set in the Encounters section. If the color is set to 'Clear' it defaults to black"].."\n",
 					order = 50,
 				},
 				DisableScreenFlash = {
 					order = 75,
 					type = "toggle",
-					name = L["Disable Screen Flash"],
-					desc = L["Turns off all alert screen flashes"],
+					name = L.options["Disable Screen Flash"],
+					desc = L.options["Turns off all alert screen flashes"],
 					set = SetNoRefresh,
 					width = "full",
 				},
@@ -1451,23 +1451,23 @@ local function InitializeOptions()
 					args = {
 						FlashTest = {
 							type = "execute",
-							name = L["Test Flash"],
-							desc = L["Fires a flash using a random color"],
+							name = L.options["Test Flash"],
+							desc = L.options["Fires a flash using a random color"],
 							order = 100,
 							func = "FlashTest",
 						},
 						FlashTexture = {
 							type = "select",
-							name = L["Texture"],
-							desc = L["Select a background texture"],
+							name = L.options["Texture"],
+							desc = L.options["Select a background texture"],
 							order = 120,
 							values = Alerts.FlashTextures,
 							set = function(info,v) Alerts.db.profile.FlashTexture = v; Alerts:UpdateFlashSettings() end,
 						},
 						FlashAlpha = {
 							type = "range",
-							name = L["Alpha"],
-							desc = L["Adjust the transparency of the flash"],
+							name = L.options["Alpha"],
+							desc = L.options["Adjust the transparency of the flash"],
 							order = 200,
 							min = 0.1,
 							max = 1,
@@ -1475,8 +1475,8 @@ local function InitializeOptions()
 						},
 						FlashDuration = {
 							type = "range",
-							name = L["Duration"],
-							desc = L["Adjust how long the flash lasts"],
+							name = L.options["Duration"],
+							desc = L.options["Adjust how long the flash lasts"],
 							order = 300,
 							min = 0.2,
 							max = 3,
@@ -1484,8 +1484,8 @@ local function InitializeOptions()
 						},
 						FlashOscillations = {
 							type = "range",
-							name = L["Oscillations"],
-							desc = L["Adjust how many times the flash fades in and out"],
+							name = L.options["Oscillations"],
+							desc = L.options["Adjust how many times the flash fades in and out"],
 							order = 400,
 							min = 1,
 							max = 10,
@@ -1494,13 +1494,13 @@ local function InitializeOptions()
 						blank = genblank(450),
 						ConstantClr = {
 							type = "toggle",
-							name = L["Use Constant Color"],
-							desc = L["Make the screen flash always be the global color. It will not become the main color of the alert."],
+							name = L.options["Use Constant Color"],
+							desc = L.options["Make the screen flash always be the global color. It will not become the main color of the alert."],
 							order = 500,
 						},
 						GlobalColor = {
 							type = "color",
-							name = L["Global Color"],
+							name = L.options["Global Color"],
 							order = 600,
 							disabled = function() return Alerts.db.profile.DisableScreenFlash or not Alerts.db.profile.ConstantClr end,
 						},
@@ -1513,7 +1513,7 @@ local function InitializeOptions()
 
 		local Arrows = addon.Arrows
 		local arrows_group = {
-			name = L["Arrows"],
+			name = L.options["Arrows"],
 			type = "group",
 			order = 120,
 			get = function(info) return Arrows.db.profile[info[#info]] end,
@@ -1521,8 +1521,8 @@ local function InitializeOptions()
 			args = {
 				Enable = {
 					type = "toggle",
-					name = L["Enable"],
-					desc = L["Enable the use of directional arrows"],
+					name = L.options["Enable"],
+					desc = L.options["Enable the use of directional arrows"],
 					order = 1,
 				},
 				enable_group = {
@@ -1533,10 +1533,10 @@ local function InitializeOptions()
 					disabled = function() return not Arrows.db.profile.Enable end,
 					args = {
 						TestArrows = {
-							name = L["Test Arrows"],
+							name = L.options["Test Arrows"],
 							type = "execute",
 							order = 1,
-							desc = L["Displays all arrows and then rotates them for ten seconds"],
+							desc = L.options["Displays all arrows and then rotates them for ten seconds"],
 							func = function() 
 								for k,arrow in ipairs(addon.Arrows.frames) do
 									arrow:Test()
@@ -1544,8 +1544,8 @@ local function InitializeOptions()
 							end,
 						},
 						Scale = {
-							name = L["Scale"],
-							desc = L["Adjust the scale of arrows"],
+							name = L.options["Scale"],
+							desc = L.options["Adjust the scale of arrows"],
 							type = "range",
 							min = 0.3,
 							max = 2,
@@ -1562,7 +1562,7 @@ local function InitializeOptions()
 
 		local raidicons_group = {
 			type = "group",
-			name = L["Raid Icons"],
+			name = L.options["Raid Icons"],
 			order = 121,
 			get = function(info) return RaidIcons.db.profile[tonumber(info[#info])] end,
 			set = function(info,v) RaidIcons.db.profile[tonumber(info[#info])] = v end,
@@ -1574,7 +1574,7 @@ local function InitializeOptions()
 
 			local desc = {
 				type = "description",
-				name = L["Most encounters only use |cffffd200Icon 1|r and |cffffd200Icon 2|r. Additional icons are used for abilities that require multi-marking (e.g. Anub'arak's Penetrating Cold). If you change an icon, make sure all icons are different from one another"],
+				name = L.options["Most encounters only use |cffffd200Icon 1|r and |cffffd200Icon 2|r. Additional icons are used for abilities that require multi-marking (e.g. Anub'arak's Penetrating Cold). If you change an icon, make sure all icons are different from one another"],
 				order = 0.5,
 			}
 
@@ -1582,18 +1582,18 @@ local function InitializeOptions()
 
 			local dropdown = {
 				type = "select",
-				name = function(info) return format(L["Icon %s"],info[#info]) end,
+				name = function(info) return format(L.options["Icon %s"],info[#info]) end,
 				order = function(info) return tonumber(info[#info]) end,
 				width = "double",
 				values = {
-					"1. "..L["Star"],
-					"2. "..L["Circle"],
-					"3. "..L["Diamond"],
-					"4. "..L["Triangle"],
-					"5. "..L["Moon"],
-					"6. "..L["Square"],
-					"7. "..L["Cross"],
-					"8. "..L["Skull"],
+					"1. "..L.options["Star"],
+					"2. "..L.options["Circle"],
+					"3. "..L.options["Diamond"],
+					"4. "..L.options["Triangle"],
+					"5. "..L.options["Moon"],
+					"6. "..L.options["Square"],
+					"7. "..L.options["Cross"],
+					"8. "..L.options["Skull"],
 				},
 			}
 
@@ -1614,31 +1614,31 @@ local function InitializeOptions()
 		local Distributor = addon.Distributor
 		local dist_group = {
 			type = "group",
-			name = L["Distributor"],
+			name = L.options["Distributor"],
 			order = 350,
 			get = function(info) return Distributor.db.profile[info[#info]] end,
 			set = function(info,v) Distributor.db.profile[info[#info]] = v end,
 			args = {
 				AutoAccept = {
 					type = "toggle",
-					name = L["Auto accept"],
-					desc = L["Automatically accepts encounters sent by players"],
+					name = L.options["Auto accept"],
+					desc = L.options["Automatically accepts encounters sent by players"],
 					order = 50,
 				},
 				first_desc = {
 					type = "description",
 					order = 75,
-					name = format(L["You can send encounters to the entire raid or to a player. You can check versions by typing |cffffd200/dxe %s|r or by opening the version checker from the pane"],L["version"]),
+					name = format(L.options["You can send encounters to the entire raid or to a player. You can check versions by typing |cffffd200/dxe %s|r or by opening the version checker from the pane"],L.options["version"]),
 				},
 				raid_desc = {
 					type = "description",
 					order = 90,
-					name = "\n"..L["If you want to send an encounter to the raid, select an encounter, and then press '|cffffd200Send to raid|r'"],
+					name = "\n"..L.options["If you want to send an encounter to the raid, select an encounter, and then press '|cffffd200Send to raid|r'"],
 				},
 				ListSelect = {
 					type = "select",
 					order = 100,
-					name = L["Select an encounter"],
+					name = L.options["Select an encounter"],
 					get = function() return ListSelect end,
 					set = function(info,value) ListSelect = value end,
 					values = function()
@@ -1649,7 +1649,7 @@ local function InitializeOptions()
 				},
 				DistributeToRaid = {
 					type = "execute",
-					name = L["Send to raid"],
+					name = L.options["Send to raid"],
 					order = 200,
 					func = function() Distributor:Distribute(ListSelect) end,
 					disabled = function() return GetNumRaidMembers() == 0 or not ListSelect  end,
@@ -1657,12 +1657,12 @@ local function InitializeOptions()
 				player_desc = {
 					type = "description",
 					order = 250,
-					name = "\n\n"..L["If you want to send an encounter to a player, select an encounter, select a player, and then press '|cffffd200Send to player|r'"],
+					name = "\n\n"..L.options["If you want to send an encounter to a player, select an encounter, select a player, and then press '|cffffd200Send to player|r'"],
 				},
 				PlayerSelect = {
 					type = "select",
 					order = 300,
-					name = L["Select a player"],
+					name = L.options["Select a player"],
 					get = function() return PlayerSelect end,
 					set = function(info,value) PlayerSelect = value end,
 					values = function()
@@ -1677,7 +1677,7 @@ local function InitializeOptions()
 				DistributeToPlayer = {
 					type = "execute",
 					order = 400,
-					name = L["Send to player"],
+					name = L.options["Send to player"],
 					func = function() Distributor:Distribute(ListSelect, "WHISPER", PlayerSelect) end,
 					disabled = function() return not PlayerSelect end,
 				},
@@ -1694,7 +1694,7 @@ local function InitializeOptions()
 	do
 		windows_group = {
 			type = "group",
-			name = L["Windows"],
+			name = L.options["Windows"],
 			order = 290,
 			childGroups = "tab",
 			args = {
@@ -1707,8 +1707,8 @@ local function InitializeOptions()
 						addon:UpdateWindowSettings()
 					end,
 					get = function(info) return unpack(db.profile.Windows.TitleBarColor) end,
-					name = L["Title Bar Color"],
-					desc = L["Title bar color used throughout the addon"],
+					name = L.options["Title Bar Color"],
+					desc = L.options["Title bar color used throughout the addon"],
 					hasAlpha = true,
 				},
 			},
@@ -1719,7 +1719,7 @@ local function InitializeOptions()
 
 		local proximity_group = {
 			type = "group",
-			name = L["Proximity"],
+			name = L.options["Proximity"],
 			order = 150,
 			get = function(info) return db.profile.Proximity[info[#info]] end,
 			set = function(info,v) db.profile.Proximity[info[#info]] = v; addon:UpdateProximitySettings() end,
@@ -1727,20 +1727,20 @@ local function InitializeOptions()
 				header_desc = {
 					type = "description",
 					order = 1,
-					name = L["The proximity window uses map coordinates of players to calculate distances. This relies on knowing the dimensions, in game yards, of each map. If the dimension of a map is not known, it will default to the closest range rounded up to 10, 11, or 18 game yards"].."\n",
+					name = L.options["The proximity window uses map coordinates of players to calculate distances. This relies on knowing the dimensions, in game yards, of each map. If the dimension of a map is not known, it will default to the closest range rounded up to 10, 11, or 18 game yards"].."\n",
 				},
 				AutoPopup = {
 					type = "toggle",
 					order = 50,
 					width = "full",
-					name = L["Auto Popup"],
-					desc = L["Automatically show the proximity window if the option is enabled in an encounter (Encounters > ... > Windows > Proximity)"],
+					name = L.options["Auto Popup"],
+					desc = L.options["Automatically show the proximity window if the option is enabled in an encounter (Encounters > ... > Windows > Proximity)"],
 				},
 				Range = {
 					type = "range",
 					order = 100,
-					name = L["Range"],
-					desc = L["The distance (game yards) a player has to be within to appear in the proximity window"],
+					name = L.options["Range"],
+					desc = L.options["The distance (game yards) a player has to be within to appear in the proximity window"],
 					min = 5,
 					max = 18,
 					step = 1,
@@ -1748,8 +1748,8 @@ local function InitializeOptions()
 				Delay = {
 					type = "range",
 					order = 200,
-					name = L["Delay"],
-					desc = L["The proximity window refresh rate (seconds). Increase to improve performance. |cff99ff330|r refreshes every frame"],
+					name = L.options["Delay"],
+					desc = L.options["The proximity window refresh rate (seconds). Increase to improve performance. |cff99ff330|r refreshes every frame"],
 					min = 0,
 					max = 1,
 					step = 0.05,
@@ -1757,8 +1757,8 @@ local function InitializeOptions()
 				BarAlpha = {
 					type = "range",
 					order = 250,
-					name = L["Bar Alpha"],
-					desc = L["Adjust the transparency of range bars"],
+					name = L.options["Bar Alpha"],
+					desc = L.options["Adjust the transparency of range bars"],
 					min = 0.1,
 					max = 1,
 					step = 0.1,
@@ -1766,13 +1766,13 @@ local function InitializeOptions()
 				Invert = {
 					type = "toggle",
 					order = 275,
-					name = L["Invert Bars"],
-					desc = L["Inverts all range bars"],
+					name = L.options["Invert Bars"],
+					desc = L.options["Inverts all range bars"],
 				},
 				ClassFilter = {
 					type = "multiselect",
 					order = 300,
-					name = L["Class Filter"],
+					name = L.options["Class Filter"],
 					get = function(info,v) return db.profile.Proximity.ClassFilter[v] end,
 					set = function(info,v,v2) db.profile.Proximity.ClassFilter[v] = v2 end,
 					values = LOCALIZED_CLASS_NAMES_MALE,
@@ -1811,17 +1811,17 @@ local function InitializeOptions()
 
 		local sounds_group = {
 			type = "group",
-			name = L["Sound Labels"],
+			name = L.options["Sound Labels"],
 			order = 295,
 			args = {
 				desc1 = {
 					type = "description",
-					name = L["You can change the sound labels (ALERT1, ALERT2, etc.) to any sound file in SharedMedia. First, select one to change"].."\n",
+					name = L.options["You can change the sound labels (ALERT1, ALERT2, etc.) to any sound file in SharedMedia. First, select one to change"].."\n",
 					order = 1,
 				},
 				identifier = {
 					type = "select",
-					name = L["Sound Label"],
+					name = L.options["Sound Label"],
 					order = 2,
 					get = function() return label end,
 					set = function(info,v) label = v end,
@@ -1829,8 +1829,8 @@ local function InitializeOptions()
 				},
 				reset = {
 					type = "execute",
-					name = L["Reset"],
-					desc = L["Sets the selected sound label back to its default value"],
+					name = L.options["Reset"],
+					desc = L.options["Sets the selected sound label back to its default value"],
 					func = function() 
 						if sound_defaults[label] then
 							db.profile.Sounds[label] = sound_defaults[label] 
@@ -1842,11 +1842,11 @@ local function InitializeOptions()
 				},
 				desc2 = {
 					type = "description",
-					name = "\n"..L["Now change the sound to what you want. Sounds can be tested by clicking on the speaker icons within the dropdown"].."\n",
+					name = "\n"..L.options["Now change the sound to what you want. Sounds can be tested by clicking on the speaker icons within the dropdown"].."\n",
 					order = 4,
 				},
 				choose = {
-					name = function() return format(L["Sound File for %s"],label) end,
+					name = function() return format(L.options["Sound File for %s"],label) end,
 					order = 5,
 					type = "select",
 					get = function(info) return sound_defaults[label] and db.profile.Sounds[label] or db.profile.CustomSounds[label] end,
@@ -1862,24 +1862,24 @@ local function InitializeOptions()
 				},
 				sound_label_header = {
 					type = "header",
-					name = L["Add Sound Label"],
+					name = L.options["Add Sound Label"],
 					order = 6,
 				},
 				add_desc = {
 					type = "description",
-					name = L["You can add your own sound label. Each sound label is associated with a certain sound file. Consult SharedMedia's documentation if you would like to add your own sound file. After adding a sound label, it will appear in the Sound Label list. You can then select a sound file to associate with it. Subsequently, the sound label will be available in the encounter options"],
+					name = L.options["You can add your own sound label. Each sound label is associated with a certain sound file. Consult SharedMedia's documentation if you would like to add your own sound file. After adding a sound label, it will appear in the Sound Label list. You can then select a sound file to associate with it. Subsequently, the sound label will be available in the encounter options"],
 					order = 7,
 				},
 				sound_label_input = {
 					type = "input",
-					name = L["Label name"],
+					name = L.options["Label name"],
 					order = 8,
 					get = function(info) return add_sound_label end,
 					set = function(info,v) add_sound_label = v end,
 				},
 				sound_label_add = {
 					type = "execute",
-					name = L["Add"],
+					name = L.options["Add"],
 					order = 9,
 					func = function()
 						db.profile.CustomSounds[add_sound_label] = "None"
@@ -1890,13 +1890,13 @@ local function InitializeOptions()
 				},
 				remove_desc = {
 					type = "description",
-					name = "\n"..L["You can remove custom sounds labels. Select a sound label from the dropdown and then click remove"],
+					name = "\n"..L.options["You can remove custom sounds labels. Select a sound label from the dropdown and then click remove"],
 					order = 9.5,
 				},
 				sound_label_list = {
 					type = "select",
 					order = 10,
-					name = L["Custom Sound Labels"],
+					name = L.options["Custom Sound Labels"],
 					get = function()
 						return remove_sound_label
 					end,
@@ -1911,7 +1911,7 @@ local function InitializeOptions()
 				},
 				sound_label_remove = {
 					type = "execute",
-					name = L["Remove"],
+					name = L.options["Remove"],
 					order = 11,
 					func = function()
 						db.profile.CustomSounds[remove_sound_label] = nil
