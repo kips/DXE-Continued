@@ -6,7 +6,7 @@ do
 		zone = L.zone["Ulduar"], 
 		name = L.npc_ulduar["Yogg-Saron"], 
 		triggers = {
-			yell = L.chat_msg_triggers_ulduar["^The time to strike at the head of the beast"],
+			yell = L.chat_ulduar["^The time to strike at the head of the beast"],
 			scan = {
 				33134, -- Sara
 				33288, -- Yogg-Saron
@@ -269,7 +269,7 @@ do
 				execute = {
 					-- Phase 2
 					{
-						"expect",{"#1#","find",L.chat_msg_triggers_ulduar["^I am the lucid dream"]},
+						"expect",{"#1#","find",L.chat_ulduar["^I am the lucid dream"]},
 						"tracing",{33288,33890}, -- Yogg-Saron, Brain of Yogg-Saron
 						"alert","portalcd",
 						"alert","crushertentaclewarn",
@@ -277,7 +277,7 @@ do
 					},
 					-- Phase 3
 					{
-						"expect",{"#1#","find",L.chat_msg_triggers_ulduar["^Look upon the true face"]},
+						"expect",{"#1#","find",L.chat_ulduar["^Look upon the true face"]},
 						"tracing",{33288}, -- Yogg-Saron
 						"quash","crushertentaclewarn",
 						"quash","inducewarn",
@@ -296,12 +296,12 @@ do
 				execute = {
 					-- Portal
 					{
-						"expect",{"#1#","find",L.chat_msg_triggers_ulduar["^Portals open"]},
+						"expect",{"#1#","find",L.chat_ulduar["^Portals open"]},
 						"alert","portalcd",
 					},
 					-- Weakened
 					{
-						"expect",{"#1#","find",L.chat_msg_triggers_ulduar["^The illusion shatters and a path"]},
+						"expect",{"#1#","find",L.chat_ulduar["^The illusion shatters and a path"]},
 						"alert","weakeneddur",
 						"quash","inducewarn",
 

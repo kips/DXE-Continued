@@ -10,7 +10,7 @@ do
 			scan = {
 				36855, -- Lady Deathwhisper
 			},
-			yell = L.chat_msg_triggers_citadel["^What is this disturbance"],
+			yell = L.chat_citadel["^What is this disturbance"],
 		},
 		userdata = {
 			culttime = {7,60,loop = false},

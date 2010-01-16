@@ -89,16 +89,16 @@ do
 				event = "CHAT_MSG_RAID_BOSS_EMOTE", 
 				execute = {
 					{
-						"expect",{"#1#","find",L.chat_msg_triggers_naxxramas["blinks away"]},
+						"expect",{"#1#","find",L.chat_naxxramas["blinks away"]},
 						"alert","blinkcd", 
 					},
 					{
-						"expect",{"#1#","find",L.chat_msg_triggers_naxxramas["teleports to the balcony"]},
+						"expect",{"#1#","find",L.chat_naxxramas["teleports to the balcony"]},
 						"quash","blinkcd",
 						"alert","teleportroomcd", 
 					},
 					{
-						"expect",{"#1#","find",L.chat_msg_triggers_naxxramas["teleports back into battle"]},
+						"expect",{"#1#","find",L.chat_naxxramas["teleports back into battle"]},
 						"alert","teleportbalccd", 
 					},
 				},

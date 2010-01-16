@@ -7,7 +7,7 @@ do
 		category = L.zone["Kalimdor"],
 		name = L.npc_kalimdor["Onyxia"], 
 		triggers = {
-			yell = L.chat_msg_triggers_kalimdor["^How fortuitous. Usually, I must leave my"],
+			yell = L.chat_kalimdor["^How fortuitous. Usually, I must leave my"],
 			scan = {
 				10184, -- Onyxia
 			}, 
@@ -81,7 +81,7 @@ do
 				event = "EMOTE",
 				execute = {
 					{
-						"expect",{"#1#","find",L.chat_msg_triggers_kalimdor["deep breath"]},
+						"expect",{"#1#","find",L.chat_kalimdor["deep breath"]},
 						"alert","deepbreathwarn",
 					},
 				},

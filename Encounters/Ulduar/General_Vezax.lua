@@ -293,7 +293,7 @@ do
 				event = "EMOTE",
 				execute = {
 					{
-						"expect",{"#1#","find",L.chat_msg_triggers_ulduar["^A cloud of saronite vapors"]},
+						"expect",{"#1#","find",L.chat_ulduar["^A cloud of saronite vapors"]},
 						"alert","vaporcd",
 					},
 				},

@@ -13,8 +13,8 @@ do
 				15930, -- Feugen
 			},
 			yell = {
-        L.chat_msg_triggers_naxxramas["Stalagg crush you!"],
-        L.chat_msg_triggers_naxxramas["Feed you to master!"]
+        L.chat_naxxramas["Stalagg crush you!"],
+        L.chat_naxxramas["Feed you to master!"]
       },
 		},
 		onactivate = {
@@ -107,7 +107,7 @@ do
 				event = "CHAT_MSG_RAID_BOSS_EMOTE", 
 				execute = {
 					{
-						"expect",{"#1#","find",L.chat_msg_triggers_naxxramas["overloads"]},
+						"expect",{"#1#","find",L.chat_naxxramas["overloads"]},
 						"set",{dead = "INCR|1"},
 						"expect",{"<dead>",">=","2"},
 						"quash","tankthrowcd",

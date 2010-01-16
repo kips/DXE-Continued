@@ -86,12 +86,12 @@ do
 				event = "CHAT_MSG_RAID_BOSS_EMOTE", 
 				execute = {
 					{
-						"expect",{"#1#","find",L.chat_msg_triggers_naxxramas["lifts"]},
+						"expect",{"#1#","find",L.chat_naxxramas["lifts"]},
 						"alert","airphasedur", 
 						"quash","lifedraincd",
 					},
 					{
-						"expect",{"#1#","find",L.chat_msg_triggers_naxxramas["deep"]},
+						"expect",{"#1#","find",L.chat_naxxramas["deep"]},
 						"quash","airphasedur",
 						"alert","deepbreathwarn", 
 					},

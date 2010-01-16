@@ -8,7 +8,7 @@ do
 		name = L.npc_citadel["Valithria"], 
 		triggers = {
 			scan = 36789,
-			yell = L.chat_msg_triggers_citadel["^Heroes, lend me your aid"],
+			yell = L.chat_citadel["^Heroes, lend me your aid"],
 		},
 		onactivate = {
 			combatstop = true,
@@ -56,7 +56,7 @@ do
 				event = "YELL",
 				execute = {
 					{
-						"expect",{"#1#","find",L.chat_msg_triggers_citadel["^I have opened a portal into the Dream"]},
+						"expect",{"#1#","find",L.chat_citadel["^I have opened a portal into the Dream"]},
 						"alert","portalwarn",
 						"alert","portalcd",
 					},

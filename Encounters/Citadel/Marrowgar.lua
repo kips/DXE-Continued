@@ -8,7 +8,7 @@ do
 		name = L.npc_citadel["Marrowgar"], 
 		triggers = {
 			scan = {36612}, -- Lord Marrowgar 
-			yell = L.chat_msg_triggers_citadel["^The Scourge will wash over this world"],
+			yell = L.chat_citadel["^The Scourge will wash over this world"],
 		},
 		onactivate = {
 			combatstop = true,

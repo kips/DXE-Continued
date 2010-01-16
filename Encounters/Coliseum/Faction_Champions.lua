@@ -65,7 +65,7 @@ do
 			combatstart = true,
 			combatstop = true,
 			sortedtracing = npc_list,
-			defeat = L.chat_msg_triggers_coliseum["^A shallow and tragic victory"],
+			defeat = L.chat_coliseum["^A shallow and tragic victory"],
 		},
 		alerts = {
 			bloodlustwarn = {

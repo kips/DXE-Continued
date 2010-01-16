@@ -13,7 +13,7 @@ do
 			tracerstart = true,
 			tracerstop = true,
 			combatstop = true,
-			defeat = L.chat_msg_triggers_ulduar["I am released from his grasp"],
+			defeat = L.chat_ulduar["I am released from his grasp"],
 		},
 		userdata = {},
 		onstart = {

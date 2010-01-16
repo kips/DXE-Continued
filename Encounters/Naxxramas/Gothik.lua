@@ -9,8 +9,8 @@ do
 		triggers = {
 			scan = 16060, -- Gothik the Harvester
 			yell = {
-        L.chat_msg_triggers_naxxramas["^Foolishly you have sought"],
-        L.chat_msg_triggers_naxxramas["^Teamanare shi rikk"]
+        L.chat_naxxramas["^Foolishly you have sought"],
+        L.chat_naxxramas["^Teamanare shi rikk"]
       },
 		},
 		onactivate = {

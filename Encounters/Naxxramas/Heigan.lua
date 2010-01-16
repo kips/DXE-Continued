@@ -58,7 +58,7 @@ do
 				event = "CHAT_MSG_MONSTER_YELL", 
 				execute = {
 					{
-						"expect",{"#1#","find",L.chat_msg_triggers_naxxramas["^The end is upon you"]},
+						"expect",{"#1#","find",L.chat_naxxramas["^The end is upon you"]},
 						"alert","danceendscd", 
 						"scheduletimer",{"backonfloor", 45},
 					},

@@ -146,7 +146,7 @@ do
 				event = "CHAT_MSG_MONSTER_YELL", 
 				execute = {
 					{
-						"expect",{"#1#","find",L.chat_msg_triggers_northrend["I had hoped to end your lives quickly"]},
+						"expect",{"#1#","find",L.chat_northrend["I had hoped to end your lives quickly"]},
 						"quash","vortexdur",
 						"quash","vortexcd",
 						"quash","powersparkcd",
@@ -154,7 +154,7 @@ do
 						"alert","deepbreathwarn",
 					},
 					{
-						"expect",{"#1#", "find", L.chat_msg_triggers_northrend["ENOUGH!"]},
+						"expect",{"#1#", "find", L.chat_northrend["ENOUGH!"]},
 						"quash","deepbreathwarn",
 						"set",{phase = 3},
 					},
@@ -182,7 +182,7 @@ do
 				event = "WHISPER",
 				execute = {
 					{
-						"expect",{"#1#","find",L.chat_msg_triggers_northrend["fixes his eyes on you!$"]},
+						"expect",{"#1#","find",L.chat_northrend["fixes his eyes on you!$"]},
 						"alert","presurgewarn",
 					},
 				},

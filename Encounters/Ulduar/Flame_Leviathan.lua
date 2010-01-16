@@ -7,7 +7,7 @@ do
 		name = L.npc_ulduar["Flame Leviathan"], 
 		triggers = {
 			scan = 33113, -- Flame Leviathan
-			yell = L.chat_msg_triggers_ulduar["^Hostile entities detected. Threat assessment protocol active"],
+			yell = L.chat_ulduar["^Hostile entities detected. Threat assessment protocol active"],
 		},
 		onactivate = {
 			tracing = {33113}, -- Flame Leviathan
@@ -103,12 +103,12 @@ do
 				event = "EMOTE",
 				execute = {
 					{
-						"expect",{"#1#","find",L.chat_msg_triggers_ulduar["pursues"]},
+						"expect",{"#1#","find",L.chat_ulduar["pursues"]},
 						"expect",{"#5#","==","&playername&"},
 						"alert","pursuedurself",
 					},
 					{
-						"expect",{"#1#","find",L.chat_msg_triggers_ulduar["pursues"]},
+						"expect",{"#1#","find",L.chat_ulduar["pursues"]},
 						"expect",{"#5#","~=","&playername&"},
 						"alert","pursuedurothers",
 					},

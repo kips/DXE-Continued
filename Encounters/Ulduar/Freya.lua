@@ -21,7 +21,7 @@ do
 			tracerstart = true,
 			tracerstop = true,
 			combatstop = true,
-			defeat = L.chat_msg_triggers_ulduar["^His hold on me dissipates"],
+			defeat = L.chat_ulduar["^His hold on me dissipates"],
 		},
 		userdata = {
 			spawntime = {10,60,loop=false},
@@ -169,20 +169,20 @@ do
 				execute = {
 					-- Ancient Conservator
 					{
-						"expect",{"#1#","find",L.chat_msg_triggers_ulduar["^Eonar, your servant"]},
+						"expect",{"#1#","find",L.chat_ulduar["^Eonar, your servant"]},
 						"tracing",{32906,33203}, -- Freya, Ancient Conservator
 						"quash","spawncd",
 						"alert","spawncd",
 					},
 					-- Detonating Lashers
 					{
-						"expect",{"#1#","find",L.chat_msg_triggers_ulduar["^The swarm of the elements"]},
+						"expect",{"#1#","find",L.chat_ulduar["^The swarm of the elements"]},
 						"quash","spawncd",
 						"alert","spawncd",
 					},
 					-- Elementals
 					{
-						"expect",{"#1#","find",L.chat_msg_triggers_ulduar["^Children, assist"]},
+						"expect",{"#1#","find",L.chat_ulduar["^Children, assist"]},
 						"tracing",{32906,33202,32919,32916}, -- Freya, Ancient Water Spirit, Storm Lasher, Snap Lasher
 						"quash","spawncd",
 						"alert","spawncd",
@@ -195,7 +195,7 @@ do
 				event = "EMOTE",
 				execute = {
 					{
-						"expect",{"#1#","find",L.chat_msg_triggers_ulduar["begins to grow!$"]},
+						"expect",{"#1#","find",L.chat_ulduar["begins to grow!$"]},
 						"alert","giftwarn",
 					},
 				},

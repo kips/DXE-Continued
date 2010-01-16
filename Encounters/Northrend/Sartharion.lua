@@ -156,7 +156,7 @@ do
 				event = "CHAT_MSG_RAID_BOSS_EMOTE", 
 				execute = {
 					{
-						"expect",{"#1#","find",L.chat_msg_triggers_northrend["lava surrounding"]},
+						"expect",{"#1#","find",L.chat_northrend["lava surrounding"]},
 						"alert","lavawallwarn",
 						"alert","lavawallcd", 
 					},
@@ -168,19 +168,19 @@ do
 				execute = {
 					-- Tenebron
 					{
-						"expect",{"#1#","find",L.chat_msg_triggers_northrend["It is amusing to watch you struggle. Very well, witness how it is done."]},
+						"expect",{"#1#","find",L.chat_northrend["It is amusing to watch you struggle. Very well, witness how it is done."]},
 						"set",{tenebronarrived = 1},
 						"scheduletimer",{"updatetracers",0},
 					},
 					-- Shadron
 					{
-						"expect",{"#1#","find",L.chat_msg_triggers_northrend["I will take pity on you, Sartharion, just this once"]},
+						"expect",{"#1#","find",L.chat_northrend["I will take pity on you, Sartharion, just this once"]},
 						"set",{shadronarrived = 1},
 						"scheduletimer",{"updatetracers",0},
 					},
 					-- Vesperon
 					{
-						"expect",{"#1#","find",L.chat_msg_triggers_northrend["Father was right about you, Sartharion, you ARE a weakling."]},
+						"expect",{"#1#","find",L.chat_northrend["Father was right about you, Sartharion, you ARE a weakling."]},
 						"set",{vesperonarrived = 1},
 						"scheduletimer",{"updatetracers",0},
 					},

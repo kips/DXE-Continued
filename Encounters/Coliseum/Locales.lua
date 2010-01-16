@@ -10,7 +10,7 @@ local L = AL:NewLocale("DXE", "enUS", true)
 if L then
 
 -- Chat triggers
---@localization(locale="enUS", format="lua_additive_table", same-key-is-true=true, namespace="chat_msg_triggers_coliseum")@
+--@localization(locale="enUS", format="lua_additive_table", same-key-is-true=true, namespace="chat_coliseum")@
 -- NPC names
 --@localization(locale="enUS", format="lua_additive_table", same-key-is-true=true, namespace="npc_coliseum")@
 if GetLocale() == "enUS" or GetLocale() == "enGB" then return end
@@ -20,7 +20,7 @@ local L = AL:NewLocale("DXE", "deDE")
 if L then
 
 -- Chat triggers
---@localization(locale="deDE", format="lua_additive_table", namespace="chat_msg_triggers_coliseum")@
+--@localization(locale="deDE", format="lua_additive_table", namespace="chat_coliseum")@
 -- NPC names
 --@localization(locale="deDE", format="lua_additive_table", namespace="npc_coliseum")@
 return
@@ -30,7 +30,7 @@ local L = AL:NewLocale("DXE", "esES")
 if L then
 
 -- Chat triggers
---@localization(locale="esES", format="lua_additive_table", namespace="chat_msg_triggers_coliseum")@
+--@localization(locale="esES", format="lua_additive_table", namespace="chat_coliseum")@
 -- NPC names
 --@localization(locale="esES", format="lua_additive_table", namespace="npc_coliseum")@
 return
@@ -40,7 +40,7 @@ local L = AL:NewLocale("DXE", "esMX")
 if L then
 
 -- Chat triggers
---@localization(locale="esMX", format="lua_additive_table", namespace="chat_msg_triggers_coliseum")@
+--@localization(locale="esMX", format="lua_additive_table", namespace="chat_coliseum")@
 -- NPC names
 --@localization(locale="esMX", format="lua_additive_table", namespace="npc_coliseum")@
 return
@@ -50,7 +50,7 @@ local L = AL:NewLocale("DXE", "frFR")
 if L then
 	
 -- Chat triggers
---@localization(locale="frFR", format="lua_additive_table", namespace="chat_msg_triggers_coliseum")@
+--@localization(locale="frFR", format="lua_additive_table", namespace="chat_coliseum")@
 -- NPC names
 --@localization(locale="frFR", format="lua_additive_table", namespace="npc_coliseum")@
 return
@@ -60,7 +60,7 @@ local L = AL:NewLocale("DXE", "koKR")
 if L then
 
 -- Chat triggers
---@localization(locale="koKR", format="lua_additive_table", namespace="chat_msg_triggers_coliseum")@
+--@localization(locale="koKR", format="lua_additive_table", namespace="chat_coliseum")@
 -- NPC names
 --@localization(locale="koKR", format="lua_additive_table", namespace="npc_coliseum")@
 return
@@ -70,7 +70,7 @@ local L = AL:NewLocale("DXE", "ruRU")
 if L then
 
 -- Chat triggers
---@localization(locale="ruRU", format="lua_additive_table", namespace="chat_msg_triggers_coliseum")@
+--@localization(locale="ruRU", format="lua_additive_table", namespace="chat_coliseum")@
 -- NPC names
 --@localization(locale="ruRU", format="lua_additive_table", namespace="npc_coliseum")@
 return
@@ -80,7 +80,7 @@ local L = AL:NewLocale("DXE", "zhCN")
 if L then
 
 -- Chat triggers
---@localization(locale="zhCN", format="lua_additive_table", namespace="chat_msg_triggers_coliseum")@
+--@localization(locale="zhCN", format="lua_additive_table", namespace="chat_coliseum")@
 -- NPC names
 --@localization(locale="zhCN", format="lua_additive_table", namespace="npc_coliseum")@
 return
@@ -90,7 +90,7 @@ local L = AL:NewLocale("DXE", "zhTW")
 if L then
 
 -- Chat triggers
---@localization(locale="zhTW", format="lua_additive_table", namespace="chat_msg_triggers_coliseum")@
+--@localization(locale="zhTW", format="lua_additive_table", namespace="chat_coliseum")@
 -- NPC names
 --@localization(locale="zhTW", format="lua_additive_table", namespace="npc_coliseum")@
 return

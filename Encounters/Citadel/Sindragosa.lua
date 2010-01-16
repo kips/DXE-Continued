@@ -8,7 +8,7 @@ do
 		name = L.npc_citadel["Sindragosa"], 
 		triggers = {
 			scan = {36853}, -- Sindragosa
-			yell = L.chat_msg_triggers_citadel["^You are fools to have come to this place"],
+			yell = L.chat_citadel["^You are fools to have come to this place"],
 		},
 		onactivate = {
 			combatstop = true,
@@ -151,14 +151,14 @@ do
 				execute = {
 					-- Air phase
 					{
-						"expect",{"#1#","find",L.chat_msg_triggers_citadel["^Your incursion ends here"]},
+						"expect",{"#1#","find",L.chat_citadel["^Your incursion ends here"]},
 						"quash","aircd",
 						"alert","aircd",
 						"alert","airdur",
 					},
 					-- Last Phase
 					{
-						"expect",{"#1#","find",L.chat_msg_triggers_citadel["^Now, feel my master's limitless power"]},
+						"expect",{"#1#","find",L.chat_citadel["^Now, feel my master's limitless power"]},
 						"quash","aircd",
 					},
 				},
