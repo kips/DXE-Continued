@@ -29,9 +29,9 @@ do
 		},
 		alerts = {
 			enragecd = {
-				varname = L.alerts["Enrage"],
+				varname = L.alert["Enrage"],
 				type = "dropdown",
-				text = L.alerts["Enrage"],
+				text = L.alert["Enrage"],
 				time = 360,
 				flashtime = 10,
 				sound = "ALERT6",
@@ -40,9 +40,9 @@ do
 				icon = ST[12317],
 			},
 			bigbangwarn = {
-				varname = format(L.alerts["%s Cast"],SN[64443]),
+				varname = format(L.alert["%s Cast"],SN[64443]),
 				type = "centerpopup",
-				text = format(L.alerts["%s Cast"],SN[64443]),
+				text = format(L.alert["%s Cast"],SN[64443]),
 				time = 8,
 				flashtime = 8,
 				sound = "ALERT5",
@@ -52,9 +52,9 @@ do
 				icon = ST[64443],
 			},
 			bigbangcd = {
-				varname = format(L.alerts["%s Cooldown"],SN[64443]),
+				varname = format(L.alert["%s Cooldown"],SN[64443]),
 				type = "dropdown",
-				text = format(L.alerts["Next %s"],SN[64443]),
+				text = format(L.alert["Next %s"],SN[64443]),
 				time = "<bigbangtime>",
 				flashtime = 10,
 				sound = "ALERT2",
@@ -63,9 +63,9 @@ do
 				icon = ST[64443],
 			},
 			cosmicsmashwarn = {
-				varname = format(L.alerts["%s ETA"],SN[62301]),
+				varname = format(L.alert["%s ETA"],SN[62301]),
 				type = "centerpopup",
-				text = format(L.alerts["%s Hits"],SN[62301]),
+				text = format(L.alert["%s Hits"],SN[62301]),
 				time = 5,
 				flashtime = 5,
 				sound = "ALERT1",
@@ -75,9 +75,9 @@ do
 				icon = ST[62311],
 			},
 			cosmicsmashcd = {
-				varname = format(L.alerts["%s Cooldown"],SN[62301]),
+				varname = format(L.alert["%s Cooldown"],SN[62301]),
 				type = "dropdown",
-				text = format(L.alerts["Next %s"],SN[62301]),
+				text = format(L.alert["Next %s"],SN[62301]),
 				time = "<cosmicsmashtime>",
 				flashtime = 5,
 				sound = "ALERT3",
@@ -86,9 +86,9 @@ do
 				icon = ST[62311],
 			},
 			punchcd = {
-				varname = format(L.alerts["%s Cooldown"],SN[64412]),
+				varname = format(L.alert["%s Cooldown"],SN[64412]),
 				type = "dropdown",
-				text = format(L.alerts["Next %s"],SN[64412]),
+				text = format(L.alert["Next %s"],SN[64412]),
 				time = 15,
 				flashtime = 5,
 				color1 = "PURPLE",
@@ -97,7 +97,7 @@ do
 				counter = true,
 			},
 			punchwarn = {
-				varname = format(L.alerts["%s Warning"],SN[64412]),
+				varname = format(L.alert["%s Warning"],SN[64412]),
 				type = "simple",
 				text = "<punchtext>",
 				time = 3,
@@ -151,7 +151,7 @@ do
 				execute = {
 					{
 						"expect",{"#4#","==","&playerguid&"},
-						"set",{punchtext = format("%s: %s!",SN[64412],L.alerts["YOU"])},
+						"set",{punchtext = format("%s: %s!",SN[64412],L.alert["YOU"])},
 						"alert","punchwarn",
 					},
 					{
@@ -169,12 +169,12 @@ do
 				execute = {
 					{
 						"expect",{"#4#","==","&playerguid&"},
-						"set",{punchtext = format("%s: %s! %s!",SN[64412],L.alerts["YOU"],format(L.alerts["%s Stacks"],"#11#"))},
+						"set",{punchtext = format("%s: %s! %s!",SN[64412],L.alert["YOU"],format(L.alert["%s Stacks"],"#11#"))},
 						"alert","punchwarn",
 					},
 					{
 						"expect",{"#4#","~=","&playerguid&"},
-						"set",{punchtext = format("%s: #5#! %s!",SN[64412],format(L.alerts["%s Stacks"],"#11#")) },
+						"set",{punchtext = format("%s: #5#! %s!",SN[64412],format(L.alert["%s Stacks"],"#11#")) },
 						"alert","punchwarn",
 					},
 				},

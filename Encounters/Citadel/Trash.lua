@@ -6,7 +6,7 @@ do
 		key = "icctrash", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
-		name = format(L.alerts["%s (T)"],L.npc_citadel["Deathbound Ward"]), 
+		name = format(L.alert["%s (T)"],L.npc_citadel["Deathbound Ward"]), 
 		triggers = {
 			scan = {
 				37007, -- Deathbound Ward
@@ -19,9 +19,9 @@ do
 		},
 		alerts = {
 			disruptshoutwarn = {
-				varname = format(L.alerts["%s Cast"],SN[71022]),
+				varname = format(L.alert["%s Cast"],SN[71022]),
 				type = "centerpopup",
-				text = format(L.alerts["%s Cast"],SN[71022]),
+				text = format(L.alert["%s Cast"],SN[71022]),
 				time = 3,
 				flashtime = 3,
 				color1 = "ORANGE",
@@ -67,7 +67,7 @@ do
 		execute = {
 			{
 				"expect",{"#4#","==","&playerguid&"},
-				"set",{mortaltext = format("%s: %s!",SN[71127],L.alerts["YOU"])},
+				"set",{mortaltext = format("%s: %s!",SN[71127],L.alert["YOU"])},
 				"alert","mortalwarn",
 			},
 			{
@@ -85,21 +85,21 @@ do
 		execute = {
 			{
 				"expect",{"#4#","==","&playerguid&"},
-				"set",{mortaltext = format("%s: %s! %s!",SN[71127],L.alerts["YOU"],format(L.alerts["%s Stacks"],"#11#"))},
+				"set",{mortaltext = format("%s: %s! %s!",SN[71127],L.alert["YOU"],format(L.alert["%s Stacks"],"#11#"))},
 				"alert","mortalwarn",
 			},
 			{
 				"expect",{"#4#","~=","&playerguid&"},
-				"set",{mortaltext = format("%s: #5#! %s!",SN[71127],format(L.alerts["%s Stacks"],"#11#")) },
+				"set",{mortaltext = format("%s: #5#! %s!",SN[71127],format(L.alert["%s Stacks"],"#11#")) },
 				"alert","mortalwarn",
 			},
 		},
 	}
 
 	local decimatewarn = {
-		varname = format(L.alerts["%s Cast"],SN[71123]),
+		varname = format(L.alert["%s Cast"],SN[71123]),
 		type = "centerpopup",
-		text = format(L.alerts["%s Cast"],SN[71123]),
+		text = format(L.alert["%s Cast"],SN[71123]),
 		time = 3,
 		flashtime = 3,
 		color1 = "PURPLE",
@@ -108,7 +108,7 @@ do
 		icon = ST[71123],
 	}
 	local mortalwarn = {
-		varname = format(L.alerts["%s Warning"],SN[71127]),
+		varname = format(L.alert["%s Warning"],SN[71127]),
 		type = "simple",
 		text = "<mortaltext>",
 		time = 3,
@@ -122,7 +122,7 @@ do
 			key = "icctrashtwo",
 			zone = L.zone["Icecrown Citadel"],
 			category = L.zone["Citadel"],
-			name = format(L.alerts["%s (T)"],L.npc_citadel["Stinky"]),
+			name = format(L.alert["%s (T)"],L.npc_citadel["Stinky"]),
 			triggers = {
 				scan = {
 					37025, -- Stinky
@@ -161,7 +161,7 @@ do
 			key = "icctrashthree",
 			zone = L.zone["Icecrown Citadel"],
 			category = L.zone["Citadel"],
-			name = format(L.alerts["%s (T)"],L.npc_citadel["Precious"]),
+			name = format(L.alert["%s (T)"],L.npc_citadel["Precious"]),
 			triggers = {
 				scan = {
 					37217, -- Precious
@@ -182,9 +182,9 @@ do
 				decimatewarn = decimatewarn,
 				mortalwarn = mortalwarn,
 				awakencd = {
-					varname = format(L.alerts["%s Cooldown"],SN[71159]),
+					varname = format(L.alert["%s Cooldown"],SN[71159]),
 					type = "dropdown",
-					text = format(L.alerts["%s Cooldown"],SN[71159]),
+					text = format(L.alert["%s Cooldown"],SN[71159]),
 					time = "<awakentime>",
 					flashtime = 10,
 					color1 = "GREY",

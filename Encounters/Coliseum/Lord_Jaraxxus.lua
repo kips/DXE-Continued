@@ -49,8 +49,8 @@ do
 		},
 		alerts = {
 			enragecd = {
-				varname = L.alerts["Enrage"],
-				text = L.alerts["Enrage"],
+				varname = L.alert["Enrage"],
+				text = L.alert["Enrage"],
 				type = "dropdown",
 				time = 600,
 				flashtime = 10,
@@ -58,8 +58,8 @@ do
 				icon = ST[12317],
 			},
 			legionflameself = {
-				varname = format(L.alerts["%s on self"],SN[68123]),
-				text = format("%s: %s!",SN[68123],L.alerts["YOU"]),
+				varname = format(L.alert["%s on self"],SN[68123]),
+				text = format("%s: %s!",SN[68123],L.alert["YOU"]),
 				type = "centerpopup",
 				time = 8, -- +2 seconds because it falls off and then reapplies
 				flashtime = 8,
@@ -70,8 +70,8 @@ do
 				icon = ST[68123],
 			},
 			legionflamecd = {
-				varname = format(L.alerts["%s Cooldown"],SN[68123]),
-				text = format(L.alerts["%s Cooldown"],SN[68123]),
+				varname = format(L.alert["%s Cooldown"],SN[68123]),
+				text = format(L.alert["%s Cooldown"],SN[68123]),
 				type = "dropdown",
 				time = "<flametime>",
 				flashtime = 5,
@@ -79,8 +79,8 @@ do
 				icon = ST[68123],
 			},
 			legionflameproximitywarn = {
-				varname = format(L.alerts["%s Proximity Warning"],SN[68123]),
-				text = format("%s: #5#! %s!",SN[68123],L.alerts["MOVE AWAY"]),
+				varname = format(L.alert["%s Proximity Warning"],SN[68123]),
+				text = format("%s: #5#! %s!",SN[68123],L.alert["MOVE AWAY"]),
 				type = "simple",
 				time = 2,
 				color1 = "GOLD",
@@ -89,8 +89,8 @@ do
 				flashscreen = true,
 			},
 			fleshself = {
-				varname = format(L.alerts["%s on self"],SN[67051]),
-				text = format("%s: %s!",SN[67051],L.alerts["YOU"]),
+				varname = format(L.alert["%s on self"],SN[67051]),
+				text = format("%s: %s!",SN[67051],L.alert["YOU"]),
 				type = "centerpopup",
 				time = 12,
 				flashtime = 12,
@@ -101,7 +101,7 @@ do
 				icon = ST[67051],
 			},
 			fleshwarn = {
-				varname = format(L.alerts["%s on others"],SN[67051]),
+				varname = format(L.alert["%s on others"],SN[67051]),
 				text = format("%s: #5#!",SN[67051]),
 				type = "centerpopup",
 				time = 12,
@@ -110,8 +110,8 @@ do
 				icon = ST[67051],
 			},
 			fleshcd = {
-				varname = format(L.alerts["%s Cooldown"],SN[67051]),
-				text = format(L.alerts["%s Cooldown"],SN[67051]),
+				varname = format(L.alert["%s Cooldown"],SN[67051]),
+				text = format(L.alert["%s Cooldown"],SN[67051]),
 				type = "dropdown",
 				time = "<fleshtime>",
 				flashtime = 5,
@@ -119,8 +119,8 @@ do
 				icon = ST[67051],
 			},
 			eruptioncd = {
-				varname = format(L.alerts["%s Cooldown"],SN[67901]),
-				text = format(L.alerts["Next %s"],SN[67901]),
+				varname = format(L.alert["%s Cooldown"],SN[67901]),
+				text = format(L.alert["Next %s"],SN[67901]),
 				type = "dropdown",
 				time = "<eruptiontime>",
 				flashtime = 10,
@@ -128,8 +128,8 @@ do
 				icon = ST[67901],
 			},
 			portalcd = {
-				varname = format(L.alerts["%s Cooldown"],SN[67898]),
-				text = format(L.alerts["Next %s"],SN[67898]),
+				varname = format(L.alert["%s Cooldown"],SN[67898]),
+				text = format(L.alert["Next %s"],SN[67898]),
 				type = "dropdown",
 				time = "<portaltime>",
 				flashtime = 5,
@@ -137,8 +137,8 @@ do
 				icon = ST[67898],
 			},
 			netherpowerwarn = {
-				varname = format(L.alerts["%s Warning"],SN[66228]),
-				text = format("%s! %s!",SN[66228],L.alerts["DISPEL"]),
+				varname = format(L.alert["%s Warning"],SN[66228]),
+				text = format("%s! %s!",SN[66228],L.alert["DISPEL"]),
 				type = "simple",
 				time = 3,
 				color1 = "WHITE",
@@ -146,8 +146,8 @@ do
 				icon = ST[66228],
 			},
 			mistresswarn = {
-				varname = format(L.alerts["%s Timer"],L.npc_coliseum["Mistress of Pain"]),
-				text = format(L.alerts["%s Spawns"],L.npc_coliseum["Mistress of Pain"]).."!",
+				varname = format(L.alert["%s Timer"],L.npc_coliseum["Mistress of Pain"]),
+				text = format(L.alert["%s Spawns"],L.npc_coliseum["Mistress of Pain"]).."!",
 				type = "centerpopup",
 				time = "<mistresstime>",
 				color1 = "TAN",
@@ -155,8 +155,8 @@ do
 			},
 			kissselfdur = {
 				type = "centerpopup",
-				varname = format(L.alerts["%s on self"],SN[67907]),
-				text = format("%s: %s! %s!",SN[67907],L.alerts["YOU"],L.alerts["CAREFUL"]),
+				varname = format(L.alert["%s on self"],SN[67907]),
+				text = format("%s: %s! %s!",SN[67907],L.alert["YOU"],L.alert["CAREFUL"]),
 				time = 15,
 				flashtime = 15,
 				color1 = "CYAN",
@@ -166,8 +166,8 @@ do
 			},
 			felinfernowarn = {
 				type = "simple",
-				varname = format(L.alerts["%s on self"],SN[68718]),
-				text = format("%s: %s! %s!",SN[68718],L.alerts["YOU"],L.alerts["MOVE AWAY"]),
+				varname = format(L.alert["%s on self"],SN[68718]),
+				text = format("%s: %s! %s!",SN[68718],L.alert["YOU"],L.alert["MOVE AWAY"]),
 				time = 3,
 				sound = "ALERT7",
 				flashscreen = true,
@@ -181,7 +181,7 @@ do
 				unit = "#5#",
 				persist = 3,
 				action = "AWAY",
-				msg = L.alerts["MOVE AWAY"],
+				msg = L.alert["MOVE AWAY"],
 				spell = SN[68123],
 				sound = "ALERT8",
 			},
@@ -204,9 +204,9 @@ do
 		},
 		announces = {
 			flamesay = {
-				varname = format(L.alerts["Say %s on self"],SN[68123]),
+				varname = format(L.alert["Say %s on self"],SN[68123]),
 				type = "SAY",
-				msg = format(L.alerts["%s on Me"],SN[68123]).."!",
+				msg = format(L.alert["%s on Me"],SN[68123]).."!",
 			},
 		},
 		events = {

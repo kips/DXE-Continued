@@ -136,4 +136,3 @@ local npc_northrend = AL:NewLocale("DXE NPC Northrend", "zhTW")
 AL:GetLocale("DXE").npc_northrend = AL:GetLocale("DXE NPC Northrend")
 return
 end
-

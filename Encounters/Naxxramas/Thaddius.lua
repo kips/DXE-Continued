@@ -50,9 +50,9 @@ do
 		},
 		alerts = {
 			enragecd = {
-				varname = L.alerts["Enrage"],
+				varname = L.alert["Enrage"],
 				type = "dropdown", 
-				text = L.alerts["Enrage"],
+				text = L.alert["Enrage"],
 				time = 360, 
 				flashtime = 5, 
 				sound = "ALERT2", 
@@ -60,9 +60,9 @@ do
 				icon = ST[12317],
 			},
 			tankthrowcd = {
-				varname = format(L.alerts["%s Cooldown"],L.alerts["Tank Throw"]),
+				varname = format(L.alert["%s Cooldown"],L.alert["Tank Throw"]),
 				type = "dropdown", 
-				text = format(L.alerts["Next %s"],L.alerts["Tank Throw"]),
+				text = format(L.alert["Next %s"],L.alert["Tank Throw"]),
 				time = 20.6, 
 				flashtime = 3, 
 				sound = "ALERT2", 
@@ -70,9 +70,9 @@ do
 				icon = ST[52272],
 			},
 			polarityshiftwarn = {
-				varname = format(L.alerts["%s Cast"],SN[28089]),
+				varname = format(L.alert["%s Cast"],SN[28089]),
 				type = "centerpopup", 
-				text = format(L.alerts["%s Cast"],SN[28089]),
+				text = format(L.alert["%s Cast"],SN[28089]),
 				time = 3, 
 				flashtime = 3, 
 				sound = "ALERT1", 

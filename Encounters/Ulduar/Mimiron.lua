@@ -7,7 +7,7 @@ do
 		zone = L.zone["Ulduar"], 
 		name = L.npc_ulduar["Mimiron"], 
 		triggers = {
-			yell = {L.chat_ulduar["^We haven't much time, friends"],L.alerts["^Self%-destruct sequence initiated"]},
+			yell = {L.chat_ulduar["^We haven't much time, friends"],L.alert["^Self%-destruct sequence initiated"]},
 			scan = {
 				33432, -- Leviathan MK II
 				33350, -- Mimiron
@@ -90,8 +90,8 @@ do
 		alerts = {
 			flamesuppressantwarn = {
 				type = "centerpopup",
-				varname = format(L.alerts["%s Cast"],SN[64570]),
-				text = format(L.alerts["%s Cast"],SN[64570]),
+				varname = format(L.alert["%s Cast"],SN[64570]),
+				text = format(L.alert["%s Cast"],SN[64570]),
 				time = 2,
 				sound = "ALERT5",
 				color1 = "TEAL",
@@ -99,8 +99,8 @@ do
 			},
 			flamesuppressantcd = {
 				type = "dropdown",
-				varname = format(L.alerts["%s Cooldown"],SN[64570]),
-				text = format(L.alerts["%s Cooldown"],SN[64570]),
+				varname = format(L.alert["%s Cooldown"],SN[64570]),
+				text = format(L.alert["%s Cooldown"],SN[64570]),
 				time = 60,
 				flashtime = 5,
 				color1 = "INDIGO",
@@ -108,8 +108,8 @@ do
 			},
 			frostbombwarn = {
 				type = "centerpopup",
-				varname = format(L.alerts["%s Cast"],SN[64623]),
-				text = format(L.alerts["%s Cast"],SN[64623]),
+				varname = format(L.alert["%s Cast"],SN[64623]),
+				text = format(L.alert["%s Cast"],SN[64623]),
 				time = 2,
 				sound = "ALERT5",
 				color1 = "BLUE",
@@ -117,8 +117,8 @@ do
 			},
 			frostbombexplodeswarn = {
 				type = "centerpopup",
-				varname = format(L.alerts["%s Timer"],SN[64623]),
-				text = format(L.alerts["%s Explodes"],SN[64623]).."!",
+				varname = format(L.alert["%s Timer"],SN[64623]),
+				text = format(L.alert["%s Explodes"],SN[64623]).."!",
 				time = 12,
 				flashtime = 5,
 				sound = "ALERT9",
@@ -129,8 +129,8 @@ do
 			},
 			flamecd = {
 				type = "dropdown",
-				varname = format(L.alerts["%s Timer"],SN[15643]),
-				text = format(L.alerts["Next %s Spawn"],SN[15643]),
+				varname = format(L.alert["%s Timer"],SN[15643]),
+				text = format(L.alert["Next %s Spawn"],SN[15643]),
 				time = "<flametime>",
 				flashtime = 5,
 				sound = "ALERT1",
@@ -141,8 +141,8 @@ do
 			-- Leviathan MKII
 			plasmablastwarn = { 
 				type = "centerpopup",
-				varname = format(L.alerts["%s Cast"],SN[62997]),
-				text = format(L.alerts["%s Cast"],SN[62997]),
+				varname = format(L.alert["%s Cast"],SN[62997]),
+				text = format(L.alert["%s Cast"],SN[62997]),
 				time = 3,
 				color1 = "ORANGE",
 				sound = "ALERT5",
@@ -150,16 +150,16 @@ do
 			},
 			plasmablastdur = { 
 				type = "centerpopup",
-				varname = format(L.alerts["%s Duration"],SN[62997]),
-				text = format(L.alerts["%s Duration"],SN[62997]),
+				varname = format(L.alert["%s Duration"],SN[62997]),
+				text = format(L.alert["%s Duration"],SN[62997]),
 				time = 6,
 				color1 = "ORANGE",
 				icon = ST[62997],
 			},
 			plasmablastcd = {
 				type = "dropdown",
-				varname = format(L.alerts["%s Cooldown"],SN[62997]),
-				text = format(L.alerts["%s Cooldown"],SN[62997]),
+				varname = format(L.alert["%s Cooldown"],SN[62997]),
+				text = format(L.alert["%s Cooldown"],SN[62997]),
 				time = "<plasmablasttime>",
 				flashtime = 5,
 				color1 = "ORANGE",
@@ -168,9 +168,9 @@ do
 				icon = ST[62997],
 			},
 			shockblastwarn = {
-				varname = format(L.alerts["%s Cast"],SN[63631]),
+				varname = format(L.alert["%s Cast"],SN[63631]),
 				type = "centerpopup",
-				text = format(L.alerts["%s Cast"],SN[63631]),
+				text = format(L.alert["%s Cast"],SN[63631]),
 				time = 4,
 				color1 = "MAGENTA",
 				sound = "ALERT5",
@@ -179,17 +179,17 @@ do
 			--- VX-001
 			laserbarragedur = {
 				type = "centerpopup",
-				varname = format(L.alerts["%s Duration"],L.alerts["Laser Barrage"]),
-				text = format(L.alerts["%s Duration"],L.alerts["Laser Barrage"]),
+				varname = format(L.alert["%s Duration"],L.alert["Laser Barrage"]),
+				text = format(L.alert["%s Duration"],L.alert["Laser Barrage"]),
 				time = 10,
 				color1 = "PURPLE",
 				sound = "ALERT6",
 				icon = ST[63293],
 			},
 			laserbarragecd = {
-				varname = format(L.alerts["%s Cooldown"],L.alerts["Laser Barrage"]),
+				varname = format(L.alert["%s Cooldown"],L.alert["Laser Barrage"]),
 				type = "dropdown",
-				text = format(L.alerts["%s Cooldown"],L.alerts["Laser Barrage"]),
+				text = format(L.alert["%s Cooldown"],L.alert["Laser Barrage"]),
 				time = "<laserbarragetime>",
 				flashtime = 5,
 				color1 = "PURPLE",
@@ -198,9 +198,9 @@ do
 				icon = ST[63293],
 			},
 			shockblastcd = {
-				varname = format(L.alerts["%s Cooldown"],SN[63631]),
+				varname = format(L.alert["%s Cooldown"],SN[63631]),
 				type = "dropdown",
-				text = format(L.alerts["Next %s"],SN[63631]),
+				text = format(L.alert["Next %s"],SN[63631]),
 				time = 30,
 				flashtime = 5,
 				color1 = "MAGENTA",
@@ -209,7 +209,7 @@ do
 				icon = ST[63631],
 			},
 			spinupwarn = {
-				varname = format(L.alerts["%s Cast"],SN[63414]),
+				varname = format(L.alert["%s Cast"],SN[63414]),
 				type = "centerpopup",
 				text = SN[63414].."!",
 				time = 4,
@@ -220,9 +220,9 @@ do
 				icon = ST[64385],
 			},
 			weakeneddur = {
-				varname = format(L.alerts["%s Duration"],L.alerts["Weakened"]),
+				varname = format(L.alert["%s Duration"],L.alert["Weakened"]),
 				type = "centerpopup",
-				text = L.alerts["Weakened"],
+				text = L.alert["Weakened"],
 				time = 15,
 				flashtime = 15,
 				color1 = "GREY",
@@ -232,27 +232,27 @@ do
 			},
 			--- Phase Changes
 			onetotwocd = {
-				varname = format(L.alerts["%s Timer"],L.alerts["Phase Two"]),
+				varname = format(L.alert["%s Timer"],L.alert["Phase Two"]),
 				type = "dropdown",
-				text = format(L.alerts["%s Begins"],L.alerts["Phase Two"]),
+				text = format(L.alert["%s Begins"],L.alert["Phase Two"]),
 				time = 40,
 				flashtime = 10,
 				color1 = "RED",
 				icon = ST[3648],
 			},
 			twotothreecd = {
-				varname = format(L.alerts["%s Timer"],L.alerts["Phase Three"]),
+				varname = format(L.alert["%s Timer"],L.alert["Phase Three"]),
 				type = "dropdown",
-				text = format(L.alerts["%s Begins"],L.alerts["Phase Three"]),
+				text = format(L.alert["%s Begins"],L.alert["Phase Three"]),
 				time = 25,
 				flashtime = 10,
 				color1 = "RED",
 				icon = ST[3648],
 			},
 			threetofourcd = {
-				varname = format(L.alerts["%s Timer"],L.alerts["Phase Four"]),
+				varname = format(L.alert["%s Timer"],L.alert["Phase Four"]),
 				type = "dropdown",
-				text = format(L.alerts["%s Begins"],L.alerts["Phase Four"]),
+				text = format(L.alert["%s Begins"],L.alert["Phase Four"]),
 				time = 25,
 				flashtime = 10,
 				color1 = "RED",
@@ -260,9 +260,9 @@ do
 			},
 			-- Hard Mode
 			hardmodecd = {
-				varname = format(L.alerts["%s Timer"],L.alerts["Hard Mode"]),
+				varname = format(L.alert["%s Timer"],L.alert["Hard Mode"]),
 				type = "dropdown",
-				text = L.alerts["Raid Wipe"],
+				text = L.alert["Raid Wipe"],
 				time = 620,
 				flashtime = 10,
 				color1 = "BROWN",
@@ -270,9 +270,9 @@ do
 			},
 			-- Bomb bot
 			bombbotwarn = {
-				varname = format(L.alerts["%s Spawns"],L.npc_ulduar["Bomb Bot"]),
+				varname = format(L.alert["%s Spawns"],L.npc_ulduar["Bomb Bot"]),
 				type = "simple",
-				text = format(L.alerts["%s Spawned"],L.npc_ulduar["Bomb Bot"]).."!",
+				text = format(L.alert["%s Spawned"],L.npc_ulduar["Bomb Bot"]).."!",
 				time = 5,
 				sound = "ALERT8",
 				icon = ST[15048],

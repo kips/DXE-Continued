@@ -28,9 +28,9 @@ do
 		},
 		alerts = {
 			flamejetswarn = {
-				varname = format(L.alerts["%s Cast"],SN[62680]),
+				varname = format(L.alert["%s Cast"],SN[62680]),
 				type = "centerpopup",
-				text = format(L.alerts["%s Cast"],SN[62680]),
+				text = format(L.alert["%s Cast"],SN[62680]),
 				time = 2.7,
 				color1 = "RED",
 				sound = "ALERT3",
@@ -38,10 +38,10 @@ do
 				icon = ST[62680],
 			},
 			flamejetscd = {
-				varname = format(L.alerts["%s Cooldown"],SN[62680]),
+				varname = format(L.alert["%s Cooldown"],SN[62680]),
 				type = "dropdown",
 				time = "<flamejetstime>",
-				text = format(L.alerts["%s Cooldown"],SN[62680]),
+				text = format(L.alert["%s Cooldown"],SN[62680]),
 				flashtime = 5,
 				color1 = "RED",
 				color2 = "MAGENTA",
@@ -49,9 +49,9 @@ do
 				icon = ST[62680],
 			},
 			scorchwarnself = {
-				varname = format(L.alerts["%s on self"],SN[62546]),
+				varname = format(L.alert["%s on self"],SN[62546]),
 				type = "simple",
-				text = format("%s: %s!",SN[62546],L.alerts["YOU"]),
+				text = format("%s: %s!",SN[62546],L.alert["YOU"]),
 				time = 1.5,
 				color1 = "MAGENTA",
 				sound = "ALERT5",
@@ -60,8 +60,8 @@ do
 				icon = ST[62546],
 			},
 			scorchcd = {
-				varname = format(L.alerts["%s Cooldown"],SN[62546]),
-				text = format(L.alerts["Next %s"],SN[62546]),
+				varname = format(L.alert["%s Cooldown"],SN[62546]),
+				text = format(L.alert["Next %s"],SN[62546]),
 				type = "dropdown",
 				time = 25,
 				flashtime = 5,
@@ -71,7 +71,7 @@ do
 				icon = ST[62546],
 			},
 			slagpotdur = {
-				varname = format(L.alerts["%s Duration"],SN[62717]),
+				varname = format(L.alert["%s Duration"],SN[62717]),
 				type = "centerpopup",
 				text = "<slagpotmessage>",
 				time = 10,
@@ -80,9 +80,9 @@ do
 				icon = ST[62717],
 			},
 			hardmodeendscd = {
-				varname = format("%s Timer",L.alerts["Hard Mode"]),
+				varname = format("%s Timer",L.alert["Hard Mode"]),
 				type = "dropdown",
-				text = format("%s Ends",L.alerts["Hard Mode"]),
+				text = format("%s Ends",L.alert["Hard Mode"]),
 				time = 240,
 				flashtime = 5,
 				color1 = "BROWN",
@@ -130,7 +130,7 @@ do
 				execute = {
 					{
 						"expect",{"#4#","==","&playerguid&"},
-						"set",{slagpotmessage = format("%s: %s!",SN[62717],L.alerts["YOU"])},
+						"set",{slagpotmessage = format("%s: %s!",SN[62717],L.alert["YOU"])},
 					},
 					{
 						"expect",{"#4#","~=","&playerguid&"},

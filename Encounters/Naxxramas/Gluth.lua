@@ -24,9 +24,9 @@ do
 		},
 		alerts = {
 			decimatecd = {
-				varname = format(L.alerts["%s Cooldown"],SN[28374]),
+				varname = format(L.alert["%s Cooldown"],SN[28374]),
 				type = "dropdown",
-				text = format(L.alerts["%s Cooldown"],SN[28374]),
+				text = format(L.alert["%s Cooldown"],SN[28374]),
 				time = 105, 
 				flashtime = 5, 
 				sound = "ALERT1", 
@@ -35,9 +35,9 @@ do
 				icon = ST[28374],
 			},
 			enragewarn = {
-				varname = format(L.alerts["%s Warning"],L.alerts["Enrage"]),
+				varname = format(L.alert["%s Warning"],L.alert["Enrage"]),
 				type = "simple", 
-				text = format("%s!",L.alerts["Enraged"]),
+				text = format("%s!",L.alert["Enraged"]),
 				time = 1.5,
 				color1 = "RED",
 				icon = ST[12317],

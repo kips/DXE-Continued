@@ -136,4 +136,3 @@ local npc_ulduar = AL:NewLocale("DXE NPC Ulduar", "zhTW")
 AL:GetLocale("DXE").npc_ulduar = AL:GetLocale("DXE NPC Ulduar")
 return
 end
-

@@ -38,17 +38,17 @@ do
 		},
 		alerts = {
 			enragecd = {
-				varname = L.alerts["Enrage"],
+				varname = L.alert["Enrage"],
 				type = "dropdown",
-				text = L.alerts["Enrage"],
+				text = L.alert["Enrage"],
 				time = 600,
 				flashtime = 10,
 				color1 = "RED",
 				icon = ST[12317],
 			},
 			dndself = {
-				varname = format(L.alerts["%s on self"],SN[71001]),
-				text = format("%s: %s!",SN[71001],L.alerts["YOU"]),
+				varname = format(L.alert["%s on self"],SN[71001]),
+				text = format("%s: %s!",SN[71001],L.alert["YOU"]),
 				type = "simple",
 				time = 3,
 				sound = "ALERT1",
@@ -57,8 +57,8 @@ do
 				flashscreen = true,
 			},
 			cultcd = {
-				varname = format(L.alerts["%s Spawns"],L.alerts["Cult"]),
-				text = format(L.alerts["%s Spawns"],L.alerts["Cult"]),
+				varname = format(L.alert["%s Spawns"],L.alert["Cult"]),
+				text = format(L.alert["%s Spawns"],L.alert["Cult"]),
 				type = "dropdown",
 				time = "<culttime>",
 				flashtime = 10,
@@ -67,8 +67,8 @@ do
 				icon = ST[61131],
 			},
 			manabarrierwarn = {
-				varname = format(L.alerts["%s Removal"],SN[70842]),
-				text = format(L.alerts["%s Removed"],SN[70842]).."!",
+				varname = format(L.alert["%s Removal"],SN[70842]),
+				text = format(L.alert["%s Removed"],SN[70842]).."!",
 				type = "simple",
 				time = 3,
 				sound = "ALERT3",
@@ -76,7 +76,7 @@ do
 				icon = ST[70842],
 			},
 			insignificancewarn = {
-				varname = format(L.alerts["%s Warning"],SN[71204]),
+				varname = format(L.alert["%s Warning"],SN[71204]),
 				text = "<insignificancetext>",
 				type = "simple",
 				time = 3,
@@ -85,8 +85,8 @@ do
 				icon = ST[71204],
 			},
 			torporself = {
-				varname = format(L.alerts["%s on self"],SN[71237]),
-				text = format("%s: %s!",SN[71237],L.alerts["YOU"]),
+				varname = format(L.alert["%s on self"],SN[71237]),
+				text = format("%s: %s!",SN[71237],L.alert["YOU"]),
 				type = "simple",
 				time = 3,
 				color1 = "PURPLE",
@@ -94,7 +94,7 @@ do
 				icon = ST[71237],
 			},
 			torporwarn = {
-				varname = format(L.alerts["%s on others"],SN[71237]),
+				varname = format(L.alert["%s on others"],SN[71237]),
 				text = format("%s: #5#!",SN[71237]),
 				type = "simple",
 				time = 3,
@@ -103,7 +103,7 @@ do
 				icon = ST[71237],
 			},
 			dominatewarn = {
-				varname = format(L.alerts["%s Warning"],SN[71289]),
+				varname = format(L.alert["%s Warning"],SN[71289]),
 				text = format("%s: #5#!",SN[71289]),
 				type = "simple",
 				time = 3,
@@ -112,8 +112,8 @@ do
 				icon = ST[71289],
 			},
 			frostboltwarn = {
-				varname = format(L.alerts["%s Cast"],SN[72007]),
-				text = format(L.alerts["%s Cast"],SN[72007]),
+				varname = format(L.alert["%s Cast"],SN[72007]),
+				text = format(L.alert["%s Cast"],SN[72007]),
 				type = "centerpopup",
 				time = 2,
 				color1 = "BLUE",
@@ -158,12 +158,12 @@ do
 				execute = {
 					{
 						"expect",{"#4#","==","&playerguid&"},
-						"set",{insignificancetext = format("%s: %s!",L.alerts["Touch"],L.alerts["YOU"])},
+						"set",{insignificancetext = format("%s: %s!",L.alert["Touch"],L.alert["YOU"])},
 						"alert","insignificancewarn",
 					},
 					{
 						"expect",{"#4#","~=","&playerguid&"},
-						"set",{insignificancetext = format("%s: #5#!",L.alerts["Touch"])},
+						"set",{insignificancetext = format("%s: #5#!",L.alert["Touch"])},
 						"alert","insignificancewarn",
 					},
 				},
@@ -176,12 +176,12 @@ do
 				execute = {
 					{
 						"expect",{"#4#","==","&playerguid&"},
-						"set",{insignificancetext = format("%s: %s! %s!",L.alerts["Touch"],L.alerts["YOU"],format(L.alerts["%s Stacks"],"#11#"))},
+						"set",{insignificancetext = format("%s: %s! %s!",L.alert["Touch"],L.alert["YOU"],format(L.alert["%s Stacks"],"#11#"))},
 						"alert","insignificancewarn",
 					},
 					{
 						"expect",{"#4#","~=","&playerguid&"},
-						"set",{insignificancetext = format("%s: #5#! %s!",L.alerts["Touch"],format(L.alerts["%s Stacks"],"#11#"))},
+						"set",{insignificancetext = format("%s: #5#! %s!",L.alert["Touch"],format(L.alert["%s Stacks"],"#11#"))},
 						"alert","insignificancewarn",
 					},
 				},

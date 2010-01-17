@@ -27,9 +27,9 @@ do
 		},
 		alerts = {
 			enragecd = {
-				varname = L.alerts["Enrage"],
+				varname = L.alert["Enrage"],
 				type = "dropdown",
-				text = L.alerts["Enrage"],
+				text = L.alert["Enrage"],
 				time = 900,
 				flashtime = 5,
 				color1 = "RED",
@@ -37,9 +37,9 @@ do
 				icon = ST[12317],
 			},
 			lifedraincd = {
-				varname = format(L.alerts["%s Cooldown"],SN[28542]),
+				varname = format(L.alert["%s Cooldown"],SN[28542]),
 				type = "dropdown", 
-				text = format(L.alerts["Next %s"],SN[28542]),
+				text = format(L.alert["Next %s"],SN[28542]),
 				time = 23, 
 				flashtime = 5, 
 				sound = "ALERT3", 
@@ -47,9 +47,9 @@ do
 				icon = ST[28542],
 			},
 			airphasedur = {
-				varname = format(L.alerts["%s Duration"],L.alerts["Air Phase"]),
+				varname = format(L.alert["%s Duration"],L.alert["Air Phase"]),
 				type = "centerpopup", 
-				text = format(L.alerts["%s Duration"],L.alerts["Air Phase"]), 
+				text = format(L.alert["%s Duration"],L.alert["Air Phase"]), 
 				time = 15.5, 
 				flashtime = 5, 
 				sound = "ALERT2", 
@@ -57,9 +57,9 @@ do
 				icon = ST[51475],
 			},
 			deepbreathwarn = {
-				varname = format(L.alerts["%s Warning"],L.alerts["Deep Breath"]),
+				varname = format(L.alert["%s Warning"],L.alert["Deep Breath"]),
 				type = "centerpopup", 
-				text = format("%s! %s!",L.alerts["Deep Breath"],L.alerts["HIDE"]),
+				text = format("%s! %s!",L.alert["Deep Breath"],L.alert["HIDE"]),
 				time = 10, 
 				flashtime = 6.5, 
 				sound = "ALERT1", 

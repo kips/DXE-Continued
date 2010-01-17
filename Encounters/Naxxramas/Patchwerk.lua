@@ -24,9 +24,9 @@ do
 		},
 		alerts = {
 			enragecd = {
-				varname = L.alerts["Enrage"],
+				varname = L.alert["Enrage"],
 				type = "dropdown", 
-				text = L.alerts["Enrage"],
+				text = L.alert["Enrage"],
 				time = 360, 
 				flashtime = 5, 
 				sound = "ALERT2", 
@@ -34,9 +34,9 @@ do
 				icon = ST[12317],
 			},
 			enragewarn = {
-				varname = format(L.alerts["%s Warning"],L.alerts["Enrage"]),
+				varname = format(L.alert["%s Warning"],L.alert["Enrage"]),
 				type = "simple", 
-				text = L.alerts["Enraged"].."!",
+				text = L.alert["Enraged"].."!",
 				time = 1.5, 
 				sound = "ALERT1", 
 				icon = ST[40735],

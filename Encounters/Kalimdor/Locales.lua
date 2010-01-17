@@ -136,4 +136,3 @@ local npc_kalimdor = AL:NewLocale("DXE NPC Kalimdor", "zhTW")
 AL:GetLocale("DXE").npc_kalimdor = AL:GetLocale("DXE NPC Kalimdor")
 return
 end
-

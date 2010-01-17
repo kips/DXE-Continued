@@ -136,5 +136,3 @@ local npc_citadel = AL:NewLocale("DXE NPC Citadel", "zhTW")
 AL:GetLocale("DXE").npc_citadel = AL:GetLocale("DXE NPC Citadel")
 return
 end
-
-

@@ -18,8 +18,9 @@ if L then
 -- Main phrases
 --@localization(locale="enUS", format="lua_additive_table", same-key-is-true=true, namespace="main")@
 -- Alert phrases
-local alerts = AL:NewLocale("DXE Alerts", "enUS", true, debug)
---@localization(locale="enUS", format="lua_additive_table", same-key-is-true=true, namespace="alerts", table-name=alerts)@
+local alert = AL:NewLocale("DXE Alert", "enUS", true, debug)
+--@localization(locale="enUS", format="lua_additive_table", same-key-is-true=true, namespace="alert", table-name=alert)@
+AL:GetLocale("DXE").alert = AL:GetLocale("DXE Alert")
 
 if GetLocale() == "enUS" or GetLocale() == "enGB" then return end
 end
@@ -30,8 +31,8 @@ if L then
 -- Main phrases
 --@localization(locale="deDE", format="lua_additive_table", namespace="main")@
 -- Alert phrases
-local alerts = AL:NewLocale("DXE Alerts", "deDE")
---@localization(locale="deDE", format="lua_additive_table", namespace="alerts", table-name=alerts)@
+local alert = AL:NewLocale("DXE Alert", "deDE")
+--@localization(locale="deDE", format="lua_additive_table", namespace="alert", table-name=alert)@
 
 return
 end
@@ -42,8 +43,9 @@ if L then
 -- Main phrases
 --@localization(locale="esES", format="lua_additive_table", namespace="main")@
 -- Alert phrases
-local alerts = AL:NewLocale("DXE Alerts", "esES")
---@localization(locale="esES", format="lua_additive_table", namespace="alerts", table-name=alerts)@
+local alert = AL:NewLocale("DXE Alert", "esES")
+--@localization(locale="esES", format="lua_additive_table", namespace="alert", table-name=alert)@
+AL:GetLocale("DXE").alert = AL:GetLocale("DXE Alert")
 
 return
 end
@@ -54,8 +56,9 @@ if L then
 -- Main phrases
 --@localization(locale="esMX", format="lua_additive_table", namespace="main")@
 -- Alert phrases
-local alerts = AL:NewLocale("DXE Alerts", "esMX")
---@localization(locale="esMX", format="lua_additive_table", namespace="alerts", table-name=alerts)@
+local alert = AL:NewLocale("DXE Alert", "esMX")
+--@localization(locale="esMX", format="lua_additive_table", namespace="alert", table-name=alert)@
+AL:GetLocale("DXE").alert = AL:GetLocale("DXE Alert")
 
 return
 end
@@ -66,8 +69,9 @@ if L then
 -- Main phrases
 --@localization(locale="frFR", format="lua_additive_table", namespace="main")@
 -- Alert phrases
-local alerts = AL:NewLocale("DXE Alerts", "frFR")
---@localization(locale="frFR", format="lua_additive_table", namespace="alerts", table-name=alerts)@
+local alert = AL:NewLocale("DXE Alert", "frFR")
+--@localization(locale="frFR", format="lua_additive_table", namespace="alert", table-name=alert)@
+AL:GetLocale("DXE").alert = AL:GetLocale("DXE Alert")
 
 return
 end
@@ -78,8 +82,9 @@ if L then
 -- Main phrases
 --@localization(locale="koKR", format="lua_additive_table", namespace="main")@
 -- Alert phrases
-local alerts = AL:NewLocale("DXE Alerts", "koKR")
---@localization(locale="koKR", format="lua_additive_table", namespace="alerts", table-name=alerts)@
+local alert = AL:NewLocale("DXE Alert", "koKR")
+--@localization(locale="koKR", format="lua_additive_table", namespace="alert", table-name=alert)@
+AL:GetLocale("DXE").alert = AL:GetLocale("DXE Alert")
 
 return
 end
@@ -90,8 +95,9 @@ if L then
 -- Main phrases
 --@localization(locale="ruRU", format="lua_additive_table", namespace="main")@
 -- Alert phrases
-local alerts = AL:NewLocale("DXE Alerts", "ruRU")
---@localization(locale="ruRU", format="lua_additive_table", namespace="alerts", table-name=alerts)@
+local alert = AL:NewLocale("DXE Alert", "ruRU")
+--@localization(locale="ruRU", format="lua_additive_table", namespace="alert", table-name=alert)@
+AL:GetLocale("DXE").alert = AL:GetLocale("DXE Alert")
 
 return
 end
@@ -102,8 +108,9 @@ if L then
 -- Main phrases
 --@localization(locale="zhCN", format="lua_additive_table", namespace="main")@
 -- Alert phrases
-local alerts = AL:NewLocale("DXE Alerts", "zhCN")
---@localization(locale="zhCN", format="lua_additive_table", namespace="alerts", table-name=alerts)@
+local alert = AL:NewLocale("DXE Alert", "zhCN")
+--@localization(locale="zhCN", format="lua_additive_table", namespace="alert", table-name=alert)@
+AL:GetLocale("DXE").alert = AL:GetLocale("DXE Alert")
 
 return
 end
@@ -114,8 +121,9 @@ if L then
 -- Main phrases
 --@localization(locale="zhTW", format="lua_additive_table", namespace="main")@
 -- Alert phrases
-local alerts = AL:NewLocale("DXE Alerts", "zhTW")
---@localization(locale="zhTW", format="lua_additive_table", namespace="alerts", table-name=alerts)@
+local alert = AL:NewLocale("DXE Alert", "zhTW")
+--@localization(locale="zhTW", format="lua_additive_table", namespace="alert", table-name=alert)@
+AL:GetLocale("DXE").alert = AL:GetLocale("DXE Alert")
 
 return
 end

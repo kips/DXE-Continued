@@ -18,7 +18,7 @@ do
 		onstart = {},
 		alerts = {
 			overloaddur = {
-				varname = format(L.alerts["%s Duration"],SN[62475]),
+				varname = format(L.alert["%s Duration"],SN[62475]),
 				type = "centerpopup", 
 				text = SN[62475].."!",
 				time = 20, 
@@ -30,7 +30,7 @@ do
 				icon = ST[62475],
 			},
 			flameventdur = {
-				varname = format(L.alerts["%s Duration"],SN[62396]),
+				varname = format(L.alert["%s Duration"],SN[62396]),
 				type = "centerpopup", 
 				text = SN[62396].."!",
 				time = 10, 
@@ -41,7 +41,7 @@ do
 				icon = ST[62396],
 			},
 			pursuedurothers = {
-				varname = format(L.alerts["%s on others"],SN[62374]),
+				varname = format(L.alert["%s on others"],SN[62374]),
 				type = "centerpopup", 
 				text = format("%s: #5#",SN[62374]),
 				time = 30, 
@@ -51,9 +51,9 @@ do
 				icon = ST[62374],
 			},
 			pursuedurself = {
-				varname = format(L.alerts["%s on self"],SN[62374]),
+				varname = format(L.alert["%s on self"],SN[62374]),
 				type = "centerpopup", 
-				text = format("%s: %s!",SN[62374],L.alerts["YOU"]),
+				text = format("%s: %s!",SN[62374],L.alert["YOU"]),
 				time = 30, 
 				flashtime = 30, 
 				sound = "ALERT4", 

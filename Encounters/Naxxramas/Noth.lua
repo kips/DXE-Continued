@@ -33,9 +33,9 @@ do
 		},
 		alerts = {
 			blinkcd = {
-				varname = format(L.alerts["%s Cooldown"],SN[29208]),
+				varname = format(L.alert["%s Cooldown"],SN[29208]),
 				type = "dropdown", 
-				text = format(L.alerts["%s Cooldown"],SN[29208]),
+				text = format(L.alert["%s Cooldown"],SN[29208]),
 				time = 30, 
 				flashtime = 5, 
 				sound = "ALERT1", 
@@ -43,9 +43,9 @@ do
 				icon = ST[29208],
 			},
 			teleportbalccd = {
-				varname = L.alerts["Teleport to Balcony"], 
+				varname = L.alert["Teleport to Balcony"], 
 				type = "dropdown", 
-				text = L.alerts["Teleport to Balcony"], 
+				text = L.alert["Teleport to Balcony"], 
 				time = "<roomtime>", 
 				flashtime = 5, 
 				color1 = "RED",
@@ -53,9 +53,9 @@ do
 				icon = ST[66548],
 			},
 			teleportroomcd = {
-				varname = L.alerts["Teleport to Room"], 
+				varname = L.alert["Teleport to Room"], 
 				type = "dropdown", 
-				text = L.alerts["Teleport to Room"], 
+				text = L.alert["Teleport to Room"], 
 				time = "<balconytime>", 
 				flashtime = 5, 
 				color1 = "RED",
@@ -63,9 +63,9 @@ do
 				icon = ST[29231],
 			},
 			cursewarn = {
-				varname = format(L.alerts["%s Warning"],L.alerts["Curse"]),
+				varname = format(L.alert["%s Warning"],L.alert["Curse"]),
 				type = "simple", 
-				text = format(L.alerts["%s Casted"],L.alerts["Curse"]).."!",
+				text = format(L.alert["%s Casted"],L.alert["Curse"]).."!",
 				time = 1.5, 
 				sound = "ALERT3", 
 				icon = ST[29213],

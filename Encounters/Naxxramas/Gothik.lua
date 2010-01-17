@@ -26,9 +26,9 @@ do
 		},
 		alerts = {
 			gothikcomesdowncd = {
-				varname = format(L.alerts["%s Arrival"],L.npc_naxxramas["Gothik the Harvester"]),
+				varname = format(L.alert["%s Arrival"],L.npc_naxxramas["Gothik the Harvester"]),
 				type = "dropdown",
-				text = L.alerts["Arrival"],
+				text = L.alert["Arrival"],
 				time = 270,
 				flashtime = 5, 
 				color1 = "RED",

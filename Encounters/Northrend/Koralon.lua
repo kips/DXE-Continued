@@ -32,8 +32,8 @@ do
 		},
 		alerts = {
 			flamingcinderself = {
-				varname = format(L.alerts["%s on self"],SN[67332]),
-				text = format("%s: %s! %s!",SN[67332],L.alerts["YOU"],L.alerts["MOVE AWAY"]),
+				varname = format(L.alert["%s on self"],SN[67332]),
+				text = format("%s: %s! %s!",SN[67332],L.alert["YOU"],L.alert["MOVE AWAY"]),
 				type = "simple",
 				time = 3,
 				throttle = 3,
@@ -43,8 +43,8 @@ do
 				icon = ST[67332],
 			},
 			meteorcd = {
-				varname = format(L.alerts["%s Cooldown"],SN[66725]),
-				text = format(L.alerts["%s Cooldown"],SN[66725]),
+				varname = format(L.alert["%s Cooldown"],SN[66725]),
+				text = format(L.alert["%s Cooldown"],SN[66725]),
 				type = "dropdown",
 				time = "<meteortime>",
 				flashtime = 10,
@@ -53,8 +53,8 @@ do
 				icon = ST[66725],
 			},
 			meteorwarn = {
-				varname = format(L.alerts["%s Cast"],SN[66725]),
-				text = format(L.alerts["%s Cast"],SN[66725]),
+				varname = format(L.alert["%s Cast"],SN[66725]),
+				text = format(L.alert["%s Cast"],SN[66725]),
 				type = "centerpopup",
 				time = 1.5,
 				flashtime = 1.5,
@@ -63,8 +63,8 @@ do
 				icon = ST[66725],
 			},
 			meteordur = {
-				varname = format(L.alerts["%s Duration"],SN[66725]),
-				text = format(L.alerts["%s Duration"],SN[66725]),
+				varname = format(L.alert["%s Duration"],SN[66725]),
+				text = format(L.alert["%s Duration"],SN[66725]),
 				type = "centerpopup",
 				time = 15,
 				flashtime = 15,
@@ -73,8 +73,8 @@ do
 				icon = ST[66725],
 			},
 			breathwarn = {
-				varname = format(L.alerts["%s Cast"],SN[67328]),
-				text = format(L.alerts["%s Cast"],SN[67328]),
+				varname = format(L.alert["%s Cast"],SN[67328]),
+				text = format(L.alert["%s Cast"],SN[67328]),
 				type = "centerpopup",
 				time = 1.5,
 				flashtime = 1.5,
@@ -83,8 +83,8 @@ do
 				icon = ST[67328],
 			},
 			breathdur = {
-				varname = format(L.alerts["%s Channel"],SN[67328]),
-				text = format(L.alerts["%s Channel"],SN[67328]),
+				varname = format(L.alert["%s Channel"],SN[67328]),
+				text = format(L.alert["%s Channel"],SN[67328]),
 				type = "centerpopup",
 				time = 3,
 				flashtime = 3,
@@ -92,8 +92,8 @@ do
 				icon = ST[67328],
 			},
 			breathcd = {
-				varname = format(L.alerts["%s Cooldown"],SN[67328]),
-				text = format(L.alerts["%s Cooldown"],SN[67328]),
+				varname = format(L.alert["%s Cooldown"],SN[67328]),
+				text = format(L.alert["%s Cooldown"],SN[67328]),
 				type = "dropdown",
 				time = "<breathtime>",
 				flashtime = 5,

@@ -26,9 +26,9 @@ do
 		},
 		alerts = {
 			icetombwarn = {
-				varname = format(L.alerts["%s Cast"],SN[69712]),
+				varname = format(L.alert["%s Cast"],SN[69712]),
 				type = "centerpopup",
-				text = format(L.alerts["%s Cast"],SN[69712]),
+				text = format(L.alert["%s Cast"],SN[69712]),
 				time = 1,
 				flashtime = 1,
 				color1 = "INDIGO",
@@ -36,9 +36,9 @@ do
 				icon = ST[69712],
 			},
 			frostbeacondur = {
-				varname = format(L.alerts["%s Duration"],SN[70126]),
+				varname = format(L.alert["%s Duration"],SN[70126]),
 				type = "centerpopup",
-				text = format(L.alerts["%s Duration"],SN[70126]),
+				text = format(L.alert["%s Duration"],SN[70126]),
 				time = 7,
 				flashtime = 7,
 				color1 = "GOLD",
@@ -46,18 +46,18 @@ do
 				icon = ST[70126],
 			},
 			frostbeaconself = {
-				varname = format(L.alerts["%s on self"],SN[70126]),
+				varname = format(L.alert["%s on self"],SN[70126]),
 				type = "simple",
-				text = format("%s: %s!",SN[70126],L.alerts["YOU"]).."!",
+				text = format("%s: %s!",SN[70126],L.alert["YOU"]).."!",
 				time = 3,
 				icon = ST[70126],
 				flashscreen = true,
 			},
 			--[[
 			icygripcd = {
-				varname = format(L.alerts["%s Cooldown"],SN[70117]),
+				varname = format(L.alert["%s Cooldown"],SN[70117]),
 				type = "dropdown",
-				text = format(L.alerts["%s Cooldown"],SN[70117]),
+				text = format(L.alert["%s Cooldown"],SN[70117]),
 				--time = ,
 				flashtime = 10,
 				--color1 = ,
@@ -65,9 +65,9 @@ do
 			},
 			]]
 			blisteringcoldwarn = {
-				varname = format(L.alerts["%s Cast"],SN[71047]),
+				varname = format(L.alert["%s Cast"],SN[71047]),
 				type = "centerpopup",
-				text = format(L.alerts["%s Cast"],SN[71047]),
+				text = format(L.alert["%s Cast"],SN[71047]),
 				time = 5,
 				flashtime = 5,
 				color1 = "ORANGE",
@@ -75,9 +75,9 @@ do
 				icon = ST[71047],
 			},
 			unchainedself = {
-				varname = format(L.alerts["%s on self"],SN[69762]),
+				varname = format(L.alert["%s on self"],SN[69762]),
 				type = "centerpopup",
-				text = format("%s: %s! %s!",SN[69762],L.alerts["YOU"],L.alerts["CAREFUL"]),
+				text = format("%s: %s! %s!",SN[69762],L.alert["YOU"],L.alert["CAREFUL"]),
 				time = 30,
 				flashtime = 30,
 				color1 = "PURPLE",
@@ -86,7 +86,7 @@ do
 				icon = ST[69762],
 			},
 			chilledself = {
-				varname = format(L.alerts["%s on self"],SN[70106]),
+				varname = format(L.alert["%s on self"],SN[70106]),
 				type = "centerpopup",
 				text = "<chilledtext>",
 				time = 8,
@@ -95,27 +95,27 @@ do
 				icon = ST[70106],
 			},
 			aircd = {
-				varname = format(L.alerts["%s Cooldown"],L.alerts["Air Phase"]),
+				varname = format(L.alert["%s Cooldown"],L.alert["Air Phase"]),
 				type = "dropdown",
-				text = format("Next %s",L.alerts["Air Phase"]),
+				text = format("Next %s",L.alert["Air Phase"]),
 				time = "<airtime>",
 				flashtime = 10,
 				color1 = "YELLOW",
 				icon = "Interface\\Icons\\INV_Misc_Toy_09",
 			},
 			airdur = {
-				varname = format(L.alerts["%s Duration"],L.alerts["Air Phase"]),
+				varname = format(L.alert["%s Duration"],L.alert["Air Phase"]),
 				type = "dropdown",
-				text = L.alerts["Air Phase"],
+				text = L.alert["Air Phase"],
 				time = 47,
 				flashtime = 10,
 				color1 = "MAGENTA",
 				icon = "Interface\\Icons\\INV_Misc_Toy_09",
 			},
 			frostbombwarn = {
-				varname = format(L.alerts["%s ETA"],SN[71053]),
+				varname = format(L.alert["%s ETA"],SN[71053]),
 				type = "centerpopup",
-				text = format(L.alerts["%s Hits"],SN[71053]),
+				text = format(L.alert["%s Hits"],SN[71053]),
 				time = 5.85, -- average: ranges from 5.3 to 6.5
 				flashtime = 5.85,
 				color1 = "BLUE",
@@ -123,9 +123,9 @@ do
 				icon = ST[71053],
 			},
 			frostbreathwarn = {
-				varname = format(L.alerts["%s Cast"],SN[71056]),
+				varname = format(L.alert["%s Cast"],SN[71056]),
 				type = "centerpopup",
-				text = format(L.alerts["%s Cast"],SN[71056]),
+				text = format(L.alert["%s Cast"],SN[71056]),
 				time = 1.5,
 				flashtime = 1.5,
 				color1 = "BROWN",
@@ -259,7 +259,7 @@ do
 				execute = {
 					{
 						"expect",{"#4#","==","&playerguid&"},
-						"set",{chilledtext = format("%s: %s!",SN[70106],L.alerts["YOU"])},
+						"set",{chilledtext = format("%s: %s!",SN[70106],L.alert["YOU"])},
 						"alert","chilledself",
 					},
 				},
@@ -275,7 +275,7 @@ do
 					{
 						"expect",{"#4#","==","&playerguid&"},
 						"quash","chilledself",
-						"set",{chilledtext = format("%s: %s! %s!",SN[70106],L.alerts["YOU"],format(L.alerts["%s Stacks"],"#11#"))},
+						"set",{chilledtext = format("%s: %s! %s!",SN[70106],L.alert["YOU"],format(L.alert["%s Stacks"],"#11#"))},
 						"alert","chilledself",
 					},
 				},
