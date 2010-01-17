@@ -12,14 +12,14 @@ debug = true
 --@end-debug@
 
 local L = AL:NewLocale("DXE", "enUS", true, debug)
+
 if L then
 
 -- Main phrases
 --@localization(locale="enUS", format="lua_additive_table", same-key-is-true=true, namespace="main")@
--- Generic alert phrases
---@localization(locale="enUS", format="lua_additive_table", same-key-is-true=true, namespace="alerts_generic")@
--- Specific alert phrases
---@localization(locale="enUS", format="lua_additive_table", same-key-is-true=true, namespace="alerts_specific")@
+-- Alert phrases
+L.alerts = AL:NewLocale("DXE Alerts", "enUS", true, debug)
+--@localization(locale="enUS", format="lua_additive_table", same-key-is-true=true, namespace="alerts", table-name="L.alerts")@
 
 if GetLocale() == "enUS" or GetLocale() == "enGB" then return end
 end
@@ -29,10 +29,9 @@ if L then
 
 -- Main phrases
 --@localization(locale="deDE", format="lua_additive_table", namespace="main")@
--- Generic alert phrases
---@localization(locale="deDE", format="lua_additive_table", namespace="alerts_generic")@
--- Specific alert phrases
---@localization(locale="deDE", format="lua_additive_table", namespace="alerts_specific")@
+-- Alert phrases
+L.alerts = AL:NewLocale("DXE Alerts", "deDE")
+--@localization(locale="deDE", format="lua_additive_table", namespace="alerts", table-name="L.alerts")@
 
 return
 end
@@ -42,10 +41,9 @@ if L then
 
 -- Main phrases
 --@localization(locale="esES", format="lua_additive_table", namespace="main")@
--- Generic alert phrases
---@localization(locale="esES", format="lua_additive_table", namespace="alerts_generic")@
--- Specific alert phrases
---@localization(locale="esES", format="lua_additive_table", namespace="alerts_specific")@
+-- Alert phrases
+L.alerts = AL:NewLocale("DXE Alerts", "esES")
+--@localization(locale="esES", format="lua_additive_table", namespace="alerts", table-name="L.alerts")@
 
 return
 end
@@ -55,10 +53,9 @@ if L then
 
 -- Main phrases
 --@localization(locale="esMX", format="lua_additive_table", namespace="main")@
--- Generic alert phrases
---@localization(locale="esMX", format="lua_additive_table", namespace="alerts_generic")@
--- Specific alert phrases
---@localization(locale="esMX", format="lua_additive_table", namespace="alerts_specific")@
+-- Alert phrases
+L.alerts = AL:NewLocale("DXE Alerts", "esMX")
+--@localization(locale="esMX", format="lua_additive_table", namespace="alerts", table-name="L.alerts")@
 
 return
 end
@@ -68,10 +65,9 @@ if L then
 
 -- Main phrases
 --@localization(locale="frFR", format="lua_additive_table", namespace="main")@
--- Generic alert phrases
---@localization(locale="frFR", format="lua_additive_table", namespace="alerts_generic")@
--- Specific alert phrases
---@localization(locale="frFR", format="lua_additive_table", namespace="alerts_specific")@
+-- Alert phrases
+L.alerts = AL:NewLocale("DXE Alerts", "frFR")
+--@localization(locale="frFR", format="lua_additive_table", namespace="alerts", table-name="L.alerts")@
 
 return
 end
@@ -81,10 +77,9 @@ if L then
 
 -- Main phrases
 --@localization(locale="koKR", format="lua_additive_table", namespace="main")@
--- Generic alert phrases
---@localization(locale="koKR", format="lua_additive_table", namespace="alerts_generic")@
--- Specific alert phrases
---@localization(locale="koKR", format="lua_additive_table", namespace="alerts_specific")@
+-- Alert phrases
+L.alerts = AL:NewLocale("DXE Alerts", "koKR")
+--@localization(locale="koKR", format="lua_additive_table", namespace="alerts", table-name="L.alerts")@
 
 return
 end
@@ -94,10 +89,9 @@ if L then
 
 -- Main phrases
 --@localization(locale="ruRU", format="lua_additive_table", namespace="main")@
--- Generic alert phrases
---@localization(locale="ruRU", format="lua_additive_table", namespace="alerts_generic")@
--- Specific alert phrases
---@localization(locale="ruRU", format="lua_additive_table", namespace="alerts_specific")@
+-- Alert phrases
+L.alerts = AL:NewLocale("DXE Alerts", "ruRU")
+--@localization(locale="ruRU", format="lua_additive_table", namespace="alerts", table-name="L.alerts")@
 
 return
 end
@@ -107,10 +101,9 @@ if L then
 
 -- Main phrases
 --@localization(locale="zhCN", format="lua_additive_table", namespace="main")@
--- Generic alert phrases
---@localization(locale="zhCN", format="lua_additive_table", namespace="alerts_generic")@
--- Specific alert phrases
---@localization(locale="zhCN", format="lua_additive_table", namespace="alerts_specific")@
+-- Alert phrases
+L.alerts = AL:NewLocale("DXE Alerts", "zhCN")
+--@localization(locale="zhCN", format="lua_additive_table", namespace="alerts", table-name="L.alerts")@
 
 return
 end
@@ -120,10 +113,9 @@ if L then
 
 -- Main phrases
 --@localization(locale="zhTW", format="lua_additive_table", namespace="main")@
--- Generic alert phrases
---@localization(locale="zhTW", format="lua_additive_table", namespace="alerts_generic")@
--- Specific alert phrases
---@localization(locale="zhTW", format="lua_additive_table", namespace="alerts_specific")@
+-- Alert phrases
+L.alerts = AL:NewLocale("DXE Alerts", "zhTW")
+--@localization(locale="zhTW", format="lua_additive_table", namespace="alerts", table-name="L.alerts")@
 
 return
 end
