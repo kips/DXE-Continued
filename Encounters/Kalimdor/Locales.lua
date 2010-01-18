@@ -16,11 +16,11 @@ if L then
 
 -- Chat triggers
 local chat_kalimdor = AL:NewLocale("DXE Chat Kalimdor", "enUS", true, debug)
---@localization(locale="enUS", format="lua_additive_table", same-key-is-true=true, namespace="chat_kalimdor", table-name=chat_kalimdor)@
+--@localization(locale="enUS", format="lua_additive_table", same-key-is-true=true, namespace="chat_kalimdor", table-name="chat_kalimdor")@
 AL:GetLocale("DXE").chat_kalimdor = AL:GetLocale("DXE Chat Kalimdor")
 -- NPC names
 local npc_kalimdor = AL:NewLocale("DXE NPC Kalimdor", "enUS", true, debug)
---@localization(locale="enUS", format="lua_additive_table", same-key-is-true=true, namespace="npc_kalimdor", table-name=npc_kalimdor)@
+--@localization(locale="enUS", format="lua_additive_table", same-key-is-true=true, namespace="npc_kalimdor", table-name="npc_kalimdor")@
 AL:GetLocale("DXE").npc_kalimdor = AL:GetLocale("DXE NPC Kalimdor")
 if GetLocale() == "enUS" or GetLocale() == "enGB" then return end
 end
@@ -30,11 +30,11 @@ if L then
 
 -- Chat triggers
 local chat_kalimdor = AL:NewLocale("DXE Chat Kalimdor", "deDE")
---@localization(locale="deDE", format="lua_additive_table", namespace="chat_kalimdor", table-name=chat_kalimdor)@
+--@localization(locale="deDE", format="lua_additive_table", namespace="chat_kalimdor", table-name="chat_kalimdor")@
 AL:GetLocale("DXE").chat_kalimdor = AL:GetLocale("DXE Chat Kalimdor")
 -- NPC names
 local npc_kalimdor = AL:NewLocale("DXE NPC Kalimdor", "deDE")
---@localization(locale="deDE", format="lua_additive_table", namespace="npc_kalimdor", table-name=npc_kalimdor)@
+--@localization(locale="deDE", format="lua_additive_table", namespace="npc_kalimdor", table-name="npc_kalimdor")@
 AL:GetLocale("DXE").npc_kalimdor = AL:GetLocale("DXE NPC Kalimdor")
 return
 end
@@ -44,11 +44,11 @@ if L then
 
 -- Chat triggers
 local chat_kalimdor = AL:NewLocale("DXE Chat Kalimdor", "esES")
---@localization(locale="esES", format="lua_additive_table", namespace="chat_kalimdor", table-name=chat_kalimdor)@
+--@localization(locale="esES", format="lua_additive_table", namespace="chat_kalimdor", table-name="chat_kalimdor")@
 AL:GetLocale("DXE").chat_kalimdor = AL:GetLocale("DXE Chat Kalimdor")
 -- NPC names
 local npc_kalimdor = AL:NewLocale("DXE NPC Kalimdor", "esES")
---@localization(locale="esES", format="lua_additive_table", namespace="npc_kalimdor", table-name=npc_kalimdor)@
+--@localization(locale="esES", format="lua_additive_table", namespace="npc_kalimdor", table-name="npc_kalimdor")@
 AL:GetLocale("DXE").npc_kalimdor = AL:GetLocale("DXE NPC Kalimdor")
 return
 end
@@ -58,11 +58,11 @@ if L then
 
 -- Chat triggers
 local chat_kalimdor = AL:NewLocale("DXE Chat Kalimdor", "esMX")
---@localization(locale="esMX", format="lua_additive_table", namespace="chat_kalimdor", table-name=chat_kalimdor)@
+--@localization(locale="esMX", format="lua_additive_table", namespace="chat_kalimdor", table-name="chat_kalimdor")@
 AL:GetLocale("DXE").chat_kalimdor = AL:GetLocale("DXE Chat Kalimdor")
 -- NPC names
 local npc_kalimdor = AL:NewLocale("DXE NPC Kalimdor", "esMX")
---@localization(locale="esMX", format="lua_additive_table", namespace="npc_kalimdor", table-name=npc_kalimdor)@
+--@localization(locale="esMX", format="lua_additive_table", namespace="npc_kalimdor", table-name="npc_kalimdor")@
 AL:GetLocale("DXE").npc_kalimdor = AL:GetLocale("DXE NPC Kalimdor")
 return
 end
@@ -72,11 +72,11 @@ if L then
 	
 -- Chat triggers
 local chat_kalimdor = AL:NewLocale("DXE Chat Kalimdor", "frFR")
---@localization(locale="frFR", format="lua_additive_table", namespace="chat_kalimdor", table-name=chat_kalimdor)@
+--@localization(locale="frFR", format="lua_additive_table", namespace="chat_kalimdor", table-name="chat_kalimdor")@
 AL:GetLocale("DXE").chat_kalimdor = AL:GetLocale("DXE Chat Kalimdor")
 -- NPC names
 local npc_kalimdor = AL:NewLocale("DXE NPC Kalimdor", "frFR")
---@localization(locale="frFR", format="lua_additive_table", namespace="npc_kalimdor", table-name=npc_kalimdor)@
+--@localization(locale="frFR", format="lua_additive_table", namespace="npc_kalimdor", table-name="npc_kalimdor")@
 AL:GetLocale("DXE").npc_kalimdor = AL:GetLocale("DXE NPC Kalimdor")
 return
 end
@@ -86,11 +86,11 @@ if L then
 
 -- Chat triggers
 local chat_kalimdor = AL:NewLocale("DXE Chat Kalimdor", "koKR")
---@localization(locale="koKR", format="lua_additive_table", namespace="chat_kalimdor", table-name=chat_kalimdor)@
+--@localization(locale="koKR", format="lua_additive_table", namespace="chat_kalimdor", table-name="chat_kalimdor")@
 AL:GetLocale("DXE").chat_kalimdor = AL:GetLocale("DXE Chat Kalimdor")
 -- NPC names
 local npc_kalimdor = AL:NewLocale("DXE NPC Kalimdor", "koKR")
---@localization(locale="koKR", format="lua_additive_table", namespace="npc_kalimdor", table-name=npc_kalimdor)@
+--@localization(locale="koKR", format="lua_additive_table", namespace="npc_kalimdor", table-name="npc_kalimdor")@
 AL:GetLocale("DXE").npc_kalimdor = AL:GetLocale("DXE NPC Kalimdor")
 return
 end
@@ -100,11 +100,11 @@ if L then
 
 -- Chat triggers
 local chat_kalimdor = AL:NewLocale("DXE Chat Kalimdor", "ruRU")
---@localization(locale="ruRU", format="lua_additive_table", namespace="chat_kalimdor", table-name=chat_kalimdor)@
+--@localization(locale="ruRU", format="lua_additive_table", namespace="chat_kalimdor", table-name="chat_kalimdor")@
 AL:GetLocale("DXE").chat_kalimdor = AL:GetLocale("DXE Chat Kalimdor")
 -- NPC names
 local npc_kalimdor = AL:NewLocale("DXE NPC Kalimdor", "ruRU")
---@localization(locale="ruRU", format="lua_additive_table", namespace="npc_kalimdor", table-name=npc_kalimdor)@
+--@localization(locale="ruRU", format="lua_additive_table", namespace="npc_kalimdor", table-name="npc_kalimdor")@
 AL:GetLocale("DXE").npc_kalimdor = AL:GetLocale("DXE NPC Kalimdor")
 return
 end
@@ -114,11 +114,11 @@ if L then
 
 -- Chat triggers
 local chat_kalimdor = AL:NewLocale("DXE Chat Kalimdor", "zhCN")
---@localization(locale="zhCN", format="lua_additive_table", namespace="chat_kalimdor", table-name=chat_kalimdor)@
+--@localization(locale="zhCN", format="lua_additive_table", namespace="chat_kalimdor", table-name="chat_kalimdor")@
 AL:GetLocale("DXE").chat_kalimdor = AL:GetLocale("DXE Chat Kalimdor")
 -- NPC names
 local npc_kalimdor = AL:NewLocale("DXE NPC Kalimdor", "zhCN")
---@localization(locale="zhCN", format="lua_additive_table", namespace="npc_kalimdor", table-name=npc_kalimdor)@
+--@localization(locale="zhCN", format="lua_additive_table", namespace="npc_kalimdor", table-name="npc_kalimdor")@
 AL:GetLocale("DXE").npc_kalimdor = AL:GetLocale("DXE NPC Kalimdor")
 return
 end
@@ -128,11 +128,11 @@ if L then
 
 -- Chat triggers
 local chat_kalimdor = AL:NewLocale("DXE Chat Kalimdor", "zhTW")
---@localization(locale="zhTW", format="lua_additive_table", namespace="chat_kalimdor", table-name=chat_kalimdor)@
+--@localization(locale="zhTW", format="lua_additive_table", namespace="chat_kalimdor", table-name="chat_kalimdor")@
 AL:GetLocale("DXE").chat_kalimdor = AL:GetLocale("DXE Chat Kalimdor")
 -- NPC names
 local npc_kalimdor = AL:NewLocale("DXE NPC Kalimdor", "zhTW")
---@localization(locale="zhTW", format="lua_additive_table", namespace="npc_kalimdor", table-name=npc_kalimdor)@
+--@localization(locale="zhTW", format="lua_additive_table", namespace="npc_kalimdor", table-name="npc_kalimdor")@
 AL:GetLocale("DXE").npc_kalimdor = AL:GetLocale("DXE NPC Kalimdor")
 return
 end

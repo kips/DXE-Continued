@@ -16,11 +16,11 @@ if L then
 
 -- Chat triggers
 local chat_naxxramas = AL:NewLocale("DXE Chat Naxxramas", "enUS", true, debug)
---@localization(locale="enUS", format="lua_additive_table", same-key-is-true=true, namespace="chat_naxxramas", table-name=chat_naxxramas)@
+--@localization(locale="enUS", format="lua_additive_table", same-key-is-true=true, namespace="chat_naxxramas", table-name="chat_naxxramas")@
 AL:GetLocale("DXE").chat_naxxramas = AL:GetLocale("DXE Chat Naxxramas")
 -- NPC names
 local npc_naxxramas = AL:NewLocale("DXE NPC Naxxramas", "enUS", true, debug)
---@localization(locale="enUS", format="lua_additive_table", same-key-is-true=true, namespace="npc_naxxramas", table-name=npc_naxxramas)@
+--@localization(locale="enUS", format="lua_additive_table", same-key-is-true=true, namespace="npc_naxxramas", table-name="npc_naxxramas")@
 AL:GetLocale("DXE").npc_naxxramas = AL:GetLocale("DXE NPC Naxxramas")
 if GetLocale() == "enUS" or GetLocale() == "enGB" then return end
 end
@@ -30,11 +30,11 @@ if L then
 
 -- Chat triggers
 local chat_naxxramas = AL:NewLocale("DXE Chat Naxxramas", "deDE")
---@localization(locale="deDE", format="lua_additive_table", namespace="chat_naxxramas", table-name=chat_naxxramas)@
+--@localization(locale="deDE", format="lua_additive_table", namespace="chat_naxxramas", table-name="chat_naxxramas")@
 AL:GetLocale("DXE").chat_naxxramas = AL:GetLocale("DXE Chat Naxxramas")
 -- NPC names
 local npc_naxxramas = AL:NewLocale("DXE NPC Naxxramas", "deDE")
---@localization(locale="deDE", format="lua_additive_table", namespace="npc_naxxramas", table-name=npc_naxxramas)@
+--@localization(locale="deDE", format="lua_additive_table", namespace="npc_naxxramas", table-name="npc_naxxramas")@
 AL:GetLocale("DXE").npc_naxxramas = AL:GetLocale("DXE NPC Naxxramas")
 return
 end
@@ -44,11 +44,11 @@ if L then
 
 -- Chat triggers
 local chat_naxxramas = AL:NewLocale("DXE Chat Naxxramas", "esES")
---@localization(locale="esES", format="lua_additive_table", namespace="chat_naxxramas", table-name=chat_naxxramas)@
+--@localization(locale="esES", format="lua_additive_table", namespace="chat_naxxramas", table-name="chat_naxxramas")@
 AL:GetLocale("DXE").chat_naxxramas = AL:GetLocale("DXE Chat Naxxramas")
 -- NPC names
 local npc_naxxramas = AL:NewLocale("DXE NPC Naxxramas", "esES")
---@localization(locale="esES", format="lua_additive_table", namespace="npc_naxxramas", table-name=npc_naxxramas)@
+--@localization(locale="esES", format="lua_additive_table", namespace="npc_naxxramas", table-name="npc_naxxramas")@
 AL:GetLocale("DXE").npc_naxxramas = AL:GetLocale("DXE NPC Naxxramas")
 return
 end
@@ -58,11 +58,11 @@ if L then
 
 -- Chat triggers
 local chat_naxxramas = AL:NewLocale("DXE Chat Naxxramas", "esMX")
---@localization(locale="esMX", format="lua_additive_table", namespace="chat_naxxramas", table-name=chat_naxxramas)@
+--@localization(locale="esMX", format="lua_additive_table", namespace="chat_naxxramas", table-name="chat_naxxramas")@
 AL:GetLocale("DXE").chat_naxxramas = AL:GetLocale("DXE Chat Naxxramas")
 -- NPC names
 local npc_naxxramas = AL:NewLocale("DXE NPC Naxxramas", "esMX")
---@localization(locale="esMX", format="lua_additive_table", namespace="npc_naxxramas", table-name=npc_naxxramas)@
+--@localization(locale="esMX", format="lua_additive_table", namespace="npc_naxxramas", table-name="npc_naxxramas")@
 AL:GetLocale("DXE").npc_naxxramas = AL:GetLocale("DXE NPC Naxxramas")
 return
 end
@@ -72,11 +72,11 @@ if L then
 	
 -- Chat triggers
 local chat_naxxramas = AL:NewLocale("DXE Chat Naxxramas", "frFR")
---@localization(locale="frFR", format="lua_additive_table", namespace="chat_naxxramas", table-name=chat_naxxramas)@
+--@localization(locale="frFR", format="lua_additive_table", namespace="chat_naxxramas", table-name="chat_naxxramas")@
 AL:GetLocale("DXE").chat_naxxramas = AL:GetLocale("DXE Chat Naxxramas")
 -- NPC names
 local npc_naxxramas = AL:NewLocale("DXE NPC Naxxramas", "frFR")
---@localization(locale="frFR", format="lua_additive_table", namespace="npc_naxxramas", table-name=npc_naxxramas)@
+--@localization(locale="frFR", format="lua_additive_table", namespace="npc_naxxramas", table-name="npc_naxxramas")@
 AL:GetLocale("DXE").npc_naxxramas = AL:GetLocale("DXE NPC Naxxramas")
 return
 end
@@ -86,11 +86,11 @@ if L then
 
 -- Chat triggers
 local chat_naxxramas = AL:NewLocale("DXE Chat Naxxramas", "koKR")
---@localization(locale="koKR", format="lua_additive_table", namespace="chat_naxxramas", table-name=chat_naxxramas)@
+--@localization(locale="koKR", format="lua_additive_table", namespace="chat_naxxramas", table-name="chat_naxxramas")@
 AL:GetLocale("DXE").chat_naxxramas = AL:GetLocale("DXE Chat Naxxramas")
 -- NPC names
 local npc_naxxramas = AL:NewLocale("DXE NPC Naxxramas", "koKR")
---@localization(locale="koKR", format="lua_additive_table", namespace="npc_naxxramas", table-name=npc_naxxramas)@
+--@localization(locale="koKR", format="lua_additive_table", namespace="npc_naxxramas", table-name="npc_naxxramas")@
 AL:GetLocale("DXE").npc_naxxramas = AL:GetLocale("DXE NPC Naxxramas")
 return
 end
@@ -100,11 +100,11 @@ if L then
 
 -- Chat triggers
 local chat_naxxramas = AL:NewLocale("DXE Chat Naxxramas", "ruRU")
---@localization(locale="ruRU", format="lua_additive_table", namespace="chat_naxxramas", table-name=chat_naxxramas)@
+--@localization(locale="ruRU", format="lua_additive_table", namespace="chat_naxxramas", table-name="chat_naxxramas")@
 AL:GetLocale("DXE").chat_naxxramas = AL:GetLocale("DXE Chat Naxxramas")
 -- NPC names
 local npc_naxxramas = AL:NewLocale("DXE NPC Naxxramas", "ruRU")
---@localization(locale="ruRU", format="lua_additive_table", namespace="npc_naxxramas", table-name=npc_naxxramas)@
+--@localization(locale="ruRU", format="lua_additive_table", namespace="npc_naxxramas", table-name="npc_naxxramas")@
 AL:GetLocale("DXE").npc_naxxramas = AL:GetLocale("DXE NPC Naxxramas")
 return
 end
@@ -114,11 +114,11 @@ if L then
 
 -- Chat triggers
 local chat_naxxramas = AL:NewLocale("DXE Chat Naxxramas", "zhCN")
---@localization(locale="zhCN", format="lua_additive_table", namespace="chat_naxxramas", table-name=chat_naxxramas)@
+--@localization(locale="zhCN", format="lua_additive_table", namespace="chat_naxxramas", table-name="chat_naxxramas")@
 AL:GetLocale("DXE").chat_naxxramas = AL:GetLocale("DXE Chat Naxxramas")
 -- NPC names
 local npc_naxxramas = AL:NewLocale("DXE NPC Naxxramas", "zhCN")
---@localization(locale="zhCN", format="lua_additive_table", namespace="npc_naxxramas", table-name=npc_naxxramas)@
+--@localization(locale="zhCN", format="lua_additive_table", namespace="npc_naxxramas", table-name="npc_naxxramas")@
 AL:GetLocale("DXE").npc_naxxramas = AL:GetLocale("DXE NPC Naxxramas")
 return
 end
@@ -128,11 +128,11 @@ if L then
 
 -- Chat triggers
 local chat_naxxramas = AL:NewLocale("DXE Chat Naxxramas", "zhTW")
---@localization(locale="zhTW", format="lua_additive_table", namespace="chat_naxxramas", table-name=chat_naxxramas)@
+--@localization(locale="zhTW", format="lua_additive_table", namespace="chat_naxxramas", table-name="chat_naxxramas")@
 AL:GetLocale("DXE").chat_naxxramas = AL:GetLocale("DXE Chat Naxxramas")
 -- NPC names
 local npc_naxxramas = AL:NewLocale("DXE NPC Naxxramas", "zhTW")
---@localization(locale="zhTW", format="lua_additive_table", namespace="npc_naxxramas", table-name=npc_naxxramas)@
+--@localization(locale="zhTW", format="lua_additive_table", namespace="npc_naxxramas", table-name="npc_naxxramas")@
 AL:GetLocale("DXE").npc_naxxramas = AL:GetLocale("DXE NPC Naxxramas")
 return
 end

@@ -16,11 +16,11 @@ if L then
 
 -- Chat triggers
 local chat_ulduar = AL:NewLocale("DXE Chat Ulduar", "enUS", true, debug)
---@localization(locale="enUS", format="lua_additive_table", same-key-is-true=true, namespace="chat_ulduar", table-name=chat_ulduar)@
+--@localization(locale="enUS", format="lua_additive_table", same-key-is-true=true, namespace="chat_ulduar", table-name="chat_ulduar")@
 AL:GetLocale("DXE").chat_ulduar = AL:GetLocale("DXE Chat Ulduar")
 -- NPC names
 local npc_ulduar = AL:NewLocale("DXE NPC Ulduar", "enUS", true, debug)
---@localization(locale="enUS", format="lua_additive_table", same-key-is-true=true, namespace="npc_ulduar", table-name=npc_ulduar)@
+--@localization(locale="enUS", format="lua_additive_table", same-key-is-true=true, namespace="npc_ulduar", table-name="npc_ulduar")@
 AL:GetLocale("DXE").npc_ulduar = AL:GetLocale("DXE NPC Ulduar")
 if GetLocale() == "enUS" or GetLocale() == "enGB" then return end
 end
@@ -30,11 +30,11 @@ if L then
 
 -- Chat triggers
 local chat_ulduar = AL:NewLocale("DXE Chat Ulduar", "deDE")
---@localization(locale="deDE", format="lua_additive_table", namespace="chat_ulduar", table-name=chat_ulduar)@
+--@localization(locale="deDE", format="lua_additive_table", namespace="chat_ulduar", table-name="chat_ulduar")@
 AL:GetLocale("DXE").chat_ulduar = AL:GetLocale("DXE Chat Ulduar")
 -- NPC names
 local npc_ulduar = AL:NewLocale("DXE NPC Ulduar", "deDE")
---@localization(locale="deDE", format="lua_additive_table", namespace="npc_ulduar", table-name=npc_ulduar)@
+--@localization(locale="deDE", format="lua_additive_table", namespace="npc_ulduar", table-name="npc_ulduar")@
 AL:GetLocale("DXE").npc_ulduar = AL:GetLocale("DXE NPC Ulduar")
 return
 end
@@ -44,11 +44,11 @@ if L then
 
 -- Chat triggers
 local chat_ulduar = AL:NewLocale("DXE Chat Ulduar", "esES")
---@localization(locale="esES", format="lua_additive_table", namespace="chat_ulduar", table-name=chat_ulduar)@
+--@localization(locale="esES", format="lua_additive_table", namespace="chat_ulduar", table-name="chat_ulduar")@
 AL:GetLocale("DXE").chat_ulduar = AL:GetLocale("DXE Chat Ulduar")
 -- NPC names
 local npc_ulduar = AL:NewLocale("DXE NPC Ulduar", "esES")
---@localization(locale="esES", format="lua_additive_table", namespace="npc_ulduar", table-name=npc_ulduar)@
+--@localization(locale="esES", format="lua_additive_table", namespace="npc_ulduar", table-name="npc_ulduar")@
 AL:GetLocale("DXE").npc_ulduar = AL:GetLocale("DXE NPC Ulduar")
 return
 end
@@ -58,11 +58,11 @@ if L then
 
 -- Chat triggers
 local chat_ulduar = AL:NewLocale("DXE Chat Ulduar", "esMX")
---@localization(locale="esMX", format="lua_additive_table", namespace="chat_ulduar", table-name=chat_ulduar)@
+--@localization(locale="esMX", format="lua_additive_table", namespace="chat_ulduar", table-name="chat_ulduar")@
 AL:GetLocale("DXE").chat_ulduar = AL:GetLocale("DXE Chat Ulduar")
 -- NPC names
 local npc_ulduar = AL:NewLocale("DXE NPC Ulduar", "esMX")
---@localization(locale="esMX", format="lua_additive_table", namespace="npc_ulduar", table-name=npc_ulduar)@
+--@localization(locale="esMX", format="lua_additive_table", namespace="npc_ulduar", table-name="npc_ulduar")@
 AL:GetLocale("DXE").npc_ulduar = AL:GetLocale("DXE NPC Ulduar")
 return
 end
@@ -72,11 +72,11 @@ if L then
 	
 -- Chat triggers
 local chat_ulduar = AL:NewLocale("DXE Chat Ulduar", "frFR")
---@localization(locale="frFR", format="lua_additive_table", namespace="chat_ulduar", table-name=chat_ulduar)@
+--@localization(locale="frFR", format="lua_additive_table", namespace="chat_ulduar", table-name="chat_ulduar")@
 AL:GetLocale("DXE").chat_ulduar = AL:GetLocale("DXE Chat Ulduar")
 -- NPC names
 local npc_ulduar = AL:NewLocale("DXE NPC Ulduar", "frFR")
---@localization(locale="frFR", format="lua_additive_table", namespace="npc_ulduar", table-name=npc_ulduar)@
+--@localization(locale="frFR", format="lua_additive_table", namespace="npc_ulduar", table-name="npc_ulduar")@
 AL:GetLocale("DXE").npc_ulduar = AL:GetLocale("DXE NPC Ulduar")
 return
 end
@@ -86,11 +86,11 @@ if L then
 
 -- Chat triggers
 local chat_ulduar = AL:NewLocale("DXE Chat Ulduar", "koKR")
---@localization(locale="koKR", format="lua_additive_table", namespace="chat_ulduar", table-name=chat_ulduar)@
+--@localization(locale="koKR", format="lua_additive_table", namespace="chat_ulduar", table-name="chat_ulduar")@
 AL:GetLocale("DXE").chat_ulduar = AL:GetLocale("DXE Chat Ulduar")
 -- NPC names
 local npc_ulduar = AL:NewLocale("DXE NPC Ulduar", "koKR")
---@localization(locale="koKR", format="lua_additive_table", namespace="npc_ulduar", table-name=npc_ulduar)@
+--@localization(locale="koKR", format="lua_additive_table", namespace="npc_ulduar", table-name="npc_ulduar")@
 AL:GetLocale("DXE").npc_ulduar = AL:GetLocale("DXE NPC Ulduar")
 return
 end
@@ -100,11 +100,11 @@ if L then
 
 -- Chat triggers
 local chat_ulduar = AL:NewLocale("DXE Chat Ulduar", "ruRU")
---@localization(locale="ruRU", format="lua_additive_table", namespace="chat_ulduar", table-name=chat_ulduar)@
+--@localization(locale="ruRU", format="lua_additive_table", namespace="chat_ulduar", table-name="chat_ulduar")@
 AL:GetLocale("DXE").chat_ulduar = AL:GetLocale("DXE Chat Ulduar")
 -- NPC names
 local npc_ulduar = AL:NewLocale("DXE NPC Ulduar", "ruRU")
---@localization(locale="ruRU", format="lua_additive_table", namespace="npc_ulduar", table-name=npc_ulduar)@
+--@localization(locale="ruRU", format="lua_additive_table", namespace="npc_ulduar", table-name="npc_ulduar")@
 AL:GetLocale("DXE").npc_ulduar = AL:GetLocale("DXE NPC Ulduar")
 return
 end
@@ -114,11 +114,11 @@ if L then
 
 -- Chat triggers
 local chat_ulduar = AL:NewLocale("DXE Chat Ulduar", "zhCN")
---@localization(locale="zhCN", format="lua_additive_table", namespace="chat_ulduar", table-name=chat_ulduar)@
+--@localization(locale="zhCN", format="lua_additive_table", namespace="chat_ulduar", table-name="chat_ulduar")@
 AL:GetLocale("DXE").chat_ulduar = AL:GetLocale("DXE Chat Ulduar")
 -- NPC names
 local npc_ulduar = AL:NewLocale("DXE NPC Ulduar", "zhCN")
---@localization(locale="zhCN", format="lua_additive_table", namespace="npc_ulduar", table-name=npc_ulduar)@
+--@localization(locale="zhCN", format="lua_additive_table", namespace="npc_ulduar", table-name="npc_ulduar")@
 AL:GetLocale("DXE").npc_ulduar = AL:GetLocale("DXE NPC Ulduar")
 return
 end
@@ -128,11 +128,11 @@ if L then
 
 -- Chat triggers
 local chat_ulduar = AL:NewLocale("DXE Chat Ulduar", "zhTW")
---@localization(locale="zhTW", format="lua_additive_table", namespace="chat_ulduar", table-name=chat_ulduar)@
+--@localization(locale="zhTW", format="lua_additive_table", namespace="chat_ulduar", table-name="chat_ulduar")@
 AL:GetLocale("DXE").chat_ulduar = AL:GetLocale("DXE Chat Ulduar")
 -- NPC names
 local npc_ulduar = AL:NewLocale("DXE NPC Ulduar", "zhTW")
---@localization(locale="zhTW", format="lua_additive_table", namespace="npc_ulduar", table-name=npc_ulduar)@
+--@localization(locale="zhTW", format="lua_additive_table", namespace="npc_ulduar", table-name="npc_ulduar")@
 AL:GetLocale("DXE").npc_ulduar = AL:GetLocale("DXE NPC Ulduar")
 return
 end

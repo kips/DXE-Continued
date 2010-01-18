@@ -16,11 +16,11 @@ if L then
 
 -- Chat triggers
 local chat_coliseum = AL:NewLocale("DXE Chat Coliseum", "enUS", true, debug)
---@localization(locale="enUS", format="lua_additive_table", same-key-is-true=true, namespace="chat_coliseum", table-name=chat_coliseum)@
+--@localization(locale="enUS", format="lua_additive_table", same-key-is-true=true, namespace="chat_coliseum", table-name="chat_coliseum")@
 AL:GetLocale("DXE").chat_coliseum = AL:GetLocale("DXE Chat Coliseum")
 -- NPC names
 local npc_coliseum = AL:NewLocale("DXE NPC Coliseum", "enUS", true, debug)
---@localization(locale="enUS", format="lua_additive_table", same-key-is-true=true, namespace="npc_coliseum", table-name=npc_coliseum)@
+--@localization(locale="enUS", format="lua_additive_table", same-key-is-true=true, namespace="npc_coliseum", table-name="npc_coliseum")@
 AL:GetLocale("DXE").npc_coliseum = AL:GetLocale("DXE NPC Coliseum")
 if GetLocale() == "enUS" or GetLocale() == "enGB" then return end
 end
@@ -30,11 +30,11 @@ if L then
 
 -- Chat triggers
 local chat_coliseum = AL:NewLocale("DXE Chat Coliseum", "deDE")
---@localization(locale="deDE", format="lua_additive_table", namespace="chat_coliseum", table-name=chat_coliseum)@
+--@localization(locale="deDE", format="lua_additive_table", namespace="chat_coliseum", table-name="chat_coliseum")@
 AL:GetLocale("DXE").chat_coliseum = AL:GetLocale("DXE Chat Coliseum")
 -- NPC names
 local npc_coliseum = AL:NewLocale("DXE NPC Coliseum", "deDE")
---@localization(locale="deDE", format="lua_additive_table", namespace="npc_coliseum", table-name=npc_coliseum)@
+--@localization(locale="deDE", format="lua_additive_table", namespace="npc_coliseum", table-name="npc_coliseum")@
 AL:GetLocale("DXE").npc_coliseum = AL:GetLocale("DXE NPC Coliseum")
 return
 end
@@ -44,11 +44,11 @@ if L then
 
 -- Chat triggers
 local chat_coliseum = AL:NewLocale("DXE Chat Coliseum", "esES")
---@localization(locale="esES", format="lua_additive_table", namespace="chat_coliseum", table-name=chat_coliseum)@
+--@localization(locale="esES", format="lua_additive_table", namespace="chat_coliseum", table-name="chat_coliseum")@
 AL:GetLocale("DXE").chat_coliseum = AL:GetLocale("DXE Chat Coliseum")
 -- NPC names
 local npc_coliseum = AL:NewLocale("DXE NPC Coliseum", "esES")
---@localization(locale="esES", format="lua_additive_table", namespace="npc_coliseum", table-name=npc_coliseum)@
+--@localization(locale="esES", format="lua_additive_table", namespace="npc_coliseum", table-name="npc_coliseum")@
 AL:GetLocale("DXE").npc_coliseum = AL:GetLocale("DXE NPC Coliseum")
 return
 end
@@ -58,11 +58,11 @@ if L then
 
 -- Chat triggers
 local chat_coliseum = AL:NewLocale("DXE Chat Coliseum", "esMX")
---@localization(locale="esMX", format="lua_additive_table", namespace="chat_coliseum", table-name=chat_coliseum)@
+--@localization(locale="esMX", format="lua_additive_table", namespace="chat_coliseum", table-name="chat_coliseum")@
 AL:GetLocale("DXE").chat_coliseum = AL:GetLocale("DXE Chat Coliseum")
 -- NPC names
 local npc_coliseum = AL:NewLocale("DXE NPC Coliseum", "esMX")
---@localization(locale="esMX", format="lua_additive_table", namespace="npc_coliseum", table-name=npc_coliseum)@
+--@localization(locale="esMX", format="lua_additive_table", namespace="npc_coliseum", table-name="npc_coliseum")@
 AL:GetLocale("DXE").npc_coliseum = AL:GetLocale("DXE NPC Coliseum")
 return
 end
@@ -72,11 +72,11 @@ if L then
 	
 -- Chat triggers
 local chat_coliseum = AL:NewLocale("DXE Chat Coliseum", "frFR")
---@localization(locale="frFR", format="lua_additive_table", namespace="chat_coliseum", table-name=chat_coliseum)@
+--@localization(locale="frFR", format="lua_additive_table", namespace="chat_coliseum", table-name="chat_coliseum")@
 AL:GetLocale("DXE").chat_coliseum = AL:GetLocale("DXE Chat Coliseum")
 -- NPC names
 local npc_coliseum = AL:NewLocale("DXE NPC Coliseum", "frFR")
---@localization(locale="frFR", format="lua_additive_table", namespace="npc_coliseum", table-name=npc_coliseum)@
+--@localization(locale="frFR", format="lua_additive_table", namespace="npc_coliseum", table-name="npc_coliseum")@
 AL:GetLocale("DXE").npc_coliseum = AL:GetLocale("DXE NPC Coliseum")
 return
 end
@@ -86,11 +86,11 @@ if L then
 
 -- Chat triggers
 local chat_coliseum = AL:NewLocale("DXE Chat Coliseum", "koKR")
---@localization(locale="koKR", format="lua_additive_table", namespace="chat_coliseum", table-name=chat_coliseum)@
+--@localization(locale="koKR", format="lua_additive_table", namespace="chat_coliseum", table-name="chat_coliseum")@
 AL:GetLocale("DXE").chat_coliseum = AL:GetLocale("DXE Chat Coliseum")
 -- NPC names
 local npc_coliseum = AL:NewLocale("DXE NPC Coliseum", "koKR")
---@localization(locale="koKR", format="lua_additive_table", namespace="npc_coliseum", table-name=npc_coliseum)@
+--@localization(locale="koKR", format="lua_additive_table", namespace="npc_coliseum", table-name="npc_coliseum")@
 AL:GetLocale("DXE").npc_coliseum = AL:GetLocale("DXE NPC Coliseum")
 return
 end
@@ -100,11 +100,11 @@ if L then
 
 -- Chat triggers
 local chat_coliseum = AL:NewLocale("DXE Chat Coliseum", "ruRU")
---@localization(locale="ruRU", format="lua_additive_table", namespace="chat_coliseum", table-name=chat_coliseum)@
+--@localization(locale="ruRU", format="lua_additive_table", namespace="chat_coliseum", table-name="chat_coliseum")@
 AL:GetLocale("DXE").chat_coliseum = AL:GetLocale("DXE Chat Coliseum")
 -- NPC names
 local npc_coliseum = AL:NewLocale("DXE NPC Coliseum", "ruRU")
---@localization(locale="ruRU", format="lua_additive_table", namespace="npc_coliseum", table-name=npc_coliseum)@
+--@localization(locale="ruRU", format="lua_additive_table", namespace="npc_coliseum", table-name="npc_coliseum")@
 AL:GetLocale("DXE").npc_coliseum = AL:GetLocale("DXE NPC Coliseum")
 return
 end
@@ -114,11 +114,11 @@ if L then
 
 -- Chat triggers
 local chat_coliseum = AL:NewLocale("DXE Chat Coliseum", "zhCN")
---@localization(locale="zhCN", format="lua_additive_table", namespace="chat_coliseum", table-name=chat_coliseum)@
+--@localization(locale="zhCN", format="lua_additive_table", namespace="chat_coliseum", table-name="chat_coliseum")@
 AL:GetLocale("DXE").chat_coliseum = AL:GetLocale("DXE Chat Coliseum")
 -- NPC names
 local npc_coliseum = AL:NewLocale("DXE NPC Coliseum", "zhCN")
---@localization(locale="zhCN", format="lua_additive_table", namespace="npc_coliseum", table-name=npc_coliseum)@
+--@localization(locale="zhCN", format="lua_additive_table", namespace="npc_coliseum", table-name="npc_coliseum")@
 AL:GetLocale("DXE").npc_coliseum = AL:GetLocale("DXE NPC Coliseum")
 return
 end
@@ -128,11 +128,11 @@ if L then
 
 -- Chat triggers
 local chat_coliseum = AL:NewLocale("DXE Chat Coliseum", "zhTW")
---@localization(locale="zhTW", format="lua_additive_table", namespace="chat_coliseum", table-name=chat_coliseum)@
+--@localization(locale="zhTW", format="lua_additive_table", namespace="chat_coliseum", table-name="chat_coliseum")@
 AL:GetLocale("DXE").chat_coliseum = AL:GetLocale("DXE Chat Coliseum")
 -- NPC names
 local npc_coliseum = AL:NewLocale("DXE NPC Coliseum", "zhTW")
---@localization(locale="zhTW", format="lua_additive_table", namespace="npc_coliseum", table-name=npc_coliseum)@
+--@localization(locale="zhTW", format="lua_additive_table", namespace="npc_coliseum", table-name="npc_coliseum")@
 AL:GetLocale("DXE").npc_coliseum = AL:GetLocale("DXE NPC Coliseum")
 return
 end

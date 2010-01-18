@@ -16,11 +16,11 @@ if L then
 
 -- Chat triggers
 local chat_citadel = AL:NewLocale("DXE Chat Citadel", "enUS", true, debug)
---@localization(locale="enUS", format="lua_additive_table", same-key-is-true=true, namespace="chat_citadel", table-name=chat_citadel)@
+--@localization(locale="enUS", format="lua_additive_table", same-key-is-true=true, namespace="chat_citadel", table-name="chat_citadel")@
 AL:GetLocale("DXE").chat_citadel = AL:GetLocale("DXE Chat Citadel")
 -- NPC names
 local npc_citadel = AL:NewLocale("DXE NPC Citadel", "enUS", true, debug)
---@localization(locale="enUS", format="lua_additive_table", same-key-is-true=true, namespace="npc_citadel", table-name=npc_citadel)@
+--@localization(locale="enUS", format="lua_additive_table", same-key-is-true=true, namespace="npc_citadel", table-name="npc_citadel")@
 AL:GetLocale("DXE").npc_citadel = AL:GetLocale("DXE NPC Citadel")
 if GetLocale() == "enUS" or GetLocale() == "enGB" then return end
 end
@@ -30,11 +30,11 @@ if L then
 
 -- Chat triggers
 local chat_citadel = AL:NewLocale("DXE Chat Citadel", "deDE")
---@localization(locale="deDE", format="lua_additive_table", namespace="chat_citadel", table-name=chat_citadel)@
+--@localization(locale="deDE", format="lua_additive_table", namespace="chat_citadel", table-name="chat_citadel")@
 AL:GetLocale("DXE").chat_citadel = AL:GetLocale("DXE Chat Citadel")
 -- NPC names
 local npc_citadel = AL:NewLocale("DXE NPC Citadel", "deDE")
---@localization(locale="deDE", format="lua_additive_table", namespace="npc_citadel", table-name=npc_citadel)@
+--@localization(locale="deDE", format="lua_additive_table", namespace="npc_citadel", table-name="npc_citadel")@
 AL:GetLocale("DXE").npc_citadel = AL:GetLocale("DXE NPC Citadel")
 return
 end
@@ -44,11 +44,11 @@ if L then
 
 -- Chat triggers
 local chat_citadel = AL:NewLocale("DXE Chat Citadel", "esES")
---@localization(locale="esES", format="lua_additive_table", namespace="chat_citadel", table-name=chat_citadel)@
+--@localization(locale="esES", format="lua_additive_table", namespace="chat_citadel", table-name="chat_citadel")@
 AL:GetLocale("DXE").chat_citadel = AL:GetLocale("DXE Chat Citadel")
 -- NPC names
 local npc_citadel = AL:NewLocale("DXE NPC Citadel", "esES")
---@localization(locale="esES", format="lua_additive_table", namespace="npc_citadel", table-name=npc_citadel)@
+--@localization(locale="esES", format="lua_additive_table", namespace="npc_citadel", table-name="npc_citadel")@
 AL:GetLocale("DXE").npc_citadel = AL:GetLocale("DXE NPC Citadel")
 return
 end
@@ -58,11 +58,11 @@ if L then
 
 -- Chat triggers
 local chat_citadel = AL:NewLocale("DXE Chat Citadel", "esMX")
---@localization(locale="esMX", format="lua_additive_table", namespace="chat_citadel", table-name=chat_citadel)@
+--@localization(locale="esMX", format="lua_additive_table", namespace="chat_citadel", table-name="chat_citadel")@
 AL:GetLocale("DXE").chat_citadel = AL:GetLocale("DXE Chat Citadel")
 -- NPC names
 local npc_citadel = AL:NewLocale("DXE NPC Citadel", "esMX")
---@localization(locale="esMX", format="lua_additive_table", namespace="npc_citadel", table-name=npc_citadel)@
+--@localization(locale="esMX", format="lua_additive_table", namespace="npc_citadel", table-name="npc_citadel")@
 AL:GetLocale("DXE").npc_citadel = AL:GetLocale("DXE NPC Citadel")
 return
 end
@@ -72,11 +72,11 @@ if L then
 	
 -- Chat triggers
 local chat_citadel = AL:NewLocale("DXE Chat Citadel", "frFR")
---@localization(locale="frFR", format="lua_additive_table", namespace="chat_citadel", table-name=chat_citadel)@
+--@localization(locale="frFR", format="lua_additive_table", namespace="chat_citadel", table-name="chat_citadel")@
 AL:GetLocale("DXE").chat_citadel = AL:GetLocale("DXE Chat Citadel")
 -- NPC names
 local npc_citadel = AL:NewLocale("DXE NPC Citadel", "frFR")
---@localization(locale="frFR", format="lua_additive_table", namespace="npc_citadel", table-name=npc_citadel)@
+--@localization(locale="frFR", format="lua_additive_table", namespace="npc_citadel", table-name="npc_citadel")@
 AL:GetLocale("DXE").npc_citadel = AL:GetLocale("DXE NPC Citadel")
 return
 end
@@ -86,11 +86,11 @@ if L then
 
 -- Chat triggers
 local chat_citadel = AL:NewLocale("DXE Chat Citadel", "koKR")
---@localization(locale="koKR", format="lua_additive_table", namespace="chat_citadel", table-name=chat_citadel)@
+--@localization(locale="koKR", format="lua_additive_table", namespace="chat_citadel", table-name="chat_citadel")@
 AL:GetLocale("DXE").chat_citadel = AL:GetLocale("DXE Chat Citadel")
 -- NPC names
 local npc_citadel = AL:NewLocale("DXE NPC Citadel", "koKR")
---@localization(locale="koKR", format="lua_additive_table", namespace="npc_citadel", table-name=npc_citadel)@
+--@localization(locale="koKR", format="lua_additive_table", namespace="npc_citadel", table-name="npc_citadel")@
 AL:GetLocale("DXE").npc_citadel = AL:GetLocale("DXE NPC Citadel")
 return
 end
@@ -100,11 +100,11 @@ if L then
 
 -- Chat triggers
 local chat_citadel = AL:NewLocale("DXE Chat Citadel", "ruRU")
---@localization(locale="ruRU", format="lua_additive_table", namespace="chat_citadel", table-name=chat_citadel)@
+--@localization(locale="ruRU", format="lua_additive_table", namespace="chat_citadel", table-name="chat_citadel")@
 AL:GetLocale("DXE").chat_citadel = AL:GetLocale("DXE Chat Citadel")
 -- NPC names
 local npc_citadel = AL:NewLocale("DXE NPC Citadel", "ruRU")
---@localization(locale="ruRU", format="lua_additive_table", namespace="npc_citadel", table-name=npc_citadel)@
+--@localization(locale="ruRU", format="lua_additive_table", namespace="npc_citadel", table-name="npc_citadel")@
 AL:GetLocale("DXE").npc_citadel = AL:GetLocale("DXE NPC Citadel")
 return
 end
@@ -114,11 +114,11 @@ if L then
 
 -- Chat triggers
 local chat_citadel = AL:NewLocale("DXE Chat Citadel", "zhCN")
---@localization(locale="zhCN", format="lua_additive_table", namespace="chat_citadel", table-name=chat_citadel)@
+--@localization(locale="zhCN", format="lua_additive_table", namespace="chat_citadel", table-name="chat_citadel")@
 AL:GetLocale("DXE").chat_citadel = AL:GetLocale("DXE Chat Citadel")
 -- NPC names
 local npc_citadel = AL:NewLocale("DXE NPC Citadel", "zhCN")
---@localization(locale="zhCN", format="lua_additive_table", namespace="npc_citadel", table-name=npc_citadel)@
+--@localization(locale="zhCN", format="lua_additive_table", namespace="npc_citadel", table-name="npc_citadel")@
 AL:GetLocale("DXE").npc_citadel = AL:GetLocale("DXE NPC Citadel")
 return
 end
@@ -128,11 +128,11 @@ if L then
 
 -- Chat triggers
 local chat_citadel = AL:NewLocale("DXE Chat Citadel", "zhTW")
---@localization(locale="zhTW", format="lua_additive_table", namespace="chat_citadel", table-name=chat_citadel)@
+--@localization(locale="zhTW", format="lua_additive_table", namespace="chat_citadel", table-name="chat_citadel")@
 AL:GetLocale("DXE").chat_citadel = AL:GetLocale("DXE Chat Citadel")
 -- NPC names
 local npc_citadel = AL:NewLocale("DXE NPC Citadel", "zhTW")
---@localization(locale="zhTW", format="lua_additive_table", namespace="npc_citadel", table-name=npc_citadel)@
+--@localization(locale="zhTW", format="lua_additive_table", namespace="npc_citadel", table-name="npc_citadel")@
 AL:GetLocale("DXE").npc_citadel = AL:GetLocale("DXE NPC Citadel")
 return
 end

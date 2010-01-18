@@ -17,11 +17,11 @@ if L then
 
 -- Zone names
 local zone = AL:NewLocale("DXE Zone", "enUS", true, debug)
---@localization(locale="enUS", format="lua_additive_table", same-key-is-true=true, namespace="zone", table-name=zone)@
+--@localization(locale="enUS", format="lua_additive_table", same-key-is-true=true, namespace="zone", table-name="zone")@
 AL:GetLocale("DXE").zone = AL:GetLocale("DXE Zone")
 -- Loader
 local loader = AL:NewLocale("DXE Loader", "enUS", true, debug)
---@localization(locale="enUS", format="lua_additive_table", same-key-is-true=true, namespace="loader", table-name=loader)@
+--@localization(locale="enUS", format="lua_additive_table", same-key-is-true=true, namespace="loader", table-name="loader")@
 AL:GetLocale("DXE").loader = AL:GetLocale("DXE Loader")
 
 if GetLocale() == "enUS" or GetLocale() == "enGB" then return end
@@ -32,11 +32,11 @@ if L then
 
 -- Zone names
 local zone = AL:NewLocale("DXE Zone", "deDE")
---@localization(locale="deDE", format="lua_additive_table", namespace="zone", table-name=zone)@
+--@localization(locale="deDE", format="lua_additive_table", namespace="zone", table-name="zone")@
 AL:GetLocale("DXE").zone = AL:GetLocale("DXE Zone")
 -- Loader
 local loader = AL:NewLocale("DXE Loader", "deDE")
---@localization(locale="deDE", format="lua_additive_table", namespace="loader", table-name=loader)@
+--@localization(locale="deDE", format="lua_additive_table", namespace="loader", table-name="loader")@
 AL:GetLocale("DXE").loader = AL:GetLocale("DXE Loader")
 
 return
@@ -47,11 +47,11 @@ if L then
 
 -- Zone names
 local zone = AL:NewLocale("DXE Zone", "esES")
---@localization(locale="esES", format="lua_additive_table", namespace="zone", table-name=zone)@
+--@localization(locale="esES", format="lua_additive_table", namespace="zone", table-name="zone")@
 AL:GetLocale("DXE").zone = AL:GetLocale("DXE Zone")
 -- Loader
 local loader = AL:NewLocale("DXE Loader", "esES")
---@localization(locale="esES", format="lua_additive_table", namespace="loader", table-name=loader)@
+--@localization(locale="esES", format="lua_additive_table", namespace="loader", table-name="loader")@
 AL:GetLocale("DXE").loader = AL:GetLocale("DXE Loader")
 
 return
@@ -62,11 +62,11 @@ if L then
 
 -- Zone names
 local zone = AL:NewLocale("DXE Zone", "esMX")
---@localization(locale="esMX", format="lua_additive_table", namespace="zone", table-name=zone)@
+--@localization(locale="esMX", format="lua_additive_table", namespace="zone", table-name="zone")@
 AL:GetLocale("DXE").zone = AL:GetLocale("DXE Zone")
 -- Loader
 local loader = AL:NewLocale("DXE Loader", "esMX")
---@localization(locale="esMX", format="lua_additive_table", namespace="loader", table-name=loader)@
+--@localization(locale="esMX", format="lua_additive_table", namespace="loader", table-name="loader")@
 AL:GetLocale("DXE").loader = AL:GetLocale("DXE Loader")
 
 return
@@ -77,11 +77,11 @@ if L then
 
 -- Zone names
 local zone = AL:NewLocale("DXE Zone", "frFR")
---@localization(locale="frFR", format="lua_additive_table", namespace="zone", table-name=zone)@
+--@localization(locale="frFR", format="lua_additive_table", namespace="zone", table-name="zone")@
 AL:GetLocale("DXE").zone = AL:GetLocale("DXE Zone")
 -- Loader
 local loader = AL:NewLocale("DXE Loader", "frFR")
---@localization(locale="frFR", format="lua_additive_table", namespace="loader", table-name=loader)@
+--@localization(locale="frFR", format="lua_additive_table", namespace="loader", table-name="loader")@
 AL:GetLocale("DXE").loader = AL:GetLocale("DXE Loader")
 
 return
@@ -92,11 +92,11 @@ if L then
 
 -- Zone names
 local zone = AL:NewLocale("DXE Zone", "koKR")
---@localization(locale="koKR", format="lua_additive_table", namespace="zone", table-name=zone)@
+--@localization(locale="koKR", format="lua_additive_table", namespace="zone", table-name="zone")@
 AL:GetLocale("DXE").zone = AL:GetLocale("DXE Zone")
 -- Loader
 local loader = AL:NewLocale("DXE Loader", "koKR")
---@localization(locale="koKR", format="lua_additive_table", namespace="loader", table-name=loader)@
+--@localization(locale="koKR", format="lua_additive_table", namespace="loader", table-name="loader")@
 AL:GetLocale("DXE").loader = AL:GetLocale("DXE Loader")
 
 return
@@ -107,11 +107,11 @@ if L then
 
 -- Zone names
 local zone = AL:NewLocale("DXE Zone", "ruRU")
---@localization(locale="ruRU", format="lua_additive_table", namespace="zone", table-name=zone)@
+--@localization(locale="ruRU", format="lua_additive_table", namespace="zone", table-name="zone")@
 AL:GetLocale("DXE").zone = AL:GetLocale("DXE Zone")
 -- Loader
 local loader = AL:NewLocale("DXE Loader", "ruRU")
---@localization(locale="ruRU", format="lua_additive_table", namespace="loader", table-name=loader)@
+--@localization(locale="ruRU", format="lua_additive_table", namespace="loader", table-name="loader")@
 AL:GetLocale("DXE").loader = AL:GetLocale("DXE Loader")
 
 return
@@ -122,11 +122,11 @@ if L then
 
 -- Zone names
 local zone = AL:NewLocale("DXE Zone", "zhCN")
---@localization(locale="zhCN", format="lua_additive_table", namespace="zone", table-name=zone)@
+--@localization(locale="zhCN", format="lua_additive_table", namespace="zone", table-name="zone")@
 AL:GetLocale("DXE").zone = AL:GetLocale("DXE Zone")
 -- Loader
 local loader = AL:NewLocale("DXE Loader", "zhCN")
---@localization(locale="zhCN", format="lua_additive_table", namespace="loader", table-name=loader)@
+--@localization(locale="zhCN", format="lua_additive_table", namespace="loader", table-name="loader")@
 AL:GetLocale("DXE").loader = AL:GetLocale("DXE Loader")
 
 return
@@ -137,11 +137,11 @@ if L then
 
 -- Zone names
 local zone = AL:NewLocale("DXE Zone", "zhTW")
---@localization(locale="zhTW", format="lua_additive_table", namespace="zone", table-name=zone)@
+--@localization(locale="zhTW", format="lua_additive_table", namespace="zone", table-name="zone")@
 AL:GetLocale("DXE").zone = AL:GetLocale("DXE Zone")
 -- Loader
 local loader = AL:NewLocale("DXE Loader", "zhTW")
---@localization(locale="zhTW", format="lua_additive_table", namespace="loader", table-name=loader)@
+--@localization(locale="zhTW", format="lua_additive_table", namespace="loader", table-name="loader")@
 AL:GetLocale("DXE").loader = AL:GetLocale("DXE Loader")
 
 return
