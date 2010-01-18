@@ -7,7 +7,7 @@ do
 		version = 299,
 		key = "anubrekhan", 
 		zone = L.zone["Naxxramas"], 
-		name = L.npc_naxxramas_AnubRekhan, 
+		name = L.npc_naxxramas["Anub'Rekhan"], 
 		triggers = {
 			scan = 15956, -- Anub'Rekhan
 		},

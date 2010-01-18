@@ -5,7 +5,7 @@ do
 		version = 298,
 		key = "gluth",
 		zone = L.zone["Naxxramas"],
-		name = L.npc_naxxramas_Gluth,
+		name = L.npc_naxxramas["Gluth"],
 		triggers = {
 			scan = 15932, -- Gluth
 		},

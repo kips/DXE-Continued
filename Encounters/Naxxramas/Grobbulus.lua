@@ -7,7 +7,7 @@ do
 		version = 299,
 		key = "grobbulus",
 		zone = L.zone["Naxxramas"],
-		name = L.npc_naxxramas_Grobbulus,
+		name = L.npc_naxxramas["Grobbulus"],
 		triggers = {
 			scan = 15931, -- Grobbulus
 		},
