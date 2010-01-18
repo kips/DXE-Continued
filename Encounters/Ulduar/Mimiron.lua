@@ -7,7 +7,7 @@ do
 		zone = L.zone["Ulduar"], 
 		name = L.npc_ulduar["Mimiron"], 
 		triggers = {
-			yell = {L.chat_ulduar["^We haven't much time, friends"],L.alert["^Self%-destruct sequence initiated"]},
+			yell = {L.chat_ulduar["^We haven't much time, friends"],L.chat_ulduar["^Self%-destruct sequence initiated"]},
 			scan = {
 				33432, -- Leviathan MK II
 				33350, -- Mimiron

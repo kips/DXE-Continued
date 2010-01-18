@@ -7,7 +7,7 @@ do
 		zone = L.zone["Naxxramas"], 
 		name = L.npc_naxxramas["Kel'Thuzad"], 
 		triggers = {
-			yell = "^Minions, servants, soldiers of the cold dark",
+			yell = L.chat_naxxramas["^Minions, servants, soldiers of the cold dark"],
 			scan = {
 				15990, -- Kel'Thuzad
 				16441, -- Guardian of Icecrown

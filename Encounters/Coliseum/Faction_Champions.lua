@@ -57,7 +57,7 @@ do
 		zone = L.zone["Trial of the Crusader"], 
 		category = L.zone["Coliseum"],
 		name = L.npc_coliseum["Faction Champions"], 
-		title = L.npc_citadel["Faction Champions"],
+		title = L.npc_coliseum["Faction Champions"],
 		triggers = {
 			scan = npc_list,
 		},

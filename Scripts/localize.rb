@@ -6,62 +6,53 @@ require 'uri'
 require 'net/http'
 require File.join(File.dirname(__FILE__),'..','..','api_key') # for API_KEY
 
-SLUG = "deus-vox-encounters"
-LANGUAGE_TYPE = 1
-FORMAT_TYPE = "lua_additive_table"
-LOCALE_URI = "http://www.wowace.com/addons/#{SLUG}/localization/import/"
-LOCALE_REGEX = /L\["(.+?)"\]/
+slug = "deus-vox-encounters"
+locale_uri = "http://www.wowace.com/addons/#{slug}/localization/import/"
+locale_uri_api_key = "#{locale_uri}/?api-key=#{API_KEY}"
+locale_regex = /L(?:\.(\w+?))?\["(.+?)"\]/
 
-dirs_to_namespace = {
-	['.','Alerts','Windows'] => '293',
-	['Loader']               => '396',
-	['Options']              => '395',
+# map namespace names to namespace values
+namespace_values = Hash.new
+select_regex = /<select.*?namespace.*>.*?<\/select>/
+option_regex = /<option.*?value="(\d+)">(\w+)<\/option>/
+Net::HTTP.get(URI.parse(locale_uri_api_key)).match(select_regex)[0].scan(option_regex) { |value, name| namespace_values[name] = value }
+
+blacklist = {
+	"Template.lua"          => true,
+	"Debug.lua"             => true,
+	"LibDataBroker-1.1.lua" => true,
+	"Tests.lua"             => true,
 }
 
-dirs_to_namespace.each_pair do |dirs, namespace_value|
-	phrases = []
-	dirs.each { |dir|
-		Dir[File.join(File.dirname(__FILE__),'..',dir,'*.lua')].each do |filename|
-			File.open(filename,'r') { |file| phrases << file.read.scan(LOCALE_REGEX) }
-		end
-	}
-	content = phrases.flatten.uniq.sort.collect {|p| %(L["#{p}"] = true) }.join("\n")
-
-	params = {
-		"api-key"           => API_KEY,
-		"delete_unimported" => "y",
-		"format"            => "lua_additive_table",
-		"language" 			  => "1",
-		"text"              => content,
-		"namespace"         => namespace_value,
-	}
-
-	Net::HTTP.post_form(URI.parse(LOCALE_URI), params)
+spacing = "   "
+locales = Hash.new
+# find all phrases and namespace contexts
+puts "Scanning for localization phrases"
+Dir[File.join(File.dirname(__FILE__),'..','**','*.lua')].each do |filename|
+	next if blacklist[filename.match(/([^#{File::SEPARATOR}]+)$/)[1]]
+	File.open(filename) do |file|
+		file.read.scan(locale_regex) do |namespace, phrase|
+			locales[namespace || 'main'] ||= []
+			locales[namespace || 'main'] << phrase
+		end	
+	end
+	puts "#{spacing}#{filename.match(/scripts#{File::SEPARATOR}\.\.#{File::SEPARATOR}(.+)/)[1].ljust(60)} #{"DONE".rjust(10)}"
 end
 
-=begin
-Dir['**/Locales.lua'].each do |filename|
-	if filename != "Locales.lua"
-		lines = []
-		File.open(filename,"r") do |file|
-			file.each_line do |line|
-				if line =~ /--@localization/
-					namespace = line.match(/namespace="(\w+)"/)[1]
-					proper_name = namespace.gsub(/_/," ").gsub(/\w+/) { |word| word.capitalize }.gsub(/Npc/,"NPC")
-					locale = line.match(/locale="([A-Za-z]+)"/)[1]
-					new_line = "local #{namespace} = AL:NewLocale(\"DXE #{proper_name}\", \"#{locale}\")\n"
-					get_line = "AL:GetLocale(\"DXE\").#{namespace} = AL:GetLocale(\"DXE #{proper_name}\")\n"
-					lines << new_line
-					lines << line
-					lines << get_line
-				else
-					lines << line
-				end
-			end
-		end
-		File.open(filename,"w") do |file|
-			file.puts lines.join
-		end
+locales.each_pair do |namespace, phrases|
+	content = phrases.uniq.collect { |p| "L[\"#{p}\"] = true" }.join("\n")
+
+	if namespace_values[namespace]
+		puts "sending phrases for namespace '#{namespace}'"
+		Net::HTTP.post_form(URI.parse(locale_uri),{
+			"api-key"           => API_KEY,
+			"delete_unimported" => "y",
+			"format"            => "lua_additive_table",
+			"language" 			  => "1",
+			"text"              => content,
+			"namespace"         => namespace_values[namespace],
+		})
+	else
+		puts "error: namespace '#{namespace}' doesn't exist on the localization app"
 	end
 end
-=end

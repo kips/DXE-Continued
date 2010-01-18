@@ -18,7 +18,7 @@ do
 		onactivate = {
 			tracing = {32872,32873}, -- Runic Colossus, Ancient Rune Giant
 			combatstop = true,
-			defeat = L.alert["Stay your arms"],
+			defeat = L.chat_ulduar["Stay your arms"],
 		},
 		userdata = {
 			chargetime = 34,
