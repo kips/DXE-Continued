@@ -44,7 +44,7 @@ do
 			staticfieldwarn = {
 				varname = format(L.alert["%s Warning"],SN[57430]),
 				type = "simple", 
-				text = format("%s! %s!",format(L.alert["%s Casted"],SN[57430]),L.alert["MOVE"]),
+				text = format("%s! %s!",format(L.alert["%s Cast"],SN[57430]),L.alert["MOVE"]),
 				time = 1.5, 
 				sound = "ALERT2", 
 				color1 = "YELLOW",

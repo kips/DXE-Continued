@@ -42,9 +42,9 @@ do
 				icon = ST[12317],
 			},
 			searingflamewarn = {
-				varname = format(L.alert["%s Cast"],SN[62661]),
+				varname = format(L.alert["%s Casting"],SN[62661]),
 				type = "centerpopup",
-				text = format(L.alert["%s Cast"],SN[62661]),
+				text = format(L.alert["%s Casting"],SN[62661]),
 				time = 2,
 				color1 = "ORANGE",
 				sound = "ALERT1",
@@ -52,9 +52,9 @@ do
 				counter = true,
 			},
 			darknesswarn = {
-				varname = format(L.alert["%s Cast"],SN[62662]),
+				varname = format(L.alert["%s Casting"],SN[62662]),
 				type = "centerpopup",
-				text = format(L.alert["%s Cast"],SN[62662]),
+				text = format(L.alert["%s Casting"],SN[62662]),
 				time = 3,
 				color1 = "VIOLET",
 				sound = "ALERT1",

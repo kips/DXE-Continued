@@ -86,9 +86,9 @@ do
 				icon = ST[62131],
 			},
 			frostnovawarn = {
-				varname = format(L.alert["%s Cast"],SN[122]),
+				varname = format(L.alert["%s Casting"],SN[122]),
 				type = "centerpopup",
-				text = format(L.alert["%s Cast"],SN[122]),
+				text = format(L.alert["%s Casting"],SN[122]),
 				time = 2.5,
 				flashtime = 2.5,
 				sound = "ALERT4",

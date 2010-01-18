@@ -53,8 +53,8 @@ do
 				icon = ST[66725],
 			},
 			meteorwarn = {
-				varname = format(L.alert["%s Cast"],SN[66725]),
-				text = format(L.alert["%s Cast"],SN[66725]),
+				varname = format(L.alert["%s Casting"],SN[66725]),
+				text = format(L.alert["%s Casting"],SN[66725]),
 				type = "centerpopup",
 				time = 1.5,
 				flashtime = 1.5,
@@ -73,8 +73,8 @@ do
 				icon = ST[66725],
 			},
 			breathwarn = {
-				varname = format(L.alert["%s Cast"],SN[67328]),
-				text = format(L.alert["%s Cast"],SN[67328]),
+				varname = format(L.alert["%s Casting"],SN[67328]),
+				text = format(L.alert["%s Casting"],SN[67328]),
 				type = "centerpopup",
 				time = 1.5,
 				flashtime = 1.5,

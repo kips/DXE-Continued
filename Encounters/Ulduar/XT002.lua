@@ -77,9 +77,9 @@ do
 				icon = ST[63018],
 			},
 			tympanicwarn = {
-				varname = format(L.alert["%s Cast"],SN[62776]),
+				varname = format(L.alert["%s Casting"],SN[62776]),
 				type = "centerpopup",
-				text = format(L.alert["%s Cast"],L.alert["Tantrum"]),
+				text = format(L.alert["%s Casting"],L.alert["Tantrum"]),
 				time = 12,
 				flashtime = 12,
 				color1 = "YELLOW",

@@ -50,8 +50,8 @@ do
 				icon = ST[12317],
 			},
 			darkvortexwarn = {
-				varname = format(L.alert["%s Cast"],SN[67182]),
-				text = format(L.alert["%s Cast"],SN[67182]),
+				varname = format(L.alert["%s Casting"],SN[67182]),
+				text = format(L.alert["%s Casting"],SN[67182]),
 				type = "centerpopup",
 				time = "<vortextime>",
 				flashtime = 6,
@@ -69,8 +69,8 @@ do
 				icon = ST[67184],
 			},
 			lightvortexwarn = {
-				varname = format(L.alert["%s Cast"],SN[67206]),
-				text = format(L.alert["%s Cast"],SN[67206]),
+				varname = format(L.alert["%s Casting"],SN[67206]),
+				text = format(L.alert["%s Casting"],SN[67206]),
 				type = "centerpopup",
 				time = "<vortextime>",
 				flashtime = 6,
@@ -108,8 +108,8 @@ do
 				icon = ST[67259],
 			},
 			twinspactwarn = {
-				varname = format(L.alert["%s Cast"],SN[67303]),
-				text = format(L.alert["%s Cast"],SN[67303]),
+				varname = format(L.alert["%s Casting"],SN[67303]),
+				text = format(L.alert["%s Casting"],SN[67303]),
 				type = "centerpopup",
 				time = 15,
 				flashtime = 15,

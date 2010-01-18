@@ -112,8 +112,8 @@ do
 				icon = ST[71289],
 			},
 			frostboltwarn = {
-				varname = format(L.alert["%s Cast"],SN[72007]),
-				text = format(L.alert["%s Cast"],SN[72007]),
+				varname = format(L.alert["%s Casting"],SN[72007]),
+				text = format(L.alert["%s Casting"],SN[72007]),
 				type = "centerpopup",
 				time = 2,
 				color1 = "BLUE",

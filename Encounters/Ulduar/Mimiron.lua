@@ -90,8 +90,8 @@ do
 		alerts = {
 			flamesuppressantwarn = {
 				type = "centerpopup",
-				varname = format(L.alert["%s Cast"],SN[64570]),
-				text = format(L.alert["%s Cast"],SN[64570]),
+				varname = format(L.alert["%s Casting"],SN[64570]),
+				text = format(L.alert["%s Casting"],SN[64570]),
 				time = 2,
 				sound = "ALERT5",
 				color1 = "TEAL",
@@ -108,8 +108,8 @@ do
 			},
 			frostbombwarn = {
 				type = "centerpopup",
-				varname = format(L.alert["%s Cast"],SN[64623]),
-				text = format(L.alert["%s Cast"],SN[64623]),
+				varname = format(L.alert["%s Casting"],SN[64623]),
+				text = format(L.alert["%s Casting"],SN[64623]),
 				time = 2,
 				sound = "ALERT5",
 				color1 = "BLUE",
@@ -141,8 +141,8 @@ do
 			-- Leviathan MKII
 			plasmablastwarn = { 
 				type = "centerpopup",
-				varname = format(L.alert["%s Cast"],SN[62997]),
-				text = format(L.alert["%s Cast"],SN[62997]),
+				varname = format(L.alert["%s Casting"],SN[62997]),
+				text = format(L.alert["%s Casting"],SN[62997]),
 				time = 3,
 				color1 = "ORANGE",
 				sound = "ALERT5",
@@ -168,9 +168,9 @@ do
 				icon = ST[62997],
 			},
 			shockblastwarn = {
-				varname = format(L.alert["%s Cast"],SN[63631]),
+				varname = format(L.alert["%s Casting"],SN[63631]),
 				type = "centerpopup",
-				text = format(L.alert["%s Cast"],SN[63631]),
+				text = format(L.alert["%s Casting"],SN[63631]),
 				time = 4,
 				color1 = "MAGENTA",
 				sound = "ALERT5",
@@ -209,7 +209,7 @@ do
 				icon = ST[63631],
 			},
 			spinupwarn = {
-				varname = format(L.alert["%s Cast"],SN[63414]),
+				varname = format(L.alert["%s Casting"],SN[63414]),
 				type = "centerpopup",
 				text = SN[63414].."!",
 				time = 4,

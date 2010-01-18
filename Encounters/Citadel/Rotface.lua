@@ -58,9 +58,9 @@ do
 				icon = ST[69674],
 			},
 			slimespraycastwarn = {
-				varname = format(L.alert["%s Cast"],SN[69508]),
+				varname = format(L.alert["%s Casting"],SN[69508]),
 				type = "centerpopup",
-				text = format(L.alert["%s Cast"],SN[69508]),
+				text = format(L.alert["%s Casting"],SN[69508]),
 				time = 1.5,
 				flashtime = 1.5,
 				sound = "ALERT2",
@@ -107,9 +107,9 @@ do
 				throttle = 3,
 			},
 			unstableoozewarn = {
-				varname = format(L.alert["%s Cast"],SN[69839]),
+				varname = format(L.alert["%s Casting"],SN[69839]),
 				type = "centerpopup",
-				text = format(L.alert["%s Cast"],SN[69839]).."! "..L.alert["MOVE"].."!",
+				text = format(L.alert["%s Casting"],SN[69839]).."! "..L.alert["MOVE"].."!",
 				time = 4,
 				flashtime = 4,
 				color1 = "MAGENTA",

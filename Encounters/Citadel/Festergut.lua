@@ -51,9 +51,9 @@ do
 				icon = ST[69165],
 			},
 			inhaleblightwarn = {
-				varname = format(L.alert["%s Cast"],SN[69165]),
+				varname = format(L.alert["%s Casting"],SN[69165]),
 				type = "centerpopup",
-				text = format(L.alert["%s Cast"],SN[69165]),
+				text = format(L.alert["%s Casting"],SN[69165]),
 				time = 3.5,
 				flashtime = 3.5,
 				color1 = "BROWN",
@@ -99,7 +99,7 @@ do
 			vilegaswarn = {
 				varname = format(L.alert["%s Warning"],SN[71218]),
 				type = "simple",
-				text = format(L.alert["%s Casted"],SN[71218]).."!",
+				text = format(L.alert["%s Cast"],SN[71218]).."!",
 				time = 3,
 				color1 = "GREEN",
 				sound = "ALERT3",
@@ -107,9 +107,9 @@ do
 				throttle = 2,
 			},
 			pungentblightwarn ={
-				varname = format(L.alert["%s Cast"],SN[71219]),
+				varname = format(L.alert["%s Casting"],SN[71219]),
 				type = "centerpopup",
-				text = format(L.alert["%s Cast"],SN[71219]),
+				text = format(L.alert["%s Casting"],SN[71219]),
 				time = 3,
 				flashtime = 3,
 				color1 = "PURPLE",

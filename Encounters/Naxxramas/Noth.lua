@@ -65,7 +65,7 @@ do
 			cursewarn = {
 				varname = format(L.alert["%s Warning"],L.alert["Curse"]),
 				type = "simple", 
-				text = format(L.alert["%s Casted"],L.alert["Curse"]).."!",
+				text = format(L.alert["%s Cast"],L.alert["Curse"]).."!",
 				time = 1.5, 
 				sound = "ALERT3", 
 				icon = ST[29213],

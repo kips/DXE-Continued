@@ -32,9 +32,9 @@ do
 		},
 		alerts = {
 			bonestormwarn = {
-				varname = format(L.alert["%s Cast"],SN[69076]),
+				varname = format(L.alert["%s Casting"],SN[69076]),
 				type = "centerpopup",
-				text = format(L.alert["%s Cast"],SN[69076]),
+				text = format(L.alert["%s Casting"],SN[69076]),
 				time = 3,
 				flashtime = 3,
 				color1 = "GREEN",
@@ -72,9 +72,9 @@ do
 				flashscreen = true,
 			},
 			graveyardwarn = {
-				varname = format(L.alert["%s Cast"],SN[70826]),
+				varname = format(L.alert["%s Casting"],SN[70826]),
 				type = "centerpopup",
-				text = format(L.alert["%s Cast"],SN[70826]),
+				text = format(L.alert["%s Casting"],SN[70826]),
 				time = 3,
 				flashtime = 3,
 				color1 = "GREY",

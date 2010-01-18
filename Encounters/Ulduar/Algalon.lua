@@ -40,9 +40,9 @@ do
 				icon = ST[12317],
 			},
 			bigbangwarn = {
-				varname = format(L.alert["%s Cast"],SN[64443]),
+				varname = format(L.alert["%s Casting"],SN[64443]),
 				type = "centerpopup",
-				text = format(L.alert["%s Cast"],SN[64443]),
+				text = format(L.alert["%s Casting"],SN[64443]),
 				time = 8,
 				flashtime = 8,
 				sound = "ALERT5",

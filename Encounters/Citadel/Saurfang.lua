@@ -39,7 +39,7 @@ do
 			},
 			bloodbeastwarn = {
 				varname = format(L.alert["%s Warning"],SN[72172]),
-				text = format(L.alert["%s Casted"],SN[72172]).."!",
+				text = format(L.alert["%s Cast"],SN[72172]).."!",
 				type = "simple",
 				time = 3,
 				sound = "ALERT5",
@@ -64,9 +64,9 @@ do
 				icon = ST[72410],
 			},
 			markfallenwarn = {
-				varname = format(L.alert["%s Cast"],SN[28836]),
+				varname = format(L.alert["%s Casting"],SN[28836]),
 				type = "centerpopup",
-				text = format(L.alert["%s Cast"],SN[28836]),
+				text = format(L.alert["%s Casting"],SN[28836]),
 				time = 1.5,
 				flashtime = 1.5,
 				color1 = "ORANGE",

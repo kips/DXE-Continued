@@ -19,9 +19,9 @@ do
 		},
 		alerts = {
 			disruptshoutwarn = {
-				varname = format(L.alert["%s Cast"],SN[71022]),
+				varname = format(L.alert["%s Casting"],SN[71022]),
 				type = "centerpopup",
-				text = format(L.alert["%s Cast"],SN[71022]),
+				text = format(L.alert["%s Casting"],SN[71022]),
 				time = 3,
 				flashtime = 3,
 				color1 = "ORANGE",
@@ -97,9 +97,9 @@ do
 	}
 
 	local decimatewarn = {
-		varname = format(L.alert["%s Cast"],SN[71123]),
+		varname = format(L.alert["%s Casting"],SN[71123]),
 		type = "centerpopup",
-		text = format(L.alert["%s Cast"],SN[71123]),
+		text = format(L.alert["%s Casting"],SN[71123]),
 		time = 3,
 		flashtime = 3,
 		color1 = "PURPLE",

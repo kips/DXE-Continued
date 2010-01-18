@@ -96,9 +96,9 @@ do
 				sound = "ALERT1",
 			},
 			stompwarn = {
-				varname = format(L.alert["%s Cast"],SN[66330]),
+				varname = format(L.alert["%s Casting"],SN[66330]),
 				type = "centerpopup",
-				text = format(L.alert["%s Cast"],SN[48131]),
+				text = format(L.alert["%s Casting"],SN[48131]),
 				time = 0.5,
 				color1 = "BROWN",
 				sound = "ALERT5",
@@ -169,9 +169,9 @@ do
 				icon = ST[66821],
 			},
 			moltenspewwarn = {
-				varname = format(L.alert["%s Cast"],SN[66821]),
+				varname = format(L.alert["%s Casting"],SN[66821]),
 				type = "centerpopup",
-				text = format(L.alert["%s Cast"],SN[66821]),
+				text = format(L.alert["%s Casting"],SN[66821]),
 				time = 3.5,
 				flashtime = 3.5,
 				color1 = "MAGENTA",
@@ -189,9 +189,9 @@ do
 				icon = ST[66818],
 			},
 			acidicspewwarn = {
-				varname = format(L.alert["%s Cast"],SN[66818]),
+				varname = format(L.alert["%s Casting"],SN[66818]),
 				type = "centerpopup",
-				text = format(L.alert["%s Cast"],SN[66818]),
+				text = format(L.alert["%s Casting"],SN[66818]),
 				time = 3.5,
 				flashtime = 3.5,
 				color1 = "TEAL",
@@ -201,7 +201,7 @@ do
 			},
 			-- Icehowl
 			breathwarn = {
-				varname = format(L.alert["%s Cast"],SN[66689]),
+				varname = format(L.alert["%s Casting"],SN[66689]),
 				type = "centerpopup",
 				text = SN[66689].."!",
 				time = 5,
@@ -229,9 +229,9 @@ do
 				icon = ST[66758],
 			},
 			crashwarn = {
-				varname = format(L.alert["%s Cast"],SN[66683]),
+				varname = format(L.alert["%s Casting"],SN[66683]),
 				type = "centerpopup",
-				text = format(L.alert["%s Cast"],SN[66683]),
+				text = format(L.alert["%s Casting"],SN[66683]),
 				time = 1,
 				color1 = "INDIGO",
 				sound = "ALERT8",

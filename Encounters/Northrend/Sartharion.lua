@@ -85,7 +85,7 @@ do
 				icon = ST[43114],
 			},
 			lavawallwarn = {
-				varname = format(L.alert["%s Cast"],L.alert["Lava Wall"]),
+				varname = format(L.alert["%s Casting"],L.alert["Lava Wall"]),
 				type = "centerpopup", 
 				text = format(L.alert["Incoming %s"],L.alert["Lava Wall"]).."!",
 				time = 5, 
@@ -105,9 +105,9 @@ do
 				icon = ST[59127],
 			},
 			flamebreathwarn = {
-				varname = format(L.alert["%s Cast"],SN[56908]),
+				varname = format(L.alert["%s Casting"],SN[56908]),
 				type = "centerpopup",
-				text = format(L.alert["%s Cast"],SN[56908]),
+				text = format(L.alert["%s Casting"],SN[56908]),
 				time = 2,
 				color1 = "DCYAN",
 				sound = "ALERT4",

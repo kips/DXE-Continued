@@ -105,9 +105,9 @@ do
 				icon = ST[12317],
 			},
 			groundtremorwarn = {
-				varname = format(L.alert["%s Cast"],SN[62437]),
+				varname = format(L.alert["%s Casting"],SN[62437]),
 				type = "centerpopup",
-				text = format(L.alert["%s Cast"],SN[62437]),
+				text = format(L.alert["%s Casting"],SN[62437]),
 				time = 2,
 				flashtime = 2,
 				color1 = "BROWN",

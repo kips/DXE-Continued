@@ -39,7 +39,7 @@ Dir[File.join(File.dirname(__FILE__),'..','**','*.lua')].each do |filename|
 			locales[namespace || 'main'] << phrase
 		end	
 	end
-	puts "#{spacing}#{filename.match(/scripts#{File::SEPARATOR}\.\.#{File::SEPARATOR}(.+)/)[1].ljust(60)} #{"DONE".rjust(10)}"
+	puts "#{spacing}#{filename.match(/scripts#{File::SEPARATOR}\.\.#{File::SEPARATOR}(.+)/i)[1].ljust(60)} #{"DONE".rjust(10)}"
 end
 
 locales.each_pair do |namespace, phrases|

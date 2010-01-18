@@ -42,9 +42,9 @@ do
 				icon = ST[28785],
 			},
 			locustswarmwarn = {
-				varname = format(L.alert["%s Cast"],SN[28785]), 
+				varname = format(L.alert["%s Casting"],SN[28785]), 
 				type = "centerpopup", 
-				text = format(L.alert["%s Cast"],SN[28785]), 
+				text = format(L.alert["%s Casting"],SN[28785]), 
 				time = 3, 
 				sound = "ALERT3", 
 				color1 = "GREY", 

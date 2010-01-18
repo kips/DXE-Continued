@@ -49,9 +49,9 @@ do
 				icon = ST[63236],
 			},
 			breathwarn = {
-				varname = format(L.alert["%s Cast"],SN[63317]),
+				varname = format(L.alert["%s Casting"],SN[63317]),
 				type = "centerpopup",
-				text = format(L.alert["%s Cast"],SN[63317]),
+				text = format(L.alert["%s Casting"],SN[63317]),
 				time = 2.5,
 				flashtime = 2.5,
 				color1 = "BLUE",

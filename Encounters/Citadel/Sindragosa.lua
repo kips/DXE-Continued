@@ -26,9 +26,9 @@ do
 		},
 		alerts = {
 			icetombwarn = {
-				varname = format(L.alert["%s Cast"],SN[69712]),
+				varname = format(L.alert["%s Casting"],SN[69712]),
 				type = "centerpopup",
-				text = format(L.alert["%s Cast"],SN[69712]),
+				text = format(L.alert["%s Casting"],SN[69712]),
 				time = 1,
 				flashtime = 1,
 				color1 = "INDIGO",
@@ -65,9 +65,9 @@ do
 			},
 			]]
 			blisteringcoldwarn = {
-				varname = format(L.alert["%s Cast"],SN[71047]),
+				varname = format(L.alert["%s Casting"],SN[71047]),
 				type = "centerpopup",
-				text = format(L.alert["%s Cast"],SN[71047]),
+				text = format(L.alert["%s Casting"],SN[71047]),
 				time = 5,
 				flashtime = 5,
 				color1 = "ORANGE",
@@ -123,9 +123,9 @@ do
 				icon = ST[71053],
 			},
 			frostbreathwarn = {
-				varname = format(L.alert["%s Cast"],SN[71056]),
+				varname = format(L.alert["%s Casting"],SN[71056]),
 				type = "centerpopup",
-				text = format(L.alert["%s Cast"],SN[71056]),
+				text = format(L.alert["%s Casting"],SN[71056]),
 				time = 1.5,
 				flashtime = 1.5,
 				color1 = "BROWN",

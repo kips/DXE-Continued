@@ -71,7 +71,7 @@ do
 			bloodlustwarn = {
 				varname = format(L.alert["%s Warning"],SN[65980]),
 				type = "simple",
-				text = format(L.alert["%s Casted"],SN[65980]).."! "..L.alert["DISPEL"].."!",
+				text = format(L.alert["%s Cast"],SN[65980]).."! "..L.alert["DISPEL"].."!",
 				time = 3,
 				sound = "ALERT1",
 				color1 = "ORANGE",
@@ -80,7 +80,7 @@ do
 			heroismwarn = {
 				varname = format(L.alert["%s Warning"],SN[65983]),
 				type = "simple",
-				text = format(L.alert["%s Casted"],SN[65983]).."! "..L.alert["DISPEL"].."!",
+				text = format(L.alert["%s Cast"],SN[65983]).."! "..L.alert["DISPEL"].."!",
 				time = 3,
 				sound = "ALERT1",
 				color1 = "ORANGE",
@@ -107,9 +107,9 @@ do
 				icon = ST[66011],
 			},
 			hellfirewarn = {
-				varname = format(L.alert["%s Cast"],SN[68145]),
+				varname = format(L.alert["%s Casting"],SN[68145]),
 				type = "centerpopup",
-				text = format(L.alert["%s Cast"],SN[68145]).."!",
+				text = format(L.alert["%s Casting"],SN[68145]).."!",
 				time = 15,
 				flashtime = 15,
 				color1 = "BROWN",

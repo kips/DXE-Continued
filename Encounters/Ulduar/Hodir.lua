@@ -25,7 +25,7 @@ do
 		},
 		alerts = {
 			flashfreezewarn = {
-				varname = format(L.alert["%s Cast"],SN[61968]),
+				varname = format(L.alert["%s Casting"],SN[61968]),
 				type = "centerpopup", 
 				text = format("%s! %s!",SN[61968],L.alert["MOVE"]),
 				time = 9,

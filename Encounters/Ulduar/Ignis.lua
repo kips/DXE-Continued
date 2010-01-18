@@ -28,9 +28,9 @@ do
 		},
 		alerts = {
 			flamejetswarn = {
-				varname = format(L.alert["%s Cast"],SN[62680]),
+				varname = format(L.alert["%s Casting"],SN[62680]),
 				type = "centerpopup",
-				text = format(L.alert["%s Cast"],SN[62680]),
+				text = format(L.alert["%s Casting"],SN[62680]),
 				time = 2.7,
 				color1 = "RED",
 				sound = "ALERT3",

@@ -46,7 +46,7 @@ do
 			frostblastwarn = {
 				varname = format(L.alert["%s Warning"],SN[27808]),
 				type = "simple", 
-				text = format(L.alert["%s Casted"],SN[27808]),
+				text = format(L.alert["%s Cast"],SN[27808]),
 				time = 1.5, 
 				sound = "ALERT2", 
 				throttle = 5,

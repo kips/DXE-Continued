@@ -42,11 +42,11 @@ do
 				icon = ST[421],
 			},
 			novawarn = {
-				varname = format(L.alert["%s Cast"],SN[64216]),
+				varname = format(L.alert["%s Casting"],SN[64216]),
 				type = "centerpopup",
 				time = 5,
 				flashtime = 5,
-				text = format(L.alert["%s Cast"],SN[64216]),
+				text = format(L.alert["%s Casting"],SN[64216]),
 				color1 = "BROWN",
 				color2 = "ORANGE",
 				sound = "ALERT5",

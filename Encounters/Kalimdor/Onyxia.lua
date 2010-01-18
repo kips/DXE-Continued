@@ -19,8 +19,8 @@ do
 		},
 		alerts = {
 			bellowwarn = {
-				varname = format(L.alert["%s Cast"],SN[18431]),
-				text = format(L.alert["%s Cast"],SN[18431]),
+				varname = format(L.alert["%s Casting"],SN[18431]),
+				text = format(L.alert["%s Casting"],SN[18431]),
 				type = "centerpopup",
 				time = 2.5,
 				flashtime = 2.5,
@@ -30,8 +30,8 @@ do
 				icon = ST[39427],
 			},
 			breathwarn = {
-				varname = format(L.alert["%s Cast"],SN[68970]),
-				text = format(L.alert["%s Cast"],SN[68970]),
+				varname = format(L.alert["%s Casting"],SN[68970]),
+				text = format(L.alert["%s Casting"],SN[68970]),
 				type = "centerpopup",
 				time = 2,
 				flashtime = 2,
@@ -40,8 +40,8 @@ do
 				icon = ST[68970],
 			},
 			deepbreathwarn = {
-				varname = format(L.alert["%s Cast"],L.alert["Deep Breath"]),
-				text = format(L.alert["%s Cast"],L.alert["Deep Breath"]).." "..L.alert["MOVE"].."!",
+				varname = format(L.alert["%s Casting"],L.alert["Deep Breath"]),
+				text = format(L.alert["%s Casting"],L.alert["Deep Breath"]).." "..L.alert["MOVE"].."!",
 				type = "centerpopup",
 				time = 8,
 				flashtime = 8,

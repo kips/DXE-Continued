@@ -70,9 +70,9 @@ do
 				icon = ST[52272],
 			},
 			polarityshiftwarn = {
-				varname = format(L.alert["%s Cast"],SN[28089]),
+				varname = format(L.alert["%s Casting"],SN[28089]),
 				type = "centerpopup", 
-				text = format(L.alert["%s Cast"],SN[28089]),
+				text = format(L.alert["%s Casting"],SN[28089]),
 				time = 3, 
 				flashtime = 3, 
 				sound = "ALERT1", 

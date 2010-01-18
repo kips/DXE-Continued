@@ -107,9 +107,9 @@ do
 				icon = ST[56504],
 			},
 			shadowstrikewarn = { 
-				varname = format(L.alert["%s Cast"],SN[66134]),
+				varname = format(L.alert["%s Casting"],SN[66134]),
 				type = "centerpopup", 
-				text = format(L.alert["%s Cast"],SN[66134]),
+				text = format(L.alert["%s Casting"],SN[66134]),
 				time = 8, 
 				flashtime = 8,
 				color1 = "PURPLE", 
@@ -127,9 +127,9 @@ do
 				icon = ST[66135],
 			},
 			leechingswarmwarn = {
-				varname = format(L.alert["%s Cast"],SN[66118]),
+				varname = format(L.alert["%s Casting"],SN[66118]),
 				type = "centerpopup",
-				text = format(L.alert["%s Cast"],SN[66118]),
+				text = format(L.alert["%s Casting"],SN[66118]),
 				time = 1.5,
 				flashtime = 1.5,
 				color1 = "DCYAN",
