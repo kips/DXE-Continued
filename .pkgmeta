@@ -53,7 +53,6 @@ externals:
 ignore:
     - Debug.lua
     - Tests.lua
-    - Scripts
     - Docs
     - Encounters.xml
 
