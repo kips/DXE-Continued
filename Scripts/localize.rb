@@ -6,6 +6,9 @@ require 'uri'
 require 'net/http'
 require File.join(File.dirname(__FILE__),'..','..','api_key') # for API_KEY
 
+raise "Missing API_KEY" unless API_KEY
+puts "API_KEY: #{API_KEY}"
+
 slug = "deus-vox-encounters"
 locale_uri = "http://www.wowace.com/addons/#{slug}/localization/import/"
 locale_uri_api_key = "#{locale_uri}/?api-key=#{API_KEY}"
@@ -40,9 +43,8 @@ Dir[File.join(File.dirname(__FILE__),'..','**','*.lua')].each do |filename|
 end
 
 locales.each_pair do |namespace, phrases|
-	content = phrases.uniq.collect { |p| "L[\"#{p}\"] = true" }.join("\n")
-
 	if namespace_values[namespace]
+		content = phrases.uniq.collect { |p| "L[\"#{p}\"] = true" }.join("\n")
 		puts "sending phrases for namespace '#{namespace}'"
 		Net::HTTP.post_form(URI.parse(locale_uri),{
 			"api-key"           => API_KEY,
