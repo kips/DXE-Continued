@@ -148,6 +148,15 @@ do
 				icon = 1,
 				total = 5,
 			},
+			gassporemark = {
+				varname = SN[69278],
+				type = "MULTIFRIENDLY",
+				persist = 12,
+				reset = 5,
+				unit = "#5#",
+				icon = 6,
+				total = 3,
+			},
 		},
 		events = {
 			-- Inhale Blight
@@ -180,7 +189,7 @@ do
 					},
 				},
 			},
-			-- Gas Spore on self
+			-- Gas Spore
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
@@ -189,6 +198,9 @@ do
 					69279, -- 10
 				},
 				execute = {
+					{
+						"raidicon","gassporemark",
+					},
 					{
 						"expect",{"#4#","==","&playerguid&"},
 						"alert","gassporeself",
