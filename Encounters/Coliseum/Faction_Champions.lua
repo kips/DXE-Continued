@@ -52,7 +52,7 @@ do
 
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 8,
+		version = 9,
 		key = "factionchampions", 
 		zone = L.zone["Trial of the Crusader"], 
 		category = L.zone["Coliseum"],

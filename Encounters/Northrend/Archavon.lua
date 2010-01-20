@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 300,
+		version = 301,
 		key = "archavon", 
 		zone = L.zone["Vault of Archavon"],
 		category = L.zone["Northrend"],

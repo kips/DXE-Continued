@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 304,
+		version = 305,
 		key = "algalon", 
 		zone = L.zone["Ulduar"], 
 		name = L.npc_ulduar["Algalon the Observer"], 

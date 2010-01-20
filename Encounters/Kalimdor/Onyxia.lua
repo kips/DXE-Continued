@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 4,
+		version = 5,
 		key = "onyxia", 
 		zone = L.zone["Onyxia's Lair"],
 		category = L.zone["Kalimdor"],

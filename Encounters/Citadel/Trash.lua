@@ -2,7 +2,7 @@ local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 
 do
 	local data = {
-		version = 2,
+		version = 3,
 		key = "icctrash", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -118,7 +118,7 @@ do
 
 	do
 		local data = {
-			version = 3,
+			version = 4,
 			key = "icctrashtwo",
 			zone = L.zone["Icecrown Citadel"],
 			category = L.zone["Citadel"],
@@ -157,7 +157,7 @@ do
 
 	do
 		local data = {
-			version = 1,
+			version = 2,
 			key = "icctrashthree",
 			zone = L.zone["Icecrown Citadel"],
 			category = L.zone["Citadel"],

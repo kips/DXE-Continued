@@ -4,7 +4,7 @@ do
 	local L_AnubRekhan = L.npc_naxxramas["Anub'Rekhan"]
 
 	local data = {
-		version = 299,
+		version = 300,
 		key = "anubrekhan", 
 		zone = L.zone["Naxxramas"], 
 		name = L.npc_naxxramas["Anub'Rekhan"], 

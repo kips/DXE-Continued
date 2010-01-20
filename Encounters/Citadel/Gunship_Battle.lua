@@ -19,7 +19,7 @@ do
 	end
 
 	local data = {
-		version = 7,
+		version = 8,
 		key = "gunshipbattle", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 

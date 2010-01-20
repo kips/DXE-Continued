@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 335,
+		version = 336,
 		key = "northrendbeasts", 
 		zone = L.zone["Trial of the Crusader"], 
 		category = L.zone["Coliseum"],

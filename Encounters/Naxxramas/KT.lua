@@ -2,7 +2,7 @@ do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 
 	local data = {
-		version = 299,
+		version = 300,
 		key = "kelthuzad", 
 		zone = L.zone["Naxxramas"], 
 		name = L.npc_naxxramas["Kel'Thuzad"], 

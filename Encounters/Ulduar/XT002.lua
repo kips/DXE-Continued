@@ -2,7 +2,7 @@ do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 
 	local data = {
-		version = 301,
+		version = 302,
 		key = "xt002", 
 		zone = L.zone["Ulduar"], 
 		name = L.npc_ulduar["XT-002 Deconstructor"], 

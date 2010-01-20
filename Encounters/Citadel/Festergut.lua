@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 5,
+		version = 6,
 		key = "festergut", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 

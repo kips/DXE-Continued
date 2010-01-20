@@ -2,7 +2,7 @@ do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 
 	local data = {
-		version = 311,
+		version = 312,
 		key = "ignis", 
 		zone = L.zone["Ulduar"], 
 		name = L.npc_ulduar["Ignis the Furnace Master"], 

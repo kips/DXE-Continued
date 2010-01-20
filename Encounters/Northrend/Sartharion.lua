@@ -7,7 +7,7 @@ do
 	local L_Tenebron = L.npc_northrend["Tenebron"]
 
 	local data = {
-		version = 299,
+		version = 300,
 		key = "sartharion", 
 		zone = L.zone["The Obsidian Sanctum"], 
 		category = L.zone["Northrend"],

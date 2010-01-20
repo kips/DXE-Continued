@@ -4,7 +4,7 @@ do
 	local L_Grobbulus = L.npc_naxxramas["Grobbulus"]
 
 	local data = {
-		version = 299,
+		version = 300,
 		key = "grobbulus",
 		zone = L.zone["Naxxramas"],
 		name = L.npc_naxxramas["Grobbulus"],
