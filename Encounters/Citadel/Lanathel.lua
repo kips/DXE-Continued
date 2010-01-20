@@ -1,19 +1,182 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 2,
+		version = 9,
 		key = "lanathel", 
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"], 
 		name = L.npc_citadel["Lana'thel"], 
 		triggers = {
-			scan = 37955,
-			--yell = ,
+			scan = 37955, -- Lana'thel
 		},
 		onactivate = {
 			tracerstart = true,
 			combatstop = true,
-			tracing = {37955},
+			tracing = {37955}, -- Lana'thel
+		},
+		onstart = {
+			{
+				"alert","enragecd",
+				"alert","bloodboltcd",
+			},
+		},
+		userdata = {
+			bloodtime = {143,100, loop = false, type = "series"},
+			firedblood = "0",
+		},
+		alerts = {
+			enragecd = {
+				varname = L.alert["Enrage"],
+				type = "dropdown",
+				text = L.alert["Enrage"],
+				time = 320,
+				flashtime = 10,
+				color1 = "RED",
+				icon = ST[12317],
+			},
+			essenceself = {
+				varname = format(L.alert["%s on self"],L.alert["Essence"]),
+				type = "centerpopup",
+				text = format("%s: %s!",L.alert["Essence"],L.alert["YOU"]),
+				time = 50,
+				flashtime = 10,
+				color1 = "PURPLE",
+				color2 = "MAGENTA",
+				icon = ST[71473]
+			},
+			pactself = {
+				varname = format(L.alert["%s on self"],L.alert["Pact"]),
+				type = "simple",
+				text = format("%s: %s! %s!",L.alert["Pact"],L.alert["YOU"],L.alert["MOVE"]),
+				time = 3,
+				color1 = "ORANGE",
+				sound = "ALERT1",
+				flashscreen = true,
+				icon = ST[71340],
+			},
+			bloodboltcd = {
+				varname = format(L.alert["%s Cooldown"],SN[71772]),
+				type = "dropdown",
+				text = format(L.alert["%s Cooldown"],SN[71772]),
+				time = "<bloodtime>",
+				color1 = "BROWN",
+				sound = "ALERT2",
+				flashtime = 10,
+				icon = ST[71772],
+			},
+			bloodboltdur = {
+				varname = format(L.alert["%s Duration"],SN[71772]),
+				type = "centerpopup",
+				text = format(L.alert["%s Duration"],SN[71772]),
+				time = 6,
+				flashtime = 6,
+				color1 = "YELLOW",
+				sound = "ALERT3",
+				icon = ST[71772],
+			},
+			swarmingshadowself = {
+				varname = format(L.alert["%s on self"],SN[71265]),
+				type = "centerpopup",
+				text = format("%s: %s!",SN[71265],L.alert["YOU"]),
+				time = 8.5,
+				flashtime = 8.5,
+				color1 = "BLACK",
+				color2 = "GREEN",
+				flashscreen = true,
+				icon = ST[71265],
+			},
+			swarmingshadowothers = {
+				varname = format(L.alert["%s on others"],SN[71265]),
+				type = "centerpopup",
+				text = format("%s: #5#!",SN[71265]),
+				time = 6,
+				flashtime = 6,
+				color1 = "BLACK",
+				icon = ST[71265],
+			},
+		},
+		windows = {
+			proxwindow = true,
+		},
+		events = {
+			-- Swarming Shadows early
+			{
+				type = "event",
+				event = "EMOTE",
+				execute = {
+					{
+						"expect",{"#1#","find",L.chat_citadel["^Shadows amass and swarm"]},
+						"expect",{"#5#","==","&playername&"},
+						"alert","swarmingshadowself",
+					},
+				},
+			},
+			-- Swarming Shadows others
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellid = 71265,
+				execute = {
+					{
+						"expect",{"#4#","~=","&playerguid&"},
+						"alert","swarmingshadowothers",
+					},
+				},
+			},
+			-- Swarming Shadows others removal
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_REMOVED",
+				spellid = 71265,
+				execute = {
+					{
+						"expect",{"#4#","~=","&playerguid&"},
+						"quash","swarmingshadowothers",
+					},
+				},
+			},
+			-- Pact of the Darkfallen
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellid = 71340,
+				execute = {
+					{
+						"expect",{"#4#","==","&playerguid&"},
+						"alert","pactself",
+					},
+				},
+			},
+			-- Essence of the Blood Queen
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellid = {
+					71473,
+					71525,
+				},
+				execute = {
+					{
+						"expect",{"#4#","==","&playerguid&"},
+						"alert","essenceself",
+					},
+				},
+			},
+			-- Bloodbolt Whirl
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellid = 71772,
+				execute = {
+					{
+						"quash","bloodboltcd",
+						"alert","bloodboltdur",
+						"expect",{"<firedblood>","==","0"},
+						"alert","bloodboltcd",
+						"set",{firedblood = 1},
+					},
+				},
+			},
 		},
 	}
 
