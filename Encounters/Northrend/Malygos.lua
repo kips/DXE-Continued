@@ -23,7 +23,7 @@ do
 		},
 		userdata = { 
 			phase = 1,
-			vortexcd = {29,59,loop=false},
+			vortexcd = {29,59,loop = false, type = "series"},
 		},
 		onstart = {
 			{

@@ -18,8 +18,8 @@ do
 			defeat = 35013,
 		},
 		userdata = {
-			meteortime = {28,47,loop = false}, -- recheck
-			breathtime = {8,47,loop = false}, -- recheck
+			meteortime = {28,47,loop = false, type = "series"}, -- recheck
+			breathtime = {8,47,loop = false, type = "series"}, -- recheck
 		},
 		onstart = {
 			{

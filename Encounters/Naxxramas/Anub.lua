@@ -19,12 +19,12 @@ do
 			defeat = 15956,
 		},
 		userdata = { 
-			swarmcd = {90, 85, loop=false},
+			swarmcd = {90, 85, loop = false, type = "series"},
 		},
 		onstart = {
 			{
 				"expect",{"&difficulty&","==","1"},
-				"set",{swarmcd = {102,85,loop = false}},
+				"set",{swarmcd = {102,85,loop = false, type = "series"}},
 			},
 			{
 				"alert","locustswarmcd",

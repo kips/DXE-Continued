@@ -24,6 +24,8 @@
 		removeallarrows	= [BOOLEAN]
 		invoke            = command bundle
 		defeat            = [BOOLEAN]
+		insert            = {"<userdata>", value},
+		wipe              = "<userdata>"
 ]]
 
 local addon = DXE
@@ -340,10 +342,16 @@ do
 		if not CE.userdata then return end
 		-- Copy defaults into userdata
 		for k,v in pairs(CE.userdata) do
-			userdata[k] = v
 			if type(v) == "table" then
 				-- Indexing for series
 				userdata[k.."__index"] = 1
+				if v.type == "series" then
+					userdata[k] = v
+				elseif v.type == "container" then
+					userdata[k] = {}
+				end
+			else
+				userdata[k] = v
 			end
 		end
 	end

@@ -24,7 +24,7 @@ do
 			defeat = L.chat_ulduar["^His hold on me dissipates"],
 		},
 		userdata = {
-			spawntime = {10,60,loop=false},
+			spawntime = {10,60,loop = false, type = "series"},
 			tremortime = 28,
 		},
 		onstart = {

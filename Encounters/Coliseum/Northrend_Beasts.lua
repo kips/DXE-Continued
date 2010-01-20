@@ -24,8 +24,8 @@ do
 			enragetime = 900,
 			acidmawdead = 0,
 			dreadscaledead = 0,
-			moltenspewtime = {10,21,loop = false},
-			acidicspewtime = {27,21,loop = true},
+			moltenspewtime = {10,21,loop = false, type = "series"},
+			acidicspewtime = {27,21,loop = true, type = "series"},
 			firemoltencd = 1,
 			fireacidiccd = 1,
 			impaletext = "",
@@ -34,9 +34,9 @@ do
 			hastoxin = 0,
 			hasbile = 0,
 			tmp = "",
-			crashtext = {format(L.alert["Next %s"],SN[66683]),format(L.alert["%s Cooldown"],SN[66683]),loop = false},
-			crashtime = {36,55,loop = false},
-			enragetext = {format(L.alert["Next %s"],L.alert["Phase"]),format(L.alert["Next %s"],L.alert["Phase"]),L.alert["Enrage"], loop = false},
+			crashtext = {format(L.alert["Next %s"],SN[66683]),format(L.alert["%s Cooldown"],SN[66683]),loop = false, type = "series"},
+			crashtime = {36,55,loop = false, type = "series"},
+			enragetext = {format(L.alert["Next %s"],L.alert["Phase"]),format(L.alert["Next %s"],L.alert["Phase"]),L.alert["Enrage"], loop = false, type = "series"},
 		},
 		onstart = {
 			{
@@ -347,7 +347,7 @@ do
 			firemolten = {
 				{
 					"alert","moltenspewcd",
-					"set",{moltenspewtime = {27,21,loop = true}},
+					"set",{moltenspewtime = {27,21,loop = true, type = "series"}},
 				},
 			},
 			firecrash = {

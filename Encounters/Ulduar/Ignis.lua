@@ -17,7 +17,7 @@ do
 			defeat = 33118,
 		},
 		userdata = {
-			flamejetstime = {24,22.3,loop = false},
+			flamejetstime = {24,22.3,loop = false, type = "series"},
 			slagpotmessage = "",
 		},
 		onstart = {

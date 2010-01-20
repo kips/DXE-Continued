@@ -17,7 +17,7 @@ do
 		},
 		userdata = {
 			chilledtext = "",
-			airtime = {63.5,110,loop = false},
+			airtime = {63.5,110,loop = false, type = "series"},
 		},
 		onstart = {
 			{

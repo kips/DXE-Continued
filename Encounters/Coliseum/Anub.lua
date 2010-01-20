@@ -30,7 +30,7 @@ do
 			},
 		},
 		userdata = {
-			burrowtime = {80,75,loop = false},
+			burrowtime = {80,75,loop = false, type = "series"},
 			nerubiantime = 10.5,
 			leeching = 0,
 			burrowed = 0,

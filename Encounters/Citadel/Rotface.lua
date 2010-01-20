@@ -18,7 +18,7 @@ do
 			defeat = 36627,
 		},
 		userdata = {
-			slimetime = {16,20,loop = false},
+			slimetime = {16,20,loop = false, type = "series"},
 		},
 		onstart = {
 			{

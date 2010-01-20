@@ -22,7 +22,7 @@ do
 		},
 		userdata = {
 			chargetime = 34,
-			enragetime = {369,300,loop = false},
+			enragetime = {369,300,loop = false, type = "series"},
 			striketext = "",
 		},
 		onstart = {

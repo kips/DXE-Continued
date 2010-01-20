@@ -41,8 +41,8 @@ do
 			defeat = defeat_msg,
 		},
 		userdata = {
-			portaltime = {11.5,60,loop = false}, -- TODO: initial time
-			belowzerotime = {34,47,loop = false},
+			portaltime = {11.5,60,loop = false, type = "series"}, -- TODO: initial time
+			belowzerotime = {34,47,loop = false, type = "series"},
 			battlefurytext = "",
 		},
 		onstart = {

@@ -13,7 +13,7 @@ do
 			yell = L.chat_citadel["^What is this disturbance"],
 		},
 		userdata = {
-			culttime = {7,60,loop = false},
+			culttime = {7,60,loop = false, type = "series"},
 			insignificancetext = "",
 		},
 		onstart = {

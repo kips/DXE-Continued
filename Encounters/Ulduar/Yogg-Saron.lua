@@ -23,9 +23,9 @@ do
 			defeat = 33288,
 		},
 		userdata = {
-			portaltime = {73,90,loop = false},
-			portaltext = {format(L.alert["%s Soon"],L.alert["Portals"]),format(L.alert["Next %s"],L.alert["Portals"]), loop = false},
-			crushertime = {14,55,loop = false},
+			portaltime = {73,90,loop = false, type = "series"},
+			portaltext = {format(L.alert["%s Soon"],L.alert["Portals"]),format(L.alert["Next %s"],L.alert["Portals"]), loop = false, type = "series"},
+			crushertime = {14,55,loop = false, type = "series"},
 			phase = "1",
 		},
 		onstart = {

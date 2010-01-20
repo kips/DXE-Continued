@@ -176,7 +176,7 @@ do
 			},
 			userdata = {
 				mortaltext = "",
-				awakentime = {28,20,loop = false},
+				awakentime = {28,20,loop = false, type = "series"},
 			},
 			alerts = {
 				decimatewarn = decimatewarn,

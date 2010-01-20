@@ -24,8 +24,8 @@ do
 			defeat = L.chat_ulduar["^It would appear that I've made a slight miscalculation"],
 		},
 		userdata = {
-			plasmablasttime = {14,30,loop = false},
-			laserbarragetime = {30,44,loop = false},
+			plasmablasttime = {14,30,loop = false, type = "series"},
+			laserbarragetime = {30,44,loop = false, type = "series"},
 			flametime = 6.5,
 			phase = "1",
 		},

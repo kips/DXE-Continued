@@ -16,9 +16,9 @@ do
 			defeat = 36626,
 		},
 		userdata = {
-			inhaletime = {29, 33.5, loop = false}, -- placeholder
-			sporetime = {21,40,40,51, loop=false}, -- placeholder
-			pungenttime = {133, 138, loop = false},
+			inhaletime = {29, 33.5, loop = false, type = "series"}, -- placeholder
+			sporetime = {21,40,40,51, loop = false, type = "series"}, -- placeholder
+			pungenttime = {133, 138, loop = false, type = "series"},
 			gastrictext = "",
 		},
 		onstart = {
@@ -27,8 +27,8 @@ do
 				"alert","inhaleblightcd",
 				"alert","pungentblightcd",
 				"alert","enragecd",
-				"set",{sporetime = {40,40,40,51,loop = true}},
-				"set",{inhaletime = {33.5,33.5,33.5,68, loop = true}},
+				"set",{sporetime = {40,40,40,51,loop = true, type = "series"}},
+				"set",{inhaletime = {33.5,33.5,33.5,68, loop = true, type = "series"}},
 			},
 		},
 		alerts = {

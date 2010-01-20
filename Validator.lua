@@ -333,6 +333,10 @@ function validateCommandLine(data,type,info,errlvl,...)
 			end
 			if _G.type(value) == "string" then
 				validateReplaces(data,value,errlvl,var,type,...)
+			elseif _G.type(value) == "table" then
+				if value.type ~= "series" and value.type ~= "container" then
+					err(": invalid userdata table variable expected 'container' or 'series'",errlvl,type,...)
+				end
 			end
 		end
 	elseif type == "alert" or type == "quash" then
@@ -561,6 +565,19 @@ local function validateSpellID(data,info,errlvl,k,...)
 	end
 end
 
+local function validateUserData(data,info,errlvl,...)
+	for var,value in pairs(info) do
+		if _G.type(value) == "string" then
+			validateReplaceFuncs(data,value,errlvl,...)
+			validateReplaceNums(data,value,errlvl,...)
+		elseif _G.type(value) == "table" then
+			if value.type ~= "series" and value.type ~= "container" then
+				err(": invalid userdata table variable expected 'container' or 'series'",errlvl,"type",...)
+			end
+		end
+	end
+end
+
 local function validateEvent(data,info,errlvl,...)
 	for k in pairs(info) do
 		if not eventBaseKeys[k] then
@@ -649,6 +666,12 @@ local function validate(data,errlvl,...)
 				end
 			end
 		end
+	end
+
+	-- Userdata
+
+	if data.userdata and util.tablesize(data.userdata) > 0 then
+		validateUserData(data,data.userdata,errlvl,"userdata",...)
 	end
 
 	-- Alerts

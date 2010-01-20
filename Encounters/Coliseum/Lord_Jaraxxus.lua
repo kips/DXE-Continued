@@ -19,10 +19,10 @@ do
 			defeat = 34780,
 		},
 		userdata = {
-			eruptiontime = {80,120, loop = false},
-			portaltime = {20,120, loop = false},
-			fleshtime = {14, 21, loop = false},
-			flametime = {9, 30, loop = false},
+			eruptiontime = {80,120, loop = false, type = "series"},
+			portaltime = {20,120, loop = false, type = "series"},
+			fleshtime = {14, 21, loop = false, type = "series"},
+			flametime = {9, 30, loop = false, type = "series"},
 			mistresstime = 8,
 		},
 		onstart = {

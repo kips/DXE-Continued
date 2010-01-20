@@ -21,8 +21,8 @@ do
 			defeat = 15954,
 		},
 		userdata = { 
-			roomtime = {90,110,180,loop=false},
-			balconytime = {70,95,120,loop=false},
+			roomtime = {90,110,180,loop = false, type = "series"},
+			balconytime = {70,95,120,loop = false, type = "series"},
 		},
 		onstart = {
 			{

@@ -16,8 +16,8 @@ do
 			defeat = 36612,
 		},
 		userdata = {
-			bonetime = {45,90,loop = false},
-			graveyardtime = {16,18.5,loop = true},
+			bonetime = {45,90,loop = false, type = "series"},
+			graveyardtime = {16,18.5,loop = true, type = "series"},
 			bonedurtime = 18.5,
 		},
 		onstart = {
