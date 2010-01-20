@@ -26,7 +26,6 @@ do
 		},
 		userdata = {
 			oozeaggrotext = {format(L.alert["%s Aggros"],L.npc_citadel["Volatile Ooze"]),format(L.alert["%s Aggros"],L.npc_citadel["Gas Cloud"]),loop = true, type = "series"},
-			bloattext = "",
 			experimenttime = 25,
 			malleabletime = 6,
 			gasbombtime = 16,
@@ -106,15 +105,24 @@ do
 				color1 = "BROWN",
 				icon = ST[72455],
 			},
-			bloatappwarn = {
-				varname = format(L.alert["%s Warning"],SN[72455]),
+			bloatappself = {
+				varname = format(L.alert["%s on self"],SN[72455]),
 				type = "simple",
-				text = "<bloattext>",
+				text = format("%s: %s! %s!",SN[72455],L.alert["YOU"],L.alert["MOVE AWAY"]),
 				time = 3,
 				sound = "ALERT4",
 				color1 = "BROWN",
 				icon = ST[72455],
 				flashscreen = true,
+			},
+			bloatappwarn = {
+				varname = format(L.alert["%s on others"],SN[72455]),
+				type = "simple",
+				text = format("%s: #5#!",SN[72455]),
+				time = 3,
+				sound = "ALERT4",
+				color1 = "BROWN",
+				icon = ST[72455],
 			},
 			gasbombwarn = {
 				varname = format(L.alert["%s Explodes"],SN[71255]),
@@ -295,12 +303,10 @@ do
 					},
 					{
 						"expect",{"#4#","==","&playerguid&"},
-						"set",{bloattext = format("%s: %s! %s!",SN[72455],L.alert["YOU"],L.alert["MOVE AWAY"])},
-						"alert","bloatappwarn",
+						"alert","bloatappself",
 					},
 					{
 						"expect",{"#4#","~=","&playerguid&"},
-						"set",{bloattext = format("%s: #5#!",SN[72455])},
 						"alert","bloatappwarn",
 					},
 				},
