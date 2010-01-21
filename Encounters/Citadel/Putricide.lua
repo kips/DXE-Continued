@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 9,
+		version = 10,
 		key = "putricide", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -29,6 +29,7 @@ do
 			experimenttime = 25,
 			malleabletime = 6,
 			gasbombtime = 16,
+			teargas = "0",
 		},
 		alerts = {
 			enragecd = {
@@ -268,9 +269,11 @@ do
 						"expect",{"#4#","==","&playerguid&"},
 						"set",{malleabletime = 6, experimenttime = 20, gasbombtime = 16},
 						"alert","malleablegoocd",
-						"alert","unstableexperimentcd",
 						"alert","gasbombcd",
 						"set",{malleabletime = 25.5, experimenttime = 37.5, gasbombtime = 35.5},
+						"expect",{"<teargas>","==","0"},
+						"alert","unstableexperimentcd",
+						"set",{teargas = "1"},
 					},
 				},
 			},

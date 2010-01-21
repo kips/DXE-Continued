@@ -3,6 +3,7 @@
 
 <Script file="Options\Locales.lua"/>
 
+<!--
 <Script file="Encounters\Naxxramas\Locales.lua"/>
 <Script file="Encounters\Naxxramas\Anub.lua"/>
 <Script file="Encounters\Naxxramas\Faerlina.lua"/>
@@ -42,6 +43,7 @@
 <Script file="Encounters\Ulduar\Thorim.lua"/>
 <Script file="Encounters\Ulduar\XT002.lua"/>
 <Script file="Encounters\Ulduar\Yogg-Saron.lua"/>
+-->
 
 <Script file="Encounters\Coliseum\Locales.lua"/>
 <Script file="Encounters\Coliseum\Anub.lua"/>
@@ -52,6 +54,7 @@
 
 <Script file="Encounters\Kalimdor\Locales.lua"/>
 <Script file="Encounters\Kalimdor\Onyxia.lua"/>
+
 <Script file="Encounters\Citadel\Locales.lua"/>
 <Script file="Encounters\Citadel\Blood_Princes.lua"/>
 <Script file="Encounters\Citadel\Deathwhisper.lua"/>
