@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 9,
+		version = 10,
 		key = "lanathel", 
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"], 
@@ -18,11 +18,14 @@ do
 			{
 				"alert","enragecd",
 				"alert","bloodboltcd",
+				"expect",{"&difficulty&","<","3"},
+				"set",{essencetime = 75},
 			},
 		},
 		userdata = {
 			bloodtime = {143,100, loop = false, type = "series"},
 			firedblood = "0",
+			essencetime = 60,
 		},
 		alerts = {
 			enragecd = {
@@ -38,7 +41,7 @@ do
 				varname = format(L.alert["%s on self"],L.alert["Essence"]),
 				type = "centerpopup",
 				text = format("%s: %s!",L.alert["Essence"],L.alert["YOU"]),
-				time = 50,
+				time = "<essencetime>",
 				flashtime = 10,
 				color1 = "PURPLE",
 				color2 = "MAGENTA",
