@@ -193,6 +193,36 @@ end
 
 ]]
 
+--[CLEU] SWING_MISSED:0x0280000002BFF92A:Slivr:1300:0xF1300086C002F048:Eydis Darkbane:2632:ABSORB:5150:", -- [11700]
+--[CLEU] SPELL_MISSED:         0x028000000155E9AD: Nokaru:263444:0xF1300086C002F048:Eydis Darkbane:2632:48480:Maul:1:  ABSORB:9229:", -- [11678]
+--[CLEU] SPELL_PERIODIC_MISSED:0x0280000000529C7E: Lamissa:1300:0xF1300086C002F048: Eydis Darkbane:2632:49800:Rip:1:   ABSORB:3314:", -- [11705]
+--[CLEU] RANGE_MISSED:         0x02800000019 AD06B:Takamuri:1300:0xF1300086C0001C3C:Eydis Darkbane:2632:75:Auto Shot:1:ABSORB:6927:", -- [35994]
+
+function addon:ABSORBTEST()
+	local values = {
+		[67261] = 1200000,
+		[67258] = 1200000,
+		[67256] = 700000,
+		[67259] = 700000,
+		[67257] = 300000,
+		[67260] = 300000,
+		[65858] = 175000,
+		[65874] = 175000,
+	}
+
+
+	local dstGUID = "0xF1300086C002F048"
+	local bar = addon.Alerts:Absorb("absorbwarn","Shield of Light => %s/%s - %d%%",20,5,"ALERT1",
+	"GREEN", "ORANGE", false, addon.ST[67261], values, addon.NID[dstGUID],67261)
+
+	addon:ScheduleRepeatingTimer(function() 
+		local onevent = bar:GetScript("OnEvent")
+		if onevent then
+			onevent(bar, nil, nil, "SPELL_MISSED", nil, nil, nil, dstGUID, nil, nil, "ABSORB", 50000, nil, "ABSORB", 50000)
+		end
+	end, 0.2)
+end
+
 --[===[
 do
 	local SN,ST = DXE.SN,DXE.ST

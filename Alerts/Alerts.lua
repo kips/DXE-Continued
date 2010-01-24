@@ -70,6 +70,7 @@ local defaults = {
 local addon = DXE
 local L = addon.L
 local CN = addon.CN
+local NID = addon.NID
 local AceTimer = LibStub("AceTimer-3.0")
 
 local Colors = addon.Media.Colors
@@ -276,6 +277,7 @@ end
 function prototype:Destroy()
 	self:Hide()
 	self:ClearAllPoints()
+	self:UnregisterAllEvents()
 	self:RemoveFromStacks()
 	self:CancelAllTimers()
 	self.countFunc = nil
@@ -458,10 +460,29 @@ do
 		end
 	end
 
-	function prototype:Countdown(totalTime, flashTime)
+	-- for absorb bar
+	local function CountdownNoSetFlashFunc(self,time)
+		local data = self.data
+		local timeleft = data.endTime - time
+		self.data.timeleft = timeleft
+		if timeleft < 0 then 
+			self.countFunc = nil
+			self.timer:SetTime(0)
+			return 
+		end
+		self.timer:SetTime(timeleft)
+		if timeleft < data.flashTime then 
+			self.statusbar:SetStatusBarColor(util.blend(data.c1, data.c2, 0.5*(cos(timeleft*12) + 1))) 
+		end
+	end
+
+	function prototype:Countdown(totalTime, flashTime, noset)
 		local endTime = GetTime() + totalTime
 		self.data.endTime,self.data.totalTime = endTime, totalTime
-		if flashTime and self.data.c1 ~= self.data.c2 then
+		if noset then
+			self.data.flashTime = flashTime
+			self.countFunc = CountdownNoSetFlashFunc
+		elseif flashTime and self.data.c1 ~= self.data.c2 then
 			self.data.flashTime = flashTime
 			self.countFunc = CountdownFlashFunc
 		else
@@ -751,6 +772,68 @@ function module:Simple(text, totalTime, sound, c1, flashscreen, icon)
 	end
 
 	if pfl.WarningMessages and pfl.WarnPopupMessage then Pour(text,icon,c1Data) end
+end
+
+---------------------------------------------
+-- ABSORB BARS
+---------------------------------------------
+
+local function abbrev(value)
+	return value > 1000000 and ("%.2fm"):format(value / 1000000) or ("%dk"):format(value / 1000)
+end
+
+local dmg2_types = { SPELL_MISSED = true, SPELL_PERIODIC_MISSED = true, RANGE_MISSED = true }
+local function Absorb_OnEvent(self,_,_,eventtype,_,_,_,dstGUID,_,_,misstype,dmg,_,misstype2,dmg2)
+	local data = self.data
+	if (misstype == "ABSORB" or misstype2 == "ABSORB") and NID[dstGUID] == data.npcid then
+		local flag
+		if dmg2_types[eventtype] then
+			data.value = data.value + dmg2
+			flag = true
+		elseif eventtype == "SWING_MISSED" then
+			data.value = data.value + dmg1
+			flag = true
+		end
+		if flag then
+			-- reverse
+			local perc = data.value / data.total
+			if perc < 0 or perc > 1 then self:Destroy() return end
+			self:SetText(data.textformat:format(abbrev(data.total - data.value),abbrev(data.total),(1-perc) * 100)) 
+			self.statusbar:SetValue(1 - perc)
+		end
+	end
+end
+
+function prototype:SetTotal(total) self.data.total = total end
+function prototype:SetNPCID(npcid) self.data.npcid = npcid end
+function prototype:SetTextFormat(textformat) self.data.textformat = textformat end
+function prototype:UnregisterCLEU() self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED") end
+
+function module:Absorb(id, textFormat, totalTime, flashTime, sound, c1, c2, flashscreen, icon, values, npcid, spellid)
+	local soundFile,c1Data,c2Data = GetMedia(sound,c1,c2)
+	if soundFile and not pfl.DisableSounds then PlaySoundFile(soundFile) end
+	if flashscreen then self:FlashScreen(c1Data) end
+	spellid = tonumber(spellid)
+	npcid = tonumber(npcid)
+	local bar = GetBar()
+	bar.data.value = 0
+	bar:AnchorToCenter()
+	bar:SetText(textFormat:format(abbrev(values[spellid]),abbrev(values[spellid]),100))
+	bar:Countdown(totalTime,flashTime,true)
+	bar:SetIcon(icon)
+	bar:SetTextFormat(textFormat)
+	bar:SetTotal(values[spellid])
+	bar:SetNPCID(npcid)
+	bar:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+	bar:SetScript("OnEvent",Absorb_OnEvent)
+	bar.statusbar:SetValue(1)
+	bar:ScheduleTimer("Fade",totalTime)
+	bar:ScheduleTimer("UnregisterCLEU",totalTime)
+
+	if c1Data then bar:SetColor(c1Data,c2Data) end
+	--@debug@
+	return bar
+	--@end-debug@
 end
 
 ---------------------------------------------
