@@ -442,6 +442,9 @@ do
 				Alerts:CenterPopup("invoker"..info,text,time,alertInfo.flashtime,stgs.sound,stgs.color1,stgs.color2,stgs.flashscreen,alertInfo.icon)
 			elseif alertInfo.type == "simple" then
 				Alerts:Simple(text,time,stgs.sound,stgs.color1,stgs.flashscreen,alertInfo.icon)
+			elseif alertInfo.type == "absorb" then
+				Alerts:Absorb("invoker"..info,text,alertInfo.textformat,time,alertInfo.flashtime,stgs.sound,stgs.color1,stgs.color2,stgs.flashscreen,alertInfo.icon,
+				              alertInfo.values[tuple['7']],ReplaceTokens(alertInfo.npcid))
 			end
 		end
 		return true

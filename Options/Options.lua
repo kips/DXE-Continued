@@ -574,6 +574,11 @@ local function InitializeOptions()
 						name = L.options["Test"],
 						order = 600,
 						func = "TestAlert",
+						disabled = function(info)
+							local key,var = info[#info-4],info[#info-2]
+							local info = EDB[key].alerts[var]
+							return info.type == "absorb"
+						end,
 					},
 					reset = {
 						type = "execute",

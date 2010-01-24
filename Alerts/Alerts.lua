@@ -798,18 +798,18 @@ local function Absorb_OnEvent(self,_,_,eventtype,_,_,_,dstGUID,_,_,misstype,dmg,
 			-- reverse
 			local perc = data.value / data.total
 			if perc < 0 or perc > 1 then self:Destroy() return end
-			self:SetText(data.textformat:format(abbrev(data.total - data.value),abbrev(data.total),(1-perc) * 100)) 
+			self:SetText(data.textformat:format(abbrev(data.total - data.value),data.atotal,(1-perc) * 100)) 
 			self.statusbar:SetValue(1 - perc)
 		end
 	end
 end
 
-function prototype:SetTotal(total) self.data.total = total end
+function prototype:SetTotal(total) self.data.total,self.data.atotal = total,abbrev(total) end
 function prototype:SetNPCID(npcid) self.data.npcid = npcid end
 function prototype:SetTextFormat(textformat) self.data.textformat = textformat end
 function prototype:UnregisterCLEU() self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED") end
 
-function module:Absorb(id, textFormat, totalTime, flashTime, sound, c1, c2, flashscreen, icon, values, npcid, spellid)
+function module:Absorb(id, text, textFormat, totalTime, flashTime, sound, c1, c2, flashscreen, icon, total, npcid)
 	local soundFile,c1Data,c2Data = GetMedia(sound,c1,c2)
 	if soundFile and not pfl.DisableSounds then PlaySoundFile(soundFile) end
 	if flashscreen then self:FlashScreen(c1Data) end
@@ -818,11 +818,11 @@ function module:Absorb(id, textFormat, totalTime, flashTime, sound, c1, c2, flas
 	local bar = GetBar()
 	bar.data.value = 0
 	bar:AnchorToCenter()
-	bar:SetText(textFormat:format(abbrev(values[spellid]),abbrev(values[spellid]),100))
+	bar:SetText(textFormat:format(abbrev(total),abbrev(total),100))
 	bar:Countdown(totalTime,flashTime,true)
 	bar:SetIcon(icon)
 	bar:SetTextFormat(textFormat)
-	bar:SetTotal(values[spellid])
+	bar:SetTotal(total)
 	bar:SetNPCID(npcid)
 	bar:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 	bar:SetScript("OnEvent",Absorb_OnEvent)
@@ -831,9 +831,7 @@ function module:Absorb(id, textFormat, totalTime, flashTime, sound, c1, c2, flas
 	bar:ScheduleTimer("UnregisterCLEU",totalTime)
 
 	if c1Data then bar:SetColor(c1Data,c2Data) end
-	--@debug@
-	return bar
-	--@end-debug@
+	if pfl.WarningMessages and pfl.WarnPopupMessage then Pour(text,icon,c1Data) end
 end
 
 ---------------------------------------------

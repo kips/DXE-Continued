@@ -5,7 +5,7 @@ do
 	local LE = SN[67223] -- Light Essence
 
 	local data = {
-		version = 17,
+		version = 18,
 		key = "twinvalkyr", 
 		zone = L.zone["Trial of the Crusader"], 
 		category = L.zone["Coliseum"],
@@ -87,25 +87,43 @@ do
 				color1 = "PURPLE",
 				icon = ST[67208],
 			},
-			shieldofdarknessdur = {
-				varname = format(L.alert["%s Duration"],SN[67256]),
-				text = format("%s: #5#!",SN[67256]),
-				type = "centerpopup",
+			shieldofdarknesswarn = {
+				varname = format(L.alert["%s Absorbs"],SN[67256]),
+				text = SN[67256].."!",
+				textformat = format("%s => %%s/%%s - %%d%%%%",SN[67256]),
+				type = "absorb",
 				time = 15,
-				flashtime = 15,
+				flashtime = 5,
 				color1 = "INDIGO",
+				color2 = "YELLOW",
 				sound = "ALERT3",
 				icon = ST[67256],
+				npcid = "&npcid|#4#&",
+				values = {
+					[67258] = 1200000,
+					[67256] = 700000,
+					[67257] = 300000,
+					[65874] = 175000,
+				}
 			},
-			shieldoflightdur = {
-				varname = format(L.alert["%s Duration"],SN[67259]),
-				text = format("%s: #5#!",SN[67259]),
-				type = "centerpopup",
+			shieldoflightwarn = {
+				varname = format(L.alert["%s Absorbs"],SN[67259]),
+				text = SN[67259].."!",
+				textformat = format("%s => %%s/%%s - %%d%%%%",SN[67259]),
+				type = "absorb",
 				time = 15,
-				flashtime = 15,
-				sound = "ALERT4",
+				flashtime = 5,
 				color1 = "YELLOW",
+				color2 = "INDIGO",
+				sound = "ALERT4",
 				icon = ST[67259],
+				npcid = "&npcid|#4#&",
+				values = {
+					[67261] = 1200000,
+					[67259] = 700000,
+					[67260] = 300000,
+					[65858] = 175000,
+				},
 			},
 			twinspactwarn = {
 				varname = format(L.alert["%s Casting"],SN[67303]),
@@ -344,7 +362,7 @@ do
 				},
 				execute = {
 					{
-						"alert","shieldofdarknessdur",
+						"alert","shieldofdarknesswarn",
 						"alert","shieldvortexcd",
 					},
 				},
@@ -361,7 +379,7 @@ do
 				},
 				execute = {
 					{
-						"quash","shieldofdarknessdur",
+						"quash","shieldofdarknesswarn",
 					},
 				},
 			},
@@ -377,7 +395,7 @@ do
 				},
 				execute = {
 					{
-						"alert","shieldoflightdur",
+						"alert","shieldoflightwarn",
 						"alert","shieldvortexcd",
 					},
 				},
@@ -394,7 +412,7 @@ do
 				},
 				execute = {
 					{
-						"quash","shieldoflightdur",
+						"quash","shieldoflightwarn",
 					},
 				},
 			},

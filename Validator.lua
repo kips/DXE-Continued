@@ -88,12 +88,17 @@ local alertBaseKeys = {
 	flashscreen = optboolean,
 	icon = optstring,
 	counter = optboolean,
+	-- absorb bar
+	textformat = optstring,
+	values = opttable,
+	npcid = optstring,
 }
 
 local alertTypeValues = {
 	centerpopup = true,
 	dropdown = true,
 	simple = true,
+	absorb = true,
 }
 
 local arrowBaseKeys = {
@@ -442,8 +447,19 @@ local function validateAlert(data,info,errlvl,...)
 			elseif (k == "color1" or k == "color2") and not Colors[info[k]] then
 				err(": unknown color '"..info[k].."'",errlvl,k,...)
 			-- check replaces
-			elseif k == "time" or k == "text" then
+			elseif k == "time" or k == "text" or k == "npcid" or k == "spellid" then
 				validateReplaces(data,info[k],errlvl,k,...)
+			elseif k == "values" then
+				for spellid, total in pairs(info[k]) do
+					if type(spellid) ~= "number" then
+						err(": keys need to be valid spellids - got 'spellid'",errlvl, k, ...)
+					end
+					validateVal(total,isnumber,errlvl,spellid,k,...)
+					local exists = GetSpellInfo(spellid)
+					if not exists then
+						err(": ["..spellid.."]: unknown spell identifier",errlvl,k,...)
+					end
+				end
 			end
 		end
 	end
@@ -451,6 +467,10 @@ local function validateAlert(data,info,errlvl,...)
 	-- color1 is not optional for centerpopups and dropdowns
 	if (info.type == "centerpopup" or info.type == "dropdown") and type(info.color1) ~= "string" then
 		err(": requires color1 to be set",errlvl,...)
+	end
+
+	if info.type == "absorb" and (not info.npcid or not info.values) then
+		err(": absorb bars require npcid and values to be set",errlvl,...)
 	end
 end
 
