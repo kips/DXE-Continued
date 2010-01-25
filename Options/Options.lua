@@ -42,6 +42,13 @@ local function InitializeOptions()
 				end,
 				disabled = function() return false end,
 			},
+			ToggleLock = {
+				type = "execute",
+				order = 200,
+				name = L.options["Toggle Anchors"],
+				desc = L.options["Toggle frame anchors. You can also toggle this by clicking on the pane's pad lock icon"],
+				func = function() addon:ToggleLock() end,
+			},
 		},
 	}
 
