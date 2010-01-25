@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 10,
+		version = 11,
 		key = "putricide", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -30,6 +30,7 @@ do
 			malleabletime = 6,
 			gasbombtime = 16,
 			teargas = "0",
+			malleabletext = "",
 		},
 		alerts = {
 			enragecd = {
@@ -146,7 +147,7 @@ do
 			malleablegoowarn = {
 				varname = format(L.alert["%s Warning"],SN[72615]),
 				type = "simple",
-				text = format(L.alert["%s Cast"],SN[72615]),
+				text = "<malleabletext>",
 				time = 3,
 				sound = "ALERT6",
 				color1 = "BLACK",
@@ -194,11 +195,49 @@ do
 				unit = "#5#",
 				icon = 2,
 			},
+			malleablemark = {
+				varname = SN[72615],
+				type = "FRIENDLY",
+				persist = 5,
+				unit = "&tft_unitname&",
+				icon = 3,
+			},
+		},
+		arrows = {
+			malleablearrow = {
+				varname = SN[72615],
+				unit = "&tft_unitname&",
+				persist = 5,
+				action = "AWAY",
+				msg = L.alert["MOVE AWAY"],
+				spell = SN[72615],
+				fixed = true,
+			},
 		},
 		timers = {
 			fireoozeaggro = {
 				{
 					"alert","oozeaggrocd",
+				},
+			},
+			firemalleable = {
+				{
+					"expect",{"&tft_unitexists& &tft_isplayer&","==","1 1"},
+					"set",{malleabletext = format("%s: %s!",SN[72615],L.alert["YOU"])},
+					"raidicon","malleablemark",
+					"alert","malleablegoowarn",
+				},
+				{
+					"expect",{"&tft_unitexists& &tft_isplayer&","==","1 nil"},
+					"set",{malleabletext = format("%s: &tft_unitname&!",SN[72615])},
+					"raidicon","malleablemark",
+					"arrow","malleablearrow",
+					"alert","malleablegoowarn",
+				},
+				{
+					"expect",{"&tft_unitexists&","==","nil"},
+					"set",{malleabletext = format(L.alert["%s Cast"],SN[72615])},
+					"alert","malleablegoowarn",
 				},
 			},
 		},
@@ -214,8 +253,8 @@ do
 				execute = {
 					{
 						"quash","malleablegoocd",
-						"alert","malleablegoowarn",
 						"alert","malleablegoocd",
+						"scheduletimer",{"firemalleable",0.2},
 					},
 				},
 			},
