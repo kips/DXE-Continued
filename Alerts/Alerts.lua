@@ -791,13 +791,13 @@ local function Absorb_OnEvent(self,_,_,eventtype,_,_,_,dstGUID,_,_,misstype,dmg,
 			data.value = data.value + dmg2
 			flag = true
 		elseif eventtype == "SWING_MISSED" then
-			data.value = data.value + dmg1
+			data.value = data.value + dmg
 			flag = true
 		end
 		if flag then
 			-- reverse
 			local perc = data.value / data.total
-			if perc < 0 or perc > 1 then self:Destroy() return end
+			if perc <= 0 or perc > 1 then self:Destroy() return end
 			self:SetText(data.textformat:format(abbrev(data.total - data.value),data.atotal,(1-perc) * 100)) 
 			self.statusbar:SetValue(1 - perc)
 		end
@@ -817,6 +817,7 @@ function module:Absorb(id, text, textFormat, totalTime, flashTime, sound, c1, c2
 	npcid = tonumber(npcid)
 	local bar = GetBar()
 	bar.data.value = 0
+	bar:SetID(id)
 	bar:AnchorToCenter()
 	bar:SetText(textFormat:format(abbrev(total),abbrev(total),100))
 	bar:Countdown(totalTime,flashTime,true)
