@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 4,
+		version = 5,
 		key = "bloodprincecouncil", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -22,6 +22,14 @@ do
 				37973, -- Taldaram
 			},
 		},
+		userdata = {
+			invocationtime = {33,46.5,loop = false, type = "series"},
+		},
+		onstart = {
+			{
+				"alert","invocationcd",
+			},
+		},
 		alerts = {
 			invocationwarn = {
 				varname = format(L.alert["%s Warning"],SN[70982]),
@@ -32,6 +40,16 @@ do
 				sound = "ALERT1",
 				icon = ST[70982],
 			},
+			invocationcd = {
+				varname = format(L.alert["%s Cooldown"],SN[70982]),
+				type = "dropdown",
+				text = format(L.alert["%s Cooldown"],L.alert["Invocation"]),
+				time = "<invocationtime>",
+				flashtime = 10,
+				color1 = "MAGENTA",
+				sound = "ALERT3",
+				icon = ST[70982],
+			},
 			empoweredshockwarn = {
 				varname = format(L.alert["%s Casting"],SN[73037]),
 				type = "centerpopup",
@@ -39,7 +57,7 @@ do
 				time = 4.5,
 				flashtime = 4.5,
 				color1 = "GREY",
-				sound = "ALERT1",
+				sound = "ALERT2",
 				icon = ST[73037],
 				flashscreen = true,
 			},
@@ -109,6 +127,7 @@ do
 				},
 				execute = {
 					{
+						"alert","invocationcd",
 						"alert","invocationwarn",
 					},
 				}	
