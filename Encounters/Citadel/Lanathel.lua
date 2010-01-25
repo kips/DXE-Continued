@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 10,
+		version = 11,
 		key = "lanathel", 
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"], 
@@ -54,6 +54,16 @@ do
 				time = 3,
 				color1 = "ORANGE",
 				sound = "ALERT1",
+				flashscreen = true,
+				icon = ST[71340],
+			},
+			pactremovalself = {
+				varname = format(L.alert["%s on self"],format(L.alert["%s Removal"],L.alert["Pact"])),
+				type = "simple",
+				text = format(L.alert["%s Removed"],L.alert["Pact"]).."! "..L.alert["YOU"].."!",
+				time = 3,
+				color1 = "GOLD",
+				sound = "ALERT4",
 				flashscreen = true,
 				icon = ST[71340],
 			},
@@ -147,6 +157,18 @@ do
 					{
 						"expect",{"#4#","==","&playerguid&"},
 						"alert","pactself",
+					},
+				},
+			},
+			-- Pact of the Darkfallen removal
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_REMOVED",
+				spellid = 71340,
+				execute = {
+					{
+						"expect",{"#4#","==","&playerguid&"},
+						"alert","pactremovalself",
 					},
 				},
 			},
