@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 5,
+		version = 6,
 		key = "bloodprincecouncil", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -24,6 +24,7 @@ do
 		},
 		userdata = {
 			invocationtime = {33,46.5,loop = false, type = "series"},
+			shocktext = "",
 		},
 		onstart = {
 			{
@@ -61,10 +62,19 @@ do
 				icon = ST[73037],
 				flashscreen = true,
 			},
+			shockwarn = {
+				varname = format(L.alert["%s Cast"],SN[72037]),
+				type = "simple",
+				text = format("%s: &tft_unitname&",SN[72037]),
+				time = 3,
+				color1 = "BLACK",
+				sound = "ALERT4",
+				icon = ST[72037],
+			},
 			infernoself = {
 				varname = format(L.alert["%s on self"],L.alert["Inferno Flame"]),
 				type = "simple",
-				text = format("%s: %s! %s!",L.alert["Inferno Flame"],L.alert["YOU"],L.alert["RUN"]),
+				text = format("%s: %s! %s!",SN[39941],L.alert["YOU"],L.alert["RUN"]),
 				time = 3,
 				color1 = "ORANGE",
 				icon = ST[62910],
@@ -73,7 +83,7 @@ do
 			infernowarn = {
 				varname = format(L.alert["%s on others"],L.alert["Inferno Flame"]),
 				type = "simple",
-				text = format("%s: #5#! %s!",L.alert["Inferno Flame"],L.alert["MOVE AWAY"]),
+				text = format("%s: #5#! %s!",SN[39941],L.alert["MOVE AWAY"]),
 				time = 3,
 				color1 = "ORANGE",
 				icon = ST[62910],
@@ -89,11 +99,73 @@ do
 				msg = L.alert["MOVE AWAY"],
 				spell = L.alert["Inferno Flame"],
 			},
+			shockarrow = {
+				varname = SN[72037],
+				unit = "&tft_unitname&",
+				persist = 5,
+				action = "AWAY",
+				msg = L.alert["MOVE AWAY"],
+				spell = SN[72037],
+				fixed = true,
+			},
 		},
 		windows = {
 			proxwindow = true,
 		},
+		raidicons = {
+			shockmark = {
+				varname = SN[72037],
+				type = "FRIENDLY",
+				persist = 5,
+				unit = "&tft_unitname&",
+				icon = 1,
+			},
+			infernomark = {
+				varname = L.alert["Inferno Flame"],
+				type = "FRIENDLY",
+				persist = 7.5,
+				unit = "#5#",
+				icon = 2,
+			},
+		},
+		timers = {
+			fireshock = {
+				{
+					"expect",{"&tft_unitexists& &tft_isplayer&","==","1 1"},
+					"set",{shocktext = format("%s: %s!",SN[72037],L.alert["YOU"])},
+					"raidicon","shockmark",
+					"alert","shockwarn",
+				},
+				{
+					"expect",{"&tft_unitexists& &tft_isplayer&","==","1 nil"},
+					"set",{shocktext = format("%s: &tft_unitname&!",SN[72037])},
+					"raidicon","shockmark",
+					"alert","shockwarn",
+					"proximitycheck",{"&tft_unitname&",28},
+					"arrow","shockarrow",
+				},
+				{
+					"expect",{"&tft_unitexists&","==","nil"},
+					"set",{shocktext = format(L.alert["%s Cast"],SN[72037])},
+					"alert","shockwarn",
+				},
+			},
+		},
 		events = {
+			-- Shock Vortex
+			{
+				type = "combatevent",
+				eventtype = "SPELL_CAST_START",
+				spellid = {
+					72037, -- 25
+					71944, -- 10
+				},
+				execute = {
+					{
+						"scheduletimer",{"fireshock",0.5},
+					},
+				},
+			},
 			-- Inferno Flames
 			{
 				type = "event",
@@ -101,6 +173,7 @@ do
 				execute = {
 					{
 						"expect",{"#1#","find",L.chat_citadel["^Inferno Flames speed"]},
+						"raidicon","infernomark",
 						"expect",{"#5#","==","&playername&"},
 						"alert","infernoself",
 					},
@@ -136,7 +209,10 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
-				spellid = 73037,
+				spellid = {
+					73037, -- 25
+					72039,
+				},
 				execute = {
 					{
 						"alert","empoweredshockwarn",
@@ -148,6 +224,3 @@ do
 
 	DXE:RegisterEncounter(data)
 end
---[[
-shock vortex explodes
-]]
