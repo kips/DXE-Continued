@@ -153,7 +153,7 @@ function module:OnStart(_,...)
 	-- Reset colors if not acquired
 	for i,hw in ipairs(HW) do
 		if hw:IsOpen() and not hw.tracer:First() then
-			hw:SetInfoBundle("",1)
+			hw:SetInfoBundle("",1,1)
 			hw:ApplyNeutralColor()
 		end
 	end
@@ -267,6 +267,7 @@ do
 	-- Replaces special tokens with values
 	-- IMPORTANT: replace_funcs goes last
 	function ReplaceTokens(str)
+		if type(str) ~= "string" then return str end
 		str = gsub(str,"#(.-)#",replace_nums)
 		str = gsub(str,"<(.-)>",replace_vars)
 		str = gsub(str,"&(.-)&",replace_funcs)

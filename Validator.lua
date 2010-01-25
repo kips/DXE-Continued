@@ -91,7 +91,7 @@ local alertBaseKeys = {
 	-- absorb bar
 	textformat = optstring,
 	values = opttable,
-	npcid = optstring,
+	npcid = optnumberstring,
 }
 
 local alertTypeValues = {
@@ -270,6 +270,7 @@ local function validateReplaceVars(data,text,errlvl,...)
 end
 
 local function validateReplaces(data,text,errlvl,...)
+	if type(text) ~= "string" then return end
 	errlvl=(errlvl or 0)+1
 
 	validateReplaceFuncs(data,text,errlvl,...)
@@ -279,12 +280,17 @@ end
 
 local function validateTracing(tbl,errlvl,...)
 	errlvl=(errlvl or 0)+1
-	validateIsArray(tbl,errlvl,"tracing",...)
 	if #tbl > 4 or #tbl == 0 then
 		err(": not an array with 1 <= size <= 4",errlvl,"tracing",...)
 	end
 	for k,v in ipairs(tbl) do
 		validateVal(v,isnumber,errlvl,"tracing",...)
+	end
+	if tbl.powers then
+		validateIsArray(tbl.powers,errlvl,"powers","tracing",...)
+		for k,v in ipairs(tbl.powers) do
+			validateVal(v,isboolean,errlvl,k,"powers","tracing",...)
+		end
 	end
 end
 

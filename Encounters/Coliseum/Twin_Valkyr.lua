@@ -98,7 +98,7 @@ do
 				color2 = "YELLOW",
 				sound = "ALERT3",
 				icon = ST[67256],
-				npcid = "&npcid|#4#&",
+				npcid = 34496,
 				values = {
 					[67258] = 1200000,
 					[67256] = 700000,
@@ -117,7 +117,7 @@ do
 				color2 = "INDIGO",
 				sound = "ALERT4",
 				icon = ST[67259],
-				npcid = "&npcid|#4#&",
+				npcid = 34497,
 				values = {
 					[67261] = 1200000,
 					[67259] = 700000,

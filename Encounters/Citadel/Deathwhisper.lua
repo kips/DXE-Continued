@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 12,
+		version = 13,
 		key = "deathwhisper", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -33,7 +33,7 @@ do
 		},
 		onactivate = {
 			combatstop = true,
-			tracing = {36855}, -- Lady Deathwhisper
+			tracing = {36855,powers={true}}, -- Lady Deathwhisper
 			defeat = 36855, -- Lady Deathwhisper
 		},
 		alerts = {

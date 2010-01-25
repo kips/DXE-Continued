@@ -1554,8 +1554,11 @@ function addon:SetTracing(targets)
 		-- Prevents overwriting
 		local hw = HW[i]
 		if hw:GetGoal() ~= tgt then
+			if targets.powers and targets.powers[i] then
+				hw:ShowPower()
+			end
 			hw:SetTitle(gbl.L_NPC[tgt] or "...")
-			hw:SetInfoBundle("",1)
+			hw:SetInfoBundle("",1,1)
 			hw:ApplyNeutralColor()
 			if type(tgt) == "number" then
 				hw:Track("npcid",tgt)
@@ -2050,7 +2053,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED(_, _,eventtype, _, _, _, dstGUID)
 	-- Health watchers
 	for i,hw in ipairs(HW) do
 		if hw:IsOpen() and hw:GetGoal() == npcid then
-			hw:SetInfoBundle(DEAD,0)
+			hw:SetInfoBundle(DEAD,0,0)
 			local k = search(SortedCache,npcid,1)
 			if k then SortedCache[k][2] = 0 end
 			break

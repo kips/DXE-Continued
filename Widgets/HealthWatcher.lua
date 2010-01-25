@@ -5,6 +5,8 @@ local HealthWatcher,prototype = {},{}
 DXE.HealthWatcher = HealthWatcher
 
 local UnitHealth,UnitHealthMax = UnitHealth,UnitHealthMax
+local UnitPower,UnitPowerMax,UnitPowerType = UnitPower,UnitPowerMax,UnitPowerType
+local PowerBarColor = PowerBarColor
 local UnitIsDead = UnitIsDead
 local format = string.format
 local DEAD = DEAD:upper()
@@ -18,29 +20,44 @@ function HealthWatcher:New(parent)
 	hw:SetWidth(220); hw:SetHeight(22)
 	addon:RegisterBackground(hw)
 
-	local bar = CreateFrame("StatusBar",nil,hw)
-	bar:SetMinMaxValues(0,1)
-	bar:SetPoint("TOPLEFT",2,-2)
-	bar:SetPoint("BOTTOMRIGHT",-2,2)
-	addon:RegisterStatusBar(bar)
-	hw.bar = bar
+	local healthbar = CreateFrame("StatusBar",nil,hw)
+	healthbar:SetMinMaxValues(0,1)
+	healthbar:SetPoint("TOPLEFT",2,-2)
+	healthbar:SetPoint("BOTTOMRIGHT",-2,2)
+	addon:RegisterStatusBar(healthbar)
+	hw.healthbar = healthbar
+
+	local powerbar = CreateFrame("StatusBar",nil,hw)
+	powerbar:SetMinMaxValues(0,1)
+	powerbar:SetPoint("BOTTOMLEFT",healthbar,"BOTTOMLEFT")
+	powerbar:SetPoint("BOTTOMRIGHT",healthbar,"BOTTOMRIGHT")
+	powerbar:SetHeight(5)
+	powerbar:SetFrameLevel(healthbar:GetFrameLevel()+1)
+	powerbar:Hide()
+	addon:RegisterStatusBar(powerbar)
+	hw.powerbar = powerbar
 	
 	local border = CreateFrame("Frame",nil,hw)
 	border:SetAllPoints(true)
-	border:SetFrameLevel(bar:GetFrameLevel()+1)
+	border:SetFrameLevel(healthbar:GetFrameLevel()+2)
 	addon:RegisterBorder(border)
 	hw.border = border
 
+	-- parent for font strings so they appears above powerbar
+	local region = CreateFrame("Frame",nil,healthbar)
+	region:SetAllPoints(true)
+	region:SetFrameLevel(healthbar:GetFrameLevel()+10)
+
 	-- Add title text
-	title = bar:CreateFontString(nil,"ARTWORK")
-	title:SetPoint("LEFT",bar,"LEFT",2,0)
+	title = region:CreateFontString(nil,"ARTWORK")
+	title:SetPoint("LEFT",healthbar,"LEFT",2,0)
 	title:SetShadowOffset(1,-1)
 	addon:RegisterFontString(title,10)
 	hw.title = title
 
 	-- Add health text
-	health = bar:CreateFontString(nil,"ARTWORK")
-	health:SetPoint("RIGHT",bar,"RIGHT",-2,0)
+	health = region:CreateFontString(nil,"ARTWORK")
+	health:SetPoint("RIGHT",healthbar,"RIGHT",-2,0)
 	health:SetShadowOffset(1,-1)
 	addon:RegisterFontString(health,12)
 	hw.health = health
@@ -67,29 +84,68 @@ function prototype:GetGoal() return self.tracer.goal end
 function prototype:EnableUpdates() self.updates = true end
 function prototype:SetNeutralColor(color) self.nr,self.ng,self.nb = unpack(color) end
 function prototype:SetLostColor(color) self.lr,self.lg,self.lb = unpack(color) end
-function prototype:ApplyNeutralColor() self.bar:SetStatusBarColor(self.nr,self.ng,self.nb) end
-function prototype:ApplyLostColor() self.bar:SetStatusBarColor(self.lr,self.lg,self.lb) end
-function prototype:IsOpen() return self.tracer:IsOpen() end
-function prototype:Open() self.tracer:Open() end
-function prototype:Close() self.tracer:Close(); self.title:SetText("") end
 
-function prototype:SetInfoBundle(health,perc)
-	self.bar:SetValue(perc)
-	self.bar:SetStatusBarColor(perc > 0.5 and ((1 - perc) * 2) or 1, perc > 0.5 and 1 or (perc * 2), 0)
+function prototype:ApplyNeutralColor() 
+	self.healthbar:SetStatusBarColor(self.nr,self.ng,self.nb) 
+	if not self.powercolor and self.power then self.powerbar:SetStatusBarColor(self.nr,self.ng,self.nb) end
+end
+
+function prototype:ApplyLostColor()
+	self.healthbar:SetStatusBarColor(self.lr,self.lg,self.lb) 
+	if not self.powercolor and self.power then self.powerbar:SetStatusBarColor(self.lr,self.lg,self.lb) end
+end
+
+function prototype:IsOpen() return self.tracer:IsOpen() end
+
+function prototype:ShowPower()
+	self.power = true
+	self.powerbar:Show()
+end
+
+function prototype:Open(power)
+	self.tracer:Open() 
+end
+
+function prototype:Close() 
+	self.tracer:Close()
+	self.title:SetText("")
+	if self.power then
+		self.power = nil
+		self.powercolor = nil
+		self.powerbar:Hide()
+	end
+end
+
+function prototype:SetInfoBundle(health,hperc,pperc)
+	self.healthbar:SetValue(hperc)
+	self.healthbar:SetStatusBarColor(hperc > 0.5 and ((1 - hperc) * 2) or 1, hperc > 0.5 and 1 or (hperc * 2), 0)
 	self.health:SetText(health)
+	if self.power and pperc then self.powerbar:SetValue(pperc) end
 end
 
 -- Events
-function prototype:TRACER_ACQUIRED() self:Fire("HW_TRACER_ACQUIRED",self.tracer:First()) end
 function prototype:TRACER_LOST() self:ApplyLostColor() end
+
+function prototype:TRACER_ACQUIRED() 
+	local unit = self.tracer:First()
+	self:Fire("HW_TRACER_ACQUIRED",unit)
+	if not self.powercolor then
+		local c = PowerBarColor[UnitPowerType(unit)]
+		self.powerbar:SetStatusBarColor(c.r,c.g,c.b)
+		self.powercolor = true
+	end
+end
+
 function prototype:TRACER_UPDATE()
 	local unit = self.tracer:First()
 	if UnitIsDead(unit) then
-		self:SetInfoBundle(DEAD, 0)
+		self:SetInfoBundle(DEAD, 0, 0)
 	else
 		local h, hm = UnitHealth(unit), UnitHealthMax(unit) 
-		local perc = h/hm
-		self:SetInfoBundle(format("%0.0f%%", perc*100), perc)
+		local hperc = h/hm
+		local pperc
+		if self.power then pperc = UnitPower(unit)/UnitPowerMax(unit) end
+		self:SetInfoBundle(format("%0.0f%%", hperc*100), hperc, pperc)
 	end
 	if self.updates then
 		self:Fire("HW_TRACER_UPDATE",self.tracer:First())
