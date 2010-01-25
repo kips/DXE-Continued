@@ -90,7 +90,7 @@ do
 			shieldofdarknesswarn = {
 				varname = format(L.alert["%s Absorbs"],SN[67256]),
 				text = SN[67256].."!",
-				textformat = format("%s => %%s/%%s - %%d%%%%",SN[67256]),
+				textformat = format("%s => %%s/%%s - %%d%%%%",L.alert["Shield"]),
 				type = "absorb",
 				time = 15,
 				flashtime = 5,
@@ -109,7 +109,7 @@ do
 			shieldoflightwarn = {
 				varname = format(L.alert["%s Absorbs"],SN[67259]),
 				text = SN[67259].."!",
-				textformat = format("%s => %%s/%%s - %%d%%%%",SN[67259]),
+				textformat = format("%s => %%s/%%s - %%d%%%%",L.alert["Shield"]),
 				type = "absorb",
 				time = 15,
 				flashtime = 5,
