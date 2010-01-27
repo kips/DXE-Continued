@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 6,
+		version = 7,
 		key = "bloodprincecouncil", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -95,8 +95,8 @@ do
 				varname = L.alert["Inferno Flame"],
 				unit = "#5#",
 				persist = 10,
-				action = "AWAY",
-				msg = L.alert["MOVE AWAY"],
+				action = "TOWARD",
+				msg = L.alert["MOVE TOWARD"],
 				spell = L.alert["Inferno Flame"],
 			},
 			shockarrow = {
