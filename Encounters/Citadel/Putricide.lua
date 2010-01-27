@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 12,
+		version = 13,
 		key = "putricide", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -21,7 +21,8 @@ do
 			{
 				"alert","enragecd",
 				"alert","unstableexperimentcd",
-				"set",{experimenttime = 37.5},
+				"alert","puddlecd",
+				"set",{experimenttime = 37.5, puddletime = 35},
 			},
 		},
 		userdata = {
@@ -32,6 +33,8 @@ do
 			teargas = "0",
 			malleabletext = "",
 			mutatedtext = "",
+			puddletime = 10,
+			puddletimeaftergas = {10,15,loop = false, type = "series"},
 		},
 		alerts = {
 			enragecd = {
@@ -188,6 +191,16 @@ do
 				sound = "ALERT8",
 				icon = ST[72463],
 			},
+			puddlecd = {
+				varname = format(L.alert["%s Cooldown"],SN[70343]),
+				type = "dropdown",
+				text = format(L.alert["%s Cooldown"],SN[70343]),
+				time = "<puddletime>",
+				flashtime = 10,
+				color1 = "TAN",
+				throttle = 10,
+				icon = ST[70341],
+			},
 		},
 		raidicons = {
 			oozeadhesivemark = {
@@ -250,7 +263,28 @@ do
 				},
 			},
 		},
+		-- Slime Puddle
+		-- 70341,70343
+		-- throttle 10 seconds
+		-- 35s cooldown
+		-- initial - 10
+		-- 10 after 1st teargas?
+		-- 15 after 2nd teargas?
 		events = {
+			-- Slime Puddle
+			{
+				type = "combatevent",
+				eventtype = "SPELL_CAST_SUCCESS",
+				spellid = {
+					70341, -- 10/25
+					70343, -- 10/25
+				},
+				execute = {
+					{
+						"alert","puddlecd",
+					},
+				},
+			},
 			-- Mutated Plague
 			{
 				type = "combatevent",
@@ -329,6 +363,7 @@ do
 				spellid = 71617, -- 10/25
 				execute = {
 					{
+						"quash","puddlecd",
 						"quash","oozeaggrocd", -- don't cancel timer
 						"quash","malleablegoocd",
 						"quash","unstableexperimentcd",
@@ -357,10 +392,11 @@ do
 				execute = {
 					{
 						"expect",{"#4#","==","&playerguid&"},
-						"set",{malleabletime = 6, experimenttime = 20, gasbombtime = 16},
+						"set",{malleabletime = 6, experimenttime = 20, gasbombtime = 16, puddletime = "<puddletimeaftergas>"},
 						"alert","malleablegoocd",
 						"alert","gasbombcd",
-						"set",{malleabletime = 25.5, experimenttime = 37.5, gasbombtime = 35.5},
+						"alert","puddlecd",
+						"set",{malleabletime = 25.5, experimenttime = 37.5, gasbombtime = 35.5, puddletime = 35},
 						"expect",{"<teargas>","==","0"},
 						"alert","unstableexperimentcd",
 						"set",{teargas = "1"},
