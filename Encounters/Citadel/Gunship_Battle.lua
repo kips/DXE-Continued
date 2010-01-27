@@ -19,7 +19,7 @@ do
 	end
 
 	local data = {
-		version = 8,
+		version = 9,
 		key = "gunshipbattle", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -42,7 +42,7 @@ do
 		},
 		userdata = {
 			portaltime = {11.5,60,loop = false, type = "series"}, -- TODO: initial time
-			belowzerotime = {34,47,loop = false, type = "series"},
+			belowzerotime = {34,45,loop = false, type = "series"},
 			battlefurytext = "",
 		},
 		onstart = {
