@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 14,
+		version = 15,
 		key = "lanathel", 
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"], 
@@ -18,14 +18,16 @@ do
 			{
 				"alert","enragecd",
 				"alert","bloodboltcd",
+				"alert","inciteterrorcd",
 				"alert","pactcd",
 				"alert","swarmingshadowcd",
-				"expect",{"&difficulty&","<","3"},
+				"expect",{"&difficulty&","==","1"},
 				"set",{essencetime = 75},
 			},
 		},
 		userdata = {
 			bloodtime = {143,100, loop = false, type = "series"},
+			incitetime = {138,95, loop = false, type = "series"},
 			firedblood = "0",
 			essencetime = 60,
 			pacttime = {15,30,loop = false, type = "series"},
@@ -115,6 +117,7 @@ do
 				type = "dropdown",
 				text = format(L.alert["%s Cooldown"],L.alert["Pact"]),
 				time = "<pacttime>",
+				flashtime = 5,
 				color1 = "BLACK",
 				sound = "ALERT5",
 				icon = ST[71340],
@@ -124,8 +127,19 @@ do
 				type = "dropdown",
 				text = format(L.alert["%s Cooldown"],SN[71265]),
 				time = 30,
+				flashtime = 5,
 				color1 = "INDIGO",
 				icon = ST[71265],
+			},
+			inciteterrorcd = {
+				varname = format(L.alert["%s Cooldown"],SN[73070]),
+				type = "dropdown",
+				text = format(L.alert["%s Cooldown"],SN[73070]),
+				time = "<incitetime>",
+				sound = "ALERT6",
+				flashtime = 10,
+				color1 = "GREY",
+				icon = ST[73070],
 			},
 		},
 		windows = {
