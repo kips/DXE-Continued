@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 12,
+		version = 14,
 		key = "lanathel", 
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"], 
@@ -18,6 +18,8 @@ do
 			{
 				"alert","enragecd",
 				"alert","bloodboltcd",
+				"alert","pactcd",
+				"alert","swarmingshadowcd",
 				"expect",{"&difficulty&","<","3"},
 				"set",{essencetime = 75},
 			},
@@ -26,6 +28,7 @@ do
 			bloodtime = {143,100, loop = false, type = "series"},
 			firedblood = "0",
 			essencetime = 60,
+			pacttime = {15,30,loop = false, type = "series"},
 		},
 		alerts = {
 			enragecd = {
@@ -107,6 +110,23 @@ do
 				color1 = "BLACK",
 				icon = ST[71265],
 			},
+			pactcd = {
+				varname = format(L.alert["%s Cooldown"],L.alert["Pact"]),
+				type = "dropdown",
+				text = format(L.alert["%s Cooldown"],L.alert["Pact"]),
+				time = "<pacttime>",
+				color1 = "BLACK",
+				sound = "ALERT5",
+				icon = ST[71340],
+			},
+			swarmingshadowcd = {
+				varname = format(L.alert["%s Cooldown"],SN[71265]),
+				type = "dropdown",
+				text = format(L.alert["%s Cooldown"],SN[71265]),
+				time = 30,
+				color1 = "INDIGO",
+				icon = ST[71265],
+			},
 		},
 		windows = {
 			proxwindow = true,
@@ -119,6 +139,8 @@ do
 				execute = {
 					{
 						"expect",{"#1#","find",L.chat_citadel["^Shadows amass and swarm"]},
+						"quash","swarmingshadowcd",
+						"alert","swarmingshadowcd",
 						"expect",{"#5#","==","&playername&"},
 						"alert","swarmingshadowself",
 					},
@@ -149,6 +171,17 @@ do
 				},
 			},
 			-- Pact of the Darkfallen
+			{
+				type = "combatevent",
+				eventtype = "SPELL_CAST_SUCCESS",
+				spellid = 71336, -- 10/25
+				execute = {
+					{
+						"alert","pactcd",
+					},
+				},
+			},
+			-- Pact of the Darkfallen applications
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
