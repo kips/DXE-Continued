@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 11,
+		version = 12,
 		key = "putricide", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -31,6 +31,7 @@ do
 			gasbombtime = 16,
 			teargas = "0",
 			malleabletext = "",
+			mutatedtext = "",
 		},
 		alerts = {
 			enragecd = {
@@ -179,6 +180,14 @@ do
 				color1 = "INDIGO",
 				icon = ST[71617],
 			},
+			mutatedwarn = {
+				varname = format(L.alert["%s Warning"],SN[72463]),
+				type = "simple",
+				text = "<mutatedtext>",
+				time = 3,
+				sound = "ALERT8",
+				icon = ST[72463],
+			},
 		},
 		raidicons = {
 			oozeadhesivemark = {
@@ -242,6 +251,48 @@ do
 			},
 		},
 		events = {
+			-- Mutated Plague
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellid = {
+					72463, -- 25
+					72451, -- 10
+				},
+				execute = {
+					{
+						"expect",{"#4#","==","&playerguid&"},
+						"set",{mutatedtext = format("%s: %s!",SN[72463],L.alert["YOU"])},
+						"alert","mutatedwarn",
+					},
+					{
+						"expect",{"#4#","~=","&playerguid&"},
+						"set",{mutatedtext = format("%s: #5#!",SN[72463])},
+						"alert","mutatedwarn",
+					},
+				},
+			},
+			-- Mutated Plague stacks
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED_DOSE",
+				spellid = {
+					72463, -- 25
+					72451, -- 10
+				},
+				execute = {
+					{
+						"expect",{"#4#","==","&playerguid&"},
+						"set",{mutatedtext = format("%s: %s! %s!",SN[72463],L.alert["YOU"],format(L.alert["%s Stacks"],"#11#"))},
+						"alert","mutatedwarn",
+					},
+					{
+						"expect",{"#4#","~=","&playerguid&"},
+						"set",{mutatedtext = format("%s: #5#! %s!",SN[72463],format(L.alert["%s Stacks"],"#11#")) },
+						"alert","mutatedwarn",
+					},
+				},
+			},
 			-- Malleable Goo
 			{
 				type = "combatevent",
