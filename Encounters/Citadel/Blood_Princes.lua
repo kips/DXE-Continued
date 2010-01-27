@@ -66,7 +66,7 @@ do
 				varname = format(L.alert["%s Cast"],SN[72037]),
 				type = "simple",
 				text = format("%s: &tft_unitname&",SN[72037]),
-				time = 3,
+				time = 6,
 				color1 = "BLACK",
 				sound = "ALERT4",
 				icon = ST[72037],
@@ -102,7 +102,7 @@ do
 			shockarrow = {
 				varname = SN[72037],
 				unit = "&tft_unitname&",
-				persist = 5,
+				persist = 7,
 				action = "AWAY",
 				msg = L.alert["MOVE AWAY"],
 				spell = SN[72037],
@@ -162,7 +162,7 @@ do
 				},
 				execute = {
 					{
-						"scheduletimer",{"fireshock",0.5},
+						"scheduletimer",{"fireshock",0.2},
 					},
 				},
 			},
