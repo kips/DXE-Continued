@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 15,
+		version = 16,
 		key = "lanathel", 
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"], 
@@ -246,6 +246,7 @@ do
 						"alert","bloodboltdur",
 						"expect",{"<firedblood>","==","0"},
 						"alert","bloodboltcd",
+						"alert","inciteterrorcd",
 						"set",{firedblood = 1},
 					},
 				},
