@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 16,
+		version = 17,
 		key = "lanathel", 
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"], 
@@ -16,13 +16,19 @@ do
 		},
 		onstart = {
 			{
+				"expect",{"&difficulty&","==","1"},
+				"set",{
+					essencetime = 75,
+					bloodtime = {130,120, loop = false, type = "series"},
+					incitetime = {124,115, loop = false, type = "series"},
+				},
+			},
+			{
 				"alert","enragecd",
 				"alert","bloodboltcd",
 				"alert","inciteterrorcd",
 				"alert","pactcd",
 				"alert","swarmingshadowcd",
-				"expect",{"&difficulty&","==","1"},
-				"set",{essencetime = 75},
 			},
 		},
 		userdata = {
