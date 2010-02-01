@@ -14,9 +14,14 @@ local range
 local invert
 local proxFunc
 
+local function UpdateTitle()
+	window:SetTitle(format("%s - %d",L["Proximity"],range))
+end
+
 function addon:UpdateProximitySettings()
 	range = pfl.Proximity.Range
 	proxFunc = range <= 10 and ProximityFuncs[10] or (range <= 11 and ProximityFuncs[11] or ProximityFuncs[18])
+	if window then UpdateTitle() end
 	delay = pfl.Proximity.Delay
 	invert = pfl.Proximity.Invert
 
@@ -181,10 +186,12 @@ local function CreateWindow()
 	CreateWindow = nil
 end
 
-function addon:Proximity(popup)
+function addon:Proximity(popup,enc_range)
 	if popup and not pfl.Proximity.AutoPopup then return end
 	if window then window:Show()
 	else CreateWindow() end
+	range = enc_range or pfl.Proximity.Range
+	UpdateTitle()
 end
 
 addon:RegisterWindow(L["Proximity"],function() addon:Proximity() end)

@@ -62,6 +62,10 @@ local function SetContentInset(self,inset)
 	self.content:SetPoint("BOTTOMRIGHT",self.container,"BOTTOMRIGHT",-inset,inset)
 end
 
+local function SetTitle(self,text)
+	self.titleText:SetText(text)
+end
+
 ---------------------------------------
 -- WINDOW CREATION
 ---------------------------------------
@@ -162,6 +166,7 @@ function addon:CreateWindow(name,width,height)
 	titleText:SetText(name)
 	titleText:SetShadowOffset(1,-1)
 	titleText:SetShadowColor(0,0,0)
+	anchor.titleText = titleText
 
 	handlers.Button_OnLeave = handlers.Button_OnLeave or function(self) self.t:SetVertexColor(0.33,0.33,0.33) end
 	handlers.Button_OnEnter = handlers.Button_OnEnter or function(self) self.t:SetVertexColor(0,1,0) end
@@ -196,6 +201,7 @@ function addon:CreateWindow(name,width,height)
 
 	anchor.SetContentInset = SetContentInset
 	anchor.AddTitleButton = AddTitleButton
+	anchor.SetTitle = SetTitle
 
 	windows[anchor] = true
 

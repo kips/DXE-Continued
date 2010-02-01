@@ -90,7 +90,7 @@ local defaults = {
 
 local addon = LibStub("AceAddon-3.0"):NewAddon("DXE","AceEvent-3.0","AceTimer-3.0","AceComm-3.0","AceSerializer-3.0")
 _G.DXE = addon
-addon.version = 427
+addon.version = 428
 addon:SetDefaultModuleState(false)
 addon.callbacks = LibStub("CallbackHandler-1.0"):New(addon)
 addon.defaults = defaults
@@ -424,8 +424,11 @@ end
 
 function addon:OpenWindows()
 	local encdb = pfl.Encounters[CE.key]
-	if encdb and encdb.proxwindow.enabled then
-		self:Proximity(true)
+	local proxdb = encdb and encdb.proxwindow
+	-- proximity window
+	if proxdb and proxdb.enabled then
+		local range = proxdb.proxoverride and proxdb.proxrange
+		self:Proximity(true,range)
 	end
 end
 
@@ -1989,6 +1992,11 @@ do
 				proxwindow = {
 					defaultEnabled = false,
 					varname = L["Proximity"],
+					options = {
+						-- var => default value
+						proxoverride = false,
+						proxrange = 10,
+					},
 				},
 			}
 		}
@@ -2036,6 +2044,17 @@ do
 				defaults[var].enabled = data.windows[var]
 			else
 				defaults[var].enabled = winData.defaultEnabled
+			end
+
+			-- options
+			if winData.options then
+				for optvar,value in pairs(winData.options) do
+					if data.windows and data.windows[optvar] then
+						defaults[var][optvar] = data.windows[optvar]
+					else
+						defaults[var][optvar] = value
+					end
+				end
 			end
 		end
 	end

@@ -263,13 +263,6 @@ do
 				},
 			},
 		},
-		-- Slime Puddle
-		-- 70341,70343
-		-- throttle 10 seconds
-		-- 35s cooldown
-		-- initial - 10
-		-- 10 after 1st teargas?
-		-- 15 after 2nd teargas?
 		events = {
 			-- Slime Puddle
 			{

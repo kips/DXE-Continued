@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 2,
+		version = 3,
 		key = "sindragosa", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -132,6 +132,9 @@ do
 				sound = "ALERT4",
 				icon = ST[71056],
 			},
+		},
+		windows = {
+			proxwindow = true,
 		},
 		raidicons = {
 			frostbeaconmark = {

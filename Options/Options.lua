@@ -623,6 +623,26 @@ local function InitializeOptions()
 						values = GetSounds,
 					},
 				},
+				windows = {
+					-- prefix options with (%w+)window
+					proxoverride = {
+						type = "toggle",
+						name = L.options["Custom range"],
+						order = 100,
+					},
+					proxrange = {
+						type = "range",
+						name = L.options["Range"],
+						order = 200,
+						min = 5,
+						max = 18,
+						step = 1,
+						disabled = function(info)
+							local key = info[3]
+							return not (db.profile.Encounters[key]["proxwindow"].enabled and db.profile.Encounters[key]["proxwindow"].proxoverride) 
+						end,
+					},
+				},
 			}
 		}
 
@@ -726,7 +746,15 @@ local function InitializeOptions()
 
 							local settings_args = item_args.settings.args
 							for k,item in pairs(AdvancedItems.Options[optionType]) do
-								settings_args[k] = item
+								-- special handling for windows since not all windows share the same options
+								if optionType == "windows" then
+									-- prefix needs to match
+									if k:find("^"..var:match("(%w+)window")) then
+										settings_args[k] = item
+									end
+								else
+									settings_args[k] = item
+								end
 							end
 						end
 					end
