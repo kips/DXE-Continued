@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 3,
+		version = 4,
 		key = "valithria", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -23,6 +23,14 @@ do
 		},
 		userdata = {
 			portaltime = {33,45, loop = false, type = "series"},
+			corrosiontext = "",
+		},
+		timers = {
+			laywaste = {
+				{
+					"alert","laywastedur",
+				}
+			},
 		},
 		alerts = {
 			enragecd = {
@@ -62,6 +70,42 @@ do
 				flashscreen = true,
 				throttle = 2,
 				icon = ST[71743],
+			},
+			laywastewarn = {
+				varname = format(L.alert["%s Warning"],SN[69325]),
+				type =  "centerpopup",
+				text = format(L.alert["%s Soon"],SN[69325]),
+				time = 2,
+				sound = "ALERT4",
+				color1 = "ORANGE",
+				icon = ST[69325],
+			},
+			laywastedur = {
+				varname = format(L.alert["%s Duration"],SN[69325]),
+				type = "centerpopup",
+				text = SN[69325],
+				time = 12,
+				flashtime = 12,
+				color1 = "ORANGE",
+				icon = ST[69325],
+			},
+			gutspraywarn = {
+				varname = format(L.alert["%s Warning"],SN[70633]),
+				type = "simple",
+				text = format(L.alert["%s Warning"],SN[70633]),
+				time = 3,
+				sound = "ALERT5",
+				icon = ST[70633],
+			},
+			corrosionself = {
+				varname = format(L.alert["%s on self"],SN[70751]),
+				type = "centerpopup",
+				text = "<corrosiontext>",
+				time = 6,
+				flashtime = 6,
+				sound = "ALERT6",
+				color1 = "CYAN",
+				icon = ST[70751],
 			},
 		},
 		events = {
@@ -103,6 +147,69 @@ do
 					{
 						"expect",{"#4#","==","&playerguid&"},
 						"alert","manavoidself",
+					},
+				},
+			},
+			-- Lay Waste
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellid = {
+					69325, -- 10
+					71730, -- 25
+				},
+				execute = {
+					{
+						"expect",{"#4#","~=","&playerguid&"},
+						"alert","laywastewarn",
+						"scheduletimer",{"laywaste",2},
+					},
+				},
+			},
+			-- Gut Spray
+			{
+				type = "combatevent",
+				eventtype = "SPELL_CAST_SUCCESS",
+				spellid = {
+					70633, -- 10
+					71283, -- 25
+				},
+				execute = {
+					{
+						"alert","gutspraywarn",
+					}
+				},
+			},
+			-- Corrosion
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellid = {
+					70751, -- 10
+					71738, -- 25
+				},
+				execute = {
+					{
+						"expect",{"#4#","==","&playerguid&"},
+						"set",{corrosiontext = format("%s: %s!",SN[70751],L.alert["YOU"])},
+						"alert","corrosionself",
+					},
+				},
+			},
+			-- Corrosion applications
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED_DOSE",
+				spellid = {
+					70751, -- 10
+					71738, -- 25
+				},
+				execute = {
+					{
+						"expect",{"#4#","==","&playerguid&"},
+						"quash","corrosionself",
+						"set",{corrosiontext = format("%s: %s! %s!",SN[70751],L.alert["YOU"],format(L.alert["%s Stacks"],"#11#"))},
+						"alert","corrosionself",
 					},
 				},
 			},
