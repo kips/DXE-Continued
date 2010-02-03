@@ -65,11 +65,29 @@ do
 					},
 				},
 			},
-			-- Mana Void
+			-- Mana Void (hit)
+			{
+				type = "combatevent",
+				eventtype = "SPELL_DAMAGE",
+				spellid = {
+					71086, -- 10
+					71743, -- 25
+				},
+				execute = {
+					{
+						"expect",{"#4#","==","&playerguid&"},
+						"alert","manavoidself",
+					},
+				},
+			},
+			-- Mana Void (miss)
 			{
 				type = "combatevent",
 				eventtype = "SPELL_MISSED",
-				spellid = 71743,
+				spellid = {
+					71086, -- 10
+					71743, -- 25
+				},
 				execute = {
 					{
 						"expect",{"#4#","==","&playerguid&"},
