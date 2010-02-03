@@ -58,7 +58,7 @@ do
 				varname = format(L.alert["%s Cooldown"],SN[70117]),
 				type = "dropdown",
 				text = format(L.alert["%s Cooldown"],SN[70117]),
-				--time = ,
+				--time = 60,
 				flashtime = 10,
 				--color1 = ,
 				icon = ST[70117],
@@ -216,7 +216,7 @@ do
 				type = "combatevent",
 				eventtype = "SPELL_CAST_SUCCESS",
 				spellid = {
-					70117, -- 25
+					70117, -- 10/25
 				},
 				execute = {
 					{

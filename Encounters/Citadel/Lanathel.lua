@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 17,
+		version = 18,
 		key = "lanathel", 
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"], 
@@ -13,6 +13,7 @@ do
 			tracerstart = true,
 			combatstop = true,
 			tracing = {37955}, -- Lana'thel
+			defeat = 37955,
 		},
 		onstart = {
 			{

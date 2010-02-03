@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 8,
+		version = 9,
 		key = "bloodprincecouncil", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -20,6 +20,11 @@ do
 				"boss1", -- Valanar
 				"boss2", -- Keleseth
 				"boss3", -- Taldaram
+			},
+			defeat = {
+				37970, -- Valanar
+				37972, -- Keleseth
+				37973, -- Taldaram
 			},
 		},
 		userdata = {
