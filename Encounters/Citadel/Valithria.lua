@@ -13,6 +13,7 @@ do
 		onactivate = {
 			combatstop = true,
 			tracing = {36789},
+			defeat = L.chat_citadel["I AM RENEWED!"],
 		},
 		onstart = {
 			{
@@ -92,17 +93,6 @@ do
 					{
 						"expect",{"#4#","==","&playerguid&"},
 						"alert","manavoidself",
-					},
-				},
-			},
-			-- Dreamwalker's Rage
-			{
-				type = "combatevent",
-				eventtype = "SPELL_CAST_START",
-				spellid = 71189,
-				execute = {
-					{
-						"defeat",true
 					},
 				},
 			},
