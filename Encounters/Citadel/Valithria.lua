@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 4,
+		version = 5,
 		key = "valithria", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -13,7 +13,7 @@ do
 		onactivate = {
 			combatstop = true,
 			tracing = {36789},
-			defeat = L.chat_citadel["I AM RENEWED!"],
+			defeat = L.chat_citadel["^I AM RENEWED!"],
 		},
 		onstart = {
 			{
@@ -26,17 +26,18 @@ do
 			corrosiontext = "",
 		},
 		timers = {
-			laywaste = {
+			firelaywaste = {
 				{
+					"quash","laywastewarn",
 					"alert","laywastedur",
 				}
 			},
 		},
 		alerts = {
 			enragecd = {
-				varname = L.alert["Enrage"],
+				varname = L.alert["Soft Enrage"],
 				type = "dropdown",
-				text = L.alert["Enrage"],
+				text = L.alert["Soft Enrage"],
 				time = 420,
 				flashtime = 10,
 				color1 = "RED",
@@ -83,7 +84,7 @@ do
 			laywastedur = {
 				varname = format(L.alert["%s Duration"],SN[69325]),
 				type = "centerpopup",
-				text = SN[69325],
+				text = format(L.alert["%s Duration"],SN[69325]),
 				time = 12,
 				flashtime = 12,
 				color1 = "ORANGE",
@@ -160,9 +161,24 @@ do
 				},
 				execute = {
 					{
-						"expect",{"#4#","~=","&playerguid&"},
 						"alert","laywastewarn",
-						"scheduletimer",{"laywaste",2},
+						"scheduletimer",{"firelaywaste",2},
+					},
+				},
+			},
+			-- Lay Waste removal
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_REMOVED",
+				spellid = {
+					69325, -- 10
+					71730, -- 25
+				},
+				execute = {
+					{
+						"quash","laywastewarn",
+						"canceltimer","firelaywaste",
+						"quash","laywastedur",
 					},
 				},
 			},
