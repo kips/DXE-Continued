@@ -39,6 +39,7 @@ blacklist = {
 	"Debug.lua"             => true,
 	"LibDataBroker-1.1.lua" => true,
 	"Tests.lua"             => true,
+	"Locales.lua"           => true,
 }
 
 locales = Hash.new
