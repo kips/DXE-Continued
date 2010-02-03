@@ -17,6 +17,7 @@ do
 		},
 		onstart = {
 			{
+				"alert","enragecd",
 				"alert","portalcd",
 			},
 		},
@@ -24,6 +25,15 @@ do
 			portaltime = {33,45, loop = false, type = "series"},
 		},
 		alerts = {
+			enragecd = {
+				varname = L.alert["Enrage"],
+				type = "dropdown",
+				text = L.alert["Enrage"],
+				time = 420,
+				flashtime = 10,
+				color1 = "RED",
+				icon = ST[12317],
+			},
 			portalcd = {
 				varname = format(L.alert["%s Cooldown"],L.alert["Portals"]),
 				type = "dropdown",
