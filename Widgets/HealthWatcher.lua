@@ -129,9 +129,22 @@ function prototype:TRACER_LOST() self:ApplyLostColor() end
 function prototype:TRACER_ACQUIRED() 
 	local unit = self.tracer:First()
 	self:Fire("HW_TRACER_ACQUIRED",unit)
-	if not self.powercolor then
-		local c = PowerBarColor[UnitPowerType(unit)]
-		self.powerbar:SetStatusBarColor(c.r,c.g,c.b)
+	if not self.powercolor and self.power then
+		-- Saurfang apparently returns three extra arguments
+		local ix,type,r,g,b = UnitPowerType(unit)
+		if r and g and b then
+			self.powerbar:SetStatusBarColor(r,g,b)
+		else
+			-- numeric indexes are fallbacks according to blizzard
+			local c = PowerBarColor[type] or PowerBarColor[ix]
+			if not c then
+				--@debug@
+				error(format("Invalid power bar color -- type: %s index: %s",type or "nil",ix or "nil"))
+				--@end-debug@
+				return
+			end
+			self.powerbar:SetStatusBarColor(c.r,c.g,c.b)
+		end
 		self.powercolor = true
 	end
 end
