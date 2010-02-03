@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 3,
+		version = 4,
 		key = "sindragosa", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -171,7 +171,7 @@ do
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
 				spellid = {
-					69712, -- 25
+					69712, -- 10/25
 				},
 				execute = {
 					{
@@ -184,7 +184,7 @@ do
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
 				spellid = {
-					70126, -- 25
+					70126, -- 10/25
 				},
 				execute = {
 					{
@@ -243,7 +243,7 @@ do
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
 				spellid = {
-					69762, -- 25
+					69762, -- 10/25
 				},
 				execute = {
 					{
@@ -257,7 +257,7 @@ do
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
 				spellid = {
-					70106, -- 25
+					70106, -- 10/25
 				},
 				execute = {
 					{
@@ -272,7 +272,7 @@ do
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED_DOSE",
 				spellid = {
-					70106, -- 25
+					70106, -- 10/25
 				},
 				execute = {
 					{
@@ -302,6 +302,7 @@ do
 				eventtype = "SPELL_CAST_START",
 				spellid = {
 					71056, -- 25
+					69649, -- 10
 				},
 				execute = {
 					{

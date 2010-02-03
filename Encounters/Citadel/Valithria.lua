@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 2,
+		version = 3,
 		key = "valithria", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -19,12 +19,15 @@ do
 				"alert","portalcd",
 			},
 		},
+		userdata = {
+			portaltime = {33,45, loop = false, type = "series"},
+		},
 		alerts = {
 			portalcd = {
 				varname = format(L.alert["%s Cooldown"],L.alert["Portals"]),
 				type = "dropdown",
 				text = format(L.alert["%s Cooldown"],L.alert["Portals"]),
-				time = 45,
+				time = "<portaltime>",
 				flashtime = 10,
 				sound = "ALERT1",
 				color1 = "GREEN",
