@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 9,
+		version = 10,
 		key = "bloodprincecouncil", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -16,10 +16,10 @@ do
 		onactivate = {
 			combatstop = true,
 			tracerstart = true,
-			unittracing = {
-				"boss1", -- Valanar
-				"boss2", -- Keleseth
-				"boss3", -- Taldaram
+			tracing = {
+				37970, -- Valanar
+				37972, -- Keleseth
+				37973, -- Taldaram
 			},
 			defeat = {
 				37970, -- Valanar
