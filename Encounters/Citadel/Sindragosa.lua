@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 5,
+		version = 6,
 		key = "sindragosa", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -18,6 +18,7 @@ do
 		userdata = {
 			chilledtext = "",
 			airtime = {63.5,110,loop = false, type = "series"},
+			phase = "1",
 		},
 		onstart = {
 			{
@@ -112,6 +113,7 @@ do
 				color1 = "MAGENTA",
 				icon = "Interface\\Icons\\INV_Misc_Toy_09",
 			},
+			--[[
 			frostbombwarn = {
 				varname = format(L.alert["%s ETA"],SN[71053]),
 				type = "centerpopup",
@@ -122,6 +124,7 @@ do
 				sound = "ALERT5",
 				icon = ST[71053],
 			},
+			]]
 			frostbreathwarn = {
 				varname = format(L.alert["%s Casting"],SN[71056]),
 				type = "centerpopup",
@@ -147,6 +150,96 @@ do
 				total = 5,
 			},
 		},
+		arrows = {
+			westarrow = {
+				varname = format(L.alert["%s Beacon Position"],L.alert["West"]),
+				unit = "",
+				persist = 7,
+				action = "TOWARD",
+				msg = L.alert["MOVE THERE"],
+				spell = SN[70126],
+				xpos = 0.35448017716408,
+				ypos = 0.23266260325909,
+			},
+			northarrow = {
+				varname = format(L.alert["%s Beacon Position"],L.alert["North"]),
+				unit = "",
+				persist = 7,
+				action = "TOWARD",
+				msg = L.alert["MOVE THERE"],
+				spell = SN[70126],
+				xpos = 0.3654870390892,
+				ypos = 0.2162726521492,
+			},
+			eastarrow = {
+				varname = format(L.alert["%s Beacon Position"],L.alert["East"]),
+				unit = "",
+				persist = 7,
+				action = "TOWARD",
+				msg = L.alert["MOVE THERE"],
+				spell = SN[70126],
+				xpos = 0.37621337175369,
+				ypos = 0.23285666108131,
+			},
+			southarrow = {
+				varname = format(L.alert["%s Beacon Position"],L.alert["South"]),
+				unit = "",
+				persist = 7,
+				action = "TOWARD",
+				msg = L.alert["MOVE THERE"],
+				spell = SN[70126],
+				xpos = 0.36525920033455,
+				ypos = 0.24926269054413,
+			},
+			southsoutharrow = {
+				varname = format(L.alert["%s Beacon Position"],L.alert["South"].." "..L.alert["South"]),
+				unit = "",
+				persist = 7,
+				action = "TOWARD",
+				msg = L.alert["MOVE THERE"],
+				spell = SN[70126],
+				xpos = 0.36546084284782,
+				ypos = 0.27346137166023,
+			},
+		},
+		timers = {
+			checkbeacon = {
+				{
+					-- This is dependent on multi raid icons being set and consistent across all users
+					-- Icon positioning is the following:
+					--     1
+					--
+					-- 3       4
+					--
+					--     2
+					--
+					--     5
+					"expect",{"&playerdebuff|"..SN[70126].."&","==","true"},
+					"invoke",{
+						{
+							"expect",{"&hasicon|player|1","==","true"},
+							"arrow","northarrow",
+						},
+						{
+							"expect",{"&hasicon|player|2","==","true"},
+							"arrow","southarrow",
+						},
+						{
+							"expect",{"&hasicon|player|3","==","true"},
+							"arrow","westarrow",
+						},
+						{
+							"expect",{"&hasicon|player|4","==","true"},
+							"arrow","eastarrow",
+						},
+						{
+							"expect",{"&hasicon|player|5","==","true"},
+							"arrow","southsoutharrow",
+						},
+					},
+				},
+			},
+		},
 		events = {
 			{
 				type = "event",
@@ -162,6 +255,7 @@ do
 					-- Last Phase
 					{
 						"expect",{"#1#","find",L.chat_citadel["^Now, feel my master's limitless power"]},
+						"set",{phase = "2"},
 						"quash","aircd",
 					},
 				},
@@ -194,6 +288,8 @@ do
 					{
 						"expect",{"#4#","==","&playerguid&"},
 						"alert","frostbeaconself",
+						"expect",{"<phase>","==","1"},
+						"scheduletimer",{"checkbeacon",0.2}, -- allow time for raid icon to set
 					},
 				},
 			},
@@ -284,6 +380,7 @@ do
 					},
 				},
 			},
+			--[[
 			-- Frost Bomb
 			{
 				type = "combatevent",
@@ -298,6 +395,7 @@ do
 					},
 				},
 			},
+			]]
 			-- Frost Breath
 			{
 				type = "combatevent",
@@ -321,7 +419,7 @@ end
 --[[
 	Block positions
 	0.35448017716408, 0.23266260325909 West
-	0.3654870390892, 0.2162726521492 North
+	0.3654870390892,  0.2162726521492  North
 	0.37621337175369, 0.23285666108131 East
 	0.36525920033455, 0.24926269054413 South
 	0.36546084284782, 0.27346137166023 South South

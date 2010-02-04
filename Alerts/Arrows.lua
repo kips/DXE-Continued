@@ -115,7 +115,7 @@ do
 		if self.elapsed > self.persist then
 			self:Destroy()
 		else
-			if not UnitIsVisible(self.unit) then self:Destroy() return end
+			if not (self.fx and self.fy) and not UnitIsVisible(self.unit) then self:Destroy() return end
 			local d,dx,dy = addon:GetDistanceToUnit(self.unit,self.fx,self.fy)
 			if not d then self:Destroy() return end
 			self:SetAngle(dx,dy)
