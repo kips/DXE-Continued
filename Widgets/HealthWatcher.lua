@@ -100,6 +100,7 @@ function prototype:IsOpen() return self.tracer:IsOpen() end
 function prototype:ShowPower()
 	self.power = true
 	self.powerbar:Show()
+	self.powercolor = nil
 end
 
 function prototype:Open(power)
@@ -113,6 +114,7 @@ function prototype:Close()
 		self.power = nil
 		self.powercolor = nil
 		self.powerbar:Hide()
+		self.powerbar:SetValue(0)
 	end
 end
 
