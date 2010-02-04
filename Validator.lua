@@ -110,6 +110,8 @@ local arrowBaseKeys = {
 	spell = isstring,
 	sound = optstring,
 	fixed = optboolean,
+	xpos = optnumber,
+	ypos = optnumber,
 }
 
 local arrowTypeValues = {

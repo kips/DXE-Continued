@@ -563,7 +563,8 @@ do
 			local arrowInfo = arrows[info]
 			local unit = ReplaceTokens(arrowInfo.unit)
 			if UnitExists(unit) then 
-				Arrows:AddTarget(unit,arrowInfo.persist,arrowInfo.action,arrowInfo.msg,arrowInfo.spell,stgs.sound,arrowInfo.fixed)
+				Arrows:AddTarget(unit,arrowInfo.persist,arrowInfo.action,arrowInfo.msg,arrowInfo.spell,stgs.sound,arrowInfo.fixed,
+												 arrowInfo.xpos,arrowInfo.ypos)
 			end
 		end
 		return true

@@ -102,8 +102,12 @@ do
 		self.t:SetTexCoord(col, col + CELL_WIDTH_PERC, row, row + CELL_HEIGHT_PERC)
 	end
 
-	function prototype:SetFixed()
-		self.fx,self.fy = addon:GetPlayerMapPosition(self.unit)
+	function prototype:SetFixed(xpos,ypos)
+		if xpos and ypos then
+			self.fx,self.fy = xpos,ypos
+		else
+			self.fx,self.fy = addon:GetPlayerMapPosition(self.unit)
+		end
 	end
 
 	local function OnUpdate(self,elapsed)
@@ -126,7 +130,7 @@ do
 	end
 
 	-- @param action a string == "TOWARD" or "AWAY"
-	function prototype:SetTarget(unit,persist,action,msg,spell,sound,fixed)
+	function prototype:SetTarget(unit,persist,action,msg,spell,sound,fixed,xpos,ypos)
 		-- Factor in mute all toggle from Alerts
 		if sound and not addon.Alerts.db.profile.DisableSounds then PlaySoundFile(Sounds:GetFile(sound)) end
 		UIFrameFadeRemoveFrame(self)
@@ -136,7 +140,7 @@ do
 		self.persist = persist
 		self.fmt = spell.." <|cffffff78%.0f|r> "..CN[unit]
 
-		if fixed then self:SetFixed() end
+		if fixed then self:SetFixed(xpos,ypos) end
 		local d,dx,dy = addon:GetDistanceToUnit(unit,self.fx,self.fy)
 		if not d then return end
 		self:SetAngle(dx,dy)
@@ -270,7 +274,7 @@ end
 -- API
 ---------------------------------------
 
-function module:AddTarget(unit,persist,action,msg,spell,sound,fixed)
+function module:AddTarget(unit,persist,action,msg,spell,sound,fixed,xpos,ypos)
 	if not pfl.Enable then return end
 	--@debug@
 	assert(type(unit) == "string")
@@ -285,7 +289,7 @@ function module:AddTarget(unit,persist,action,msg,spell,sound,fixed)
 
 		for i,arrow in ipairs(frames) do
 			if not arrow.unit then
-				arrow:SetTarget(unit,persist,action,msg,spell,sound,fixed)
+				arrow:SetTarget(unit,persist,action,msg,spell,sound,fixed,xpos,ypos)
 				break
 			end
 		end
