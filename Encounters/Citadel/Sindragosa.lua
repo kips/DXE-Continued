@@ -19,6 +19,7 @@ do
 			chilledtext = "",
 			airtime = {63.5,110,loop = false, type = "series"},
 			phase = "1",
+			instabilitytext = "",
 		},
 		onstart = {
 			{
@@ -81,10 +82,19 @@ do
 				text = format("%s: %s! %s!",SN[69762],L.alert["YOU"],L.alert["CAREFUL"]),
 				time = 30,
 				flashtime = 30,
-				color1 = "PURPLE",
+				color1 = "TURQUOISE",
 				flashscreen = true,
 				sound = "ALERT3",
 				icon = ST[69762],
+			},
+			instabilityself = {
+				varname = format(L.alert["%s on self"],SN[69766]),
+				type = "centerpopup",
+				text = "<instabilitytext>",
+				time = 8,
+				flashtime = 8,
+				color1 = "VIOLET",
+				icon = ST[69766],
 			},
 			chilledself = {
 				varname = format(L.alert["%s on self"],SN[70106]),
@@ -346,6 +356,37 @@ do
 					{
 						"expect",{"#4#","==","&playerguid&"},
 						"alert","unchainedself",
+					},
+				},
+			},
+			-- Instability
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellid = {
+					69766, -- 10/25
+				},
+				execute = {
+					{
+						"expect",{"#4#","==","&playerguid&"},
+						"set",{instabilitytext = format("%s: %s!",SN[69766],L.alert["YOU"])},
+						"alert","instabilityself",
+					},
+				},
+			},
+			-- Instability applications
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED_DOSE",
+				spellid = {
+					69766, -- 10/25
+				},
+				execute = {
+					{
+						"expect",{"#4#","==","&playerguid&"},
+						"quash","instabilityself",
+						"set",{instabilitytext = format("%s: %s! %s!",SN[69766],L.alert["YOU"],format(L.alert["%s Stacks"],"#11#"))},
+						"alert","instabilityself",
 					},
 				},
 			},
