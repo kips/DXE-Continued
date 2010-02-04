@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 18,
+		version = 19,
 		key = "lanathel", 
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"], 
@@ -33,8 +33,8 @@ do
 			},
 		},
 		userdata = {
-			bloodtime = {143,100, loop = false, type = "series"},
-			incitetime = {138,95, loop = false, type = "series"},
+			bloodtime = {133,100, loop = false, type = "series"},
+			incitetime = {128,95, loop = false, type = "series"},
 			firedblood = "0",
 			essencetime = 60,
 			pacttime = {15,30,loop = false, type = "series"},
