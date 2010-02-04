@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 10,
+		version = 11,
 		key = "bloodprincecouncil", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -177,13 +177,13 @@ do
 				event = "EMOTE",
 				execute = {
 					{
-						"expect",{"#1#","find",L.chat_citadel["^Inferno Flames speed"]},
+						"expect",{"#1#","find",L.chat_citadel["^Empowered Flames speed"]},
 						"raidicon","infernomark",
 						"expect",{"#5#","==","&playername&"},
 						"alert","infernoself",
 					},
 					{
-						"expect",{"#1#","find",L.chat_citadel["^Inferno Flames speed"]},
+						"expect",{"#1#","find",L.chat_citadel["^Empowered Flames speed"]},
 						"expect",{"#5#","~=","&playername&"},
 						"alert","infernowarn",
 						"arrow","infernoarrow",
