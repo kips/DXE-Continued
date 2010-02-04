@@ -20,6 +20,7 @@ local L = addon.L
 
 local wipe = table.wipe
 local SetRaidTarget = SetRaidTarget
+local GetRaidTargetIndex = GetRaidTargetIndex
 local pairs = pairs
 
 local module = addon:NewModule("RaidIcons","AceTimer-3.0")
@@ -108,4 +109,8 @@ function module:RemoveAll()
 	for unit in pairs(units) do self:RemoveIcon(unit) end
 	wipe(cnt)
 	wipe(rsts)
+end
+
+function module:HasIcon(unit,icon)
+	return GetRaidTargetIndex(unit) == pfl[icon]
 end
