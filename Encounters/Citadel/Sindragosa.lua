@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 4,
+		version = 5,
 		key = "sindragosa", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -230,6 +230,7 @@ do
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
 				spellid = {
+					70123, -- 10
 					71047, -- 25
 				},
 				execute = {
@@ -288,6 +289,7 @@ do
 				type = "combatevent",
 				eventtype = "SPELL_SUMMON",
 				spellid = {
+					69845, -- 10
 					71053, -- 25
 				},
 				execute = {
