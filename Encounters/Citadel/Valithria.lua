@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 5,
+		version = 8,
 		key = "valithria", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -32,6 +32,12 @@ do
 					"alert","laywastedur",
 				}
 			},
+			fireportaldur = {
+				{
+					"quash","portalwarn",
+					"alert","portaldur",
+				}
+			},
 		},
 		alerts = {
 			enragecd = {
@@ -55,10 +61,20 @@ do
 			},
 			portalwarn = {
 				varname = format(L.alert["%s Warning"],L.alert["Portals"]),
-				type = "simple",
-				text = format(L.alert["%s Spawned"],L.alert["Portals"]).."!",
-				time = 3,
+				type = "centerpopup",
+				text = format(L.alert["%s Soon"],L.alert["Portals"]).."!",
+				time = 15,
 				sound = "ALERT2",
+				color1 = "GREEN",
+				icon = ST[57676],
+			},
+			portaldur = {
+				varname =  format(L.alert["%s Duration"],L.alert["Portals"]),
+				type = "centerpopup",
+				text =  format(L.alert["%s Duration"],L.alert["Portals"]),
+				time = 10,
+				sound = "ALERT7",
+				color1 = "GREEN",
 				icon = ST[57676],
 			},
 			manavoidself = {
@@ -118,6 +134,7 @@ do
 						"expect",{"#1#","find",L.chat_citadel["^I have opened a portal into the Dream"]},
 						"alert","portalwarn",
 						"alert","portalcd",
+						"scheduletimer",{"fireportaldur",15},
 					},
 				},
 			},
