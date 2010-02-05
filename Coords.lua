@@ -91,7 +91,7 @@ MapDims= {
 		[4] = {w = 720.60965618252, h = 481.1621506613},  -- The Frost Queen's Lair
 		[5] = {w = 1069.6156745738, h = 713.83371679543}, -- The Upper Reaches
 		[6] = {w = 348.05218433541, h = 232.05964286208}, -- Royal Quarters
-		-- [7] = {w = 0, h = 0},
+		[7] = {w = 272.80314344785, h = 181.89449398676}, -- The Frozen Throne
 	},
 	--@debug@
 	Ironforge = {
