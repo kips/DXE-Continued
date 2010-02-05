@@ -163,7 +163,7 @@ do
 		arrows = {
 			westarrow = {
 				varname = format(L.alert["%s Beacon Position"],L.alert["West"]),
-				unit = "",
+				unit = "player",
 				persist = 7,
 				action = "TOWARD",
 				msg = L.alert["MOVE THERE"],
@@ -173,7 +173,7 @@ do
 			},
 			northarrow = {
 				varname = format(L.alert["%s Beacon Position"],L.alert["North"]),
-				unit = "",
+				unit = "player",
 				persist = 7,
 				action = "TOWARD",
 				msg = L.alert["MOVE THERE"],
@@ -183,7 +183,7 @@ do
 			},
 			eastarrow = {
 				varname = format(L.alert["%s Beacon Position"],L.alert["East"]),
-				unit = "",
+				unit = "player",
 				persist = 7,
 				action = "TOWARD",
 				msg = L.alert["MOVE THERE"],
@@ -193,7 +193,7 @@ do
 			},
 			southarrow = {
 				varname = format(L.alert["%s Beacon Position"],L.alert["South"]),
-				unit = "",
+				unit = "player",
 				persist = 7,
 				action = "TOWARD",
 				msg = L.alert["MOVE THERE"],
@@ -203,7 +203,7 @@ do
 			},
 			southsoutharrow = {
 				varname = format(L.alert["%s Beacon Position"],L.alert["South"].." "..L.alert["South"]),
-				unit = "",
+				unit = "player",
 				persist = 7,
 				action = "TOWARD",
 				msg = L.alert["MOVE THERE"],
