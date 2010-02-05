@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 7,
+		version = 8,
 		key = "sindragosa", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -227,23 +227,23 @@ do
 					"expect",{"&playerdebuff|"..SN[70126].."&","==","true"},
 					"invoke",{
 						{
-							"expect",{"&hasicon|player|1","==","true"},
+							"expect",{"&hasicon|player|1&","==","true"},
 							"arrow","northarrow",
 						},
 						{
-							"expect",{"&hasicon|player|2","==","true"},
+							"expect",{"&hasicon|player|2&","==","true"},
 							"arrow","southarrow",
 						},
 						{
-							"expect",{"&hasicon|player|3","==","true"},
+							"expect",{"&hasicon|player|3&","==","true"},
 							"arrow","westarrow",
 						},
 						{
-							"expect",{"&hasicon|player|4","==","true"},
+							"expect",{"&hasicon|player|4&","==","true"},
 							"arrow","eastarrow",
 						},
 						{
-							"expect",{"&hasicon|player|5","==","true"},
+							"expect",{"&hasicon|player|5&","==","true"},
 							"arrow","southsoutharrow",
 						},
 					},
