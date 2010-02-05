@@ -201,6 +201,7 @@ local eventtypes = {
 	SPELL_SUMMON = true,
 	SWING_DAMAGE = true,
 	SWING_MISSED = true,
+	SPELL_DISPEL = true,
 	UNIT_DIED = true,
 }
 
