@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 9,
+		version = 11,
 		key = "sindragosa", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -168,6 +168,7 @@ do
 				action = "TOWARD",
 				msg = L.alert["MOVE THERE"],
 				spell = L.alert["West"],
+				fixed = true,
 				xpos = 0.35448017716408,
 				ypos = 0.23266260325909,
 			},
@@ -178,6 +179,7 @@ do
 				action = "TOWARD",
 				msg = L.alert["MOVE THERE"],
 				spell = L.alert["North"],
+				fixed = true,
 				xpos = 0.3654870390892,
 				ypos = 0.2162726521492,
 			},
@@ -188,6 +190,7 @@ do
 				action = "TOWARD",
 				msg = L.alert["MOVE THERE"],
 				spell = L.alert["East"],
+				fixed = true,
 				xpos = 0.37621337175369,
 				ypos = 0.23285666108131,
 			},
@@ -198,6 +201,7 @@ do
 				action = "TOWARD",
 				msg = L.alert["MOVE THERE"],
 				spell = L.alert["South"],
+				fixed = true,
 				xpos = 0.36525920033455,
 				ypos = 0.24926269054413,
 			},
@@ -208,6 +212,7 @@ do
 				action = "TOWARD",
 				msg = L.alert["MOVE THERE"],
 				spell = L.alert["South"].." "..L.alert["South"],
+				fixed = true,
 				xpos = 0.36546084284782,
 				ypos = 0.27346137166023,
 			},
@@ -227,23 +232,23 @@ do
 					"expect",{"&playerdebuff|"..SN[70126].."&","==","true"},
 					"invoke",{
 						{
-							"expect",{"&hasicon|player|1&","==","true"},
+							"expect",{"&hasicon|player|1&","==","true"}, -- Skull
 							"arrow","northarrow",
 						},
 						{
-							"expect",{"&hasicon|player|2&","==","true"},
+							"expect",{"&hasicon|player|2&","==","true"}, -- Cross
 							"arrow","southarrow",
 						},
 						{
-							"expect",{"&hasicon|player|3&","==","true"},
+							"expect",{"&hasicon|player|3&","==","true"}, -- Square
 							"arrow","westarrow",
 						},
 						{
-							"expect",{"&hasicon|player|4&","==","true"},
+							"expect",{"&hasicon|player|4&","==","true"}, -- Moon
 							"arrow","eastarrow",
 						},
 						{
-							"expect",{"&hasicon|player|5&","==","true"},
+							"expect",{"&hasicon|player|5&","==","true"}, -- Triangle
 							"arrow","southsoutharrow",
 						},
 					},
