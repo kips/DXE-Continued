@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 3,
+		version = 10,
 		key = "lichking", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -16,12 +16,28 @@ do
 				36597, -- Lich King
 			},
 		},
+		onstart = {
+			{
+				"alert","enragecd",
+			},
+		},
 		userdata = {
 			phase = "1",
+			nextphase = {"1","T","2","T","3",loop = false, type = "series"},
 			defiletext = "",
+			defiletime = 37,
+			valkyrtime = {20,47,loop = false, type = "series"},
 			necroplaguetext = "",
 		},
 		alerts = {
+			enragecd = {
+				varname = L.alert["Enrage"],
+				type = "dropdown",
+				text = L.alert["Enrage"],
+				time = 900,
+				color1 = "RED",
+				icon = ST[12317],
+			},
 			necroplaguedur = {
 				varname = format(L.alert["%s Duration"],SN[70337]),
 				type = "centerpopup",
@@ -68,6 +84,15 @@ do
 				sound = "ALERT3",
 				icon = ST[72762],
 			},
+			defilecd = {
+				varname = format(L.alert["%s Cooldown"],SN[72762]),
+				type = "dropdown",
+				text = format(L.alert["%s Cooldown"],SN[72762]),
+				time = "<defiletime>",
+				flashtime = 10,
+				color1 = "PURPLE",
+				icon = ST[72762],
+			},
 			remorsewarn = {
 				varname = format(L.alert["%s Warning"],SN[68981]),
 				type = "centerpopup",
@@ -102,6 +127,33 @@ do
 				time = 4,
 				sound = "ALERT6",
 				icon = ST[71843],
+			},
+			valkyrcd = {
+				varname = format(L.alert["%s Cooldown"],SN[69037]),
+				type = "dropdown",
+				text = format(L.alert["%s Cooldown"],SN[69037]),
+				time = "<valkyrtime>",
+				flashtime = 10,
+				color1 = "ORANGE",
+				icon = ST[69037],
+			},
+			soulreaperwarn = {
+				varname = format(L.alert["%s Warning"],SN[69409]),
+				type = "centerpopup",
+				text = format(L.alert["%s Warning"],SN[69409]),
+				time = 5,
+				color1 = "ORANGE",
+				sound = "ALERT7",
+				icon = ST[69409],
+			}, 
+			ragingspiritwarn = {
+				varname = format(L.alert["%s on self"],SN[69200]),
+				type = "simple",
+				text = format(L.alert["%s: %s: %s!"],SN[69200],L.alert["YOU"],L.alert["MOVE"]),
+				time = 5,
+				sound = "ALERT8",
+				flashscreen = true,
+				icon = ST[69200],
 			},
 		},
 		announces = {
@@ -138,6 +190,8 @@ do
 					"set",{defiletext = format("%s: %s!",SN[72762],L.alert["YOU"])},
 					"raidicon","defilemark",
 					"alert","defilewarn",
+					"set",{defiletime = 32},
+					"alert","defilecd",
 					"announce","defilesay",
 				},
 				{
@@ -192,7 +246,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
-				spellid = 70372, -- 25
+				spellid = 70372, -- 10/25
 				execute = {
 					{
 						"alert","shamblinghorrorwarn",
@@ -203,7 +257,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_SUMMON",
-				spellid = 70372, -- 25
+				spellid = 70372, -- 10/25
 				execute = {
 					{
 						"quash","shamblinghorrorwarn",
@@ -242,6 +296,9 @@ do
 				execute = {
 					{
 						"alert","remorsewarn",
+						"set",{phase = "<nextphase>"},
+						"quash","defilecd",
+						"quash","valkyrcd",
 					},
 				},
 			},
@@ -265,6 +322,13 @@ do
 				execute = {
 					{
 						"alert","quakewarn",
+						"set",{phase = "<nextphase>"},
+						"set",{defiletime = 37},
+						"alert","defilecd",
+					},
+					{
+						"expect",{"<phase>","==","2"},
+						"alert","valkyrcd",
 					},
 				},
 			},
@@ -276,6 +340,30 @@ do
 				execute = {
 					{
 						"alert","valkyrwarn",
+						"alert","valkyrcd",
+					},
+				},
+			},
+			-- Soul Reaper
+			{
+				type = "combatevent",
+				eventtype = "SPELL_CAST_SUCCESS",
+				spellid = 69409, -- 10
+				execute = {
+					{
+						"alert","soulreaperwarn",
+					},
+				},
+			},
+			-- Raging Spirit
+			{
+				type = "combatevent",
+				eventtype = "SPELL_CAST_SUCCESS",
+				spellid = 69200, -- 10
+				execute = {
+					{
+						"expect",{"#4#","==","&playerguid&"},
+						"alert","ragingspiritwarn",
 					},
 				},
 			},
