@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 10,
+		version = 11,
 		key = "lichking", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -135,7 +135,7 @@ do
 				time = "<valkyrtime>",
 				flashtime = 10,
 				color1 = "ORANGE",
-				icon = ST[69037],
+				icon = ST[71843],
 			},
 			soulreaperwarn = {
 				varname = format(L.alert["%s Warning"],SN[69409]),
