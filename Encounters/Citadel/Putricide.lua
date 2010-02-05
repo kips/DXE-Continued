@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 13,
+		version = 14,
 		key = "putricide", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -236,6 +236,13 @@ do
 				fixed = true,
 			},
 		},
+		announces = {
+			malleablegoosay = {
+				varname = format(L.alert["Say %s on self"],SN[72615]),
+				type = "SAY",
+				msg = format(L.alert["%s on Me"],SN[72615]).."!",
+			},
+		},
 		timers = {
 			fireoozeaggro = {
 				{
@@ -248,6 +255,7 @@ do
 					"set",{malleabletext = format("%s: %s!",SN[72615],L.alert["YOU"])},
 					"raidicon","malleablemark",
 					"alert","malleablegoowarn",
+					"announce","malleablegoosay",
 				},
 				{
 					"expect",{"&tft_unitexists& &tft_isplayer&","==","1 nil"},
