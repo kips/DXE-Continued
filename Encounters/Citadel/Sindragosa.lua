@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 8,
+		version = 9,
 		key = "sindragosa", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -387,6 +387,20 @@ do
 						"quash","instabilityself",
 						"set",{instabilitytext = format("%s: %s! %s!",SN[69766],L.alert["YOU"],format(L.alert["%s Stacks"],"#11#"))},
 						"alert","instabilityself",
+					},
+				},
+			},
+			-- Instability removal
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_REMOVED",
+				spellid = {
+					69766, -- 10/25
+				},
+				execute = {
+					{
+						"expect",{"#4#","==","&playerguid&"},
+						"quash","instabilityself",
 					},
 				},
 			},
