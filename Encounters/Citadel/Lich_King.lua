@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 12,
+		version = 13,
 		key = "lichking", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -173,7 +173,16 @@ do
 				time = 5,
 				color1 = "YELLOW",
 				icon = ST[70541],
-			}
+			},
+			vilespiritwarn = {
+				varname = format(L.alert["%s Warning"],SN[70498]),
+				type = "simple",
+				text = format(L.alert["%s Warning"],SN[70498]),
+				time = 5,
+				color1 = "MAGENTA",
+				sound = "ALERT9",
+				icon = ST[70498],
+			},
 		},
 		announces = {
 			defilesay = {
@@ -402,7 +411,18 @@ do
 						"alert","infestcd",
 					}
 				},
-			}
+			},
+			-- Vile Spirits
+			{
+				type = "combatevent",
+				eventtype = "SPELL_CAST_START",
+				spellid = 70498, -- 10
+				execute = {
+					{
+						"alert","vilespiritwarn",
+					}
+				},
+			},
 		},
 	}
 
