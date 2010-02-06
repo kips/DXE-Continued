@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 15,
+		version = 16,
 		key = "lichking", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -30,6 +30,7 @@ do
 			infesttime = 7,
 			valkyrtime = {20,47,loop = false, type = "series"},
 			necroplaguetext = "",
+			harvestsoultext = "",
 		},
 		alerts = {
 			enragecd = {
@@ -182,6 +183,14 @@ do
 				color1 = "MAGENTA",
 				sound = "ALERT9",
 				icon = ST[70498],
+			},
+			harvestsoulwarn = {
+				varname = format(L.alert["%s Warning"],SN[68980]),
+				type = "simple",
+				text = "<harvestsoultext>",
+				time = 5,
+				sound = "ALERT10",
+				icon = ST[68980],
 			},
 		},
 		announces = {
@@ -423,6 +432,24 @@ do
 					}
 				},
 			},
+			-- Harvest Soul
+			{
+				type = "combatevent",
+				eventtype = "SPELL_CAST_SUCCESS",
+				spellid = 68980, -- 10
+				execute = {
+					{
+						"expect",{"#4#","==","&playerguid&"},
+						"set",{harvestsoultext = format("%s: %s!",SN[68980],L.alert["YOU"])},
+						"alert","harvestsoulwarn",
+					},
+					{
+						"expect",{"#4#","~=","&playerguid&"},
+						"set",{harvestsoultext = format("%s: #5#!",SN[68980])},
+						"alert","harvestsoulwarn",
+					},
+				},
+			}
 		},
 	}
 
