@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 14,
+		version = 15,
 		key = "lichking", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -151,7 +151,7 @@ do
 			ragingspiritwarn = {
 				varname = format(L.alert["%s on self"],SN[69200]),
 				type = "simple",
-				text = format(L.alert["%s: %s! %s!"],SN[69200],L.alert["YOU"],L.alert["MOVE"]),
+				text = format("%s: %s! %s!",SN[69200],L.alert["YOU"],L.alert["MOVE"]),
 				time = 5,
 				sound = "ALERT8",
 				flashscreen = true,
