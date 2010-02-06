@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 16,
+		version = 17,
 		key = "lichking", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -227,8 +227,6 @@ do
 					"set",{defiletext = format("%s: %s!",SN[72762],L.alert["YOU"])},
 					"raidicon","defilemark",
 					"alert","defilewarn",
-					"set",{defiletime = 32},
-					"alert","defilecd",
 					"announce","defilesay",
 				},
 				{
@@ -310,6 +308,8 @@ do
 				execute = {
 					{
 						"scheduletimer",{"firedefile",0.2},
+						"set",{defiletime = 32},
+						"alert","defilecd",
 					},
 				},
 			},
