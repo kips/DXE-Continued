@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 11,
+		version = 12,
 		key = "bloodprincecouncil", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -70,7 +70,7 @@ do
 			shockwarn = {
 				varname = format(L.alert["%s Cast"],SN[72037]),
 				type = "simple",
-				text = format("%s: &tft_unitname&",SN[72037]),
+				text = "<shocktext>",
 				time = 6,
 				color1 = "BLACK",
 				sound = "ALERT4",
