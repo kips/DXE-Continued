@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 19,
+		version = 20,
 		key = "lanathel", 
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"], 
@@ -20,8 +20,8 @@ do
 				"expect",{"&difficulty&","==","1"},
 				"set",{
 					essencetime = 75,
-					bloodtime = {130,120, loop = false, type = "series"},
-					incitetime = {124,115, loop = false, type = "series"},
+					bloodtime = {127,120, loop = false, type = "series"},
+					incitetime = {122,115, loop = false, type = "series"},
 				},
 			},
 			{
