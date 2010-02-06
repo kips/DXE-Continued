@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 11,
+		version = 12,
 		key = "lichking", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -19,6 +19,7 @@ do
 		onstart = {
 			{
 				"alert","enragecd",
+				"alert","infestcd",
 			},
 		},
 		userdata = {
@@ -26,6 +27,7 @@ do
 			nextphase = {"1","T","2","T","3",loop = false, type = "series"},
 			defiletext = "",
 			defiletime = 37,
+			infesttime = 7,
 			valkyrtime = {20,47,loop = false, type = "series"},
 			necroplaguetext = "",
 		},
@@ -155,6 +157,23 @@ do
 				flashscreen = true,
 				icon = ST[69200],
 			},
+			infestcd = {
+				varname = format(L.alert["%s Cooldown"],SN[70541]),
+				type = "dropdown",
+				text = format(L.alert["%s Cooldown"],SN[70541]),
+				time = "<infesttime>",
+				flashtime = 10,
+				color1 = "YELLOW",
+				icon = ST[70541],
+			},
+			infestwarn = {
+				varname = format(L.alert["%s Warning"],SN[70541]),
+				type = "simple",
+				text = format(L.alert["%s Warning"],SN[70541]),
+				time = 5,
+				color1 = "YELLOW",
+				icon = ST[70541],
+			}
 		},
 		announces = {
 			defilesay = {
@@ -299,6 +318,7 @@ do
 						"set",{phase = "<nextphase>"},
 						"quash","defilecd",
 						"quash","valkyrcd",
+						"quash","infestcd",
 					},
 				},
 			},
@@ -328,8 +348,11 @@ do
 					},
 					{
 						"expect",{"<phase>","==","2"},
+						"set",{infesttime = 13},
+						"alert","infestcd",
 						"alert","valkyrcd",
 					},
+
 				},
 			},
 			-- Summon Val'kyr
@@ -367,6 +390,19 @@ do
 					},
 				},
 			},
+			-- Infest
+			{
+				type = "combatevent",
+				eventtype = "SPELL_CAST_START",
+				spellid = 70541, -- 10
+				execute = {
+					{
+						"alert","infestwarn",
+						"set",{infesttime = 22},
+						"alert","infestcd",
+					}
+				},
+			}
 		},
 	}
 
