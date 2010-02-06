@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 17,
+		version = 18,
 		key = "lichking", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -248,7 +248,10 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_SUCCESS",
-				spellid = 70337,
+				spellid = {
+					70337, --10
+					73912, --25
+				},
 				execute = {
 					{
 						"expect",{"#4#","==","&playerguid&"},
@@ -268,8 +271,10 @@ do
 				eventtype = "SPELL_DISPEL",
 				spellid = {
 					-- Note: there are two different ones for some reason
-					70337,
-					70338,
+					70337, --10
+					70338, --10
+					73785, --25
+					73912, --25
 				},
 				execute = {
 					{
@@ -304,7 +309,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
-				spellid = 72762, -- 10
+				spellid = 72762, -- 10/25
 				execute = {
 					{
 						"scheduletimer",{"firedefile",0.2},
@@ -317,7 +322,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellid = 72762, -- 10
+				spellid = 72762, -- 10/25
 				execute = {
 					{
 						"expect",{"#4#","==","&playerguid&"},
@@ -329,7 +334,10 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
-				spellid = 68981, -- 10
+				spellid = {
+					68981, -- 10
+					74270, -- 25
+				},
 				execute = {
 					{
 						"alert","remorsewarn",
@@ -344,7 +352,10 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellid = 68981, -- 10
+				spellid = {
+					68981, -- 10
+					74270, -- 25
+				},
 				execute = {
 					{
 						"quash","remorsewarn",
@@ -356,7 +367,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
-				spellid = 72262, -- 10
+				spellid = 72262, -- 10/25
 				execute = {
 					{
 						"alert","quakewarn",
@@ -376,8 +387,8 @@ do
 			-- Summon Val'kyr
 			{
 				type = "combatevent",
-				eventtype = "SPELL_CAST_SUCCESS",
-				spellid = 69037, -- 10
+				eventtype = "SPELL_SUMMON",
+				spellid = 69037, -- 10/25
 				execute = {
 					{
 						"alert","valkyrwarn",
@@ -389,7 +400,10 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_SUCCESS",
-				spellid = 69409, -- 10
+				spellid = {
+					69409, -- 10
+					73797, -- 25
+				},
 				execute = {
 					{
 						"alert","soulreaperwarn",
@@ -400,7 +414,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_SUCCESS",
-				spellid = 69200, -- 10
+				spellid = 69200, -- 10/25
 				execute = {
 					{
 						"expect",{"#4#","==","&playerguid&"},
@@ -412,7 +426,10 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
-				spellid = 70541, -- 10
+				spellid = {
+					70541, -- 10
+					73779, -- 25
+				},
 				execute = {
 					{
 						"alert","infestwarn",
