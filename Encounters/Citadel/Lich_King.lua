@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 29,
+		version = 30,
 		key = "lichking", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -370,7 +370,10 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellid = 72762, -- 10/25
+				spellid = {
+					72754, -- 10
+					73708, -- 25
+				},
 				execute = {
 					{
 						"expect",{"#4#","==","&playerguid&"},
