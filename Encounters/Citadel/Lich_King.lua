@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 25,
+		version = 26,
 		key = "lichking", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -150,13 +150,23 @@ do
 				sound = "ALERT7",
 				icon = ST[69409],
 			}, 
-			ragingspiritwarn = {
+			ragingspiritself = {
 				varname = format(L.alert["%s on self"],SN[69200]),
-				type = "simple",
-				text = "<ragingtext>",
-				time = 5,
+				type = "centerpopup",
+				text = format("%s: %s! %s!",SN[69200],L.alert["YOU"],L.alert["MOVE"]),
+				time = 7.5,
+				color1 = "BLACK",
 				sound = "ALERT8",
 				flashscreen = true,
+				icon = ST[69200],
+			},
+			ragingspiritwarn = {
+				varname = format(L.alert["%s on others"],SN[69200]),
+				type = "centerpopup",
+				text = format("%s: #5#!",SN[69200]),
+				time = 7.5,
+				color1 = "BLACK",
+				sound = "ALERT8",
 				icon = ST[69200],
 			},
 			infestcd = {
@@ -433,12 +443,10 @@ do
 					},
 					{
 						"expect",{"#4#","==","&playerguid&"},
-						"set",{ragingtext = format("%s: %s! %s!",SN[69200],L.alert["YOU"],L.alert["MOVE"])},
-						"alert","ragingspiritwarn",
+						"alert","ragingspiritself",
 					},
 					{
 						"expect",{"#4#","~=","&playerguid&"},
-						"set",{ragingtext = format("%s: #5#!",SN[69200])},
 						"alert","ragingspiritwarn",
 					},
 				},
