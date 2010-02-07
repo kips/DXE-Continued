@@ -336,7 +336,7 @@ do
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
 				spellid = {
-					68981, -- 10 fist
+					68981, -- 10 first
 					72259, -- 10 second
 					74270, -- 25
 				},
