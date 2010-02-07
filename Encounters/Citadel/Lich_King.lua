@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 21,
+		version = 23,
 		key = "lichking", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -234,7 +234,7 @@ do
 					"expect",{"&tft_unitexists& &tft_isplayer&","==","1 nil"},
 					"set",{defiletext = format("%s: &tft_unitname&!",SN[72762])},
 					"raidicon","defilemark",
-					"arrow","defilearrow",
+					--"arrow","defilearrow",
 					"alert","defilewarn",
 				},
 				{
