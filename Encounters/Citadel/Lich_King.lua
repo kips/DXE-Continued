@@ -30,6 +30,7 @@ do
 			infesttime = 6,
 			valkyrtime = {20,47,loop = false, type = "series"},
 			harvesttime = {12.5,75,loop = false, type = "series"},
+			viletime = {18.9,30.5, loop = false, type = "series"}, -- most of the time it's 20.5 initially
 			necroplaguetext = "",
 			harvestsoultext = "",
 			ragingtext = "",
@@ -196,6 +197,14 @@ do
 				time = 5.5,
 				color1 = "MAGENTA",
 				sound = "ALERT9",
+				icon = ST[70498],
+			},
+			vilespiritcd = {
+				varname = format(L.alert["%s Cooldown"],SN[70498]),
+				type = "dropdown",
+				text = format(L.alert["%s Cooldown"],SN[70498]),
+				time = "<viletime>",
+				color1 = "PINK",
 				icon = ST[70498],
 			},
 			harvestsoulwarn = {
@@ -498,7 +507,9 @@ do
 				spellid = 70498, -- 10
 				execute = {
 					{
+						"quash","vilespiritcd",
 						"alert","vilespiritwarn",
+						"alert","vilespiritcd",
 					}
 				},
 			},
