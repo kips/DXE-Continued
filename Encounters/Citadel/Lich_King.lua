@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 18,
+		version = 19,
 		key = "lichking", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -169,10 +169,11 @@ do
 			},
 			infestwarn = {
 				varname = format(L.alert["%s Warning"],SN[70541]),
-				type = "simple",
-				text = format(L.alert["%s Warning"],SN[70541]),
-				time = 5,
+				type = "centerpopup",
+				text = format(L.alert["%s Casting"],SN[70541]),
+				time = 2,
 				color1 = "YELLOW",
+				sound = "ALERT3",
 				icon = ST[70541],
 			},
 			vilespiritwarn = {
@@ -335,7 +336,8 @@ do
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
 				spellid = {
-					68981, -- 10
+					68981, -- 10 fist
+					72259, -- 10 second
 					74270, -- 25
 				},
 				execute = {
@@ -353,7 +355,8 @@ do
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
 				spellid = {
-					68981, -- 10
+					68981, -- 10 first
+					72259, -- 10 second
 					74270, -- 25
 				},
 				execute = {
@@ -432,6 +435,7 @@ do
 				},
 				execute = {
 					{
+						"quash","infestcd",
 						"alert","infestwarn",
 						"set",{infesttime = 22},
 						"alert","infestcd",
