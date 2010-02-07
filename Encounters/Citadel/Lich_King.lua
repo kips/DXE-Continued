@@ -191,9 +191,9 @@ do
 			},
 			vilespiritwarn = {
 				varname = format(L.alert["%s Warning"],SN[70498]),
-				type = "simple",
-				text = format(L.alert["%s Warning"],SN[70498]),
-				time = 5,
+				type = "centerpopup",
+				text = format(L.alert["%s Casting"],SN[70498]),
+				time = 5.5,
 				color1 = "MAGENTA",
 				sound = "ALERT9",
 				icon = ST[70498],
@@ -491,6 +491,7 @@ do
 				},
 			},
 			-- Vile Spirits
+			-- .5 second cast + 5 second channel
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
