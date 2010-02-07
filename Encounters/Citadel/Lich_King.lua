@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 20,
+		version = 21,
 		key = "lichking", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -24,7 +24,7 @@ do
 		},
 		userdata = {
 			phase = "1",
-			nextphase = {"1","T","2","T","3",loop = false, type = "series"},
+			nextphase = {"T","2","T","3",loop = false, type = "series"},
 			defiletext = "",
 			defiletime = 37,
 			infesttime = 6,
