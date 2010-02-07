@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 27,
+		version = 29,
 		key = "lichking", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -29,6 +29,7 @@ do
 			defiletime = 37,
 			infesttime = 6,
 			valkyrtime = {20,47,loop = false, type = "series"},
+			harvesttime = {12.5,75,loop = false, type = "series"},
 			necroplaguetext = "",
 			harvestsoultext = "",
 			ragingtext = "",
@@ -76,6 +77,7 @@ do
 				time = 2,
 				flashtime = 2,
 				color1 = "PURPLE",
+				flashscreen = true,
 				sound = "ALERT2",
 				icon = ST[72762],
 			},
@@ -202,6 +204,16 @@ do
 				text = "<harvestsoultext>",
 				time = 5,
 				sound = "ALERT10",
+				icon = ST[68980],
+			},
+			harvestsoulcd = {
+				varname = format(L.alert["%s Cooldown"],SN[68980]),
+				type = "dropdown",
+				text = format(L.alert["%s Cooldown"],SN[68980]),
+				time = "<harvesttime>",
+				flashtime = 10,
+				color1 = "BROWN",
+				sound = "ALERT1",
 				icon = ST[68980],
 			},
 		},
@@ -410,7 +422,10 @@ do
 						"alert","infestcd",
 						"alert","valkyrcd",
 					},
-
+					{
+						"expect",{"<phase>","==","3"},
+						"alert","harvestsoulcd",
+					},
 				},
 			},
 			-- Summon Val'kyr
@@ -494,6 +509,7 @@ do
 				execute = {
 					{
 						"raidicon","harvestmark",
+						"alert","harvestsoulcd",
 					},
 					{
 						"expect",{"#4#","==","&playerguid&"},
