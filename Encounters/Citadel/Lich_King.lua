@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 26,
+		version = 27,
 		key = "lichking", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -226,6 +226,13 @@ do
 				persist = 7.5,
 				unit = "#5#",
 				icon = 2,
+			},
+			harvestmark = {
+				varname = SN[68980],
+				type = "FRIENDLY",
+				persist = 6,
+				unit = "#5#",
+				icon = 3,
 			},
 		},
 		arrows = {
@@ -485,6 +492,9 @@ do
 				eventtype = "SPELL_CAST_SUCCESS",
 				spellid = 68980, -- 10
 				execute = {
+					{
+						"raidicon","harvestmark",
+					},
 					{
 						"expect",{"#4#","==","&playerguid&"},
 						"set",{harvestsoultext = format("%s: %s!",SN[68980],L.alert["YOU"])},
