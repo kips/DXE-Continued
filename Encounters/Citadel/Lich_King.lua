@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 23,
+		version = 25,
 		key = "lichking", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -31,6 +31,7 @@ do
 			valkyrtime = {20,47,loop = false, type = "series"},
 			necroplaguetext = "",
 			harvestsoultext = "",
+			ragingtext = "",
 		},
 		alerts = {
 			enragecd = {
@@ -152,7 +153,7 @@ do
 			ragingspiritwarn = {
 				varname = format(L.alert["%s on self"],SN[69200]),
 				type = "simple",
-				text = format("%s: %s! %s!",SN[69200],L.alert["YOU"],L.alert["MOVE"]),
+				text = "<ragingtext>",
 				time = 5,
 				sound = "ALERT8",
 				flashscreen = true,
@@ -208,6 +209,13 @@ do
 				persist = 5,
 				unit = "&tft_unitname&",
 				icon = 1,
+			},
+			ragingspiritmark = {
+				varname = SN[69200],
+				type = "FRIENDLY",
+				persist = 7.5,
+				unit = "#5#",
+				icon = 2,
 			},
 		},
 		arrows = {
@@ -270,8 +278,9 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_DISPEL",
-				spellid = {
+				spellid2 = {
 					-- Note: there are two different ones for some reason
+					-- TODO: fix it when there are two bars. it could quash the wrong one
 					70337, --10
 					70338, --10
 					73785, --25
@@ -420,7 +429,16 @@ do
 				spellid = 69200, -- 10/25
 				execute = {
 					{
+						"raidicon","ragingspiritmark",
+					},
+					{
 						"expect",{"#4#","==","&playerguid&"},
+						"set",{ragingtext = format("%s: %s! %s!",SN[69200],L.alert["YOU"],L.alert["MOVE"])},
+						"alert","ragingspiritwarn",
+					},
+					{
+						"expect",{"#4#","~=","&playerguid&"},
+						"set",{ragingtext = format("%s: #5#!",SN[69200])},
 						"alert","ragingspiritwarn",
 					},
 				},
