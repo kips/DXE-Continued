@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 30,
+		version = 31,
 		key = "lichking", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -28,6 +28,7 @@ do
 			defiletext = "",
 			defiletime = 37,
 			infesttime = 6,
+			soulreapertime = 41,
 			valkyrtime = {20,47,loop = false, type = "series"},
 			harvesttime = {12.5,75,loop = false, type = "series"},
 			viletime = {18.9,30.5, loop = false, type = "series"}, -- most of the time it's 20.5 initially
@@ -144,6 +145,15 @@ do
 				color1 = "ORANGE",
 				icon = ST[71843],
 			},
+			soulreapercd = {
+				varname = format(L.alert["%s Cooldown"],SN[69409]),
+				type = "dropdown",
+				text = format(L.alert["%s Cooldown"],SN[69409]),
+				time = "<soulreapertime>",
+				flashtime = 10,
+				color1 = "ORANGE",
+				icon = ST[69409],
+			}, 
 			soulreaperwarn = {
 				varname = format(L.alert["%s Warning"],SN[69409]),
 				type = "centerpopup",
@@ -397,6 +407,7 @@ do
 						"quash","defilecd",
 						"quash","valkyrcd",
 						"quash","infestcd",
+						"quash","soulreapercd",
 					},
 				},
 			},
@@ -433,10 +444,13 @@ do
 						"set",{infesttime = 13},
 						"alert","infestcd",
 						"alert","valkyrcd",
+						"alert","soulreapercd",
 					},
 					{
 						"expect",{"<phase>","==","3"},
 						"alert","harvestsoulcd",
+						"set",{soulreapertime = 30},
+						"alert","soulreapercd",
 					},
 				},
 			},
@@ -462,7 +476,10 @@ do
 				},
 				execute = {
 					{
+						"quash","soulreapercd",
 						"alert","soulreaperwarn",
+						"set",{soulreapertime = 30},
+						"alert","soulreapercd",
 					},
 				},
 			},
