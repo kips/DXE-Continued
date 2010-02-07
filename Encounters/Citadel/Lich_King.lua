@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 19,
+		version = 20,
 		key = "lichking", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -27,7 +27,7 @@ do
 			nextphase = {"1","T","2","T","3",loop = false, type = "series"},
 			defiletext = "",
 			defiletime = 37,
-			infesttime = 7,
+			infesttime = 6,
 			valkyrtime = {20,47,loop = false, type = "series"},
 			necroplaguetext = "",
 			harvestsoultext = "",
