@@ -2031,6 +2031,21 @@ do
 					defaults[var] = {}
 					-- Add setting defaults
 					defaults[var].enabled = optionInfo.defaultEnabled
+
+					----------------------------------------------------
+					-- Special case
+					-- When an alert with type 'simple' is changed to 'centerpopup', color1 can get "stuck" on 'Clear'
+					-- Reset color1 if this happens
+					if optionType == "alerts" then
+						local db = pfl.Encounters[data.key]
+						if db and db[var]
+							and (info.type == "centerpopup" or info.type == "dropdown")
+							and db[var].color1 == "Clear" then
+							print("fixed color",data.key,var)
+							db[var].color1 = nil
+						end
+					end
+					----------------------------------------------------
 					for k,varDefault in pairs(EncDefaults[optionType].defaults) do
 						defaults[var][k] = info[k] or varDefault
 					end
