@@ -1,14 +1,14 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 32,
+		version = 33,
 		key = "lichking", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
 		name = L.npc_citadel["Lich King"], 
 		triggers = {
 			scan = 36597, -- Lich King
-			yell = L.chat_citadel["^I'll keep you alive to witness the end, Fordring"],
+			yell = L.chat_citadel["^So the Light's vaunted justice has finally arrived"],
 		},
 		onactivate = {
 			combatstop = true,
@@ -18,8 +18,7 @@ do
 		},
 		onstart = {
 			{
-				"alert","enragecd",
-				"alert","infestcd",
+				"alert","zerotoonecd",
 			},
 		},
 		userdata = {
@@ -37,8 +36,14 @@ do
 			ragingtext = "",
 		},
 		alerts = {
-			fightbeginscd = {
-				varname = format(L.alert["%s Begins"],L.alert["Fight"]),
+			zerotoonecd = {
+				varname = format(L.alert["%s Timer"],L.alert["Phase One"]),
+				type = "centerpopup",
+				text = format(L.alert["%s Begins"],L.alert["Phase One"]),
+				time = 53.5,
+				flashtime = 20,
+				color1 = "MIDGREY",
+				icon = ST[3648],
 			},
 			enragecd = {
 				varname = L.alert["Enrage"],
@@ -306,6 +311,18 @@ do
 			},
 		},
 		events = {
+			-- Yell
+			{
+				type = "event",
+				event = "YELL",
+				execute = {
+					{
+						"expect",{"#1#","find",L.chat_citadel["^I'll keep you alive to witness the end, Fordring"]},
+						"alert","enragecd",
+						"alert","infestcd",
+					},
+				},
+			},
 			-- Necrotic Plague
 			{
 				type = "combatevent",
