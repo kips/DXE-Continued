@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 34,
+		version = 36,
 		key = "lichking", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -151,7 +151,7 @@ do
 				text = format(L.alert["%s Cooldown"],SN[69037]),
 				time = "<valkyrtime>",
 				flashtime = 10,
-				color1 = "ORANGE",
+				color1 = "BROWN",
 				icon = ST[71843],
 				throttle = 5,
 			},
@@ -420,7 +420,8 @@ do
 				spellid = {
 					68981, -- 10 first
 					72259, -- 10 second
-					74270, -- 25
+					74270, -- 25 first
+					74273, -- 25 second
 				},
 				execute = {
 					{
@@ -546,7 +547,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
-				spellid = 70498, -- 10
+				spellid = 70498, -- 10/25
 				execute = {
 					{
 						"quash","vilespiritcd",
