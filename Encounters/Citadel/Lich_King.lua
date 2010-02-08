@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 31,
+		version = 32,
 		key = "lichking", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -37,6 +37,9 @@ do
 			ragingtext = "",
 		},
 		alerts = {
+			fightbeginscd = {
+				varname = format(L.alert["%s Begins"],L.alert["Fight"]),
+			},
 			enragecd = {
 				varname = L.alert["Enrage"],
 				type = "dropdown",
@@ -135,6 +138,7 @@ do
 				time = 4,
 				sound = "ALERT6",
 				icon = ST[71843],
+				throttle = 5,
 			},
 			valkyrcd = {
 				varname = format(L.alert["%s Cooldown"],SN[69037]),
@@ -144,6 +148,7 @@ do
 				flashtime = 10,
 				color1 = "ORANGE",
 				icon = ST[71843],
+				throttle = 5,
 			},
 			soulreapercd = {
 				varname = format(L.alert["%s Cooldown"],SN[69409]),
