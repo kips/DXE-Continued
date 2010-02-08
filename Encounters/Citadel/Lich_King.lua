@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 33,
+		version = 34,
 		key = "lichking", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -559,7 +559,10 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_SUCCESS",
-				spellid = 68980, -- 10
+				spellid = {
+					68980, -- 10
+					74325, -- 25
+				},
 				execute = {
 					{
 						"raidicon","harvestmark",
