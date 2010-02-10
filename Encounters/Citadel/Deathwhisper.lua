@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 22,
+		version = 24,
 		key = "deathwhisper", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -13,12 +13,14 @@ do
 			yell = L.chat_citadel["^What is this disturbance"],
 		},
 		userdata = {
-			--culttime = {7,60,loop = false, type = "series"}, normal mode
-			-- TODO: fix
-			culttime = {7,45,loop = false, type = "series"}, -- 25h
+			culttime = {7,60,loop = false, type = "series"},
 			insignificancetext = "",
 		},
 		onstart = {
+			{
+				"expect",{"&difficulty&","==","4"},
+				"set",{culttime = {7,45,loop = false, type = "series"}},
+			},
 			{
 				"alert","cultcd",
 				"alert","enragecd",
@@ -29,8 +31,7 @@ do
 			firecult = {
 				{
 					"alert","cultcd",
-					-- TODO: 60s on 25 normal
-					"scheduletimer",{"firecult",45}, -- 25h
+					"scheduletimer",{"firecult","<culttime>"},
 				},
 			},
 		},
