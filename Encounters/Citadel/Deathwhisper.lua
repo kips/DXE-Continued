@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 19,
+		version = 22,
 		key = "deathwhisper", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -15,7 +15,7 @@ do
 		userdata = {
 			--culttime = {7,60,loop = false, type = "series"}, normal mode
 			-- TODO: fix
-			culttime = {7,44,loop = false, type = "series"}, -- 25h
+			culttime = {7,45,loop = false, type = "series"}, -- 25h
 			insignificancetext = "",
 		},
 		onstart = {
@@ -30,7 +30,7 @@ do
 				{
 					"alert","cultcd",
 					-- TODO: 60s on 25 normal
-					"scheduletimer",{"firecult",44}, -- 25h
+					"scheduletimer",{"firecult",45}, -- 25h
 				},
 			},
 		},
@@ -134,6 +134,17 @@ do
 				icon = ST[72007],
 			},
 		},
+		raidicons = {
+			dominatemark = {
+				varname = SN[71289],
+				type = "MULTIFRIENDLY",
+				persist = 10,
+				reset = 5,
+				unit = "#5#",
+				icon = 1,
+				total = 3,
+			},
+		},
 		events = {
 			-- Summon Spirit and Decay self
 			{
@@ -172,8 +183,8 @@ do
 				execute = {
 					{
 						"alert","manabarrierwarn",
-						"quash","cultcd",
-						"canceltimer","firecult",
+						--"quash","cultcd",
+						--"canceltimer","firecult",
 					},
 				},
 			},
@@ -235,6 +246,9 @@ do
 				eventtype = "SPELL_AURA_APPLIED",
 				spellid = 71289,
 				execute = {
+					{
+						"raidicon","dominatemark",
+					},
 					{
 						"expect",{"#4#","~=","&playerguid&"},
 						"alert","dominatewarn",
