@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 12,
+		version = 13,
 		key = "bloodprincecouncil", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -133,6 +133,18 @@ do
 				icon = 2,
 			},
 		},
+		announces = {
+			shocksay = {
+				varname = format(L.alert["Say %s on self"],SN[72037]),
+				type = "SAY",
+				msg = format(L.alert["%s on Me"],SN[72037]).."!",
+			},
+			infernosay = {
+				varname = format(L.alert["Say %s on self"],L.alert["Inferno Flame"]),
+				type = "SAY",
+				msg = format(L.alert["%s on Me"],L.alert["Inferno Flame"]).."!",
+			},
+		},
 		timers = {
 			fireshock = {
 				{
@@ -140,6 +152,7 @@ do
 					"set",{shocktext = format("%s: %s!",SN[72037],L.alert["YOU"])},
 					"raidicon","shockmark",
 					"alert","shockwarn",
+					"announce","shocksay",
 				},
 				{
 					"expect",{"&tft_unitexists& &tft_isplayer&","==","1 nil"},
@@ -181,6 +194,7 @@ do
 						"raidicon","infernomark",
 						"expect",{"#5#","==","&playername&"},
 						"alert","infernoself",
+						"announce","infernosay",
 					},
 					{
 						"expect",{"#1#","find",L.chat_citadel["^Empowered Flames speed"]},
