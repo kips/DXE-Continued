@@ -19,7 +19,7 @@ do
 	end
 
 	local data = {
-		version = 9,
+		version = 10,
 		key = "gunshipbattle", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -105,6 +105,18 @@ do
 					},
 				},
 			},
+			-- Below Zero 2
+			{
+				type = "combatevent",
+				eventtype = "SPELL_CAST_START",
+				spellid = 69705,
+				execute = {
+					{
+						"alert","belowzerowarn",
+						"alert","belowzerocd",
+					},
+				},
+			},
 			-- Below Zero removal
 			{
 				type = "combatevent",
@@ -134,6 +146,7 @@ do
 				spellid = {
 					69638, -- 10
 					72306, -- 25
+					72308, -- 25h
 				},
 				execute = {
 					{
@@ -150,6 +163,7 @@ do
 				spellid = {
 					69638, -- 10
 					72306, -- 25
+					72308, -- 25h
 				},
 				execute = {
 					{
