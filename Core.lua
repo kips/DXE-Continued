@@ -90,7 +90,7 @@ local defaults = {
 
 local addon = LibStub("AceAddon-3.0"):NewAddon("DXE","AceEvent-3.0","AceTimer-3.0","AceComm-3.0","AceSerializer-3.0")
 _G.DXE = addon
-addon.version = 448
+addon.version = 449
 addon:SetDefaultModuleState(false)
 addon.callbacks = LibStub("CallbackHandler-1.0"):New(addon)
 addon.defaults = defaults
@@ -310,10 +310,8 @@ function addon:GetRaidDifficulty()
 	if type == "raid" then
 		if dynamic then
 			diff = index
-			if heroic == 1 then
-				if diff <= 2 then
-					diff = diff + 2
-				end
+			if heroic == 1 and diff <= 2 then
+				diff = diff + 2
 			end
 		else
 			diff = index
