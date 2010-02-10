@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 8,
+		version = 9,
 		key = "marrowgar", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -22,7 +22,7 @@ do
 		},
 		onstart = {
 			{
-				"expect",{"&difficulty&",">=","3"},
+				"expect",{"&difficulty&",">=","2"},
 				"set",{bonedurtime = 34},
 			},
 			{
