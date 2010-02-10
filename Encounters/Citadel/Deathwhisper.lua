@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 14,
+		version = 15,
 		key = "deathwhisper", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -222,6 +222,7 @@ do
 				spellid = {
 					71420, -- 10
 					72007, -- 25
+					72502, -- 25h
 				},
 				execute = {
 					{
@@ -236,6 +237,7 @@ do
 				spellid2 = {
 					71420, -- 10
 					72007, -- 25
+					72502, -- 25h
 				},
 				execute = {
 					{
