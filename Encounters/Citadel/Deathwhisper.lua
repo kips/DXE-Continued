@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 25,
+		version = 26,
 		key = "deathwhisper", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -18,7 +18,7 @@ do
 		},
 		onstart = {
 			{
-				"expect",{"&difficulty&","==","4"},
+				"expect",{"&difficulty&",">=","3"},
 				"set",{culttime = {7,45,loop = false, type = "series"}},
 			},
 			{
@@ -147,12 +147,12 @@ do
 			},
 		},
 		events = {
-			-- Summon Spirit and Decay self
+			-- Summon Spirit
 			{
 				type = "combatevent",
 				eventtype = "SPELL_SUMMON",
 				spellid = {
-					71426, -- 25h
+					71426, -- 10,25,25h
 				},
 				execute = {
 					{
