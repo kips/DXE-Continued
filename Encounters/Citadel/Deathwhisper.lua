@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 24,
+		version = 25,
 		key = "deathwhisper", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -184,8 +184,9 @@ do
 				execute = {
 					{
 						"alert","manabarrierwarn",
-						--"quash","cultcd",
-						--"canceltimer","firecult",
+						"expect",{"&difficulty&","<=","2"},
+						"quash","cultcd",
+						"canceltimer","firecult",
 					},
 				},
 			},
