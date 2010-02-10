@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 26,
+		version = 27,
 		key = "deathwhisper", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -15,6 +15,7 @@ do
 		userdata = {
 			culttime = {7,60,loop = false, type = "series"},
 			insignificancetext = "",
+			dominatetext = format("%s: #5#!",SN[71289]),
 		},
 		onstart = {
 			{
@@ -118,12 +119,13 @@ do
 			},
 			dominatewarn = {
 				varname = format(L.alert["%s Warning"],SN[71289]),
-				text = format("%s: #5#!",SN[71289]),
+				text = "<dominatetext>",
 				type = "simple",
 				time = 3,
 				color1 = "GREY",
 				sound = "ALERT6",
 				icon = ST[71289],
+				throttle = 3,
 			},
 			frostboltwarn = {
 				varname = format(L.alert["%s Casting"],SN[72007]),
@@ -253,6 +255,16 @@ do
 					},
 					{
 						"expect",{"#4#","~=","&playerguid&"},
+						"invoke",{
+							{
+								"expect",{"&difficulty&","==","4"}, -- == 25h
+								"set",{dominatetext = format(L.alert["%s Cast"],SN[71289])}
+							},
+							{
+								"expect",{"&difficulty&","<=","3"}, -- < 25h
+								"set",{dominatetext = format("%s: #5#!",SN[71289])},
+							},
+						},
 						"alert","dominatewarn",
 					},
 				},
