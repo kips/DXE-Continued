@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 36,
+		version = 37,
 		key = "lichking", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -275,6 +275,13 @@ do
 				unit = "#5#",
 				icon = 3,
 			},
+			necroplaguemark = {
+				varname = SN[70337],
+				type = "FRIENDLY",
+				persist = 15,
+				unit = "#5#",
+				icon = 4,
+			},
 		},
 		arrows = {
 			defilearrow = {
@@ -336,11 +343,13 @@ do
 						"expect",{"#4#","==","&playerguid&"},
 						"set",{necroplaguetext = format("%s: %s!",SN[70338],L.alert["YOU"])},
 						"alert","necroplaguedur",
+						"raidicon","necroplaguemark",
 					},
 					{
 						"expect",{"#4#","~=","&playerguid&"},
 						"set",{necroplaguetext = format("%s: #5#!",SN[70338])},
 						"alert","necroplaguedur",
+						"raidicon","necroplaguemark",
 					},
 				},
 			},
