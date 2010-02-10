@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 18,
+		version = 19,
 		key = "deathwhisper", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -15,7 +15,7 @@ do
 		userdata = {
 			--culttime = {7,60,loop = false, type = "series"}, normal mode
 			-- TODO: fix
-			culttime = {7,46,loop = false, type = "series"}, -- 25h
+			culttime = {7,44,loop = false, type = "series"}, -- 25h
 			insignificancetext = "",
 		},
 		onstart = {
@@ -30,7 +30,7 @@ do
 				{
 					"alert","cultcd",
 					-- TODO: 60s on 25 normal
-					"scheduletimer",{"firecult",46}, -- 25h
+					"scheduletimer",{"firecult",44}, -- 25h
 				},
 			},
 		},
