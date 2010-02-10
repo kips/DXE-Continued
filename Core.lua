@@ -90,7 +90,7 @@ local defaults = {
 
 local addon = LibStub("AceAddon-3.0"):NewAddon("DXE","AceEvent-3.0","AceTimer-3.0","AceComm-3.0","AceSerializer-3.0")
 _G.DXE = addon
-addon.version = 446
+addon.version = 447
 addon:SetDefaultModuleState(false)
 addon.callbacks = LibStub("CallbackHandler-1.0"):New(addon)
 addon.defaults = defaults
@@ -298,6 +298,28 @@ do
 	function addon:GetProximityFuncs()
 		return ProximityFuncs
 	end
+end
+
+---------------------------------------------
+-- RAID DIFFICULTY
+---------------------------------------------
+
+function addon:GetRaidDifficulty()
+	local diff
+	local _, type, index, _, _, heroic, dynamic = GetInstanceInfo()
+	if type == "raid" then
+		if dynamic then
+			diff = index
+			if heroic == 1 then
+				if diff <= 2 then
+					diff = diff + 2
+				end
+			end
+		else
+			diff = index
+		end
+	end
+	return diff
 end
 
 ---------------------------------------------

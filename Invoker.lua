@@ -189,12 +189,11 @@ do
 		return HW[1].tracer:First() and HW[1].tracer:First().."target" or ""
 	end
 
-	-- IMPORTANT - Return values should all be strings
 	local RepFuncs = {
 		playerguid = function() return addon.PGUID end,
 		playername = function() return addon.PNAME end,
 		vehicleguid  = function() return UnitGUID("vehicle") or "" end,
-		difficulty = function() return tostring(GetRaidDifficulty()) end,
+		difficulty = function() return tostring(addon:GetRaidDifficulty()) end,
 		-- First health watcher
 		tft = tft,
 		tft_unitexists = function() return tostring(UnitExists(tft())) end,
