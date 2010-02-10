@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 37,
+		version = 38,
 		key = "lichking", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -34,6 +34,7 @@ do
 			necroplaguetext = "",
 			harvestsoultext = "",
 			ragingtext = "",
+			enragecount = 0,
 		},
 		alerts = {
 			zerotoonecd = {
@@ -79,6 +80,14 @@ do
 				color1 = "BROWN",
 				sound = "ALERT1",
 				icon = ST[70372],
+			},
+			shamblinghorrorenragewarn = {
+				varname = format(L.alert["%s Warning"],format("%s %s",L.npc_citadel["Shambling Horror"],SN[72143])),
+				type = "simple",
+				text = format("%s: %s",SN[72143],L.npc_citadel["Shambling Horror"]),
+				time = 6,
+				color1 = "PEACH",
+				icon = ST[72143],
 			},
 			defilewarn = {
 				varname = format(L.alert["%s Warning"],SN[72762]),
@@ -391,6 +400,37 @@ do
 					{
 						"quash","shamblinghorrorwarn",
 						"alert","shamblinghorrorcd",
+					},
+				},
+			},
+			-- Shambling Horror Enrage
+			{
+				type = "combatevent",
+				eventtype = "SPELL_CAST_START",
+				spellid = {
+					72143, -- 10
+					72146, -- 25
+				},
+				execute = {
+					{
+						"alert","shamblinghorrorenragewarn",
+						"set",{enragecount = "INCR|1"}, 
+					},
+				},
+			},
+			-- Shambling Horror Enrage removal
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_REMOVED",
+				spellid = {
+					72143, -- 10
+					72146, -- 25
+				},
+				execute = {
+					{
+						"set",{enragecount = "DECR|1"}, 
+						"expect",{"<enragecount>","==","0"},
+						"quash","shamblinghorrorenragewarn",
 					},
 				},
 			},
