@@ -127,12 +127,14 @@ local raidIconBaseKeys = {
 	icon = isnumber,
 	reset = optnumber,
 	total = optnumber,
+	remove = optboolean,
 }
 
 local raidIconTypeValues = {
 	FRIENDLY = true,
 	MULTIFRIENDLY = true,
-	--ENEMY = true,
+	ENEMY = true,
+	MULTIENEMY = true,
 }
 
 local announceBaseKeys = {
@@ -538,6 +540,15 @@ local function validateRaidIcon(data,info,errlvl,...)
 				validateReplaces(data,info[k],errlvl,k,...)
 			elseif k == "icon" and (info[k] > 8 or info[k] < 1)  then
 				err(": expected icon to be [1-8] - got '"..info[k].."'",errlvl,k,...)
+			elseif k == "type" then
+				if info[k] == "MULTIFRIENDLY" or info[k] == "MULTIENEMY" then
+					if not info.reset then
+						err(": expected 'reset' to exist", errlvl,k,...)
+					end
+					if not info.total then
+						err(": expected 'total' to exist", errlvl,k,...)
+					end
+				end
 			end
 		end
 	end

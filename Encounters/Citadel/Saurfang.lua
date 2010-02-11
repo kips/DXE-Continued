@@ -122,7 +122,7 @@ do
 				unit = "#5#",
 				icon = 1,
 				total = 8,
-			}
+			},
 		},
 		windows = {
 			proxwindow = true,

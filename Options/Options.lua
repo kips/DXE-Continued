@@ -607,9 +607,9 @@ local function InitializeOptions()
 							local key,var = info[3],info[5]
 							local varData = EDB[key].raidicons[var]
 							local type = varData.type
-							if type == "FRIENDLY" then
+							if type == "FRIENDLY" or type == "ENEMY" then
 								return format(L.options["Uses |cffffd200Icon %s|r"],varData.icon)
-							elseif type == "MULTIFRIENDLY" then
+							elseif type == "MULTIFRIENDLY" or type == "MULTIENEMY" then
 								return format(L.options["Uses |cffffd200Icon %s|r to |cffffd200Icon %s|r"],varData.icon,varData.icon + varData.total - 1)
 							end
 						end,

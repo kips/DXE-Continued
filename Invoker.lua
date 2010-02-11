@@ -600,6 +600,10 @@ do
 		 8 = White Skull 
 	]]
 
+	local function is_guid(str)
+		return type(str) == "string" and #str == 18 and str:find("%xx%x+")
+	end
+
 	-- @ADD TO HANDLERS
 	handlers.raidicon = function(info)
 		local stgs = pfl.Encounters[key][info]
@@ -611,6 +615,12 @@ do
 					RaidIcons:MarkFriendly(unit,raidInfo.icon,raidInfo.persist) 
 				elseif raidInfo.type == "MULTIFRIENDLY" then
 					RaidIcons:MultiMarkFriendly(info,unit,raidInfo.icon,raidInfo.persist,raidInfo.reset,raidInfo.total)
+				end
+			elseif is_guid(unit) then
+				if raidInfo.type == "ENEMY" then
+					RaidIcons:MarkEnemy(unit,raidInfo.icon,raidInfo.persist,raidInfo.remove)
+				elseif raidInfo.type == "MULTIENEMY" then
+					RaidIcons:MultiMarkEnemy(info,unit,raidInfo.icon,raidInfo.persist,raidInfo.remove,raidInfo.reset,raidInfo.total)
 				end
 			end
 		end
