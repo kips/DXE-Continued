@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 38,
+		version = 39,
 		key = "lichking", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -291,6 +291,15 @@ do
 				unit = "#5#",
 				icon = 4,
 			},
+			valkyrmark = {
+				varname = SN[69037],
+				type = "MULTIENEMY",
+				persist = 10,
+				reset = 8,
+				unit = "#4#",
+				icon = 5,
+				total = 3,
+			}
 		},
 		arrows = {
 			defilearrow = {
@@ -535,6 +544,7 @@ do
 					{
 						"alert","valkyrwarn",
 						"alert","valkyrcd",
+						"raidicon","valkyrmark",
 					},
 				},
 			},
