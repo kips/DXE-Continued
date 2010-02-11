@@ -54,14 +54,11 @@ end
 -------------------------------------------
 
 do
-	local units = {} -- unit -> handle
-	local friendly_cnt = {} -- multi-marking
-	local count_resets = {} -- resets
+	local units = {}        -- unit -> handle
+	local friendly_cnt = {} -- var  -> count
+	local count_resets = {} -- var  -> handle
 
 	local function ResetCount(var)
-		--@debug@
-		debug("ResetCount","var: %s friendly_cnt[var]: %s count_resets[var]: %s",var,friendly_cnt[var],count_resets[var])
-		--@end-debug@
 		friendly_cnt[var] = nil
 		count_resets[var] = nil
 	end
@@ -80,15 +77,8 @@ do
 	---------------------------------
 
 	function module:MarkFriendly(unit,icon,persist)
-		--@debug@
-		debug("MarkFriendly","unit: %s",unit)
-		--@end-debug@
-
 		-- Unschedule unit's icon removal. The schedule is effectively reset.
 		if units[unit] then 
-			--@debug@
-			debug("MarkFriendlyUnsch1","unit: %s",unit)
-			--@end-debug@
 			self:CancelTimer(units[unit],true) 
 			units[unit] = nil
 		end
@@ -112,10 +102,7 @@ do
 	function module:RemoveAllFriendly()
 		for unit in pairs(units) do RemoveIcon(unit) end
 		wipe(friendly_cnt)
-		for var,handle in pairs(count_resets) do
-			self:CancelTimer(handle,true)
-			count_resets[var] = nil
-		end
+		wipe(count_resets)
 	end
 end
 
@@ -126,11 +113,11 @@ end
 do
 	local unit_to_unittarget = addon.Roster.unit_to_unittarget
 	local DELAY = 0.1
-	local enemy_cnt = {}
-	local count_resets = {}
-	local execs = {}   -- guid -> handle
-	local cancels = {} -- guid -> handle
-	local icons = {}   -- guid -> icon
+	local enemy_cnt = {}    -- var  -> count
+	local count_resets = {} -- var  -> handle
+	local execs = {}        -- guid -> handle
+	local cancels = {}      -- guid -> handle
+	local icons = {}        -- guid -> icon
 
 	local function MarkGUID(guid,icon)
 		for _,unit in pairs(unit_to_unittarget) do
@@ -153,9 +140,7 @@ do
 
 	local function ExecuteMark(guid)
 		local success = MarkGUID(guid,icons[guid])
-		if success then 
-			CancelMark(guid) 
-		end
+		if success then CancelMark(guid) end
 	end
 
 	local function ResetCount(var)
@@ -195,12 +180,11 @@ do
 	end
 
 	function module:RemoveAllEnemy()
-		for guid in pairs(icons) do CancelMark(guid) end
+		wipe(execs)
+		wipe(cancels)
+		wipe(icons)
 		wipe(enemy_cnt)
-		for var,handle in pairs(count_resets) do
-			self:CancelTimer(handle,true)
-			count_resets[var] = nil
-		end
+		wipe(count_resets)
 	end
 end
 
@@ -211,6 +195,7 @@ end
 function module:RemoveAll()
 	self:RemoveAllFriendly()
 	self:RemoveAllEnemy()
+	self:CancelAllTimers()
 end
 
 -------------------------------------------
