@@ -139,12 +139,7 @@ function prototype:TRACER_ACQUIRED()
 		else
 			-- numeric indexes are fallbacks according to blizzard
 			local c = PowerBarColor[type] or PowerBarColor[ix]
-			if not c then
-				--@debug@
-				error(format("Invalid power bar color -- type: %s index: %s",type or "nil",ix or "nil"))
-				--@end-debug@
-				return
-			end
+			if not c then return end
 			self.powerbar:SetStatusBarColor(c.r,c.g,c.b)
 		end
 		self.powercolor = true
