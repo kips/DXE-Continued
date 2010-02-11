@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 10,
+		version = 11,
 		key = "saurfang", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -14,6 +14,7 @@ do
 		userdata = {
 			bloodtext = "",
 			markfallentext = "",
+			runebloodtime = {22,20,loop = false, type = "series"},
 		},
 		onactivate = {
 			tracerstart = true,
@@ -25,6 +26,7 @@ do
 			{
 				"alert","bloodbeastcd",
 				"alert","enragecd",
+				"alert","runeofbloodcd",
 			},
 		},
 		alerts = {
@@ -61,6 +63,16 @@ do
 				time = 3,
 				color1 = "BROWN",
 				sound = "ALERT3",
+				icon = ST[72410],
+			},
+			runeofbloodcd = {
+				varname = format(L.alert["%s Cooldown"],SN[72410]),
+				type = "dropdown",
+				text = format(L.alert["%s Cooldown"],SN[72410]),
+				time = "<runebloodtime>",
+				flashtime = 5,
+				color1 = "MAGENTA",
+				sound = "ALERT7",
 				icon = ST[72410],
 			},
 			markfallenwarn = {
@@ -131,6 +143,9 @@ do
 					72410, -- 25 and 25 hard
 				},
 				execute = {
+					{
+						"alert","runeofbloodcd",
+					},
 					{
 						"expect",{"#4#","~=","&playerguid&"},
 						"set",{bloodtext = format("%s: #5#!",SN[72410])},
