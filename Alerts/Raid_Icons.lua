@@ -168,7 +168,7 @@ do
 		local success = MarkGUID(guid,icon)
 		if not success then
 			icons[guid] = icon
-			execs[guid] = self:ScheduleRepatingTimer(ExecuteMark,DELAY,guid)
+			execs[guid] = self:ScheduleRepeatingTimer(ExecuteMark,DELAY,guid)
 			cancels[guid] = self:ScheduleTimer(CancelMark,persist,guid)
 		end
 
