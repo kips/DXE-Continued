@@ -70,7 +70,7 @@ do
 		--@debug@
 		debug("RemoveIcon","unit: %s",unit)
 		--@end-debug@
-		self:CancelTimer(units[unit],true)
+		module:CancelTimer(units[unit],true)
 		SetRaidTarget(unit,0)
 		units[unit] = nil
 	end
@@ -139,10 +139,10 @@ do
 	end
 
 	local function CancelMark(guid)
-		self:CancelTimer(cancels[guid],true)
+		module:CancelTimer(cancels[guid],true)
 		cancels[guid] = nil
 
-		self:CancelTimer(execs[guid],true)
+		module:CancelTimer(execs[guid],true)
 		execs[guid] = nil
 
 		icons[guid] = nil
@@ -150,7 +150,9 @@ do
 
 	local function ExecuteMark(guid)
 		local success = MarkGUID(guid,icons[guid])
-		if success then CancelMark(guid) end
+		if success then 
+			CancelMark(guid) 
+		end
 	end
 
 	local function ResetCount(var)
