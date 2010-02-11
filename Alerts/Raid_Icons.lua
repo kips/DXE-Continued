@@ -112,7 +112,10 @@ do
 	function module:RemoveAllFriendly()
 		for unit in pairs(units) do RemoveIcon(unit) end
 		wipe(friendly_cnt)
-		wipe(count_resets)
+		for var,handle in pairs(count_resets) do
+			self:CancelTimer(handle,true)
+			count_resets[var] = nil
+		end
 	end
 end
 
@@ -194,7 +197,10 @@ do
 	function module:RemoveAllEnemy()
 		for guid in pairs(icons) do CancelMark(guid) end
 		wipe(enemy_cnt)
-		wipe(count_resets)
+		for var,handle in pairs(count_resets) do
+			self:CancelTimer(handle,true)
+			count_resets[var] = nil
+		end
 	end
 end
 
