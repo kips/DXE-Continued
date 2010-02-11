@@ -113,10 +113,6 @@ end
 -------------------------------------------
 
 do
-	--@debug@
-	local function SetRaidTarget() end
-	--@end@
-
 	local unit_to_unittarget = addon.Roster.unit_to_unittarget
 	local DELAY = 0.1
 	local enemy_cnt = {}      -- var  -> count
