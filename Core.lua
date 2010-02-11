@@ -1569,35 +1569,56 @@ do
 	end
 end
 
-function addon:SetTracing(targets)
-	if not targets then return end
-	self:ResetSortedTracing()
-	local n = 0
-	for i,tgt in ipairs(targets) do
-		-- Prevents overwriting
-		local hw = HW[i]
-		if hw:GetGoal() ~= tgt then
-			if targets.powers and targets.powers[i] then
-				hw:ShowPower()
-			end
-			hw:SetTitle(gbl.L_NPC[tgt] or "...")
-			hw:SetInfoBundle("",1,1)
-			hw:ApplyNeutralColor()
-			if type(tgt) == "number" then
-				hw:Track("npcid",tgt)
-			elseif type(tgt) == "string" then
-				hw:Track("unit",tgt)
-			end
-			hw:Open()
-			hw:Show()
+do
+	local registered = nil
+	local units = {} -- unit => hw
+	function addon:SetTracing(targets)
+		if not targets then return end
+		self:ResetSortedTracing()
+		wipe(units)
+		if registered then
+			self:UnregisterEvent("UNIT_NAME_UPDATE")
+			registered = nil
 		end
-		n = n + 1
+		local n = 0
+		for i,tgt in ipairs(targets) do
+			-- Prevents overwriting
+			local hw = HW[i]
+			if hw:GetGoal() ~= tgt then
+				if targets.powers and targets.powers[i] then
+					hw:ShowPower()
+				end
+				hw:SetTitle(gbl.L_NPC[tgt] or "...")
+				hw:SetInfoBundle("",1,1)
+				hw:ApplyNeutralColor()
+				if type(tgt) == "number" then
+					hw:Track("npcid",tgt)
+				elseif type(tgt) == "string" then
+					if not registered then
+						self:RegisterEvent("UNIT_NAME_UPDATE")
+						registered = true
+					end
+					hw:Track("unit",tgt)
+					units[tgt] = hw
+				end
+				hw:Open()
+				hw:Show()
+			end
+			n = n + 1
+		end
+		for i=n+1,4 do
+			HW[i]:Close()
+			HW[i]:Hide()
+		end
+		self:LayoutHealthWatchers()
 	end
-	for i=n+1,4 do
-		HW[i]:Close()
-		HW[i]:Hide()
+
+	-- Occasionally UnitName("boss1") == UnitName("boss2")
+	function addon:UNIT_NAME_UPDATE(unit)
+		if units[unit] then
+			units[unit]:SetTitle(UnitName(unit))
+		end
 	end
-	self:LayoutHealthWatchers()
 end
 
 function addon:LayoutHealthWatchers()

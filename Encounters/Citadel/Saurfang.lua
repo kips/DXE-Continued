@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 11,
+		version = 12,
 		key = "saurfang", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -103,6 +103,15 @@ do
 				color1 = "ORANGE",
 				icon = ST[72737],
 			},
+			boilingbloodwarn = {
+				varname = format(L.alert["%s Warning"],SN[72385]),
+				type = "simple",
+				text = format(L.alert["%s Cast"],SN[72385]),
+				time = 3,
+				sound = "ALERT9",
+				color1 = "BLACK",
+				icon = ST[72443],
+			},
 		},
 		raidicons = {
 			fallenmark = {
@@ -119,6 +128,21 @@ do
 			proxwindow = true,
 		},
 		events = {
+			-- Boiling Blood
+			{
+				type = "combatevent",
+				eventtype = "SPELL_CAST_SUCCESS",
+				spellid = {
+					72443, -- 25h
+					72441, -- 25
+					72385, -- 10
+				},
+				execute = {
+					{
+						"alert","boilingbloodwarn",
+					}
+				},
+			},
 			-- Call Blood Beast
 			{
 				type = "combatevent",

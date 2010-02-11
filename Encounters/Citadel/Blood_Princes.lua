@@ -16,11 +16,14 @@ do
 		onactivate = {
 			combatstop = true,
 			tracerstart = true,
+			--[[
 			tracing = {
 				37970, -- Valanar
 				37972, -- Keleseth
 				37973, -- Taldaram
 			},
+			]]
+			unittracing = {"boss1","boss2","boss3"},
 			defeat = {
 				37970, -- Valanar
 				37972, -- Keleseth
