@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 9,
+		version = 11,
 		key = "festergut", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -86,7 +86,7 @@ do
 				text = format("%s: %s!",SN[71221],L.alert["YOU"]).."!",
 				time = 3,
 				icon = ST[71221],
-				throttle = 2,
+				throttle = 10,
 			},
 			vilegascd = {
 				varname = format(L.alert["%s Cooldown"],SN[71218]),
@@ -144,6 +144,8 @@ do
 				sound = "ALERT6",
 				color1 = "BLACK",
 				icon = ST[72615],
+				flashscreen = true,
+				throttle = 2,
 			},
 		},
 		windows = {
@@ -258,7 +260,7 @@ do
 					71219, -- 25
 					69195,
 					73031,
-					73032,
+					73032, -- 25h
 				},
 				execute = {
 					{
