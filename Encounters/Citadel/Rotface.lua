@@ -1,7 +1,8 @@
 do
+	-- TODO Add 25h Vile Gas warning and cooldown
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 8,
+		version = 9,
 		key = "rotface", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -216,10 +217,27 @@ do
 			-- Ooze Flood self
 			{
 				type = "combatevent",
-				eventtype = "SPELL_DAMAGE",
+				eventtype = "SPELL_AURA_APPLIED",
 				spellid = {
 					71215, -- 25
 					69789, -- 10
+					71588, -- 25h
+					71208, -- 25h Sticky Ooze  use the same warning
+				},
+				execute = {
+					{
+						"expect",{"#4#","==","&playerguid&"},
+						"alert","oozefloodself",
+					},
+				},
+			},
+			-- Ooze Flood self applications
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED_DOSE",
+				spellid = {
+					71588, -- 25h
+					71208, -- 25h Sticky Ooze  use the same warning
 				},
 				execute = {
 					{
