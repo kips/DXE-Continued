@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 11,
+		version = 12,
 		key = "sindragosa", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -304,7 +304,16 @@ do
 						"expect",{"#4#","==","&playerguid&"},
 						"alert","frostbeaconself",
 						"expect",{"<phase>","==","1"},
-						"scheduletimer",{"checkbeacon",0.2}, -- allow time for raid icon to set
+						"invoke",{
+							{
+								"expect",{"&difficulty&","==","4"}, -- 25h
+								"scheduletimer",{"checkbeacon",0.2}, -- allow time for raid icon to set
+							},
+							{
+								"expect",{"&difficulty&","==","2"}, -- 25
+								"scheduletimer",{"checkbeacon",0.2}, -- allow time for raid icon to set
+							},
+						},
 					},
 				},
 			},
