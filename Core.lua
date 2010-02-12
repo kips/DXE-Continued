@@ -13,6 +13,7 @@ local debugDefaults = {
 	PARTY_MEMBERS_CHANGED = false,
 	BlockBossEmotes = false,
 	TriggerDefeat = false,
+	UNIT_NAME_UPDATE = false,
 }
 --@end-debug@
 
@@ -1616,6 +1617,9 @@ do
 	-- Occasionally UnitName("boss1") == UnitName("boss2")
 	function addon:UNIT_NAME_UPDATE(unit)
 		if units[unit] then
+			--@debug@
+			debug("UNIT_NAME_UPDATE","unit: %s",unit)
+			--@end-debug@
 			units[unit]:SetTitle(UnitName(unit))
 		end
 	end
