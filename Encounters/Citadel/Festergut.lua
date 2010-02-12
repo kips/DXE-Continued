@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 7,
+		version = 8,
 		key = "festergut", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -96,6 +96,7 @@ do
 				flashtime = 5,
 				color1 = "ORANGE",
 				icon = ST[71288],
+				throttle = 2,
 			},
 			vilegaswarn = {
 				varname = format(L.alert["%s Warning"],SN[71218]),
@@ -134,6 +135,15 @@ do
 				time = 3,
 				color1 = "GOLD",
 				icon = ST[72551],
+			},
+			malleablegoowarn = {
+				varname = format(L.alert["%s Warning"],SN[72615]),
+				type = "simple",
+				text = format(L.alert["%s Cast"],SN[72615]),
+				time = 3,
+				sound = "ALERT6",
+				color1 = "BLACK",
+				icon = ST[72615],
 			},
 		},
 		windows = {
@@ -215,6 +225,7 @@ do
 				spellid = { -- Note: Don't use 71307
 					71218, -- 25
 					69240, -- 10
+					73020, -- 25h
 				},
 				execute = {
 					{
@@ -231,6 +242,7 @@ do
 				spellid = {
 					71218, -- 25
 					69240, -- 10
+					73020, -- 25h
 				},
 				execute = {
 					{
@@ -294,6 +306,17 @@ do
 						"expect",{"#4#","~=","&playerguid&"},
 						"set",{gastrictext = format("%s: #5#! %s!",SN[72551],format(L.alert["%s Stacks"],"#11#")) },
 						"alert","gastricbloatwarn",
+					},
+				},
+			},
+			-- Malleable Goo Summon Trigger
+			{
+				type = "event",
+				event = "UNIT_SPELLCAST_SUCCEEDED",
+				execute = {
+					{
+						"expect",{"#2#","==",SN[72310]}, 
+						"alert","malleablegoowarn",
 					},
 				},
 			},
