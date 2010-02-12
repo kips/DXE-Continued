@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 8,
+		version = 9,
 		key = "valithria", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -19,11 +19,14 @@ do
 			{
 				"alert","enragecd",
 				"alert","portalcd",
+				--"alert","blazingskeletoncd",
+				--"scheduletimer",{"fireblazing",35},
 			},
 		},
 		userdata = {
 			portaltime = {33,45, loop = false, type = "series"},
 			corrosiontext = "",
+			blazingtime = {35,60, loop = false, type = "series"}, -- unknown
 		},
 		timers = {
 			firelaywaste = {
@@ -38,6 +41,12 @@ do
 					"alert","portaldur",
 				}
 			},
+			fireblazing = {
+				{
+					"alert","blazingskeletoncd",
+					"scheduletimer",{"fireblazing",60},
+				},
+			},
 		},
 		alerts = {
 			enragecd = {
@@ -48,6 +57,15 @@ do
 				flashtime = 10,
 				color1 = "RED",
 				icon = ST[12317],
+			},
+			blazingskeletoncd = {
+				varname = format(L.alert["%s Spawns"],L.npc_citadel["Blazing Skeleton"]),
+				type = "dropdown",
+				text = format(L.alert["%s Spawns"],L.npc_citadel["Blazing Skeleton"]),
+				time = 35,
+				flashtime = 10,
+				color1 = "YELLOW",
+				icon = ST[49264],
 			},
 			portalcd = {
 				varname = format(L.alert["%s Cooldown"],L.alert["Portals"]),
@@ -145,6 +163,7 @@ do
 				spellid = {
 					71086, -- 10
 					71743, -- 25
+					72030, -- 25h
 				},
 				execute = {
 					{
@@ -160,6 +179,7 @@ do
 				spellid = {
 					71086, -- 10
 					71743, -- 25
+					72030, -- 25h
 				},
 				execute = {
 					{
@@ -174,7 +194,7 @@ do
 				eventtype = "SPELL_AURA_APPLIED",
 				spellid = {
 					69325, -- 10
-					71730, -- 25
+					71730, -- 25, 25h
 				},
 				execute = {
 					{
@@ -189,7 +209,7 @@ do
 				eventtype = "SPELL_AURA_REMOVED",
 				spellid = {
 					69325, -- 10
-					71730, -- 25
+					71730, -- 25, 25h
 				},
 				execute = {
 					{
@@ -206,6 +226,7 @@ do
 				spellid = {
 					70633, -- 10
 					71283, -- 25
+					72026, -- 25h
 				},
 				execute = {
 					{
@@ -220,6 +241,7 @@ do
 				spellid = {
 					70751, -- 10
 					71738, -- 25
+					72022, -- 25h
 				},
 				execute = {
 					{
@@ -236,6 +258,7 @@ do
 				spellid = {
 					70751, -- 10
 					71738, -- 25
+					72022, -- 25h
 				},
 				execute = {
 					{
