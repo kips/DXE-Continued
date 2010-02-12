@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 7,
+		version = 8,
 		key = "rotface", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -153,6 +153,7 @@ do
 				spellid = {
 					69674, -- 10
 					71224, -- 25
+					73023, -- 25h
 				},
 				execute = {
 					{
@@ -175,6 +176,7 @@ do
 				spellid = {
 					69674, -- 10
 					71224, -- 25
+					73023, -- 25h
 				},
 				execute = {
 					{
@@ -201,6 +203,7 @@ do
 				eventtype = "SPELL_DAMAGE",
 				spellid = {
 					71213, -- 25
+					73190, -- 25h
 					69507, -- 10
 				},
 				execute = {
