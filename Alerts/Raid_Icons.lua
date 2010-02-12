@@ -273,5 +273,6 @@ end
 -------------------------------------------
 
 function module:HasIcon(unit,icon)
-	return GetRaidTargetIndex(unit) == pfl[icon]
+	icon = tonumber(icon)
+	return icon and GetRaidTargetIndex(unit) == pfl[icon]
 end
