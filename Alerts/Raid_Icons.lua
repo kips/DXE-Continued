@@ -201,6 +201,8 @@ do
 	-- API
 	---------------------------------
 
+	-- TODO: Convert to use UNIT_TARGET and UPDATE_MOUSEOVER_UNIT
+
 	-- @param persist <number> number of seconds to attempt marking
 	-- @param remove <boolean> whether or not to remove after persist
 	function module:MarkEnemy(guid,icon,persist,remove)
