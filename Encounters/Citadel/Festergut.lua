@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 8,
+		version = 9,
 		key = "festergut", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -274,6 +274,7 @@ do
 				spellid = {
 					72551, -- 25
 					72219, -- 10
+					72553, -- 25h
 				},
 				execute = {
 					{
@@ -295,6 +296,7 @@ do
 				spellid = {
 					72551, -- 25
 					72219, -- 10
+					72553, -- 25h
 				},
 				execute = {
 					{
