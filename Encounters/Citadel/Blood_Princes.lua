@@ -1,4 +1,5 @@
 do
+	-- TODO: Empowered Shock cooldown for 10, 25, and 10h
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
 		version = 16,
@@ -37,10 +38,13 @@ do
 		userdata = {
 			invocationtime = {33,46.5,loop = false, type = "series"},
 			shocktext = "",
+			empoweredtime = 10,
 		},
 		onstart = {
 			{
 				"alert","invocationcd",
+				"alert","empoweredshockcd",
+				"set",{empoweredtime = 20},
 			},
 		},
 		alerts = {
@@ -73,6 +77,16 @@ do
 				sound = "ALERT2",
 				icon = ST[73037],
 				flashscreen = true,
+			},
+			empoweredshockcd = {
+				varname = format(L.alert["%s Cooldown"],SN[73037]),
+				type = "dropdown",
+				text = format(L.alert["%s Casting"],SN[73037]),
+				time = "<empoweredtime>",
+				flashtime = 5,
+				color1 = "BLACK",
+				sound = "ALERT5",
+				icon = ST[73037],
 			},
 			shockwarn = {
 				varname = format(L.alert["%s Cast"],SN[72037]),
@@ -217,8 +231,8 @@ do
 				eventtype = "SPELL_AURA_APPLIED",
 				spellid = {
 					70952, -- Valanar
-					70982, -- Taldaram gains
-					70981, -- Keleseth gains
+					70982, -- Taldaram
+					70981, -- Keleseth
 					70983,
 					71582,
 					70934,
@@ -228,6 +242,15 @@ do
 					{
 						"alert","invocationcd",
 						"alert","invocationwarn",
+					},
+					{
+						"expect",{"&npcid|#4#&","==","37970"}, -- Valanar
+						"set",{empoweredtime = 6},
+						"alert","empoweredshockcd",
+					},
+					{
+						"expect",{"&npcid|#4#&","~=","37970"}, -- Valanar
+						"quash","empoweredshockcd",
 					},
 				}	
 			},
