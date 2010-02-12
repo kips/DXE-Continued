@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 14,
+		version = 16,
 		key = "bloodprincecouncil", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -23,7 +23,11 @@ do
 				37973, -- Taldaram
 			},
 			]]
-			unittracing = {"boss1","boss2","boss3"},
+			unittracing = {
+				"boss3", -- Valanar
+				"boss2",
+				"boss1",
+			},
 			defeat = {
 				37970, -- Valanar
 				37972, -- Keleseth
@@ -212,13 +216,13 @@ do
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
 				spellid = {
-					70983,
+					70952, -- Valanar
 					70982, -- Taldaram gains
 					70981, -- Keleseth gains
+					70983,
 					71582,
 					70934,
 					71596,
-					70952,
 				},
 				execute = {
 					{
