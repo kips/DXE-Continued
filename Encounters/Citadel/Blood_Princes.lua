@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 13,
+		version = 14,
 		key = "bloodprincecouncil", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -178,7 +178,7 @@ do
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
 				spellid = {
-					72037, -- 25
+					72037, -- 25, 25h
 					71944, -- 10
 				},
 				execute = {
@@ -234,6 +234,7 @@ do
 				spellid = {
 					73037, -- 25
 					72039,
+					73039, -- 25h
 				},
 				execute = {
 					{
