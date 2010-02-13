@@ -19,7 +19,7 @@ do
 	end
 
 	local data = {
-		version = 10,
+		version = 11,
 		key = "gunshipbattle", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -145,6 +145,7 @@ do
 				eventtype = "SPELL_AURA_APPLIED",
 				spellid = {
 					69638, -- 10
+					72307, -- 10h
 					72306, -- 25
 					72308, -- 25h
 				},
@@ -162,6 +163,7 @@ do
 				eventtype = "SPELL_AURA_APPLIED_DOSE",
 				spellid = {
 					69638, -- 10
+					72307, -- 10h
 					72306, -- 25
 					72308, -- 25h
 				},
