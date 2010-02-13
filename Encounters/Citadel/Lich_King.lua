@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 41,
+		version = 42,
 		key = "lichking", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -271,6 +271,11 @@ do
 				type = "SAY",
 				msg = format(L.alert["%s on Me"],SN[72762]).."!",
 			},
+			necroplaguesay = {
+				varname = format(L.alert["Say %s on self"],SN[70337]),
+				type = "SAY",
+				msg = format(L.alert["%s on Me"],SN[70337]).."!",
+			},
 		},
 		raidicons = {
 			defilemark = {
@@ -371,6 +376,7 @@ do
 						"expect",{"#4#","==","&playerguid&"},
 						"alert","necroplagueself",
 						"raidicon","necroplaguemark",
+						"announce","necroplaguesay",
 					},
 					{
 						"expect",{"#4#","~=","&playerguid&"},
