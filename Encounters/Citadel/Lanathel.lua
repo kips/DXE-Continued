@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 20,
+		version = 21,
 		key = "lanathel", 
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"], 
@@ -114,8 +114,8 @@ do
 				varname = format(L.alert["%s on others"],SN[71265]),
 				type = "centerpopup",
 				text = format("%s: #5#!",SN[71265]),
-				time = 6,
-				flashtime = 6,
+				time = 8.5,
+				flashtime = 8.5,
 				color1 = "BLACK",
 				icon = ST[71265],
 			},
@@ -162,19 +162,14 @@ do
 						"expect",{"#1#","find",L.chat_citadel["^Shadows amass and swarm"]},
 						"quash","swarmingshadowcd",
 						"alert","swarmingshadowcd",
+						-- Swarming Shadows self
 						"expect",{"#5#","==","&playername&"},
 						"alert","swarmingshadowself",
 					},
-				},
-			},
-			-- Swarming Shadows others
-			{
-				type = "combatevent",
-				eventtype = "SPELL_AURA_APPLIED",
-				spellid = 71265,
-				execute = {
 					{
-						"expect",{"#4#","~=","&playerguid&"},
+						-- Swarming Shadows others
+						"expect",{"#1#","find",L.chat_citadel["^Shadows amass and swarm"]},
+						"expect",{"#5#","~=","&playername&"},
 						"alert","swarmingshadowothers",
 					},
 				},
@@ -188,6 +183,10 @@ do
 					{
 						"expect",{"#4#","~=","&playerguid&"},
 						"quash","swarmingshadowothers",
+					},
+					{
+						"expect",{"#4#","==","&playerguid&"},
+						"quash","swarmingshadowself",
 					},
 				},
 			},
@@ -206,7 +205,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellid = 71340,
+				spellid = 71340, -- 10/25/25h
 				execute = {
 					{
 						"expect",{"#4#","==","&playerguid&"},
@@ -234,6 +233,7 @@ do
 					71473,
 					71525,
 					70867, -- 10
+					71533, -- 25h
 				},
 				execute = {
 					{
