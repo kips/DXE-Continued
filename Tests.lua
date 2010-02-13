@@ -193,6 +193,15 @@ end
 
 ]]
 
+--[[
+function addon:RAIDICONTEST()
+	addon.RaidIcons:MultiMarkEnemy("test","0xF130007FAE00082F",1,10,true,10,4)
+	addon.RaidIcons:MultiMarkEnemy("test","0xF130007FAB000830",2,10,true,10,4)
+	addon.RaidIcons:MultiMarkEnemy("test","0xF1300072460078AF",3,10,true,10,4)
+	addon.RaidIcons:MultiMarkEnemy("test","0xF130007246008337",4,10,true,10,4)
+end
+]]
+
 --[CLEU] SWING_MISSED:0x0280000002BFF92A:Slivr:1300:0xF1300086C002F048:Eydis Darkbane:2632:ABSORB:5150:", -- [11700]
 --[CLEU] SPELL_MISSED:         0x028000000155E9AD: Nokaru:263444:0xF1300086C002F048:Eydis Darkbane:2632:48480:Maul:1:  ABSORB:9229:", -- [11678]
 --[CLEU] SPELL_PERIODIC_MISSED:0x0280000000529C7E: Lamissa:1300:0xF1300086C002F048: Eydis Darkbane:2632:49800:Rip:1:   ABSORB:3314:", -- [11705]

@@ -3,14 +3,6 @@ local defaults = {
 	--@debug@
 	global = {
 		debug = {
-			MarkGUID = false,
-			MarkEnemy = false,
-			MultiMarkEnemy = false,
-			CancelMark = false,
-			ResetCount = false,
-			RemovePlayerIcon = false,
-			RemoveSingleIcon = false,
-			RemoveMultipleIcons = false,
 		},
 	},
 	--@end-debug@
@@ -23,12 +15,13 @@ local addon = DXE
 local L = addon.L
 
 local wipe = table.wipe
+local targetof = addon.targetof
 local SetRaidTarget = SetRaidTarget
 local GetRaidTargetIndex = GetRaidTargetIndex
 local UnitGUID = UnitGUID
 local ipairs,pairs = ipairs,pairs
 
-local module = addon:NewModule("RaidIcons","AceTimer-3.0")
+local module = addon:NewModule("RaidIcons","AceTimer-3.0","AceEvent-3.0")
 addon.RaidIcons = module
 
 local db,pfl
@@ -94,7 +87,8 @@ do
 		local ix = friendly_cnt[var] or 0
 		-- maxed out
 		if ix >= total then return end
-		self:MarkFriendly(unit,icon + ix,persist)
+		icon = icon + ix -- calc icon
+		self:MarkFriendly(unit,icon,persist)
 		friendly_cnt[var] = ix + 1
 		if not count_resets[var] then
 			count_resets[var] = self:ScheduleTimer(ResetCount,reset,var)
@@ -113,122 +107,132 @@ end
 -------------------------------------------
 
 do
+	local PAUSE_TIME = 0.5
 	local unit_to_unittarget = addon.Roster.unit_to_unittarget
-	local DELAY = 0.1
 	local enemy_cnt = {}      -- var  -> count
 	local count_resets = {}   -- var  -> handle
-	local execs = {}          -- guid -> handle
-	local cancels = {}        -- guid -> handle
-	local icons = {}          -- guid -> icon
 	local used_icons = {}     -- var  -> {icons}
 	local removes = {}        -- var  -> handle
 
+	local guids = {}          -- guid -> icon
+	local teardown_handle
+	local registered          -- whether or not we registered for events
+
+	local function Teardown()
+		if registered then
+			module:UnregisterEvent("UNIT_TARGET")
+			module:UnregisterEvent("UPDATE_MOUSEOVER_UNIT")
+			registered = nil
+		end
+		if teardown_handle then
+			module:CancelTimer(teardown_handle)
+			teardown_handle = nil
+		end
+		wipe(guids)
+	end
+
+	local function MarkUnit(unit)
+		--@debug@
+		assert(type(unit) == "string")
+		--@end-debug@
+
+		local guid = UnitGUID(unit)
+		if guid then
+			local icon = guids[guid]
+			if icon then
+				SetRaidTarget(unit,pfl[icon])
+				guids[guid] = nil
+				-- teardown if guids is empty
+				if not next(guids) then Teardown() end
+				return true
+			end
+		end
+	end
+
 	local function MarkGUID(guid,icon)
+		--@debug@
+		assert(type(guid) == "string")
+		assert(type(icon) == "number")
+		--@end-debug@
+
 		for _,unit in pairs(unit_to_unittarget) do
 			if UnitGUID(unit) == guid then
-				--@debug@
-				debug("MarkGUID","guid: %s icon: %s",guid,icon)
-				--@end-debug@
 				SetRaidTarget(unit,pfl[icon])
 				return true
 			end
 		end
 	end
 
-	local function CancelMark(guid)
-		--@debug@
-		debug("CancelMark","guid: %s",guid)
-		--@end-debug@
-
-		module:CancelTimer(cancels[guid],true)
-		cancels[guid] = nil
-
-		module:CancelTimer(execs[guid],true)
-		execs[guid] = nil
-
-		icons[guid] = nil
-	end
-
-	local function ExecuteMark(guid)
-		local success = MarkGUID(guid,icons[guid])
-		if success then CancelMark(guid) end
-	end
-
 	local function ResetCount(var)
-		--@debug@
-		debug("ResetCount","Executed")
-		--@end-debug@
 		enemy_cnt[var]    = nil
 		count_resets[var] = nil
 	end
 
-	-- Removals
-
 	-- Note: SetRaidTarget("player",[1-8]); SetRaidTarget("player",0) doesn't work
-	-- so the second call has to be scheduled 0.1s later
+	-- so the second call has to be scheduled PAUSE_TIME later
 
 	local function RemovePlayerIcon()
-		--@debug@
-		debug("RemovePlayerIcon","Executed")
-		--@end-debug@
 		SetRaidTarget("player",0)
 	end
 
 	local function RemoveSingleIcon(icon)
-		--@debug@
-		debug("RemoveSingleIcon","icon: %s",icon)
-		--@end-debug@
 		SetRaidTarget("player",pfl[icon])
-		module:ScheduleTimer(RemovePlayerIcon,0.1)
+		module:ScheduleTimer(RemovePlayerIcon,PAUSE_TIME)
 	end
 
 	local function RemoveMultipleIcons(var)
 		local t = used_icons[var]
 		if t then
-			--@debug@
-			debug("RemoveMultipleIcons","var: %s icons: %s",var,table.concat(t,", "))
-			--@end-debug@
 			for i,icon in ipairs(t) do
 				SetRaidTarget("player",pfl[icon])
-				t[i] = nil
+				t[i] = nil -- reuse table during attempt
 			end
 		end
 		removes[var] = nil
-		module:ScheduleTimer(RemovePlayerIcon,0.1)
+		module:ScheduleTimer(RemovePlayerIcon,PAUSE_TIME)
+	end
+
+	---------------------------------
+	-- EVENTS
+	---------------------------------
+
+	function module:UNIT_TARGET(_,unit)
+		MarkUnit(targetof[unit])
+	end
+
+	function module:UPDATE_MOUSEOVER_UNIT()
+		MarkUnit("mouseover")
 	end
 
 	---------------------------------
 	-- API
 	---------------------------------
 
-	-- TODO: Convert to use UNIT_TARGET and UPDATE_MOUSEOVER_UNIT
-
 	-- @param persist <number> number of seconds to attempt marking
 	-- @param remove <boolean> whether or not to remove after persist
 	function module:MarkEnemy(guid,icon,persist,remove)
 		local success = MarkGUID(guid,icon)
-		--@debug@
-		debug("MarkEnemy","guid: %s icon: %s persist: %s remove: %s",guid,icon,persist,remove)
-		--@end-debug@
 		if not success then
-			icons[guid] = icon
-			execs[guid] = self:ScheduleRepeatingTimer(ExecuteMark,DELAY,guid)
-			cancels[guid] = self:ScheduleTimer(CancelMark,persist,guid)
+			guids[guid] = icon
+			if not registered then
+				self:RegisterEvent("UNIT_TARGET")
+				self:RegisterEvent("UPDATE_MOUSEOVER_UNIT")
+				registered = true
+			end
+			if teardown_handle then self:CancelTimer(teardown_handle) end
+			teardown_handle = self:ScheduleTimer(Teardown,persist)
 		end
 
 		if remove then self:ScheduleTimer(RemoveSingleIcon,persist,icon) end
 	end
 
 	function module:MultiMarkEnemy(var,guid,icon,persist,remove,reset,total)
-		--@debug@
-		debug("MultiMarkEnemy","Executed")
-		--@end-debug@
-
 		-- var keeps track of icon count
 		local ix = enemy_cnt[var] or 0
 		-- maxed out
 		if ix >= total then return end
-		self:MarkEnemy(guid,icon + ix,persist) -- ignore single icon removing
+		icon = icon + ix -- calc icon
+		self:MarkEnemy(guid,icon,persist) -- ignore single icon removing
 		enemy_cnt[var] = ix + 1
 		if not count_resets[var] then
 			count_resets[var] = self:ScheduleTimer(ResetCount,reset,var)
@@ -241,7 +245,7 @@ do
 				t = {}
 				used_icons[var] = t
 			end
-			t[#t+1] = icon + ix
+			t[#t+1] = icon
 			-- make sure we only schedule one
 			if not removes[var] then
 				removes[var] = self:ScheduleTimer(RemoveMultipleIcons,persist,var)
@@ -250,13 +254,11 @@ do
 	end
 
 	function module:RemoveAllEnemy()
-		wipe(execs)
-		wipe(cancels)
-		wipe(icons)
 		wipe(enemy_cnt)
 		wipe(count_resets)
 		wipe(used_icons)
 		wipe(removes)
+		Teardown()
 	end
 end
 
@@ -267,7 +269,7 @@ end
 function module:RemoveAll()
 	self:RemoveAllFriendly()
 	self:RemoveAllEnemy()
-	self:CancelAllTimers()
+	self:CancelAllTimers() -- goes last
 end
 
 -------------------------------------------
