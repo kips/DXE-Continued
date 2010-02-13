@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 27,
+		version = 28,
 		key = "deathwhisper", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -154,7 +154,7 @@ do
 				type = "combatevent",
 				eventtype = "SPELL_SUMMON",
 				spellid = {
-					71426, -- 10,25,25h
+					71426, -- 10,10h,25,25h
 				},
 				execute = {
 					{
@@ -167,7 +167,8 @@ do
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
 				spellid = {
-					71001,
+					71001, -- 10
+					72109, -- 10h
 					72108, -- 25
 					72110, -- 25h
 				},
@@ -275,6 +276,7 @@ do
 				eventtype = "SPELL_CAST_START",
 				spellid = {
 					71420, -- 10
+					72501, -- 10h
 					72007, -- 25
 					72502, -- 25h
 				},
@@ -290,6 +292,7 @@ do
 				eventtype = "SPELL_INTERRUPT",
 				spellid2 = {
 					71420, -- 10
+					72501, -- 10h
 					72007, -- 25
 					72502, -- 25h
 				},
