@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 16,
+		version = 17,
 		key = "putricide", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -563,12 +563,16 @@ do
 					},
 				},
 			},
-			-- Unbound Plauge
+			-- Unbound Plague
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
 				spellid = 72855,
 				execute = {
+					{
+						"quash", "unboundplaguewarn",
+						"quash", "unboundplagueself",
+					},
 					{
 						"expect",{"#4#","==","&playerguid&"},
 						"alert","unboundplagueself",
@@ -582,7 +586,7 @@ do
 					},
 				},
 			},
-			-- Unbound Plauge removal
+			-- Unbound Plague removal
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_REMOVED",
@@ -590,6 +594,7 @@ do
 				execute = {
 					{
 						"quash", "unboundplaguewarn",
+						"quash", "unboundplagueself",
 					},
 				},
 			}
