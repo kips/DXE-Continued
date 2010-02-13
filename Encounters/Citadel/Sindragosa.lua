@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 12,
+		version = 13,
 		key = "sindragosa", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -157,7 +157,7 @@ do
 				reset = 2,
 				unit = "#5#",
 				icon = 1,
-				total = 5,
+				total = 6,
 			},
 		},
 		arrows = {
