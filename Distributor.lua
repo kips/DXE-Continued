@@ -85,7 +85,7 @@ function module:Distribute(key, dist, target)
 	if addon.util.tablesize(Uploads) == 4 then UploadQueue[key] = self:Serialize(key,dist,target) return end
 	local serialData = self:Serialize(data)
 	local length = len(serialData)
-	local message = format("UPDATE:%s:%d:%d:%s:%s",key,data.version,length,data.name,GetLocale()) -- ex. UPDATE:sartharion:150:800:Sartharion:enUS
+	local message = format("UPDATE:%s:%g:%d:%s:%s",key,data.version,length,data.name,GetLocale()) -- ex. UPDATE:sartharion:150:800:Sartharion:enUS
 
 	-- Create upload bar
 	local bar = self:GetProgressBar()
