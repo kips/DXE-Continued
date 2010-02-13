@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 14,
+		version = 16,
 		key = "putricide", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -201,6 +201,21 @@ do
 				throttle = 10,
 				icon = ST[70341],
 			},
+			unboundplaguewarn = {
+				varname = format(L.alert["%s Warning"],SN[72855]),
+				type = "simple",
+				text = format("%s: %s!",SN[72855],"#5#"),
+				time = 5,
+				icon = SN[72855],
+			},
+			unboundplagueself = {
+				varname = format(L.alert["%s on self"],SN[72855]),
+				type = "simple",
+				text = format("%s: %s!",SN[72855],L.alert["YOU"]),
+				time = 5,
+				icon = SN[72855],
+				flashscreen = true,
+			},
 		},
 		raidicons = {
 			oozeadhesivemark = {
@@ -224,6 +239,13 @@ do
 				unit = "&tft_unitname&",
 				icon = 3,
 			},
+			unboundplaguemark = {
+				varname = SN[72855],
+				type = "FRIENDLY",
+				persist = 20,
+				unit = "#5#",
+				icon = 4,
+			},
 		},
 		arrows = {
 			malleablearrow = {
@@ -241,6 +263,11 @@ do
 				varname = format(L.alert["Say %s on self"],SN[72615]),
 				type = "SAY",
 				msg = format(L.alert["%s on Me"],SN[72615]).."!",
+			},
+			unboundplaguesay = {
+				varname = format(L.alert["Say %s on self"],SN[72855]),
+				type = "SAY",
+				msg = format(L.alert["%s on Me"],SN[72855]).."!",
 			},
 		},
 		timers = {
@@ -536,6 +563,36 @@ do
 					},
 				},
 			},
+			-- Unbound Plauge
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellid = 72855,
+				execute = {
+					{
+						"expect",{"#4#","==","&playerguid&"},
+						"alert","unboundplagueself",
+						"raidicon","unboundplaguemark",
+						"announce","unboundplaguesay",
+					},
+					{
+						"expect",{"#4#","~=","&playerguid&"},
+						"alert","unboundplaguewarn",
+						"raidicon","unboundplaguemark",
+					},
+				},
+			},
+			-- Unbound Plauge removal
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_REMOVED",
+				spellid = 72855,
+				execute = {
+					{
+						"quash", "unboundplaguewarn",
+					},
+				},
+			}
 		},
 	}
 
