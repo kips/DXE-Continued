@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 39,
+		version = 41,
 		key = "lichking", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -31,7 +31,6 @@ do
 			valkyrtime = {20,47,loop = false, type = "series"},
 			harvesttime = {12.5,75,loop = false, type = "series"},
 			viletime = {18.9,30.5, loop = false, type = "series"}, -- most of the time it's 20.5 initially
-			necroplaguetext = "",
 			harvestsoultext = "",
 			ragingtext = "",
 			enragecount = 0,
@@ -57,11 +56,22 @@ do
 			necroplaguedur = {
 				varname = format(L.alert["%s Duration"],SN[70337]),
 				type = "centerpopup",
-				text = "<necroplaguetext>",
+				text = format("%s: #5#!",SN[70338]), 
 				time = 15,
 				flashtime = 15,
 				color1 = "GREEN",
 				icon = ST[70337],
+			},
+			necroplagueself = {
+				varname = format(L.alert["%s on self"],SN[70337]),
+				type = "centerpopup",
+				text = format("%s: %s!",SN[70337],L.alert["YOU"]).."!",
+				time = 15,
+				flashtime = 15,
+				color1 = "GREEN",
+				sound = "ALERT10",
+				icon = ST[70337],
+				flashscreen = true,
 			},
 			shamblinghorrorwarn = {
 				varname = format(L.alert["%s Warning"],L.npc_citadel["Shambling Horror"]),
@@ -359,13 +369,11 @@ do
 				execute = {
 					{
 						"expect",{"#4#","==","&playerguid&"},
-						"set",{necroplaguetext = format("%s: %s!",SN[70338],L.alert["YOU"])},
-						"alert","necroplaguedur",
+						"alert","necroplagueself",
 						"raidicon","necroplaguemark",
 					},
 					{
 						"expect",{"#4#","~=","&playerguid&"},
-						"set",{necroplaguetext = format("%s: #5#!",SN[70338])},
 						"alert","necroplaguedur",
 						"raidicon","necroplaguemark",
 					},
@@ -386,6 +394,7 @@ do
 				execute = {
 					{
 						"quash","necroplaguedur",
+						"quash","necroplagueself",
 					},
 				},
 			},
