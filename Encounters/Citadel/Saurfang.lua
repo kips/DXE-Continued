@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 12,
+		version = 13,
 		key = "saurfang", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -25,6 +25,10 @@ do
 		},
 		onstart = {
 			{
+				"expect",{"&difficulty&",">=","3"},
+				"set",{enragetime = 360},
+			},
+			{
 				"alert","bloodbeastcd",
 				"alert","enragecd",
 				"alert","runeofbloodcd",
@@ -35,7 +39,7 @@ do
 				varname = L.alert["Enrage"],
 				type = "dropdown",
 				text = L.alert["Enrage"],
-				time = 480,
+				time = "<enragetime>",
 				flashtime = 10,
 				color1 = "RED",
 				icon = ST[12317],
