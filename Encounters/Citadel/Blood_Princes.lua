@@ -2,7 +2,7 @@ do
 	-- TODO: Empowered Shock cooldown for 10, 25, and 10h
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 16,
+		version = 17,
 		key = "bloodprincecouncil", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -196,8 +196,8 @@ do
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
 				spellid = {
-					72037, -- 25, 25h
-					71944, -- 10
+					72037, -- 10/25 (Note the damage entries use a different spellid from the cast) 
+					71944, -- 10 (Not sure if we really need this at all)
 				},
 				execute = {
 					{
@@ -260,8 +260,9 @@ do
 				eventtype = "SPELL_CAST_START",
 				spellid = {
 					73037, -- 25
-					72039,
 					73039, -- 25h
+					72039, -- 10
+					73038, -- 10h
 				},
 				execute = {
 					{
