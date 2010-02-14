@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 42,
+		version = 43,
 		key = "lichking", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -515,6 +515,7 @@ do
 					68981, -- 10 first
 					72259, -- 10 second
 					74270, -- 25
+					74273, -- 25 second
 				},
 				execute = {
 					{
