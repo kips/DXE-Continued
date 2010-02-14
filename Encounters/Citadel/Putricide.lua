@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 17,
+		version = 18,
 		key = "putricide", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -567,7 +567,10 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellid = 72855,
+				spellid = { 
+					72855, -- 10h
+					72856, -- 25h
+				},
 				execute = {
 					{
 						"quash", "unboundplaguewarn",
@@ -590,7 +593,10 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_REMOVED",
-				spellid = 72855,
+				spellid = { 
+					72855, -- 10h
+					72856, -- 25h
+				},
 				execute = {
 					{
 						"quash", "unboundplaguewarn",
