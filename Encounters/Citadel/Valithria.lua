@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 9,
+		version = 10,
 		key = "valithria", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -162,6 +162,7 @@ do
 				eventtype = "SPELL_DAMAGE",
 				spellid = {
 					71086, -- 10
+					72029, -- 10h
 					71743, -- 25
 					72030, -- 25h
 				},
@@ -178,6 +179,7 @@ do
 				eventtype = "SPELL_MISSED",
 				spellid = {
 					71086, -- 10
+					72029, -- 10h
 					71743, -- 25
 					72030, -- 25h
 				},
@@ -193,7 +195,7 @@ do
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
 				spellid = {
-					69325, -- 10
+					69325, -- 10, 10h
 					71730, -- 25, 25h
 				},
 				execute = {
@@ -208,7 +210,7 @@ do
 				type = "combatevent",
 				eventtype = "SPELL_AURA_REMOVED",
 				spellid = {
-					69325, -- 10
+					69325, -- 10, 10h
 					71730, -- 25, 25h
 				},
 				execute = {
@@ -225,6 +227,7 @@ do
 				eventtype = "SPELL_CAST_SUCCESS",
 				spellid = {
 					70633, -- 10
+					72025, -- 10h
 					71283, -- 25
 					72026, -- 25h
 				},
@@ -240,6 +243,7 @@ do
 				eventtype = "SPELL_AURA_APPLIED",
 				spellid = {
 					70751, -- 10
+					72021, -- 10h
 					71738, -- 25
 					72022, -- 25h
 				},
@@ -257,6 +261,7 @@ do
 				eventtype = "SPELL_AURA_APPLIED_DOSE",
 				spellid = {
 					70751, -- 10
+					72021, -- 10h
 					71738, -- 25
 					72022, -- 25h
 				},
