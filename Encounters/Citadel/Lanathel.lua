@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 21,
+		version = 22,
 		key = "lanathel", 
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"], 
@@ -205,7 +205,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellid = 71340, -- 10/25/25h
+				spellid = 71340, -- 10/10h/25/25h
 				execute = {
 					{
 						"expect",{"#4#","==","&playerguid&"},
@@ -234,6 +234,7 @@ do
 					71525,
 					70867, -- 10
 					71533, -- 25h
+					71532, -- 10h
 				},
 				execute = {
 					{
