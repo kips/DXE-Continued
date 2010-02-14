@@ -15,6 +15,7 @@ do
 			bloodtext = "",
 			markfallentext = "",
 			runebloodtime = {22,20,loop = false, type = "series"},
+			enragetime = 480,
 		},
 		onactivate = {
 			tracerstart = true,

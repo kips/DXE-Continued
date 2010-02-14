@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 11,
+		version = 12,
 		key = "marrowgar", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -123,6 +123,8 @@ do
 				execute = {
 					{
 						"alert","bonestormwarn",
+						"expect",{"&difficulty&","<=","2"},
+						"quash","graveyardcd",
 					},
 				},
 			},
