@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 14,
+		version = 15,
 		key = "sindragosa", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -203,7 +203,7 @@ do
 				spell = L.alert["South"],
 				fixed = true,
 				xpos = 0.36525920033455,
-				ypos = 0.24926269054413,
+				ypos = 0.250081539154054,
 			},
 			southsoutharrow = {
 				varname = format(L.alert["%s Beacon Position"],L.alert["South"].." "..L.alert["South"]),
@@ -216,6 +216,17 @@ do
 				xpos = 0.36546084284782,
 				ypos = 0.27346137166023,
 			},
+			easteastarrow = {
+				varname = format(L.alert["%s Beacon Position"],L.alert["East"].." "..L.alert["East"]),
+				unit = "player",
+				persist = 7,
+				action = "TOWARD",
+				msg = L.alert["MOVE THERE"],
+				spell = L.alert["East"].." "..L.alert["East"],
+				fixed = true,
+				xpos = 0.39097648859024,
+				ypos = 0.23303273320198,
+			},
 		},
 		timers = {
 			checkbeacon = {
@@ -224,7 +235,7 @@ do
 					-- Icon positioning is the following:
 					--     1
 					--
-					-- 3       4
+					-- 3       4    6
 					--
 					--     2
 					--
@@ -250,6 +261,10 @@ do
 						{
 							"expect",{"&hasicon|player|5&","==","true"}, -- Triangle
 							"arrow","southsoutharrow",
+						},
+						{
+							"expect",{"&hasicon|player|6&","==","true"}, -- Diamond
+							"arrow","easteastarrow",
 						},
 					},
 				},
@@ -486,12 +501,3 @@ do
 
 	DXE:RegisterEncounter(data)
 end
-
---[[
-	Block positions
-	0.35448017716408, 0.23266260325909 West
-	0.3654870390892,  0.2162726521492  North
-	0.37621337175369, 0.23285666108131 East
-	0.36525920033455, 0.24926269054413 South
-	0.36546084284782, 0.27346137166023 South South
-]]
