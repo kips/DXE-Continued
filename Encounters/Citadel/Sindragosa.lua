@@ -20,6 +20,9 @@ do
 			airtime = {63.5,110,loop = false, type = "series"},
 			phase = "1",
 			instabilitytext = "",
+			unchainedtime = 30,
+			frostbeacontext = "",
+			icygriptime = {33.8,67.2, loop = false, type = "series"},
 		},
 		onstart = {
 			{
@@ -40,7 +43,7 @@ do
 			frostbeacondur = {
 				varname = format(L.alert["%s Duration"],SN[70126]),
 				type = "centerpopup",
-				text = format(L.alert["%s Duration"],SN[70126]),
+				text = "<frostbeacontext>",
 				time = 7,
 				flashtime = 7,
 				color1 = "GOLD",
@@ -56,17 +59,15 @@ do
 				sound = "ALERT7",
 				flashscreen = true,
 			},
-			--[[
 			icygripcd = {
 				varname = format(L.alert["%s Cooldown"],SN[70117]),
 				type = "dropdown",
 				text = format(L.alert["%s Cooldown"],SN[70117]),
-				--time = 60,
+				time = "<icygriptime>",
 				flashtime = 10,
-				--color1 = ,
+				color1 = "GREY",
 				icon = ST[70117],
 			},
-			]]
 			blisteringcoldwarn = {
 				varname = format(L.alert["%s Casting"],SN[71047]),
 				type = "centerpopup",
@@ -86,6 +87,16 @@ do
 				color1 = "TURQUOISE",
 				flashscreen = true,
 				sound = "ALERT3",
+				icon = ST[69762],
+			},
+			unchainedcd = {
+				varname = format(L.alert["%s Cooldown"],SN[69762]),
+				type = "dropdown",
+				text = format(L.alert["%s Cooldown"],SN[69762]),
+				time = "<unchainedtime>",
+				flashtime = 10,
+				color1 = "WHITE",
+				sound = "ALERT5",
 				icon = ST[69762],
 			},
 			instabilityself = {
@@ -280,14 +291,19 @@ do
 					{
 						"expect",{"#1#","find",L.chat_citadel["^Your incursion ends here"]},
 						"quash","aircd",
+						"quash","unchainedcd",
+						"set",{unchainedtime = 55},
+						"alert","unchainedcd",
+						"set",{unchainedtime = 30},
 						"alert","aircd",
 						"alert","airdur",
 					},
 					-- Last Phase
 					{
 						"expect",{"#1#","find",L.chat_citadel["^Now, feel my master's limitless power"]},
-						"set",{phase = "2"},
+						"set",{phase = "2", unchainedtime = 80},
 						"quash","aircd",
+						"alert","icygripcd",
 					},
 				},
 			},
@@ -312,6 +328,14 @@ do
 					70126, -- 10,25,25h
 				},
 				execute = {
+					{
+						"expect",{"<phase>","==","1"},
+						"set",{frostbeacontext = format(L.alert["%s Duration"],SN[70126])},
+					},
+					{
+						"expect",{"<phase>","==","2"},
+						"set",{frostbeacontext = format("%s: #5#!",SN[70126])},
+					},
 					{
 						"raidicon","frostbeaconmark",
 						"alert","frostbeacondur",
@@ -346,7 +370,6 @@ do
 					},
 				},
 			},
-			--[[
 			-- Icy Grip
 			{
 				type = "combatevent",
@@ -356,11 +379,11 @@ do
 				},
 				execute = {
 					{
+						"expect",{"<phase>","==","2"},
 						"alert","icygripcd",
 					},
 				},
 			},
-			]]
 			-- Blistering Cold
 			{
 				type = "combatevent",
@@ -385,14 +408,6 @@ do
 					69762, -- 10,25,25h
 				},
 				execute = {
-					{
-						"expect",{"<phase>","==","1"},
-						"set",{unchainedtime = 30},
-					},
-					{
-						"expect",{"<phase>","==","2"},
-						"set",{unchainedtime = 80},
-					},
 					{
 						"alert","unchainedcd",
 					},
