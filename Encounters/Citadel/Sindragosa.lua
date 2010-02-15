@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 15,
+		version = 21,
 		key = "sindragosa", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -53,6 +53,7 @@ do
 				text = format("%s: %s!",SN[70126],L.alert["YOU"]).."!",
 				time = 3,
 				icon = ST[70126],
+				sound = "ALERT7",
 				flashscreen = true,
 			},
 			--[[
@@ -295,7 +296,7 @@ do
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
 				spellid = {
-					69712, -- 10/25
+					69712, -- 10,25,25h
 				},
 				execute = {
 					{
@@ -308,7 +309,7 @@ do
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
 				spellid = {
-					70126, -- 10/25
+					70126, -- 10,25,25h
 				},
 				execute = {
 					{
@@ -337,7 +338,7 @@ do
 				type = "combatevent",
 				eventtype = "SPELL_AURA_REMOVED",
 				spellid = {
-					70126, -- 25
+					70126, -- 10,25,25h
 				},
 				execute = {
 					{
@@ -351,7 +352,7 @@ do
 				type = "combatevent",
 				eventtype = "SPELL_CAST_SUCCESS",
 				spellid = {
-					70117, -- 10/25
+					70117, -- 10,25,25h
 				},
 				execute = {
 					{
@@ -368,6 +369,7 @@ do
 					70123, -- 10
 					71048, -- 10h
 					71047, -- 25
+					71049, -- 25h
 				},
 				execute = {
 					{
@@ -378,9 +380,30 @@ do
 			-- Unchained Magic
 			{
 				type = "combatevent",
+				eventtype = "SPELL_CAST_SUCCESS",
+				spellid = {
+					69762, -- 10,25,25h
+				},
+				execute = {
+					{
+						"expect",{"<phase>","==","1"},
+						"set",{unchainedtime = 30},
+					},
+					{
+						"expect",{"<phase>","==","2"},
+						"set",{unchainedtime = 80},
+					},
+					{
+						"alert","unchainedcd",
+					},
+				},
+			},
+			-- Unchained Magic application
+			{
+				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
 				spellid = {
-					69762, -- 10/25
+					69762, -- 10,25,25h
 				},
 				execute = {
 					{
@@ -394,7 +417,7 @@ do
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
 				spellid = {
-					69766, -- 10/25
+					69766, -- 10,25,25h
 				},
 				execute = {
 					{
@@ -409,7 +432,7 @@ do
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED_DOSE",
 				spellid = {
-					69766, -- 10/25
+					69766, -- 10,25,25h
 				},
 				execute = {
 					{
@@ -425,7 +448,7 @@ do
 				type = "combatevent",
 				eventtype = "SPELL_AURA_REMOVED",
 				spellid = {
-					69766, -- 10/25
+					69766, -- 10,25,25h
 				},
 				execute = {
 					{
@@ -439,7 +462,7 @@ do
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
 				spellid = {
-					70106, -- 10/25
+					70106, -- 10,25,25h
 				},
 				execute = {
 					{
@@ -454,7 +477,7 @@ do
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED_DOSE",
 				spellid = {
-					70106, -- 10/25
+					70106, -- 10,25,25h
 				},
 				execute = {
 					{
@@ -486,9 +509,10 @@ do
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
 				spellid = {
-					71056, -- 25
 					69649, -- 10
+					71056, -- 25
 					71057, -- 10h
+					71058, -- 25h
 				},
 				execute = {
 					{
