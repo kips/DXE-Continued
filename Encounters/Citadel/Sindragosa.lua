@@ -259,7 +259,7 @@ do
 				ypos = 0.23303273320198,
 			},
 			beaconarrow = {
-				varname = format("%s %s",SN[70126],format(L.alert["Phase %s"],3)),
+				varname = format("%s %s",SN[70126],L.alert["Phase Three"]),
 				unit = "#5#",
 				persist = 7,
 				action = "AWAY",
