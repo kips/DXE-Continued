@@ -2,7 +2,7 @@ do
 	-- TODO Add 25h Vile Gas warning and cooldown
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 9,
+		version = 10,
 		key = "rotface", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -119,7 +119,7 @@ do
 				icon = ST[69839],
 			},
 			unstableoozestackwarn = {
-				varname = format(L.alert["%s Stacks"],SN[69558]).." >= 3",
+				varname = format(L.alert["%s Stacks"],SN[69558]),
 				type = "simple",
 				text = format("%s => %s!",SN[69558],format(L.alert["%s Stacks"],"#11#")),
 				time = 3,
