@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 27,
+		version = 28,
 		key = "sindragosa", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -258,6 +258,14 @@ do
 				xpos = 0.39097648859024,
 				ypos = 0.23303273320198,
 			},
+			beaconarrow = {
+				varname = format("%s %s",SN[70126],format(L.alert["Phase %s"],3)),
+				unit = "#5#",
+				persist = 7,
+				action = "AWAY",
+				msg = L.alert["MOVE AWAY"],
+				spell = SN[70126],
+			},
 		},
 		timers = {
 			checkbeacon = {
@@ -395,6 +403,8 @@ do
 					{
 						"expect",{"<phase>","==","2"},
 						"set",{frostbeacontext = format("%s: #5#!",SN[70126])},
+						"expect",{"#4#","~=","&playerguid"},
+						"arrow","beaconarrow",
 					},
 					{
 						"raidicon","frostbeaconmark",
