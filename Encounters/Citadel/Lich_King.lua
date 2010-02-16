@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 43,
+		version = 44,
 		key = "lichking", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -50,6 +50,7 @@ do
 				type = "dropdown",
 				text = L.alert["Enrage"],
 				time = 900,
+				flashtime = 10,
 				color1 = "RED",
 				icon = ST[12317],
 			},
