@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 21,
+		version = 22,
 		key = "sindragosa", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -26,10 +26,20 @@ do
 		},
 		onstart = {
 			{
+				"alert","enragecd",
 				"alert","aircd",
 			},
 		},
 		alerts = {
+			enragecd = {
+				varname = L.alert["Enrage"],
+				type = "dropdown",
+				text = L.alert["Enrage"],
+				time = 600,
+				flashtime = 10,
+				color1 = "RED",
+				icon = ST[12317],
+			},
 			icetombwarn = {
 				varname = format(L.alert["%s Casting"],SN[69712]),
 				type = "centerpopup",
