@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 22,
+		version = 26,
 		key = "sindragosa", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -167,6 +167,15 @@ do
 				sound = "ALERT4",
 				icon = ST[71056],
 			},
+			mysticbuffetcd = {
+				varname = format(L.alert["%s Timer"],SN[72528]),
+				type = "centerpopup",
+				text = format(L.alert["Next %s"],SN[72528]),
+				time = 6,
+				color1 = "PINK",
+				icon = ST[72528],
+				throttle = 4,
+			},
 		},
 		windows = {
 			proxwindow = true,
@@ -293,6 +302,40 @@ do
 			},
 		},
 		events = {
+			-- Mystic Buffet
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellid = {
+					72529,
+					70127,
+					72528, -- 25
+					72530, -- 25h
+				},
+				execute = {
+					{
+						"quash","mysticbuffetcd",
+						"alert","mysticbuffetcd",
+					},
+				},
+			},
+			-- Mystic Buffet
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED_DOSE",
+				spellid = {
+					72529,
+					70127,
+					72528, -- 25
+					72530, -- 25h
+				},
+				execute = {
+					{
+						"quash","mysticbuffetcd",
+						"alert","mysticbuffetcd",
+					},
+				},
+			},
 			{
 				type = "event",
 				event = "YELL",
