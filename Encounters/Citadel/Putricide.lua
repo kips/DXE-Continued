@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 18,
+		version = 19,
 		key = "putricide", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -362,6 +362,7 @@ do
 				spellid = {
 					72615, -- 25
 					72295, -- 10
+					74281, -- 25h
 				},
 				execute = {
 					{
@@ -438,6 +439,7 @@ do
 				spellid = {
 					72455, -- 25
 					70672, -- 10
+					72833, -- 25h
 				},
 				execute = {
 					{
@@ -453,6 +455,7 @@ do
 				spellid = {
 					72455, -- 25
 					70672, -- 10
+					72833, -- 25h
 				},
 				execute = {
 					{
@@ -475,6 +478,7 @@ do
 				spellid = {
 					72455, -- 25
 					70672, -- 10
+					72833, -- 25h
 				},
 				execute = {
 					{
@@ -489,6 +493,7 @@ do
 				spellid = {
 					72836, -- 25
 					70447, -- 10
+					72838, -- 25h
 				},
 				execute = {
 					{
@@ -504,6 +509,7 @@ do
 				spellid = {
 					72836, -- 25
 					70447, -- 10
+					72838, -- 25h
 				},
 				execute = {
 					{
@@ -523,6 +529,7 @@ do
 				spellid = {
 					72836, -- 25
 					70447, -- 10
+					72838, -- 25h
 				},
 				execute = {
 					{
@@ -537,7 +544,7 @@ do
 				spellid = {
 					71966,
 					70351,
-					71966,
+					71968, -- 25h
 				},
 				execute = {
 					{
