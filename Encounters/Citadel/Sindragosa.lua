@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 26,
+		version = 27,
 		key = "sindragosa", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -314,7 +314,10 @@ do
 				},
 				execute = {
 					{
+						"expect",{"&timeleft|mysticbuffetcd&","<","3"},
 						"quash","mysticbuffetcd",
+					},
+					{
 						"alert","mysticbuffetcd",
 					},
 				},
@@ -331,7 +334,10 @@ do
 				},
 				execute = {
 					{
+						"expect",{"&timeleft|mysticbuffetcd&","<","3"},
 						"quash","mysticbuffetcd",
+					},
+					{
 						"alert","mysticbuffetcd",
 					},
 				},
@@ -357,6 +363,7 @@ do
 						"set",{phase = "2", unchainedtime = 80},
 						"quash","aircd",
 						"alert","icygripcd",
+						"tracing",{36853,36980}, -- Sindragosa, Ice Tomb
 					},
 				},
 			},
