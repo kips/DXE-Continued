@@ -2,7 +2,7 @@ do
 	-- TODO: Empowered Shock cooldown for 10, 25, and 10h
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 17,
+		version = 18,
 		key = "bloodprincecouncil", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -39,6 +39,7 @@ do
 			invocationtime = {33,46.5,loop = false, type = "series"},
 			shocktext = "",
 			empoweredtime = 10,
+			prisontext = "",
 		},
 		onstart = {
 			{
@@ -114,6 +115,14 @@ do
 				color1 = "ORANGE",
 				icon = ST[62910],
 				flashscreen = true,
+			},
+			shadowprisonself = {
+				varname = format(L.alert["%s on self"],SN[72999]),
+				type = "centerpopup",
+				text = "<prisontext>",
+				time = 10,
+				color1 = "PURPLE",
+				icon = ST[72999],
 			},
 		},
 		arrows = {
@@ -191,6 +200,46 @@ do
 			},
 		},
 		events = {
+			-- Shadow Prison
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellid = 72999,
+				execute = {
+					{
+						"expect",{"#4#","==","&playerguid&"},
+						"set",{prisontext = format("%s: %s!",SN[72999],L.alert["YOU"])},
+						"alert","shadowprisonself",
+					},
+				},
+			},
+			-- Shadow Prison applications
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED_DOSE",
+				spellid = 72999,
+				execute = {
+					{
+						"expect",{"#4#","==","&playerguid&"},
+						"set",{prisontext = format("%s: %s! %s!",SN[72999],L.alert["YOU"],format(L.alert["%s Stacks"],"#11#"))},
+						"quash","shadowprisonself",
+						"alert","shadowprisonself",
+					},
+				},
+			},
+			-- Shadow Prison removal
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_REMOVED",
+				spellid = 72999,
+				execute = {
+					{
+						"expect",{"#4#","==","&playerguid&"},
+						"quash","shadowprisonself",
+					},
+				},
+			},
+
 			-- Shock Vortex
 			{
 				type = "combatevent",
@@ -266,6 +315,8 @@ do
 				},
 				execute = {
 					{
+						"quash","empoweredshockcd",
+						"alert","empoweredshockcd",
 						"alert","empoweredshockwarn",
 					},
 				},
