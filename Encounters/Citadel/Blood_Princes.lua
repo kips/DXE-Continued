@@ -2,7 +2,7 @@ do
 	-- TODO: Empowered Shock cooldown for 10, 25, and 10h
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 18,
+		version = 19,
 		key = "bloodprincecouncil", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -82,7 +82,7 @@ do
 			empoweredshockcd = {
 				varname = format(L.alert["%s Cooldown"],SN[73037]),
 				type = "dropdown",
-				text = format(L.alert["%s Casting"],SN[73037]),
+				text = format(L.alert["%s Cooldown"],SN[73037]),
 				time = "<empoweredtime>",
 				flashtime = 5,
 				color1 = "BLACK",
@@ -296,6 +296,7 @@ do
 						"expect",{"&npcid|#4#&","==","37970"}, -- Valanar
 						"set",{empoweredtime = 6},
 						"alert","empoweredshockcd",
+						"set",{empoweredtime = 20},
 					},
 					{
 						"expect",{"&npcid|#4#&","~=","37970"}, -- Valanar
