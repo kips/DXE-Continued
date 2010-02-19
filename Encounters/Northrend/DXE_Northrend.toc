@@ -14,3 +14,4 @@ Koralon.lua
 Emalon.lua
 Malygos.lua
 Sartharion.lua
+Toravon.lua
