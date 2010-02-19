@@ -1,14 +1,14 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 28,
+		version = 29,
 		key = "sindragosa", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
 		name = L.npc_citadel["Sindragosa"], 
 		triggers = {
 			scan = {36853}, -- Sindragosa
-			yell = L.chat_citadel["^You are fools to have come to this place"],
+			yell = L.chat_citadel["icy winds of Northrend will consume"],
 		},
 		onactivate = {
 			combatstop = true,
