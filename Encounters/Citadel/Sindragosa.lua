@@ -1,28 +1,29 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 29,
+		version = 30,
 		key = "sindragosa", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
 		name = L.npc_citadel["Sindragosa"], 
 		triggers = {
 			scan = {36853}, -- Sindragosa
-			yell = L.chat_citadel["icy winds of Northrend will consume"],
 		},
 		onactivate = {
+			tracerstart = true,
 			combatstop = true,
 			tracing = {36853}, -- Sindragosa
 			defeat = 36853, -- Sindragosa
 		},
 		userdata = {
 			chilledtext = "",
-			airtime = {63.5,110,loop = false, type = "series"},
+			airtime = {50,110,loop = false, type = "series"},
 			phase = "1",
 			instabilitytext = "",
 			unchainedtime = 30,
 			frostbeacontext = "",
 			icygriptime = {33.8,67.2, loop = false, type = "series"},
+			bombcount = "1",
 		},
 		onstart = {
 			{
