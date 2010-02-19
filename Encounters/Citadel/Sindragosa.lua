@@ -146,18 +146,18 @@ do
 				color1 = "MAGENTA",
 				icon = "Interface\\Icons\\INV_Misc_Toy_09",
 			},
-			--[[
 			frostbombwarn = {
 				varname = format(L.alert["%s ETA"],SN[71053]),
 				type = "centerpopup",
-				text = format(L.alert["%s Hits"],SN[71053]),
+				text = format(L.alert["%s Hits"],SN[71053]).." <bombcount>",
 				time = 5.85, -- average: ranges from 5.3 to 6.5
 				flashtime = 5.85,
 				color1 = "BLUE",
 				sound = "ALERT5",
 				icon = ST[71053],
+				throttle = 3,
 			},
-			]]
+			-- 6.4 until frost bomb is summoned
 			frostbreathwarn = {
 				varname = format(L.alert["%s Casting"],SN[71056]),
 				type = "centerpopup",
@@ -309,6 +309,14 @@ do
 					},
 				},
 			},
+			firefrostbomb = {
+				{
+					"set",{bombcount = "INCR|1"},
+					"alert","frostbombwarn",
+					"expect",{"<bombcount>","<","4"},
+					"scheduletimer",{"firefrostbomb",6.4},
+				},
+			},
 		},
 		events = {
 			-- Mystic Buffet
@@ -386,6 +394,21 @@ do
 				execute = {
 					{
 						"alert","icetombwarn",
+					},
+				},
+			},
+			-- Ice Tomb app
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellid = 70157, -- 25,25h
+				execute = {
+					{
+						-- fires 2 to 5 times within 0.1 seconds
+						"expect",{"<phase>","==","1"},
+						"set",{bombcount = "1"},
+						"alert","frostbombwarn",
+						"scheduletimer",{"firefrostbomb",6.4},
 					},
 				},
 			},
