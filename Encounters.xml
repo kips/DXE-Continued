@@ -3,7 +3,6 @@
 
 <Script file="Options\Locales.lua"/>
 
-<!--
 <Script file="Encounters\Naxxramas\Locales.lua"/>
 <Script file="Encounters\Naxxramas\Anub.lua"/>
 <Script file="Encounters\Naxxramas\Faerlina.lua"/>
@@ -20,7 +19,6 @@
 <Script file="Encounters\Naxxramas\Razuvious.lua"/>
 <Script file="Encounters\Naxxramas\Sapphiron.lua"/>
 <Script file="Encounters\Naxxramas\Thaddius.lua"/>
--->
 
 <Script file="Encounters\Northrend\Locales.lua"/>
 <Script file="Encounters\Northrend\Malygos.lua"/>

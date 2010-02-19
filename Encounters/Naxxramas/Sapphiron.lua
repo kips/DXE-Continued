@@ -2,7 +2,7 @@ do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 
 	local data = {
-		version = 299,
+		version = 300,
 		key = "sapphiron", 
 		zone = L.zone["Naxxramas"], 
 		name = L.npc_naxxramas["Sapphiron"], 
@@ -68,7 +68,40 @@ do
 				icon = ST[28524],
 			},
 		},
+		raidicons = {
+			iceboltmark = {
+				varname = SN[28522],
+				type = "MULTIFRIENDLY",
+				persist = 25,
+				unit = "#5#",
+				icon = 1,
+				total = 5,
+				reset = 10,
+			},
+		},
+		announces = {
+			iceboltsay = {
+				varname = format(L.alert["Say %s on self"],SN[28522]),
+				type = "SAY",
+				msg = format(L.alert["%s on Me"],SN[28522]).."!",
+			},
+		},
 		events = {
+			-- Icebolt
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellid = 28522,
+				execute = {
+					{
+						"raidicon","iceboltmark",
+					},
+					{
+						"expect",{"#4#","==","&playerguid&"},
+						"announce","iceboltsay",
+					},
+				},
+			},
 			-- Life drain
 			{
 				type = "combatevent", 
