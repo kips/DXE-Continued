@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 12,
+		version = 13,
 		key = "marrowgar", 
 		zone = L.zone["Icecrown Citadel"], 
 		category = L.zone["Citadel"], 
@@ -31,6 +31,16 @@ do
 			},
 		},
 		alerts = {
+			bonedachievementdur = {
+				varname = format(L.alert["%s Achievement"],L.alert["Boned"]),
+				type = "centerpopup",
+				text = format(L.alert["%s Achievement"],L.alert["Boned"]),
+				time = 8,
+				flashtime = 8,
+				color1 = "BLACK",
+				icon = "Interface\\Icons\\Achievement_Boss_LordMarrowgar",
+				throttle = 5,
+			},
 			bonestormwarn = {
 				varname = format(L.alert["%s Casting"],SN[69076]),
 				type = "centerpopup",
@@ -198,6 +208,7 @@ do
 				},
 				execute = {
 					{
+						"alert","bonedachievementdur",
 						"expect",{"#1#","~=","&playerguid&"},
 						"raidicon","impalemark",
 						"arrow","impalearrow",
