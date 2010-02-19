@@ -4,7 +4,7 @@ do
 	local L_Grobbulus = L.npc_naxxramas["Grobbulus"]
 
 	local data = {
-		version = 300,
+		version = 301,
 		key = "grobbulus",
 		zone = L.zone["Naxxramas"],
 		name = L.npc_naxxramas["Grobbulus"],
@@ -64,6 +64,17 @@ do
 				icon = ST[28240],
 			},
 		},
+		raidicons = {
+			injectionmark = {
+				varname = SN[28169],
+				type = "MULTIFRIENDLY",
+				persist = 10,
+				unit = "#5#",
+				icon = 1,
+				reset = 5,
+				total = 3,
+			},
+		},
 		events = {
 			-- Injection
 			{
@@ -71,6 +82,9 @@ do
 				eventtype = "SPELL_AURA_APPLIED",
 				spellid = 28169,
 				execute = {
+					{
+						"raidicon","injectionmark",
+					},
 					{
 						"expect",{"#4#", "==", "&playerguid&"},
 						"alert","injectionwarnself",
