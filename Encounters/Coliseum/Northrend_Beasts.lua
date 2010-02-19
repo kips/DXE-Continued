@@ -1,7 +1,7 @@
 do
 	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
-		version = 336,
+		version = 337,
 		key = "northrendbeasts", 
 		zone = L.zone["Trial of the Crusader"], 
 		category = L.zone["Coliseum"],
@@ -116,6 +116,16 @@ do
 				icon = ST[66330],
 			},
 			-- Jormungars
+			submergecd = {
+				varname = format(L.alert["%s Cooldown"],SN[56504]),
+				type = "dropdown",
+				text = format(L.alert["%s Cooldown"],SN[56504]),
+				time = 45,
+				flashtime = 10,
+				color1 = "BROWN",
+				sound = "ALERT4",
+				icon = ST[56504],
+			},
 			bileonself = {
 				varname = format(L.alert["%s on self"],SN[66870]),
 				type = "centerpopup",
@@ -336,6 +346,12 @@ do
 			},
 		},
 		timers = {
+			firesubmerge = {
+				{
+					"alert","submergecd",
+					"scheduletimer",{"firesubmerge",45},
+				},
+			},
 			fireenrage = {
 				{
 					"alert","enragecd",
@@ -753,11 +769,12 @@ do
 				type = "event",
 				event = "YELL",
 				execute = {
+					-- Gormok dies
 					{
-						-- Gormok dies
 						"expect",{"#1#","find",L.chat_coliseum["^Steel yourselves, heroes, for the twin terrors"]},
 						"tracing",{35144,34799},
 						"alert","onetotwocd",
+						"scheduletimer",{"firesubmerge",15},
 						"scheduletimer",{"reset",15},
 						"scheduletimer",{"firemolten",15},
 						"expect",{"&difficulty&",">=","3"},
@@ -770,6 +787,8 @@ do
 						"expect",{"#1#","find",L.chat_coliseum["^The air itself freezes with the introduction"]},
 						"tracing",{34797}, -- Icehowl
 						"alert","twotothreecd",
+						"quash","submergecd",
+						"canceltimer","firesubmerge",
 						"scheduletimer",{"reset",10},
 						"scheduletimer",{"firecrash",10},
 						"expect",{"&difficulty&",">=","3"},
