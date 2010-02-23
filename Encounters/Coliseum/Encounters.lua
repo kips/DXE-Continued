@@ -7,15 +7,15 @@ local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 do
 	local data = {
 		version = 37,
-		key = "anubcoliseum", 
-		zone = L.zone["Trial of the Crusader"], 
+		key = "anubcoliseum",
+		zone = L.zone["Trial of the Crusader"],
 		category = L.zone["Coliseum"],
-		name = L.npc_coliseum["Anub'arak"], 
+		name = L.npc_coliseum["Anub'arak"],
 		triggers = {
 			scan = {
 				34564, -- Anub
-			}, 
-			yell = L.chat_coliseum["^This place will serve as"], 
+			},
+			yell = L.chat_coliseum["^This place will serve as"],
 		},
 		onactivate = {
 			tracing = {34564},
@@ -111,20 +111,20 @@ do
 				color1 = "GREEN",
 				icon = ST[56504],
 			},
-			shadowstrikewarn = { 
+			shadowstrikewarn = {
 				varname = format(L.alert["%s Casting"],SN[66134]),
-				type = "centerpopup", 
+				type = "centerpopup",
 				text = format(L.alert["%s Casting"],SN[66134]),
-				time = 8, 
+				time = 8,
 				flashtime = 8,
-				color1 = "PURPLE", 
+				color1 = "PURPLE",
 				sound = "ALERT5",
 				icon = ST[66134],
 				throttle = 2,
 			},
 			shadowstrikecd = {
 				varname = format(L.alert["%s Cooldown"],SN[66134]),
-				type = "dropdown", 
+				type = "dropdown",
 				text = format(L.alert["%s Cooldown"],SN[66134]),
 				time = "<striketime>",
 				flashtime = 10,
@@ -459,7 +459,7 @@ do
 	local npc_list
 
 	local NID_MAGE,NID_WARLOCK
-	
+
 	if faction == "Alliance" then
 		-- Horde npcs
 		npc_list = {
@@ -501,17 +501,17 @@ do
 		NID_MAGE = "34468"
 		NID_WARLOCK = "34474"
 	else
-		error("DXE_Coliseum Faction Champions: Unable to detect faction. Please report this bug.") 
+		error("DXE_Coliseum Faction Champions: Unable to detect faction. Please report this bug.")
 	end
 	npc_list[#npc_list+1] = 35465 -- Zhaagrym (Warlock Felhunter pet)
 	npc_list[#npc_list+1] = 35610 -- Cat (Hunter pet)
 
 	local data = {
 		version = 9,
-		key = "factionchampions", 
-		zone = L.zone["Trial of the Crusader"], 
+		key = "factionchampions",
+		zone = L.zone["Trial of the Crusader"],
 		category = L.zone["Coliseum"],
-		name = L.npc_coliseum["Faction Champions"], 
+		name = L.npc_coliseum["Faction Champions"],
 		title = L.npc_coliseum["Faction Champions"],
 		triggers = {
 			scan = npc_list,
@@ -661,7 +661,7 @@ do
 			-- Possibly add Earth Shield
 			-- Add in Ice Block
 		},
-		events = { 
+		events = {
 			-- Bloodlust
 			{
 				type = "combatevent",
@@ -920,15 +920,15 @@ end
 do
 	local data = {
 		version = 323,
-		key = "jaraxxus", 
-		zone = L.zone["Trial of the Crusader"], 
+		key = "jaraxxus",
+		zone = L.zone["Trial of the Crusader"],
 		category = L.zone["Coliseum"],
-		name = L.npc_coliseum["Lord Jaraxxus"], 
+		name = L.npc_coliseum["Lord Jaraxxus"],
 		triggers = {
 			scan = {
 				34780, -- Jaraxxus
 				34826, -- Mistress of Pain
-			}, 
+			},
 		},
 		onactivate = {
 			tracing = {34780,34826},
@@ -1309,17 +1309,17 @@ end
 do
 	local data = {
 		version = 337,
-		key = "northrendbeasts", 
-		zone = L.zone["Trial of the Crusader"], 
+		key = "northrendbeasts",
+		zone = L.zone["Trial of the Crusader"],
 		category = L.zone["Coliseum"],
-		name = L.npc_coliseum["Northrend Beasts"], 
+		name = L.npc_coliseum["Northrend Beasts"],
 		triggers = {
 			scan = {
 				34796, -- Gormok
 				35144, -- Acidmaw
 				34799, -- Dreadscale
 				34797, -- Icehowl
-			}, 
+			},
 			yell = L.chat_coliseum["^Hailing from the deepest, darkest caverns of the Storm Peaks"]
 		},
 		onactivate = {
@@ -1365,11 +1365,11 @@ do
 		alerts = {
 			enragecd = {
 				varname = L.alert["Enrage"],
-				type = "dropdown", 
+				type = "dropdown",
 				text = "<enragetext>",
 				time = "<enragetime>",
-				flashtime = 10, 
-				color1 = "RED", 
+				flashtime = 10,
+				color1 = "RED",
 				icon = ST[12317],
 			},
 			-- Gormok
@@ -1679,7 +1679,7 @@ do
 				},
 			},
 		},
-		events = { 
+		events = {
 			---------------
 			-- Gormok
 			---------------
@@ -1840,7 +1840,7 @@ do
 					},
 				},
 			},
-			-- Burning Bile - Jormungars - Dreadmaw 
+			-- Burning Bile - Jormungars - Dreadmaw
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
@@ -1865,7 +1865,7 @@ do
 					},
 				},
 			},
-			-- Burning Bile Removal - Jormungars - Dreadmaw 
+			-- Burning Bile Removal - Jormungars - Dreadmaw
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_REMOVED",
@@ -2146,15 +2146,15 @@ do
 
 	local data = {
 		version = 18,
-		key = "twinvalkyr", 
-		zone = L.zone["Trial of the Crusader"], 
+		key = "twinvalkyr",
+		zone = L.zone["Trial of the Crusader"],
 		category = L.zone["Coliseum"],
-		name = L.npc_coliseum["Twin Val'kyr"], 
+		name = L.npc_coliseum["Twin Val'kyr"],
 		triggers = {
 			scan = {
 				34496, -- Eydis Darkbane
 				34497, -- Fjola Lightbane
-			}, 
+			},
 		},
 		onactivate = {
 			tracing = {
@@ -2490,7 +2490,7 @@ do
 					},
 				},
 			},
-			-- Shield of Darkness 
+			-- Shield of Darkness
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",

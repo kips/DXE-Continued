@@ -1,7 +1,7 @@
 #!/usr/bin/ruby
 
 # place in <project>/scripts
- 
+
 require 'uri'
 require 'net/http'
 require File.join(File.dirname(__FILE__),'..','..','api_key') # for API_KEY
@@ -51,7 +51,7 @@ Dir[File.join(File.dirname(__FILE__),'..','**','*.lua')].each do |filename|
 		file.read.scan(locale_regex) do |namespace, phrase|
 			locales[namespace || 'main'] ||= []
 			locales[namespace || 'main'] << phrase
-		end	
+		end
 	end
 	puts "   #{filename.match(/#{File.join('scripts','..','(.+)')}/i)[1].ljust(60)} #{"DONE".rjust(10)}"
 end

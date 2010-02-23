@@ -7,7 +7,7 @@ local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 do
 	local data = {
 		version = 301,
-		key = "archavon", 
+		key = "archavon",
 		zone = L.zone["Vault of Archavon"],
 		category = L.zone["Northrend"],
 		name = L.npc_northrend["Archavon"],
@@ -106,10 +106,10 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
-				spellid = {58663, 60880}, 
+				spellid = {58663, 60880},
 				execute = {
 					{
-						"alert","stompcd", 
+						"alert","stompcd",
 					},
 				},
 			},
@@ -159,14 +159,14 @@ end
 do
 	local data = {
 		version = 5,
-		key = "koralon", 
-		zone = L.zone["Vault of Archavon"], 
+		key = "koralon",
+		zone = L.zone["Vault of Archavon"],
 		category = L.zone["Northrend"],
-		name = L.npc_northrend["Koralon"], 
+		name = L.npc_northrend["Koralon"],
 		triggers = {
 			scan = {
 				35013, -- Koralon
-			}, 
+			},
 		},
 		onactivate = {
 			tracing = {35013},
@@ -342,16 +342,16 @@ end
 do
 	local data = {
 		version = 300,
-		key = "emalon", 
-		zone = L.zone["Vault of Archavon"], 
+		key = "emalon",
+		zone = L.zone["Vault of Archavon"],
 		category = L.zone["Northrend"],
-		name = L.npc_northrend["Emalon"], 
+		name = L.npc_northrend["Emalon"],
 		triggers = {
 			scan = {
 				33993, -- Emalon
 				33998, -- Tempest Minion
 				34049, -- Tempest Minion
-			}, 
+			},
 		},
 		onactivate = {
 			tracing = {33993},
@@ -465,17 +465,17 @@ end
 do
 	local data = {
 		version = 300,
-		key = "malygos", 
-		zone = L.zone["The Eye of Eternity"], 
+		key = "malygos",
+		zone = L.zone["The Eye of Eternity"],
 		category = L.zone["Northrend"],
-		name = L.npc_northrend["Malygos"], 
+		name = L.npc_northrend["Malygos"],
 		triggers = {
 			scan = {
 				28859, -- Malygos
 				30245, -- Nexus Lord
 				30249, -- Scion of Eternity
 				30084, -- Power Spark
-			}, 
+			},
 		},
 		onactivate = {
 			tracing = {28859}, -- Malygos
@@ -484,7 +484,7 @@ do
 			combatstop = true,
 			defeat = 28859,
 		},
-		userdata = { 
+		userdata = {
 			phase = 1,
 			vortexcd = {29,59,loop = false, type = "series"},
 		},
@@ -496,84 +496,84 @@ do
 		alerts = {
 			vortexcd = {
 				varname = format(L.alert["%s Cooldown"],SN[56105]),
-				type = "dropdown", 
+				type = "dropdown",
 				text = format(L.alert["%s Cooldown"],SN[56105]),
-				time = "<vortexcd>", 
-				flashtime = 5, 
-				sound = "ALERT1", 
-				color1 = "BLUE", 
+				time = "<vortexcd>",
+				flashtime = 5,
+				sound = "ALERT1",
+				color1 = "BLUE",
 				icon = ST[56105],
 			},
 			staticfieldwarn = {
 				varname = format(L.alert["%s Warning"],SN[57430]),
-				type = "simple", 
+				type = "simple",
 				text = format("%s! %s!",format(L.alert["%s Cast"],SN[57430]),L.alert["MOVE"]),
-				time = 1.5, 
-				sound = "ALERT2", 
+				time = 1.5,
+				sound = "ALERT2",
 				color1 = "YELLOW",
 				icon = ST[57430],
 			},
-			surgewarn = { 
+			surgewarn = {
 				varname = format(L.alert["%s on self"],L.alert["Surge"]),
-				type = "centerpopup", 
+				type = "centerpopup",
 				text = format("%s: %s! %s!",L.alert["Surge"],L.alert["YOU"],L.alert["CAREFUL"]),
 				time = 3,
 				flashtime = 3,
-				sound = "ALERT1", 
+				sound = "ALERT1",
 				throttle = 5,
 				color1 = "MAGENTA",
 				icon = ST[56505],
 			},
-			presurgewarn = { 
-				varname = format(L.alert["%s Warning"],L.alert["Surge"]), 
-				type = "simple", 
+			presurgewarn = {
+				varname = format(L.alert["%s Warning"],L.alert["Surge"]),
+				type = "simple",
 				text = format("%s: %s! %s!",L.alert["Surge"],L.alert["YOU"],L.alert["SOON"]),
-				time = 1.5, 
-				sound = "ALERT5", 
+				time = 1.5,
+				sound = "ALERT5",
 				color1 = "TURQUOISE",
 				flashscreen = true,
 				icon = ST[56505],
 			},
 			deepbreathwarn = {
-				varname = format(L.alert["%s Cooldown"],L.alert["Deep Breath"]), 
-				type = "dropdown", 
+				varname = format(L.alert["%s Cooldown"],L.alert["Deep Breath"]),
+				type = "dropdown",
 				text = format(L.alert["Next %s"],L.alert["Deep Breath"]),
-				time = 92, 
-				flashtime = 5, 
-				sound = "ALERT3", 
-				color1 = "ORANGE", 
+				time = 92,
+				flashtime = 5,
+				sound = "ALERT3",
+				color1 = "ORANGE",
 				icon = ST[57432],
 			},
 			vortexdur = {
 				varname = format(L.alert["%s Duration"],SN[56105]),
-				type = "centerpopup", 
+				type = "centerpopup",
 				text = format(L.alert["%s Duration"],SN[56105]),
-				time = 10, 
-				sound = "ALERT1", 
-				color1 = "BLUE", 
+				time = 10,
+				sound = "ALERT1",
+				color1 = "BLUE",
 				icon = ST[56105],
 			},
 			powersparkcd = {
 				varname = format(L.alert["%s Spawns"],L.npc_northrend["Power Spark"]),
-				type = "dropdown", 
+				type = "dropdown",
 				text = format(L.alert["Next %s"],L.npc_northrend["Power Spark"]),
-				time = 17, 
-				flashtime = 5, 
-				sound = "ALERT2", 
-				color1 = "WHITE", 
+				time = 17,
+				flashtime = 5,
+				sound = "ALERT2",
+				color1 = "WHITE",
 				icon = ST[56152],
 			},
 		},
 		events = {
 			-- Vortex/Power spark
 			{
-				type = "combatevent", 
-				eventtype = "SPELL_CAST_SUCCESS", 
-				spellid = 56105, 
+				type = "combatevent",
+				eventtype = "SPELL_CAST_SUCCESS",
+				spellid = 56105,
 				execute = {
 					{
-						"alert","vortexdur", 
-						"alert","vortexcd", 
+						"alert","vortexdur",
+						"alert","vortexcd",
 						"quash","powersparkcd",
 						"alert","powersparkcd",
 					},
@@ -581,9 +581,9 @@ do
 			},
 			-- Surge
 			{
-				type = "combatevent", 
-				eventtype = "SPELL_AURA_APPLIED", 
-				spellid = {57407, 60936}, 
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellid = {57407, 60936},
 				execute = {
 					{
 						"expect",{"#4#","==","&vehicleguid&"},
@@ -594,9 +594,9 @@ do
 			},
 			-- Static field
 			{
-				type = "combatevent", 
-				eventtype = "SPELL_CAST_SUCCESS", 
-				spellid = 57430, 
+				type = "combatevent",
+				eventtype = "SPELL_CAST_SUCCESS",
+				spellid = 57430,
 				execute = {
 					{
 						"alert","staticfieldwarn",
@@ -605,8 +605,8 @@ do
 			},
 			-- Yells
 			{
-				type = "event", 
-				event = "CHAT_MSG_MONSTER_YELL", 
+				type = "event",
+				event = "CHAT_MSG_MONSTER_YELL",
 				execute = {
 					{
 						"expect",{"#1#","find",L.chat_northrend["I had hoped to end your lives quickly"]},
@@ -625,8 +625,8 @@ do
 			},
 			-- Emotes
 			{
-				type = "event", 
-				event = "CHAT_MSG_RAID_BOSS_EMOTE", 
+				type = "event",
+				event = "CHAT_MSG_RAID_BOSS_EMOTE",
 				execute = {
 					{
 						"expect",{"<phase>","==","1"},
@@ -669,8 +669,8 @@ do
 
 	local data = {
 		version = 300,
-		key = "sartharion", 
-		zone = L.zone["The Obsidian Sanctum"], 
+		key = "sartharion",
+		zone = L.zone["The Obsidian Sanctum"],
 		category = L.zone["Northrend"],
 		name = L.npc_northrend["Sartharion"],
 		triggers = {
@@ -737,32 +737,32 @@ do
 		alerts = {
 			lavawallcd = {
 				varname = format(L.alert["%s Cooldown"],L.alert["Lava Wall"]),
-				type = "dropdown", 
+				type = "dropdown",
 				text = format(L.alert["%s Cooldown"],L.alert["Lava Wall"]),
-				time = 25, 
-				flashtime = 5, 
-				sound = "ALERT3", 
-				color1 = "ORANGE", 
+				time = 25,
+				flashtime = 5,
+				sound = "ALERT3",
+				color1 = "ORANGE",
 				icon = ST[43114],
 			},
 			lavawallwarn = {
 				varname = format(L.alert["%s Casting"],L.alert["Lava Wall"]),
-				type = "centerpopup", 
+				type = "centerpopup",
 				text = format(L.alert["Incoming %s"],L.alert["Lava Wall"]).."!",
-				time = 5, 
-				sound = "ALERT1", 
-				color1 = "RED", 
+				time = 5,
+				sound = "ALERT1",
+				color1 = "RED",
 				color2 = "ORANGE",
 				flashscreen = true,
 				icon = ST[43114],
 			},
 			shadowfissurewarn = {
 				varname = format(L.alert["%s Warning"],SN[59127]),
-				type = "simple", 
+				type = "simple",
 				text = format(L.alert["%s Spawned"],SN[59127]).."!",
 				sound = "ALERT2",
 				color1 = "PURPLE",
-				time = 1.5, 
+				time = 1.5,
 				icon = ST[59127],
 			},
 			flamebreathwarn = {
@@ -802,24 +802,24 @@ do
 		events = {
 			-- Shadow fissure
 			{
-				type = "combatevent", 
-				eventtype = "SPELL_CAST_SUCCESS", 
-				spellid = {59127,57579}, 
+				type = "combatevent",
+				eventtype = "SPELL_CAST_SUCCESS",
+				spellid = {59127,57579},
 				execute = {
 					{
-						"alert","shadowfissurewarn", 
+						"alert","shadowfissurewarn",
 					},
 				},
 			},
 			-- Lava wall
 			{
-				type = "event", 
-				event = "CHAT_MSG_RAID_BOSS_EMOTE", 
+				type = "event",
+				event = "CHAT_MSG_RAID_BOSS_EMOTE",
 				execute = {
 					{
 						"expect",{"#1#","find",L.chat_northrend["lava surrounding"]},
 						"alert","lavawallwarn",
-						"alert","lavawallcd", 
+						"alert","lavawallcd",
 					},
 				},
 			},

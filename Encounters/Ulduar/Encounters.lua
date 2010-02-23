@@ -7,9 +7,9 @@ local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 do
 	local data = {
 		version = 305,
-		key = "algalon", 
-		zone = L.zone["Ulduar"], 
-		name = L.npc_ulduar["Algalon the Observer"], 
+		key = "algalon",
+		zone = L.zone["Ulduar"],
+		name = L.npc_ulduar["Algalon the Observer"],
 		triggers = {
 			scan = 32871, -- Algalon
 		},
@@ -197,15 +197,15 @@ do
 
 	local data = {
 		version = 300,
-		key = "auriaya", 
-		zone = L.zone["Ulduar"], 
-		name = L.npc_ulduar["Auriaya"], 
+		key = "auriaya",
+		zone = L.zone["Ulduar"],
+		name = L.npc_ulduar["Auriaya"],
 		triggers = {
 			scan = {
 				33515, -- Auriaya
 				34035, -- Feral Defender
 				34014, -- Sanctum Sentry
-			}, 
+			},
 		},
 		onactivate = {
 			tracing = {
@@ -330,7 +330,7 @@ do
 					{
 						"alert","screechcd",
 						"alert","screechwarn",
-					}	
+					}
 				},
 			},
 			-- Sentinel Blast
@@ -401,9 +401,9 @@ end
 do
 	local data = {
 		version = 301,
-		key = "flameleviathan", 
-		zone = L.zone["Ulduar"], 
-		name = L.npc_ulduar["Flame Leviathan"], 
+		key = "flameleviathan",
+		zone = L.zone["Ulduar"],
+		name = L.npc_ulduar["Flame Leviathan"],
 		triggers = {
 			scan = 33113, -- Flame Leviathan
 			yell = L.chat_ulduar["^Hostile entities detected. Threat assessment protocol active"],
@@ -418,44 +418,44 @@ do
 		alerts = {
 			overloaddur = {
 				varname = format(L.alert["%s Duration"],SN[62475]),
-				type = "centerpopup", 
+				type = "centerpopup",
 				text = SN[62475].."!",
-				time = 20, 
+				time = 20,
 				flashtime = 20,
-				sound = "ALERT1", 
-				color1 = "BLUE", 
+				sound = "ALERT1",
+				color1 = "BLUE",
 				color2 = "BLUE",
 				throttle = 5,
 				icon = ST[62475],
 			},
 			flameventdur = {
 				varname = format(L.alert["%s Duration"],SN[62396]),
-				type = "centerpopup", 
+				type = "centerpopup",
 				text = SN[62396].."!",
-				time = 10, 
+				time = 10,
 				flashtime = 5,
-				sound = "ALERT2", 
+				sound = "ALERT2",
 				color1 = "RED",
 				color2 = "ORANGE",
 				icon = ST[62396],
 			},
 			pursuedurothers = {
 				varname = format(L.alert["%s on others"],SN[62374]),
-				type = "centerpopup", 
+				type = "centerpopup",
 				text = format("%s: #5#",SN[62374]),
-				time = 30, 
-				flashtime = 30, 
+				time = 30,
+				flashtime = 30,
 				color1 = "CYAN",
 				color2 = "CYAN",
 				icon = ST[62374],
 			},
 			pursuedurself = {
 				varname = format(L.alert["%s on self"],SN[62374]),
-				type = "centerpopup", 
+				type = "centerpopup",
 				text = format("%s: %s!",SN[62374],L.alert["YOU"]),
-				time = 30, 
-				flashtime = 30, 
-				sound = "ALERT4", 
+				time = 30,
+				flashtime = 30,
+				sound = "ALERT4",
 				color1 = "CYAN",
 				color1 = "MAGENTA",
 				flashscreen = true,
@@ -465,9 +465,9 @@ do
 		events = {
 			-- Flame vents
 			{
-				type = "combatevent", 
-				eventtype = "SPELL_AURA_APPLIED", 
-				spellid = 62396, 
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellid = 62396,
 				execute = {
 					{
 						"alert","flameventdur",
@@ -487,9 +487,9 @@ do
 			},
 			-- Overload circuits
 			{
-				type = "combatevent", 
-				eventtype = "SPELL_AURA_APPLIED", 
-				spellid = 62475, 
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellid = 62475,
 				execute = {
 					{
 						"alert","overloaddur",
@@ -527,9 +527,9 @@ do
 
 	local data = {
 		version = 302,
-		key = "freya", 
-		zone = L.zone["Ulduar"], 
-		name = L.npc_ulduar["Freya"], 
+		key = "freya",
+		zone = L.zone["Ulduar"],
+		name = L.npc_ulduar["Freya"],
 		triggers = {
 			scan = {
 				32906, -- Freya
@@ -710,7 +710,7 @@ do
 						"tracing",{32906,33202,32919,32916}, -- Freya, Ancient Water Spirit, Storm Lasher, Snap Lasher
 						"quash","spawncd",
 						"alert","spawncd",
-					},	
+					},
 				},
 			},
 			-- Eonar's Gift
@@ -754,7 +754,7 @@ do
 					},
 				},
 			},
-			-- Ancient Conservator - Conservator's Grip 
+			-- Ancient Conservator - Conservator's Grip
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
@@ -845,9 +845,9 @@ end
 do
 	local data = {
 		version = 308,
-		key = "generalvezax", 
-		zone = L.zone["Ulduar"], 
-		name = L.npc_ulduar["General Vezax"], 
+		key = "generalvezax",
+		zone = L.zone["Ulduar"],
+		name = L.npc_ulduar["General Vezax"],
 		triggers = {
 			scan = {33271,33524}, -- Vezax, Animus
 		},
@@ -1179,9 +1179,9 @@ end
 do
 	local data = {
 		version = 302,
-		key = "hodir", 
-		zone = L.zone["Ulduar"], 
-		name = L.npc_ulduar["Hodir"], 
+		key = "hodir",
+		zone = L.zone["Ulduar"],
+		name = L.npc_ulduar["Hodir"],
 		triggers = {
 			scan = 32845, -- Hodir
 		},
@@ -1203,11 +1203,11 @@ do
 		alerts = {
 			flashfreezewarn = {
 				varname = format(L.alert["%s Casting"],SN[61968]),
-				type = "centerpopup", 
+				type = "centerpopup",
 				text = format("%s! %s!",SN[61968],L.alert["MOVE"]),
 				time = 9,
 				flashtime = 9,
-				sound = "ALERT1", 
+				sound = "ALERT1",
 				color1 = "BLUE",
 				color2 = "GREEN",
 				flashscreen = true,
@@ -1215,11 +1215,11 @@ do
 			},
 			flashfreezecd = {
 				varname = format(L.alert["%s Cooldown"],SN[61968]),
-				type = "dropdown", 
+				type = "dropdown",
 				text = format(L.alert["%s Cooldown"],SN[61968]),
-				time = 50, 
+				time = 50,
 				flashtime = 5,
-				sound = "ALERT2", 
+				sound = "ALERT2",
 				color1 = "TURQUOISE",
 				color2 = "TURQUOISE",
 				icon = ST[61968],
@@ -1235,11 +1235,11 @@ do
 			},
 			frozenblowdur = {
 				varname = format(L.alert["%s Duration"],SN[63512]),
-				type = "centerpopup", 
+				type = "centerpopup",
 				text = format(L.alert["%s Duration"],SN[63512]),
 				time = 20,
-				flashtime = 20, 
-				sound = "ALERT3", 
+				flashtime = 20,
+				sound = "ALERT3",
 				color1 = "MAGENTA",
 				color2 = "MAGENTA",
 				icon = ST[63512],
@@ -1295,9 +1295,9 @@ do
 		events = {
 			-- Flash Freeze cast
 			{
-				type = "combatevent", 
+				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
-				spellid = 61968, 
+				spellid = 61968,
 				execute = {
 					{
 						"alert","flashfreezewarn",
@@ -1307,8 +1307,8 @@ do
 			},
 			-- Frozen Blow
 			{
-				type = "combatevent", 
-				eventtype = "SPELL_AURA_APPLIED", 
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
 				spellid = {62478,63512},
 				execute = {
 					{
@@ -1348,9 +1348,9 @@ do
 
 	local data = {
 		version = 312,
-		key = "ignis", 
-		zone = L.zone["Ulduar"], 
-		name = L.npc_ulduar["Ignis the Furnace Master"], 
+		key = "ignis",
+		zone = L.zone["Ulduar"],
+		name = L.npc_ulduar["Ignis the Furnace Master"],
 		triggers = {
 			scan = 33118, -- Ignis
 		},
@@ -1512,9 +1512,9 @@ end
 do
 	local data = {
 		version = 302,
-		key = "ironcouncil", 
-		zone = L.zone["Ulduar"], 
-		name = L.npc_ulduar["The Iron Council"], 
+		key = "ironcouncil",
+		zone = L.zone["Ulduar"],
+		name = L.npc_ulduar["The Iron Council"],
 		triggers = {
 			scan = {
 				32867, -- Steelbreaker
@@ -1606,7 +1606,7 @@ do
 				varname = format(L.alert["%s Casting"],SN[61869]),
 				type = "centerpopup",
 				text = format("%s! %s!",SN[61869],L.alert["MOVE AWAY"]),
-				time = 6, 
+				time = 6,
 				flashtime = 6,
 				sound = "ALERT2",
 				color1 = "PURPLE",
@@ -1616,7 +1616,7 @@ do
 				varname = format(L.alert["%s Cooldown"],SN[61869]),
 				type = "dropdown",
 				text = format(L.alert["%s Cooldown"],SN[61869]),
-				time = 60, 
+				time = 60,
 				flashtime = 5,
 				sound = "ALERT9",
 				color1 = "PURPLE",
@@ -1625,10 +1625,10 @@ do
 			},
 			tendrilsdur = {
 				varname = format(L.alert["%s Duration"],SN[61887]),
-				type = "centerpopup", 
+				type = "centerpopup",
 				text = format(L.alert["%s Duration"],SN[61887]),
-				time = 35, 
-				color1 = "BLUE", 
+				time = 35,
+				color1 = "BLUE",
 				icon = ST[61887],
 			},
 			tendrilswarnself = {
@@ -1747,9 +1747,9 @@ do
 			},
 			-- Stormcaller Brundir - Lightning Tendrils +2
 			{
-				type = "combatevent", 
-				eventtype = "SPELL_AURA_APPLIED", 
-				spellid = {61887, 63486}, 
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellid = {61887, 63486},
 				execute = {
 					{
 						"alert","tendrilsdur",
@@ -1771,8 +1771,8 @@ do
 			},
 			-- Runemaster Molgeim - Rune of Death +1
 			{
-				type = "combatevent", 
-				eventtype = "SPELL_AURA_APPLIED", 
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
 				spellid = {62269, 63490},
 				execute = {
 					{
@@ -1783,8 +1783,8 @@ do
 			},
 			-- Runemaster Molgeim - Rune of Summoning +2
 			{
-				type = "combatevent", 
-				eventtype = "SPELL_CAST_START", 
+				type = "combatevent",
+				eventtype = "SPELL_CAST_START",
 				spellid = 62273,
 				execute = {
 					{
@@ -1850,9 +1850,9 @@ end
 do
 	local data = {
 		version = 300,
-		key = "kologarn", 
-		zone = L.zone["Ulduar"], 
-		name = L.npc_ulduar["Kologarn"], 
+		key = "kologarn",
+		zone = L.zone["Ulduar"],
+		name = L.npc_ulduar["Kologarn"],
 		triggers = {
 			scan = 32930, -- Kologarn
 		},
@@ -1989,9 +1989,9 @@ end
 do
 	local data = {
 		version = 314,
-		key = "mimiron", 
-		zone = L.zone["Ulduar"], 
-		name = L.npc_ulduar["Mimiron"], 
+		key = "mimiron",
+		zone = L.zone["Ulduar"],
+		name = L.npc_ulduar["Mimiron"],
 		triggers = {
 			yell = {L.chat_ulduar["^We haven't much time, friends"],L.chat_ulduar["^Self%-destruct sequence initiated"]},
 			scan = {
@@ -2125,7 +2125,7 @@ do
 				icon = ST[22436],
 			},
 			-- Leviathan MKII
-			plasmablastwarn = { 
+			plasmablastwarn = {
 				type = "centerpopup",
 				varname = format(L.alert["%s Casting"],SN[62997]),
 				text = format(L.alert["%s Casting"],SN[62997]),
@@ -2134,7 +2134,7 @@ do
 				sound = "ALERT5",
 				icon = ST[62997],
 			},
-			plasmablastdur = { 
+			plasmablastdur = {
 				type = "centerpopup",
 				varname = format(L.alert["%s Duration"],SN[62997]),
 				text = format(L.alert["%s Duration"],SN[62997]),
@@ -2319,7 +2319,7 @@ do
 						"alert","plasmablastwarn",
 						"alert","plasmablastcd",
 						"scheduletimer",{"startplasmablastdur",3},
-					},	
+					},
 				},
 			},
 			-- Shock Blast
@@ -2332,7 +2332,7 @@ do
 						"quash","shockblastcd",
 						"alert","shockblastwarn",
 						"scheduletimer",{"startblastcd",4},
-					},	
+					},
 				},
 			},
 			--- Phase 2 - VX-001
@@ -2381,7 +2381,7 @@ do
 				execute = {
 					{
 						"alert","bombbotwarn",
-					},	
+					},
 				},
 			},
 			-- Weakened
@@ -2409,16 +2409,16 @@ end
 do
 	local data = {
 		version = 300,
-		key = "razorscale", 
-		zone = L.zone["Ulduar"], 
-		name = L.npc_ulduar["Razorscale"], 
+		key = "razorscale",
+		zone = L.zone["Ulduar"],
+		name = L.npc_ulduar["Razorscale"],
 		triggers = {
 			scan = {
 				33186, -- Razorscale
 				33388, -- Dark Rune Guardian
 				33846, -- Dark Rune Sentinel
 				33453, -- Dark Rune Watcher
-			}, 
+			},
 			yell = L.chat_ulduar["^Be on the lookout! Mole machines"],
 		},
 		onactivate = {
@@ -2554,9 +2554,9 @@ end
 do
 	local data = {
 		version = 306,
-		key = "thorim", 
-		zone = L.zone["Ulduar"], 
-		name = L.npc_ulduar["Thorim"], 
+		key = "thorim",
+		zone = L.zone["Ulduar"],
+		name = L.npc_ulduar["Thorim"],
 		triggers = {
 			scan = {
 				32865, -- Thorim,
@@ -2588,39 +2588,39 @@ do
 		},
 		alerts = {
 			enragecd = {
-				varname = L.alert["Enrage"], 
-				type = "dropdown", 
-				text = L.alert["Enrage"], 
+				varname = L.alert["Enrage"],
+				type = "dropdown",
+				text = L.alert["Enrage"],
 				time = "<enragetime>",
-				flashtime = 5, 
-				sound = "ALERT1", 
+				flashtime = 5,
+				sound = "ALERT1",
 				color1 = "RED",
 				icon = ST[12317],
 			},
 			hardmodecd = {
 				varname = format(L.alert["%s Timeleft"],L.alert["Hard Mode"]),
-				type = "dropdown", 
+				type = "dropdown",
 				text = format(L.alert["%s Ends"],L.alert["Hard Mode"]),
-				time = 172.5, 
-				flashtime = 5, 
+				time = 172.5,
+				flashtime = 5,
 				color1 = "GREY",
-				sound = "ALERT1", 
+				sound = "ALERT1",
 				icon = ST[20573],
 			},
 			hardmodeactivationwarn = {
 				varname = format(L.alert["%s Warning"],L.alert["Hard Mode"]),
-				type = "simple", 
+				type = "simple",
 				text = format(L.alert["%s Activated"],L.alert["Hard Mode"]),
-				time = 1.5, 
-				sound = "ALERT1", 
+				time = 1.5,
+				sound = "ALERT1",
 				icon = ST[62972],
 			},
 			chargecd = {
 				varname = format(L.alert["%s Cooldown"],SN[62279]),
-				type = "dropdown", 
+				type = "dropdown",
 				text = format(L.alert["Next %s"],SN[62279]),
-				time = "<chargetime>", 
-				flashtime = 7, 
+				time = "<chargetime>",
+				flashtime = 7,
 				sound = "ALERT2",
 				color1 = "VIOLET",
 				icon = ST[62279],
@@ -2692,9 +2692,9 @@ do
 			},
 			-- Lightning Charge
 			{
-				type = "combatevent", 
-				eventtype = "SPELL_CAST_SUCCESS", 
-				spellid = 62279, 
+				type = "combatevent",
+				eventtype = "SPELL_CAST_SUCCESS",
+				spellid = 62279,
 				execute = {
 					{
 						"alert","chargecd",
@@ -2768,9 +2768,9 @@ do
 
 	local data = {
 		version = 302,
-		key = "xt002", 
-		zone = L.zone["Ulduar"], 
-		name = L.npc_ulduar["XT-002 Deconstructor"], 
+		key = "xt002",
+		zone = L.zone["Ulduar"],
+		name = L.npc_ulduar["XT-002 Deconstructor"],
 		triggers = {
 			scan = {33293,33329}, -- XT-002 Deconstructor, Heart of the Deconstructor
 		},

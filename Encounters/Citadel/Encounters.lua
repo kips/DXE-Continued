@@ -8,10 +8,10 @@ do
 	-- TODO: Empowered Shock cooldown for 10, 25, and 10h
 	local data = {
 		version = 19,
-		key = "bloodprincecouncil", 
-		zone = L.zone["Icecrown Citadel"], 
-		category = L.zone["Citadel"], 
-		name = L.npc_citadel["Blood Princes"], 
+		key = "bloodprincecouncil",
+		zone = L.zone["Icecrown Citadel"],
+		category = L.zone["Citadel"],
+		name = L.npc_citadel["Blood Princes"],
 		triggers = {
 			scan = {
 				37970, -- Valanar
@@ -250,7 +250,7 @@ do
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
 				spellid = {
-					72037, -- 10/25 (Note the damage entries use a different spellid from the cast) 
+					72037, -- 10/25 (Note the damage entries use a different spellid from the cast)
 					71944, -- 10 (Not sure if we really need this at all)
 				},
 				execute = {
@@ -307,7 +307,7 @@ do
 						"expect",{"&npcid|#4#&","~=","37970"}, -- Valanar
 						"quash","empoweredshockcd",
 					},
-				}	
+				}
 			},
 			-- Empowered Shock
 			{
@@ -340,10 +340,10 @@ end
 do
 	local data = {
 		version = 28,
-		key = "deathwhisper", 
-		zone = L.zone["Icecrown Citadel"], 
-		category = L.zone["Citadel"], 
-		name = L.npc_citadel["Deathwhisper"], 
+		key = "deathwhisper",
+		zone = L.zone["Icecrown Citadel"],
+		category = L.zone["Citadel"],
+		name = L.npc_citadel["Deathwhisper"],
 		triggers = {
 			scan = {
 				36855, -- Lady Deathwhisper
@@ -653,10 +653,10 @@ end
 do
 	local data = {
 		version = 11,
-		key = "festergut", 
-		zone = L.zone["Icecrown Citadel"], 
-		category = L.zone["Citadel"], 
-		name = L.npc_citadel["Festergut"], 
+		key = "festergut",
+		zone = L.zone["Icecrown Citadel"],
+		category = L.zone["Citadel"],
+		name = L.npc_citadel["Festergut"],
 		triggers = {
 			scan = {36626}, -- Festergut
 		},
@@ -970,7 +970,7 @@ do
 				event = "UNIT_SPELLCAST_SUCCEEDED",
 				execute = {
 					{
-						"expect",{"#2#","==",SN[72310]}, 
+						"expect",{"#2#","==",SN[72310]},
 						"alert","malleablegoowarn",
 					},
 				},
@@ -999,18 +999,18 @@ do
 	elseif faction == "Horde" then
 		defeat_msg = L.chat_citadel["^The Alliance falter"]
 		portal_msg = L.chat_citadel["^Marines, Sergeants, attack"]
-		add = L.alert["Marine"] 
+		add = L.alert["Marine"]
 		portal_icon = "Interface\\Icons\\achievement_pvp_a_04"
 		faction_npc = "36948" -- Muradin
 	end
 
 	local data = {
 		version = 11,
-		key = "gunshipbattle", 
-		zone = L.zone["Icecrown Citadel"], 
-		category = L.zone["Citadel"], 
-		name = L.npc_citadel["Gunship Battle"], 
-		title = L.npc_citadel["Gunship Battle"], 
+		key = "gunshipbattle",
+		zone = L.zone["Icecrown Citadel"],
+		category = L.zone["Citadel"],
+		name = L.npc_citadel["Gunship Battle"],
+		title = L.npc_citadel["Gunship Battle"],
 		triggers = {
 			scan = {
 				36939, -- Saurfang
@@ -1175,10 +1175,10 @@ end
 do
 	local data = {
 		version = 22,
-		key = "lanathel", 
+		key = "lanathel",
 		zone = L.zone["Icecrown Citadel"],
-		category = L.zone["Citadel"], 
-		name = L.npc_citadel["Lana'thel"], 
+		category = L.zone["Citadel"],
+		name = L.npc_citadel["Lana'thel"],
 		triggers = {
 			scan = 37955, -- Lana'thel
 		},
@@ -1445,10 +1445,10 @@ end
 do
 	local data = {
 		version = 44,
-		key = "lichking", 
-		zone = L.zone["Icecrown Citadel"], 
-		category = L.zone["Citadel"], 
-		name = L.npc_citadel["Lich King"], 
+		key = "lichking",
+		zone = L.zone["Icecrown Citadel"],
+		category = L.zone["Citadel"],
+		name = L.npc_citadel["Lich King"],
 		triggers = {
 			scan = 36597, -- Lich King
 			yell = L.chat_citadel["^So the Light's vaunted justice has finally arrived"],
@@ -1500,7 +1500,7 @@ do
 			necroplaguedur = {
 				varname = format(L.alert["%s Duration"],SN[70337]),
 				type = "centerpopup",
-				text = format("%s: #5#!",SN[70338]), 
+				text = format("%s: #5#!",SN[70338]),
 				time = 15,
 				flashtime = 15,
 				color1 = "GREEN",
@@ -1626,7 +1626,7 @@ do
 				flashtime = 10,
 				color1 = "ORANGE",
 				icon = ST[69409],
-			}, 
+			},
 			soulreaperwarn = {
 				varname = format(L.alert["%s Warning"],SN[69409]),
 				type = "centerpopup",
@@ -1635,7 +1635,7 @@ do
 				color1 = "ORANGE",
 				sound = "ALERT7",
 				icon = ST[69409],
-			}, 
+			},
 			ragingspiritself = {
 				varname = format(L.alert["%s on self"],SN[69200]),
 				type = "centerpopup",
@@ -1882,7 +1882,7 @@ do
 				execute = {
 					{
 						"alert","shamblinghorrorenragewarn",
-						"set",{enragecount = "INCR|1"}, 
+						"set",{enragecount = "INCR|1"},
 					},
 				},
 			},
@@ -1896,7 +1896,7 @@ do
 				},
 				execute = {
 					{
-						"set",{enragecount = "DECR|1"}, 
+						"set",{enragecount = "DECR|1"},
 						"expect",{"<enragecount>","==","0"},
 						"quash","shamblinghorrorenragewarn",
 					},
@@ -2113,12 +2113,12 @@ end
 do
 	local data = {
 		version = 13,
-		key = "marrowgar", 
-		zone = L.zone["Icecrown Citadel"], 
-		category = L.zone["Citadel"], 
-		name = L.npc_citadel["Marrowgar"], 
+		key = "marrowgar",
+		zone = L.zone["Icecrown Citadel"],
+		category = L.zone["Citadel"],
+		name = L.npc_citadel["Marrowgar"],
 		triggers = {
-			scan = {36612}, -- Lord Marrowgar 
+			scan = {36612}, -- Lord Marrowgar
 			yell = L.chat_citadel["^The Scourge will wash over this world"],
 		},
 		onactivate = {
@@ -2352,10 +2352,10 @@ end
 do
 	local data = {
 		version = 25,
-		key = "putricide", 
-		zone = L.zone["Icecrown Citadel"], 
-		category = L.zone["Citadel"], 
-		name = L.npc_citadel["Putricide"], 
+		key = "putricide",
+		zone = L.zone["Icecrown Citadel"],
+		category = L.zone["Citadel"],
+		name = L.npc_citadel["Putricide"],
 		triggers = {
 			scan = {
 				36678, -- Putricide
@@ -2917,7 +2917,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellid = { 
+				spellid = {
 					72855, -- 10h
 					72856, -- 25h
 				},
@@ -2946,10 +2946,10 @@ do
 	-- TODO Add 25h Vile Gas warning and cooldown
 	local data = {
 		version = 10,
-		key = "rotface", 
-		zone = L.zone["Icecrown Citadel"], 
-		category = L.zone["Citadel"], 
-		name = L.npc_citadel["Rotface"], 
+		key = "rotface",
+		zone = L.zone["Icecrown Citadel"],
+		category = L.zone["Citadel"],
+		name = L.npc_citadel["Rotface"],
 		triggers = {
 			scan = {
 				36627, -- Rotface
@@ -3225,10 +3225,10 @@ end
 do
 	local data = {
 		version = 13,
-		key = "saurfang", 
-		zone = L.zone["Icecrown Citadel"], 
-		category = L.zone["Citadel"], 
-		name = L.npc_citadel["Saurfang"], 
+		key = "saurfang",
+		zone = L.zone["Icecrown Citadel"],
+		category = L.zone["Citadel"],
+		name = L.npc_citadel["Saurfang"],
 		triggers = {
 			scan = {
 				37813, -- Deathbringer Saurfang
@@ -3465,10 +3465,10 @@ end
 do
 	local data = {
 		version = 31,
-		key = "sindragosa", 
-		zone = L.zone["Icecrown Citadel"], 
-		category = L.zone["Citadel"], 
-		name = L.npc_citadel["Sindragosa"], 
+		key = "sindragosa",
+		zone = L.zone["Icecrown Citadel"],
+		category = L.zone["Citadel"],
+		name = L.npc_citadel["Sindragosa"],
 		triggers = {
 			scan = {36853}, -- Sindragosa
 		},
@@ -4113,10 +4113,10 @@ end
 do
 	local data = {
 		version = 10,
-		key = "valithria", 
-		zone = L.zone["Icecrown Citadel"], 
-		category = L.zone["Citadel"], 
-		name = L.npc_citadel["Valithria"], 
+		key = "valithria",
+		zone = L.zone["Icecrown Citadel"],
+		category = L.zone["Citadel"],
+		name = L.npc_citadel["Valithria"],
 		triggers = {
 			scan = 36789,
 			yell = L.chat_citadel["^Heroes, lend me your aid"],
@@ -4399,10 +4399,10 @@ end
 do
 	local data = {
 		version = 3,
-		key = "icctrash", 
-		zone = L.zone["Icecrown Citadel"], 
-		category = L.zone["Citadel"], 
-		name = format(L.alert["%s (T)"],L.npc_citadel["Deathbound Ward"]), 
+		key = "icctrash",
+		zone = L.zone["Icecrown Citadel"],
+		category = L.zone["Citadel"],
+		name = format(L.alert["%s (T)"],L.npc_citadel["Deathbound Ward"]),
 		triggers = {
 			scan = {
 				37007, -- Deathbound Ward
@@ -4455,7 +4455,7 @@ do
 			},
 		}
 	}
-	
+
 	local mortal_wound_event = {
 		type = "combatevent",
 		eventtype = "SPELL_AURA_APPLIED",
@@ -4527,7 +4527,7 @@ do
 			onactivate = {
 				tracing = {
 					37025, -- Stinky
-				}, 
+				},
 				tracerstart = true,
 				combatstop = true,
 			},
@@ -4566,7 +4566,7 @@ do
 			onactivate = {
 				tracing = {
 					37217, -- Precious
-				}, 
+				},
 				tracerstart = true,
 				combatstop = true,
 			},

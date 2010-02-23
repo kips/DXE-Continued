@@ -7,15 +7,15 @@ local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 do
 	local data = {
 		version = 5,
-		key = "onyxia", 
+		key = "onyxia",
 		zone = L.zone["Onyxia's Lair"],
 		category = L.zone["Kalimdor"],
-		name = L.npc_kalimdor["Onyxia"], 
+		name = L.npc_kalimdor["Onyxia"],
 		triggers = {
 			yell = L.chat_kalimdor["^How fortuitous. Usually, I must leave my"],
 			scan = {
 				10184, -- Onyxia
-			}, 
+			},
 		},
 		onactivate = {
 			tracing = {10184}, -- Onyxia

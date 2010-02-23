@@ -10,9 +10,9 @@ do
 
 	local data = {
 		version = 300,
-		key = "anubrekhan", 
-		zone = L.zone["Naxxramas"], 
-		name = L.npc_naxxramas["Anub'Rekhan"], 
+		key = "anubrekhan",
+		zone = L.zone["Naxxramas"],
+		name = L.npc_naxxramas["Anub'Rekhan"],
 		triggers = {
 			scan = 15956, -- Anub'Rekhan
 		},
@@ -23,7 +23,7 @@ do
 			combatstop = true,
 			defeat = 15956,
 		},
-		userdata = { 
+		userdata = {
 			swarmcd = {90, 85, loop = false, type = "series"},
 		},
 		onstart = {
@@ -38,53 +38,53 @@ do
 		alerts = {
 			locustswarmcd = {
 				varname = format(L.alert["%s Cooldown"],SN[28785]),
-				type = "dropdown", 
-				text = format(L.alert["%s Cooldown"],SN[28785]), 
+				type = "dropdown",
+				text = format(L.alert["%s Cooldown"],SN[28785]),
 				time = "<swarmcd>",
-				flashtime = 5, 
-				sound = "ALERT1", 
-				color1 = "GREEN", 
+				flashtime = 5,
+				sound = "ALERT1",
+				color1 = "GREEN",
 				icon = ST[28785],
 			},
 			locustswarmwarn = {
-				varname = format(L.alert["%s Casting"],SN[28785]), 
-				type = "centerpopup", 
-				text = format(L.alert["%s Casting"],SN[28785]), 
-				time = 3, 
-				sound = "ALERT3", 
-				color1 = "GREY", 
+				varname = format(L.alert["%s Casting"],SN[28785]),
+				type = "centerpopup",
+				text = format(L.alert["%s Casting"],SN[28785]),
+				time = 3,
+				sound = "ALERT3",
+				color1 = "GREY",
 				icon = ST[28785],
 			},
 			locustswarmdur = {
-				varname = format(L.alert["%s Duration"],SN[28785]), 
-				type = "centerpopup", 
-				text = format(L.alert["%s Duration"],SN[28785]), 
-				time = 20, 
-				sound = "ALERT2", 
-				color1 = "YELLOW", 
+				varname = format(L.alert["%s Duration"],SN[28785]),
+				type = "centerpopup",
+				text = format(L.alert["%s Duration"],SN[28785]),
+				time = 20,
+				sound = "ALERT2",
+				color1 = "YELLOW",
 				icon = ST[28785],
 			},
 		},
 		events = {
 			-- Locust Swarm duration
 			{
-				type = "combatevent", 
-				eventtype = "SPELL_AURA_APPLIED", 
-				spellid = {28785,54021}, 
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellid = {28785,54021},
 				execute = {
 					{
 						"expect",{"&npcid|#4#&","==","15956"}, -- Anub'Rekhan
 						"alert","locustswarmdur",
 						"quash","locustswarmcd",
-						"alert","locustswarmcd", 
+						"alert","locustswarmcd",
 					},
 				},
 			},
 			-- Locust Swarm cast
 			{
-				type = "combatevent", 
-				eventtype = "SPELL_CAST_START", 
-				spellid = {28785,54021}, 
+				type = "combatevent",
+				eventtype = "SPELL_CAST_START",
+				spellid = {28785,54021},
 				execute = {
 					{
 						"alert","locustswarmwarn",
@@ -105,8 +105,8 @@ do
 
 	local data = {
 		version = 299,
-		key = "grandwidowfaerlina", 
-		zone = L.zone["Naxxramas"], 
+		key = "grandwidowfaerlina",
+		zone = L.zone["Naxxramas"],
 		name = L.npc_naxxramas["Grand Widow Faerlina"],
 		triggers = {
 			scan = 15953, -- Grand Widow Faerlina
@@ -118,7 +118,7 @@ do
 			combatstop = true,
 			defeat = 15953
 		},
-		userdata = { 
+		userdata = {
 			enraged = "false",
 		},
 		onstart = {
@@ -129,39 +129,39 @@ do
 		alerts = {
 			enragecd = {
 				varname = L.alert["Enrage"],
-				type = "dropdown", 
+				type = "dropdown",
 				text = L.alert["Enrage"],
-				time = 60, 
-				flashtime = 5, 
-				sound = "ALERT1", 
-				color1 = "RED", 
+				time = 60,
+				flashtime = 5,
+				sound = "ALERT1",
+				color1 = "RED",
 				icon = ST[12317],
 			},
 			enragewarn = {
 				varname = format(L.alert["%s Warning"],L.alert["Enrage"]),
-				type = "simple", 
-				text = format("%s!",L.alert["Enraged"]), 
-				time = 1.5, 
+				type = "simple",
+				text = format("%s!",L.alert["Enraged"]),
+				time = 1.5,
 				sound = "ALERT2",
 				icon = ST[40735],
 			},
 			rainwarn = {
 				varname = format(L.alert["%s Warning"],SN[39024]),
-				type = "simple", 
+				type = "simple",
 				text = format("%s! %s!",SN[39024],L.alert["MOVE"]),
-				time = 1.5, 
-				sound = "ALERT3", 
+				time = 1.5,
+				sound = "ALERT3",
 				flashscreen = true,
 				color1 = "BROWN",
 				icon = ST[39024],
 			},
 			silencedur = {
 				varname = format(L.alert["%s Duration"],SN[15487]),
-				type = "dropdown", 
+				type = "dropdown",
 				text = format(L.alert["%s Duration"],SN[15487]),
-				time = 30, 
-				flashtime = 5, 
-				sound = "ALERT4", 
+				time = 30,
+				flashtime = 5,
+				sound = "ALERT4",
 				color1 = "ORANGE",
 				icon = ST[29943],
 			},
@@ -169,23 +169,23 @@ do
 		events = {
 			-- Silence
 			{
-				type = "combatevent", 
-				eventtype = "SPELL_AURA_APPLIED", 
-				spellid = {28732,54097}, 
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellid = {28732,54097},
 				execute = {
 					{
 						"expect",{"&npcid|#4#&","==","15953"}, -- Grand Widow Faerlina
 						"expect",{"$enraged$","==","true"},
-						"set",{enraged = "false"}, 
-						"alert","enragecd", 
+						"set",{enraged = "false"},
+						"alert","enragecd",
 						"quash","silencedur",
-						"alert","silencedur", 
+						"alert","silencedur",
 					},
 				},
 			},
 			-- Rain
 			{
-				type = "combatevent", 
+				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
 				spellid = 54099,
 				execute = {
@@ -204,7 +204,7 @@ do
 					{
 						"expect",{"&npcid|#4#&","==","15953"}, -- Grand Widow Faerlina
 						"quash","enragecd",
-						"set",{enraged = "true"}, 
+						"set",{enraged = "true"},
 						"alert","enragewarn",
 					},
 				},
@@ -223,8 +223,8 @@ do
 
 	local data = {
 		version = 299,
-		key = "fourhorsemen", 
-		zone = L.zone["Naxxramas"], 
+		key = "fourhorsemen",
+		zone = L.zone["Naxxramas"],
 		name = L.npc_naxxramas["The Four Horsemen"],
 		triggers = {
 			scan = {
@@ -369,16 +369,16 @@ do
 				varname = format(L.alert["%s Cooldown"],SN[28374]),
 				type = "dropdown",
 				text = format(L.alert["%s Cooldown"],SN[28374]),
-				time = 105, 
-				flashtime = 5, 
-				sound = "ALERT1", 
-				color1 = "BROWN", 
+				time = 105,
+				flashtime = 5,
+				sound = "ALERT1",
+				color1 = "BROWN",
 				throttle = 5,
 				icon = ST[28374],
 			},
 			enragewarn = {
 				varname = format(L.alert["%s Warning"],L.alert["Enrage"]),
-				type = "simple", 
+				type = "simple",
 				text = format("%s!",L.alert["Enraged"]),
 				time = 1.5,
 				color1 = "RED",
@@ -410,12 +410,12 @@ do
 			},
 			-- Frenzy
 			{
-				type = "combatevent", 
+				type = "combatevent",
 				eventtype = "SPELL_CAST_SUCCESS",
 				spellid = {28371,54427},
 				execute = {
 					{
-						"alert","enragewarn", 
+						"alert","enragewarn",
 					},
 				},
 			},
@@ -461,9 +461,9 @@ do
 				type = "dropdown",
 				text = L.alert["Arrival"],
 				time = 270,
-				flashtime = 5, 
+				flashtime = 5,
 				color1 = "RED",
-				sound = "ALERT1", 
+				sound = "ALERT1",
 				icon = ST[586],
 			},
 		},
@@ -597,9 +597,9 @@ do
 
 	local data = {
 		version = 300,
-		key = "heigantheunclean", 
-		zone = L.zone["Naxxramas"], 
-		name = L.npc_naxxramas["Heigan the Unclean"], 
+		key = "heigantheunclean",
+		zone = L.zone["Naxxramas"],
+		name = L.npc_naxxramas["Heigan the Unclean"],
 		triggers = {
 			scan = 15936, -- Heigan the Unclean
 		},
@@ -619,22 +619,22 @@ do
 		alerts = {
 			dancebeginscd = {
 				varname = format(L.alert["%s Begins"],L.alert["Dance"]),
-				type = "dropdown", 
+				type = "dropdown",
 				text = format(L.alert["%s Begins"],L.alert["Dance"]),
-				time = 90, 
-				flashtime = 5, 
-				sound = "ALERT1", 
+				time = 90,
+				flashtime = 5,
+				sound = "ALERT1",
 				color1 = "MAGENTA",
 				icon = ST[29516],
 			},
 			danceendscd = {
 				varname = format(L.alert["%s Ends"],L.alert["Dance"]),
-				type = "dropdown", 
+				type = "dropdown",
 				text = format(L.alert["%s Ends"],L.alert["Dance"]),
-				time = 45, 
-				flashtime = 5, 
-				sound = "ALERT2", 
-				color1 = "DCYAN", 
+				time = 45,
+				flashtime = 5,
+				sound = "ALERT2",
+				color1 = "DCYAN",
 				icon = ST[49838],
 			},
 		},
@@ -648,12 +648,12 @@ do
 		events = {
 			-- Dance starts
 			{
-				type = "event", 
-				event = "CHAT_MSG_MONSTER_YELL", 
+				type = "event",
+				event = "CHAT_MSG_MONSTER_YELL",
 				execute = {
 					{
 						"expect",{"#1#","find",L.chat_naxxramas["^The end is upon you"]},
-						"alert","danceendscd", 
+						"alert","danceendscd",
 						"scheduletimer",{"backonfloor", 45},
 					},
 				},
@@ -672,9 +672,9 @@ do
 
 	local data = {
 		version = 300,
-		key = "kelthuzad", 
-		zone = L.zone["Naxxramas"], 
-		name = L.npc_naxxramas["Kel'Thuzad"], 
+		key = "kelthuzad",
+		zone = L.zone["Naxxramas"],
+		name = L.npc_naxxramas["Kel'Thuzad"],
 		triggers = {
 			yell = L.chat_naxxramas["^Minions, servants, soldiers of the cold dark"],
 			scan = {
@@ -705,50 +705,50 @@ do
 		alerts = {
 			fissurewarn = {
 				varname = format(L.alert["%s Warning"],SN[27810]),
-				type = "simple", 
+				type = "simple",
 				text = format(L.alert["%s Spawned"],SN[27810]),
-				time = 1.5, 
+				time = 1.5,
 				sound = "ALERT1",
 				color1 = "BLACK",
 				icon = ST[27810],
 			},
 			frostblastwarn = {
 				varname = format(L.alert["%s Warning"],SN[27808]),
-				type = "simple", 
+				type = "simple",
 				text = format(L.alert["%s Cast"],SN[27808]),
-				time = 1.5, 
-				sound = "ALERT2", 
+				time = 1.5,
+				sound = "ALERT2",
 				throttle = 5,
 				color1 = "BLUE",
 				icon = ST[27808],
 			},
 			detonatewarn = {
 				varname = format(L.alert["%s Warning"],SN[29870]),
-				type = "centerpopup", 
+				type = "centerpopup",
 				text = format("%s: %s!",SN[29870],L.alert["YOU"]),
-				time = 5, 
-				sound = "ALERT3", 
+				time = 5,
+				sound = "ALERT3",
 				color1 = "WHITE",
 				flashscreen = true,
 				icon = ST[29870],
 			},
 			ktarrivescd = {
 				varname = format(L.alert["%s Arrival"],L.npc_naxxramas["Kel'Thuzad"]),
-				type = "dropdown", 
+				type = "dropdown",
 				text = format(L.alert["%s Arrives"],L.npc_naxxramas["Kel'Thuzad"]),
 				time = 225,
 				color1 = "RED",
-				flashtime = 5, 
+				flashtime = 5,
 				icon = ST[586],
 			},
 			guardianswarn = {
 				varname = format(L.alert["%s Spawns"],SN[4070]),
-				type = "centerpopup", 
+				type = "centerpopup",
 				text = format(L.alert["%s Spawns"],SN[4070]),
-				time = 10, 
-				flashtime = 3, 
-				sound = "ALERT1", 
-				color1 = "MAGENTA", 
+				time = 10,
+				flashtime = 3,
+				sound = "ALERT1",
+				color1 = "MAGENTA",
 				icon = ST[4070],
 			},
 		},
@@ -762,31 +762,31 @@ do
 		events = {
 			-- Fissure
 			{
-				type = "combatevent", 
-				eventtype = "SPELL_CAST_SUCCESS", 
-				spellid = 27810, 
+				type = "combatevent",
+				eventtype = "SPELL_CAST_SUCCESS",
+				spellid = 27810,
 				execute = {
 					{
-						"alert","fissurewarn", 
+						"alert","fissurewarn",
 					},
 				},
 			},
 			-- Frost blast
 			{
-				type = "combatevent", 
-				eventtype = "SPELL_AURA_APPLIED", 
-				spellid = 27808, 
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellid = 27808,
 				execute = {
 					{
-						"alert","frostblastwarn", 
+						"alert","frostblastwarn",
 					},
 				},
 			},
 			-- Mana detonate
 			{
-				type = "combatevent", 
-				eventtype = "SPELL_AURA_APPLIED", 
-				spellid = 27819, 
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellid = 27819,
 				execute = {
 					{
 						"expect",{"#4#","==","&playerguid&"},
@@ -797,12 +797,12 @@ do
 			},
 			-- Guardians
 			{
-				type = "event", 
-				event = "CHAT_MSG_MONSTER_YELL", 
+				type = "event",
+				event = "CHAT_MSG_MONSTER_YELL",
 				execute = {
 					{
 						"expect",{"#1#","find",L.chat_naxxramas["^Very well. Warriors of the frozen wastes, rise up!"]},
-						"alert","guardianswarn", 
+						"alert","guardianswarn",
 					},
 				},
 			},
@@ -819,9 +819,9 @@ do
 
 	local data = {
 		version = 300,
-		key = "loatheb", 
-		zone = L.zone["Naxxramas"], 
-		name = L.npc_naxxramas["Loatheb"], 
+		key = "loatheb",
+		zone = L.zone["Naxxramas"],
+		name = L.npc_naxxramas["Loatheb"],
 		triggers = {
 			scan = 16011, -- Loatheb
 		},
@@ -832,7 +832,7 @@ do
 			combatstop = true,
 			defeat = 16011,
 		},
-		userdata = { 
+		userdata = {
 			sporetimer = 15,
 		},
 		onstart = {
@@ -845,31 +845,31 @@ do
 		alerts = {
 			necroauradur = {
 				varname = format(L.alert["%s Duration"],SN[55593]),
-				type = "dropdown", 
+				type = "dropdown",
 				text = format(L.alert["%s Fades"],SN[55593]),
-				time = 17, 
-				flashtime = 7, 
-				sound = "ALERT2", 
-				color1 = "MAGENTA", 
+				time = 17,
+				flashtime = 7,
+				sound = "ALERT2",
+				color1 = "MAGENTA",
 				icon = ST[55593],
 			},
 			openhealsdur = {
 				varname = format(L.alert["%s Duration"],SN[37455]),
-				type = "centerpopup", 
-				text = L.alert["Open Healing"], 
-				time = 3, 
-				sound = "ALERT3", 
-				color1 = "GREEN", 
+				type = "centerpopup",
+				text = L.alert["Open Healing"],
+				time = 3,
+				sound = "ALERT3",
+				color1 = "GREEN",
 				icon = ST[53765],
 			},
 			sporespawncd = {
 				varname = format(L.alert["%s Timer"],SN[29234]),
-				type = "dropdown", 
+				type = "dropdown",
 				text = SN[29234],
-				time = "<sporetimer>", 
-				flashtime = 5, 
-				sound = "ALERT1", 
-				color1 = "ORANGE", 
+				time = "<sporetimer>",
+				flashtime = 5,
+				sound = "ALERT1",
+				color1 = "ORANGE",
 				icon = ST[35336],
 				counter = true,
 			},
@@ -885,24 +885,24 @@ do
 		events = {
 			-- Necrotic aura
 			{
-				type = "combatevent", 
-				eventtype = "SPELL_CAST_SUCCESS", 
-				spellid = 55593, 
+				type = "combatevent",
+				eventtype = "SPELL_CAST_SUCCESS",
+				spellid = 55593,
 				execute = {
 					{
-						"alert","necroauradur", 
+						"alert","necroauradur",
 						"scheduletimer",{"healtime", 17},
 					},
 				},
 			},
 			-- Spore
 			{
-				type = "combatevent", 
-				eventtype = "SPELL_CAST_SUCCESS", 
-				spellid = 29234, 
+				type = "combatevent",
+				eventtype = "SPELL_CAST_SUCCESS",
+				spellid = 29234,
 				execute = {
 					{
-						"alert","sporespawncd", 
+						"alert","sporespawncd",
 					},
 				},
 			},
@@ -922,9 +922,9 @@ do
 
 	local data = {
 		version = 299,
-		key = "maexxna", 
-		zone = L.zone["Naxxramas"], 
-		name = L.npc_naxxramas["Maexxna"], 
+		key = "maexxna",
+		zone = L.zone["Naxxramas"],
+		name = L.npc_naxxramas["Maexxna"],
 		triggers = {
 			scan = 15952, -- Maexxna
 		},
@@ -945,29 +945,29 @@ do
 		alerts = {
 			spraycd = {
 				varname = format(L.alert["%s Cooldown"],SN[29484]),
-				type = "dropdown", 
+				type = "dropdown",
 				text = format(L.alert["Next %s"],SN[29484]),
-				time = 40, 
-				flashtime = 5, 
-				sound = "ALERT1", 
-				color1 = "YELLOW", 
+				time = 40,
+				flashtime = 5,
+				sound = "ALERT1",
+				color1 = "YELLOW",
 				icon = ST[29484],
 			},
 			spidercd = {
 				varname = format(L.alert["%s Cooldown"],L.alert["Spider"]),
-				type = "dropdown", 
+				type = "dropdown",
 				text = format(L.alert["%s Spawns"],L.alert["Spider"]),
-				time = 30, 
-				flashtime = 5, 
-				sound = "ALERT2", 
-				color1 = "ORANGE", 
+				time = 30,
+				flashtime = 5,
+				sound = "ALERT2",
+				color1 = "ORANGE",
 				icon = ST[51069],
 			},
 			enragewarn = {
 				varname = format(L.alert["%s Warning"],L.alert["Enrage"]),
-				type = "simple", 
+				type = "simple",
 				text = format("%s!",L.alert["Enraged"]),
-				time = 1.5, 
+				time = 1.5,
 				sound = "ALERT3",
 				icon = ST[12317],
 			},
@@ -975,19 +975,19 @@ do
 		events = {
 			-- Spray
 			{
-				type = "combatevent", 
-				eventtype = "SPELL_CAST_SUCCESS", 
-				spellid = {29484,54125}, 
+				type = "combatevent",
+				eventtype = "SPELL_CAST_SUCCESS",
+				spellid = {29484,54125},
 				execute = {
 					{
-						"alert","spraycd", 
+						"alert","spraycd",
 						"alert","spidercd",
 					},
 				},
 			},
 			-- Enrage
 			{
-				type = "combatevent", 
+				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
 				spellid = {54123,54124},
 				execute = {
@@ -1010,15 +1010,15 @@ do
 
 	local data = {
 		version = 300,
-		key = "noththeplaguebringer", 
-		zone = L.zone["Naxxramas"], 
-		name = L.npc_naxxramas["Noth the Plaguebringer"], 
+		key = "noththeplaguebringer",
+		zone = L.zone["Naxxramas"],
+		name = L.npc_naxxramas["Noth the Plaguebringer"],
 		triggers = {
 			scan = {
 				15954, -- Noth
 				16983, -- Plagued Champion
 				16981, -- Plagued Guardian
-			}, 
+			},
 		},
 		onactivate = {
 			tracing = {15954}, -- Noth
@@ -1027,7 +1027,7 @@ do
 			combatstop = true,
 			defeat = 15954,
 		},
-		userdata = { 
+		userdata = {
 			roomtime = {90,110,180,loop = false, type = "series"},
 			balconytime = {70,95,120,loop = false, type = "series"},
 		},
@@ -1041,72 +1041,72 @@ do
 		alerts = {
 			blinkcd = {
 				varname = format(L.alert["%s Cooldown"],SN[29208]),
-				type = "dropdown", 
+				type = "dropdown",
 				text = format(L.alert["%s Cooldown"],SN[29208]),
-				time = 30, 
-				flashtime = 5, 
-				sound = "ALERT1", 
-				color1 = "MAGENTA", 
+				time = 30,
+				flashtime = 5,
+				sound = "ALERT1",
+				color1 = "MAGENTA",
 				icon = ST[29208],
 			},
 			teleportbalccd = {
-				varname = L.alert["Teleport to Balcony"], 
-				type = "dropdown", 
-				text = L.alert["Teleport to Balcony"], 
-				time = "<roomtime>", 
-				flashtime = 5, 
+				varname = L.alert["Teleport to Balcony"],
+				type = "dropdown",
+				text = L.alert["Teleport to Balcony"],
+				time = "<roomtime>",
+				flashtime = 5,
 				color1 = "RED",
 				sound = "ALERT2",
 				icon = ST[66548],
 			},
 			teleportroomcd = {
-				varname = L.alert["Teleport to Room"], 
-				type = "dropdown", 
-				text = L.alert["Teleport to Room"], 
-				time = "<balconytime>", 
-				flashtime = 5, 
+				varname = L.alert["Teleport to Room"],
+				type = "dropdown",
+				text = L.alert["Teleport to Room"],
+				time = "<balconytime>",
+				flashtime = 5,
 				color1 = "RED",
 				sound = "ALERT2",
 				icon = ST[29231],
 			},
 			cursewarn = {
 				varname = format(L.alert["%s Warning"],L.alert["Curse"]),
-				type = "simple", 
+				type = "simple",
 				text = format(L.alert["%s Cast"],L.alert["Curse"]).."!",
-				time = 1.5, 
-				sound = "ALERT3", 
+				time = 1.5,
+				sound = "ALERT3",
 				icon = ST[29213],
 			},
 		},
 		events = {
 			-- Curses
 			{
-				type = "combatevent", 
-				eventtype = "SPELL_CAST_SUCCESS", 
-				spellid = {29213,54835}, 
+				type = "combatevent",
+				eventtype = "SPELL_CAST_SUCCESS",
+				spellid = {29213,54835},
 				execute = {
 					{
-						"alert","cursewarn", 
+						"alert","cursewarn",
 					},
 				},
 			},
 			-- Emotes
 			{
-				type = "event", 
-				event = "CHAT_MSG_RAID_BOSS_EMOTE", 
+				type = "event",
+				event = "CHAT_MSG_RAID_BOSS_EMOTE",
 				execute = {
 					{
 						"expect",{"#1#","find",L.chat_naxxramas["blinks away"]},
-						"alert","blinkcd", 
+						"alert","blinkcd",
 					},
 					{
 						"expect",{"#1#","find",L.chat_naxxramas["teleports to the balcony"]},
 						"quash","blinkcd",
-						"alert","teleportroomcd", 
+						"alert","teleportroomcd",
 					},
 					{
 						"expect",{"#1#","find",L.chat_naxxramas["teleports back into battle"]},
-						"alert","teleportbalccd", 
+						"alert","teleportbalccd",
 					},
 				},
 			},
@@ -1124,11 +1124,11 @@ do
 
 	local data = {
 		version = 299,
-		key = "patchwerk", 
-		zone = L.zone["Naxxramas"], 
-		name = L.npc_naxxramas["Patchwerk"], 
+		key = "patchwerk",
+		zone = L.zone["Naxxramas"],
+		name = L.npc_naxxramas["Patchwerk"],
 		triggers = {
-			scan = 16028, 
+			scan = 16028,
 		},
 		onactivate = {
 			tracing = {16028},
@@ -1146,32 +1146,32 @@ do
 		alerts = {
 			enragecd = {
 				varname = L.alert["Enrage"],
-				type = "dropdown", 
+				type = "dropdown",
 				text = L.alert["Enrage"],
-				time = 360, 
-				flashtime = 5, 
-				sound = "ALERT2", 
+				time = 360,
+				flashtime = 5,
+				sound = "ALERT2",
 				color1 = "RED",
 				icon = ST[12317],
 			},
 			enragewarn = {
 				varname = format(L.alert["%s Warning"],L.alert["Enrage"]),
-				type = "simple", 
+				type = "simple",
 				text = L.alert["Enraged"].."!",
-				time = 1.5, 
-				sound = "ALERT1", 
+				time = 1.5,
+				sound = "ALERT1",
 				icon = ST[40735],
 			},
 		},
 		events = {
 			-- Enrage
 			{
-				type = "combatevent", 
-				eventtype = "SPELL_AURA_APPLIED", 
-				spellid = 28131, 
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellid = 28131,
 				execute = {
 					{
-						"alert","enragewarn", 
+						"alert","enragewarn",
 						"quash","enragecd",
 					},
 				},
@@ -1190,14 +1190,14 @@ do
 
 	local data = {
 		version = 299,
-		key = "instructorrazuvious", 
-		zone = L.zone["Naxxramas"], 
-		name = L.npc_naxxramas["Instructor Razuvious"], 
+		key = "instructorrazuvious",
+		zone = L.zone["Naxxramas"],
+		name = L.npc_naxxramas["Instructor Razuvious"],
 		triggers = {
 			scan = {
 				16061, -- Razuvious
 				16803, -- Death Knight Understudy
-			}, 
+			},
 			yell = L.chat_naxxramas["^The time for practice is over!"],
 		},
 		onactivate = {
@@ -1215,67 +1215,67 @@ do
 		alerts = {
 			shoutcd = {
 				varname = format(L.alert["%s Cooldown"],SN[55543]),
-				type = "dropdown", 
+				type = "dropdown",
 				text = format(L.alert["Next %s"],SN[55543]),
-				time = 15, 
-				flashtime = 5, 
-				sound = "ALERT1", 
-				color1 = "MAGENTA", 
+				time = 15,
+				flashtime = 5,
+				sound = "ALERT1",
+				color1 = "MAGENTA",
 				icon = ST[55543],
 			},
 			tauntdur = {
 				varname = format(L.alert["%s Duration"],SN[355]),
-				type = "dropdown", 
+				type = "dropdown",
 				text = format(L.alert["%s Duration"],SN[355]),
-				time = 20, 
-				flashtime = 5, 
-				sound = "ALERT2", 
-				color1 = "BLUE", 
+				time = 20,
+				flashtime = 5,
+				sound = "ALERT2",
+				color1 = "BLUE",
 				icon = ST[355],
 			},
 			shieldwalldur = {
 				varname = format(L.alert["%s Duration"],SN[871]),
-				type = "dropdown", 
+				type = "dropdown",
 				text = format(L.alert["%s Duration"],SN[871]),
-				time = 20, 
-				flashtime = 5, 
-				sound = "ALERT3", 
-				color1 = "YELLOW", 
+				time = 20,
+				flashtime = 5,
+				sound = "ALERT3",
+				color1 = "YELLOW",
 				icon = ST[871],
 			},
 		},
 		events = {
 			-- Disrupting shout
 			{
-				type = "combatevent", 
-				eventtype = "SPELL_CAST_SUCCESS", 
-				spellid = {29107,55543}, 
+				type = "combatevent",
+				eventtype = "SPELL_CAST_SUCCESS",
+				spellid = {29107,55543},
 				execute = {
 					{
-						"alert","shoutcd", 
+						"alert","shoutcd",
 					},
 				},
 			},
 			-- Taunt
 			{
-				type = "combatevent", 
-				eventtype = "SPELL_CAST_SUCCESS", 
-				spellid = 29060, 
+				type = "combatevent",
+				eventtype = "SPELL_CAST_SUCCESS",
+				spellid = 29060,
 				execute = {
 					{
-						
-						"alert","tauntdur", 
+
+						"alert","tauntdur",
 					},
 				},
 			},
 			-- Shield wall
 			{
-				type = "combatevent", 
-				eventtype = "SPELL_CAST_SUCCESS", 
-				spellid = 29061, 
+				type = "combatevent",
+				eventtype = "SPELL_CAST_SUCCESS",
+				spellid = 29061,
 				execute = {
 					{
-						"alert","shieldwalldur", 
+						"alert","shieldwalldur",
 					},
 				},
 			},
@@ -1293,9 +1293,9 @@ do
 
 	local data = {
 		version = 300,
-		key = "sapphiron", 
-		zone = L.zone["Naxxramas"], 
-		name = L.npc_naxxramas["Sapphiron"], 
+		key = "sapphiron",
+		zone = L.zone["Naxxramas"],
+		name = L.npc_naxxramas["Sapphiron"],
 		triggers = {
 			scan = 15989, -- Sapphiron
 		},
@@ -1328,31 +1328,31 @@ do
 			},
 			lifedraincd = {
 				varname = format(L.alert["%s Cooldown"],SN[28542]),
-				type = "dropdown", 
+				type = "dropdown",
 				text = format(L.alert["Next %s"],SN[28542]),
-				time = 23, 
-				flashtime = 5, 
-				sound = "ALERT3", 
-				color1 = "MAGENTA", 
+				time = 23,
+				flashtime = 5,
+				sound = "ALERT3",
+				color1 = "MAGENTA",
 				icon = ST[28542],
 			},
 			airphasedur = {
 				varname = format(L.alert["%s Duration"],L.alert["Air Phase"]),
-				type = "centerpopup", 
-				text = format(L.alert["%s Duration"],L.alert["Air Phase"]), 
-				time = 15.5, 
-				flashtime = 5, 
-				sound = "ALERT2", 
-				color1 = "YELLOW", 
+				type = "centerpopup",
+				text = format(L.alert["%s Duration"],L.alert["Air Phase"]),
+				time = 15.5,
+				flashtime = 5,
+				sound = "ALERT2",
+				color1 = "YELLOW",
 				icon = ST[51475],
 			},
 			deepbreathwarn = {
 				varname = format(L.alert["%s Warning"],L.alert["Deep Breath"]),
-				type = "centerpopup", 
+				type = "centerpopup",
 				text = format("%s! %s!",L.alert["Deep Breath"],L.alert["HIDE"]),
-				time = 10, 
-				flashtime = 6.5, 
-				sound = "ALERT1", 
+				time = 10,
+				flashtime = 6.5,
+				sound = "ALERT1",
 				color1 = "BLUE",
 				flashscreen = true,
 				icon = ST[28524],
@@ -1394,29 +1394,29 @@ do
 			},
 			-- Life drain
 			{
-				type = "combatevent", 
-				eventtype = "SPELL_CAST_SUCCESS", 
-				spellid = {28542,55665}, 
+				type = "combatevent",
+				eventtype = "SPELL_CAST_SUCCESS",
+				spellid = {28542,55665},
 				execute = {
 					{
-						"alert","lifedraincd", 
+						"alert","lifedraincd",
 					},
 				},
 			},
 			-- Emotes
 			{
-				type = "event", 
-				event = "CHAT_MSG_RAID_BOSS_EMOTE", 
+				type = "event",
+				event = "CHAT_MSG_RAID_BOSS_EMOTE",
 				execute = {
 					{
 						"expect",{"#1#","find",L.chat_naxxramas["lifts"]},
-						"alert","airphasedur", 
+						"alert","airphasedur",
 						"quash","lifedraincd",
 					},
 					{
 						"expect",{"#1#","find",L.chat_naxxramas["deep"]},
 						"quash","airphasedur",
-						"alert","deepbreathwarn", 
+						"alert","deepbreathwarn",
 					},
 				},
 			},
@@ -1435,9 +1435,9 @@ do
 
 	local data = {
 		version = 299,
-		key = "thaddius", 
-		zone = L.zone["Naxxramas"], 
-		name = L.npc_naxxramas["Thaddius"], 
+		key = "thaddius",
+		zone = L.zone["Naxxramas"],
+		name = L.npc_naxxramas["Thaddius"],
 		triggers = {
 			scan = {
 				15928, -- Thaddius
@@ -1460,7 +1460,7 @@ do
 			combatstop = true,
 			defeat = 15928,
 		},
-		userdata = { 
+		userdata = {
 			dead = 0,
 		},
 		onacquired = {
@@ -1483,32 +1483,32 @@ do
 		alerts = {
 			enragecd = {
 				varname = L.alert["Enrage"],
-				type = "dropdown", 
+				type = "dropdown",
 				text = L.alert["Enrage"],
-				time = 360, 
-				flashtime = 5, 
-				sound = "ALERT2", 
+				time = 360,
+				flashtime = 5,
+				sound = "ALERT2",
 				color1 = "RED",
 				icon = ST[12317],
 			},
 			tankthrowcd = {
 				varname = format(L.alert["%s Cooldown"],L.alert["Tank Throw"]),
-				type = "dropdown", 
+				type = "dropdown",
 				text = format(L.alert["Next %s"],L.alert["Tank Throw"]),
-				time = 20.6, 
-				flashtime = 3, 
-				sound = "ALERT2", 
-				color1 = "MAGENTA", 
+				time = 20.6,
+				flashtime = 3,
+				sound = "ALERT2",
+				color1 = "MAGENTA",
 				icon = ST[52272],
 			},
 			polarityshiftwarn = {
 				varname = format(L.alert["%s Casting"],SN[28089]),
-				type = "centerpopup", 
+				type = "centerpopup",
 				text = format(L.alert["%s Casting"],SN[28089]),
-				time = 3, 
-				flashtime = 3, 
-				sound = "ALERT1", 
-				color1 = "BLUE", 
+				time = 3,
+				flashtime = 3,
+				sound = "ALERT1",
+				color1 = "BLUE",
 				flashscreen = true,
 				icon = ST[28089],
 			},
@@ -1524,19 +1524,19 @@ do
 		events = {
 			-- Polarity shift
 			{
-				type = "combatevent", 
-				eventtype = "SPELL_CAST_START", 
-				spellid = 28089, 
+				type = "combatevent",
+				eventtype = "SPELL_CAST_START",
+				spellid = 28089,
 				execute = {
 					{
-						"alert","polarityshiftwarn", 
+						"alert","polarityshiftwarn",
 					},
 				},
 			},
 			-- Emotes
 			{
-				type = "event", 
-				event = "CHAT_MSG_RAID_BOSS_EMOTE", 
+				type = "event",
+				event = "CHAT_MSG_RAID_BOSS_EMOTE",
 				execute = {
 					{
 						"expect",{"#1#","find",L.chat_naxxramas["overloads"]},
