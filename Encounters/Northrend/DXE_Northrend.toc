@@ -8,10 +8,4 @@
 ## X-DXE-Zone: The Eye of Eternity, Vault of Archavon, The Obsidian Sanctum
 
 Locales.lua
-
-Archavon.lua
-Koralon.lua
-Emalon.lua
-Malygos.lua
-Sartharion.lua
-Toravon.lua
+Encounters.lua

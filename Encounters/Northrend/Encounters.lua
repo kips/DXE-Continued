@@ -1,0 +1,1005 @@
+local L,SN,ST = DXE.L,DXE.SN,DXE.ST
+
+---------------------------------
+-- ARCHAVON
+---------------------------------
+
+do
+	local data = {
+		version = 301,
+		key = "archavon", 
+		zone = L.zone["Vault of Archavon"],
+		category = L.zone["Northrend"],
+		name = L.npc_northrend["Archavon"],
+		triggers = {
+			scan = 31125, -- Archavon
+		},
+		onactivate = {
+			tracing = {31125}, -- Archavon
+			tracerstart = true,
+			tracerstop = true,
+			combatstop = true,
+			defeat = 31125,
+		},
+		userdata = {},
+		onstart = {
+			{
+				"alert","enragecd",
+				"alert","stompcd",
+			}
+		},
+		windows = {
+			proxwindow = true,
+		},
+		alerts = {
+			enragecd = {
+				varname = L.alert["Enrage"],
+				type = "dropdown",
+				text = L.alert["Enrage"],
+				time = 300,
+				flashtime = 5,
+				color1 = "RED",
+				icon = ST[12317],
+			},
+			chargewarn = {
+				varname = format(L.alert["%s Warning"],SN[100]),
+				type = "simple",
+				text = format("%s: #5#",SN[100]),
+				time = 1.5,
+				sound = "ALERT2",
+				icon = ST[100],
+			},
+			cloudwarn = {
+				varname = format(L.alert["%s Warning"],SN[58965]),
+				type = "simple",
+				text = format("%s: %s! %s!",SN[58965],L.alert["YOU"],L.alert["MOVE"]),
+				time = 1.5,
+				sound = "ALERT2",
+				icon = ST[58965],
+			},
+			shardswarnself = {
+				varname = format(L.alert["%s on self"],SN[58695]),
+				type = "centerpopup",
+				time = 3,
+				flashtime = 3,
+				color1 = "YELLOW",
+				text = format("%s: %s! %s!",SN[58695],L.alert["YOU"],L.alert["MOVE"]),
+				sound = "ALERT3",
+				flashscreen = true,
+				icon = ST[58695],
+			},
+			shardswarnothers = {
+				varname = format(L.alert["%s on others"],SN[58695]),
+				type = "centerpopup",
+				time = 3,
+				flashtime = 3,
+				color1 = "YELLOW",
+				sound = "ALERT3",
+				text = format("%s: &tft_unitname&",SN[58695]),
+				icon = ST[58695],
+			},
+			stompcd = {
+				varname = format(L.alert["%s Cooldown"],SN[58663]),
+				type = "dropdown",
+				text = format(L.alert["Next %s"],SN[58663]),
+				time = 47,
+				flashtime = 5,
+				sound = "ALERT1",
+				color1 = "BROWN",
+				icon = ST[58663],
+			},
+		},
+		timers = {
+			shards = {
+				{
+					"expect",{"&tft_unitexists& &tft_isplayer&","==","1 1"},
+					"alert","shardswarnself",
+				},
+				{
+					"expect",{"&tft_unitexists& &tft_isplayer&","==","1 nil"},
+					"alert","shardswarnothers",
+				},
+			},
+		},
+		events = {
+			-- Stomp
+			{
+				type = "combatevent",
+				eventtype = "SPELL_CAST_START",
+				spellid = {58663, 60880}, 
+				execute = {
+					{
+						"alert","stompcd", 
+					},
+				},
+			},
+			-- Shards
+			{
+				type = "combatevent",
+				eventtype = "SPELL_CAST_START",
+				spellid = 58678,
+				execute = {
+					{
+						"scheduletimer",{"shards",0.2},
+					}
+				},
+			},
+			-- Cloud
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellid = {58965, 61672},
+				execute = {
+					{
+						"expect",{"#4#","==","&playerguid&"},
+						"alert","cloudwarn",
+					},
+				},
+			},
+			-- Charge
+			{
+				type = "event",
+				event = "CHAT_MSG_MONSTER_EMOTE",
+				execute = {
+					{
+						"alert","chargewarn",
+					},
+				},
+			},
+		},
+	}
+
+	DXE:RegisterEncounter(data)
+end
+
+---------------------------------
+-- KORALON
+---------------------------------
+
+do
+	local data = {
+		version = 5,
+		key = "koralon", 
+		zone = L.zone["Vault of Archavon"], 
+		category = L.zone["Northrend"],
+		name = L.npc_northrend["Koralon"], 
+		triggers = {
+			scan = {
+				35013, -- Koralon
+			}, 
+		},
+		onactivate = {
+			tracing = {35013},
+			tracerstart = true,
+			combatstop = true,
+			defeat = 35013,
+		},
+		userdata = {
+			meteortime = {28,47,loop = false, type = "series"}, -- recheck
+			breathtime = {8,47,loop = false, type = "series"}, -- recheck
+		},
+		onstart = {
+			{
+				"alert","breathcd",
+				"alert","meteorcd",
+			},
+		},
+		windows = {
+			proxwindow = true,
+		},
+		alerts = {
+			flamingcinderself = {
+				varname = format(L.alert["%s on self"],SN[67332]),
+				text = format("%s: %s! %s!",SN[67332],L.alert["YOU"],L.alert["MOVE AWAY"]),
+				type = "simple",
+				time = 3,
+				throttle = 3,
+				color1 = "ORANGE",
+				sound = "ALERT1",
+				flashscreen = true,
+				icon = ST[67332],
+			},
+			meteorcd = {
+				varname = format(L.alert["%s Cooldown"],SN[66725]),
+				text = format(L.alert["%s Cooldown"],SN[66725]),
+				type = "dropdown",
+				time = "<meteortime>",
+				flashtime = 10,
+				color1 = "MAGENTA",
+				sound = "ALERT4",
+				icon = ST[66725],
+			},
+			meteorwarn = {
+				varname = format(L.alert["%s Casting"],SN[66725]),
+				text = format(L.alert["%s Casting"],SN[66725]),
+				type = "centerpopup",
+				time = 1.5,
+				flashtime = 1.5,
+				color1 = "BROWN",
+				sound = "ALERT3",
+				icon = ST[66725],
+			},
+			meteordur = {
+				varname = format(L.alert["%s Duration"],SN[66725]),
+				text = format(L.alert["%s Duration"],SN[66725]),
+				type = "centerpopup",
+				time = 15,
+				flashtime = 15,
+				color1 = "BROWN",
+				sound = "ALERT2",
+				icon = ST[66725],
+			},
+			breathwarn = {
+				varname = format(L.alert["%s Casting"],SN[67328]),
+				text = format(L.alert["%s Casting"],SN[67328]),
+				type = "centerpopup",
+				time = 1.5,
+				flashtime = 1.5,
+				sound = "ALERT5",
+				color1 = "YELLOW",
+				icon = ST[67328],
+			},
+			breathdur = {
+				varname = format(L.alert["%s Channel"],SN[67328]),
+				text = format(L.alert["%s Channel"],SN[67328]),
+				type = "centerpopup",
+				time = 3,
+				flashtime = 3,
+				color1 = "YELLOW",
+				icon = ST[67328],
+			},
+			breathcd = {
+				varname = format(L.alert["%s Cooldown"],SN[67328]),
+				text = format(L.alert["%s Cooldown"],SN[67328]),
+				type = "dropdown",
+				time = "<breathtime>",
+				flashtime = 5,
+				color1 = "INDIGO",
+				icon = ST[67328],
+			},
+		},
+		timers = {
+			startbreathchan = {
+				{
+					"quash","breathwarn",
+					"alert","breathdur",
+				},
+			},
+		},
+		events = {
+			-- Burning Breath
+			{
+				type = "combatevent",
+				eventtype = "SPELL_CAST_START",
+				spellid = {
+					66665,
+					67328, -- 25
+				},
+				execute = {
+					{
+						"quash","breathcd",
+						"alert","breathcd",
+						"alert","breathwarn",
+						"scheduletimer",{"startbreathchan",1.5},
+					},
+				},
+			},
+			-- Meteor Fists cast
+			{
+				type =  "combatevent",
+				eventtype = "SPELL_CAST_START",
+				spellid = {
+					68161, -- 25
+					66808,
+					66725,
+					68160,
+				},
+				execute = {
+					{
+						"alert","meteorwarn",
+					},
+				},
+			},
+			-- Meteor Fists duration
+			{
+				type =  "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellid = {
+					68161, -- 25
+					66808,
+					66725,
+					68160,
+				},
+				execute = {
+					{
+						"quash","meteorwarn",
+						"alert","meteordur",
+					},
+				},
+			},
+			-- Flaming Cinder
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellid = {67332,66684},
+				execute = {
+					{
+						"expect",{"#4#","==","&playerguid&"},
+						"alert","flamingcinderself",
+					},
+				},
+			},
+		},
+	}
+
+	DXE:RegisterEncounter(data)
+end
+
+---------------------------------
+-- EMALON
+---------------------------------
+
+do
+	local data = {
+		version = 300,
+		key = "emalon", 
+		zone = L.zone["Vault of Archavon"], 
+		category = L.zone["Northrend"],
+		name = L.npc_northrend["Emalon"], 
+		triggers = {
+			scan = {
+				33993, -- Emalon
+				33998, -- Tempest Minion
+				34049, -- Tempest Minion
+			}, 
+		},
+		onactivate = {
+			tracing = {33993},
+			tracerstart = true,
+			tracerstop = true,
+			combatstop = true,
+			defeat = 33993,
+		},
+		userdata = {},
+		onstart = {
+			{
+				"alert","overchargecd",
+			}
+		},
+		windows = {
+			proxwindow = true,
+		},
+		alerts = {
+			novacd = {
+				varname = format(L.alert["%s Cooldown"],SN[64216]),
+				type = "dropdown",
+				time = 25,
+				flashtime = 5,
+				text = format(L.alert["%s Cooldown"],SN[64216]),
+				color1 = "BLUE",
+				color2 = "BLUE",
+				sound = "ALERT1",
+				icon = ST[421],
+			},
+			novawarn = {
+				varname = format(L.alert["%s Casting"],SN[64216]),
+				type = "centerpopup",
+				time = 5,
+				flashtime = 5,
+				text = format(L.alert["%s Casting"],SN[64216]),
+				color1 = "BROWN",
+				color2 = "ORANGE",
+				sound = "ALERT5",
+				icon = ST[57322],
+			},
+			overchargecd = {
+				varname = format(L.alert["%s Cooldown"],SN[64218]),
+				type = "dropdown",
+				time = 45,
+				flashtime = 5,
+				text = format(L.alert["Next %s"],SN[64218]),
+				color1 = "RED",
+				color2 = "DCYAN",
+				sound = "ALERT2",
+				icon = ST[64218],
+			},
+			overchargedblastdur = {
+				varname = format(L.alert["%s Timer"],SN[64219]),
+				type = "centerpopup",
+				time = 20,
+				flashtime = 5,
+				text = SN[64219].."!",
+				color1 = "YELLOW",
+				color2 = "VIOLET",
+				sound = "ALERT3",
+				icon = ST[37104],
+			},
+		},
+		events = {
+			-- Lightning Nova
+			{
+				type = "combatevent",
+				eventtype = "SPELL_CAST_START",
+				spellid = {64216,65279},
+				execute = {
+					{
+						"alert","novacd",
+						"alert","novawarn",
+					},
+				},
+			},
+			-- Overcharge and Overcharged Blast
+			{
+				type = "combatevent",
+				eventtype = "SPELL_CAST_SUCCESS",
+				spellid = 64218,
+				execute = {
+					{
+						"alert","overchargecd",
+						"alert","overchargedblastdur",
+					},
+				},
+			},
+			-- Overcharge Removal
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_REMOVED",
+				spellid = 64217,
+				execute = {
+					{
+						"quash","overchargedblastdur",
+					},
+				},
+			},
+		},
+	}
+
+	DXE:RegisterEncounter(data)
+end
+
+
+---------------------------------
+-- MALYGOS
+---------------------------------
+
+do
+	local data = {
+		version = 300,
+		key = "malygos", 
+		zone = L.zone["The Eye of Eternity"], 
+		category = L.zone["Northrend"],
+		name = L.npc_northrend["Malygos"], 
+		triggers = {
+			scan = {
+				28859, -- Malygos
+				30245, -- Nexus Lord
+				30249, -- Scion of Eternity
+				30084, -- Power Spark
+			}, 
+		},
+		onactivate = {
+			tracing = {28859}, -- Malygos
+			tracerstart = true,
+			tracerstop = true,
+			combatstop = true,
+			defeat = 28859,
+		},
+		userdata = { 
+			phase = 1,
+			vortexcd = {29,59,loop = false, type = "series"},
+		},
+		onstart = {
+			{
+				"alert","vortexcd",
+			}
+		},
+		alerts = {
+			vortexcd = {
+				varname = format(L.alert["%s Cooldown"],SN[56105]),
+				type = "dropdown", 
+				text = format(L.alert["%s Cooldown"],SN[56105]),
+				time = "<vortexcd>", 
+				flashtime = 5, 
+				sound = "ALERT1", 
+				color1 = "BLUE", 
+				icon = ST[56105],
+			},
+			staticfieldwarn = {
+				varname = format(L.alert["%s Warning"],SN[57430]),
+				type = "simple", 
+				text = format("%s! %s!",format(L.alert["%s Cast"],SN[57430]),L.alert["MOVE"]),
+				time = 1.5, 
+				sound = "ALERT2", 
+				color1 = "YELLOW",
+				icon = ST[57430],
+			},
+			surgewarn = { 
+				varname = format(L.alert["%s on self"],L.alert["Surge"]),
+				type = "centerpopup", 
+				text = format("%s: %s! %s!",L.alert["Surge"],L.alert["YOU"],L.alert["CAREFUL"]),
+				time = 3,
+				flashtime = 3,
+				sound = "ALERT1", 
+				throttle = 5,
+				color1 = "MAGENTA",
+				icon = ST[56505],
+			},
+			presurgewarn = { 
+				varname = format(L.alert["%s Warning"],L.alert["Surge"]), 
+				type = "simple", 
+				text = format("%s: %s! %s!",L.alert["Surge"],L.alert["YOU"],L.alert["SOON"]),
+				time = 1.5, 
+				sound = "ALERT5", 
+				color1 = "TURQUOISE",
+				flashscreen = true,
+				icon = ST[56505],
+			},
+			deepbreathwarn = {
+				varname = format(L.alert["%s Cooldown"],L.alert["Deep Breath"]), 
+				type = "dropdown", 
+				text = format(L.alert["Next %s"],L.alert["Deep Breath"]),
+				time = 92, 
+				flashtime = 5, 
+				sound = "ALERT3", 
+				color1 = "ORANGE", 
+				icon = ST[57432],
+			},
+			vortexdur = {
+				varname = format(L.alert["%s Duration"],SN[56105]),
+				type = "centerpopup", 
+				text = format(L.alert["%s Duration"],SN[56105]),
+				time = 10, 
+				sound = "ALERT1", 
+				color1 = "BLUE", 
+				icon = ST[56105],
+			},
+			powersparkcd = {
+				varname = format(L.alert["%s Spawns"],L.npc_northrend["Power Spark"]),
+				type = "dropdown", 
+				text = format(L.alert["Next %s"],L.npc_northrend["Power Spark"]),
+				time = 17, 
+				flashtime = 5, 
+				sound = "ALERT2", 
+				color1 = "WHITE", 
+				icon = ST[56152],
+			},
+		},
+		events = {
+			-- Vortex/Power spark
+			{
+				type = "combatevent", 
+				eventtype = "SPELL_CAST_SUCCESS", 
+				spellid = 56105, 
+				execute = {
+					{
+						"alert","vortexdur", 
+						"alert","vortexcd", 
+						"quash","powersparkcd",
+						"alert","powersparkcd",
+					},
+				},
+			},
+			-- Surge
+			{
+				type = "combatevent", 
+				eventtype = "SPELL_AURA_APPLIED", 
+				spellid = {57407, 60936}, 
+				execute = {
+					{
+						"expect",{"#4#","==","&vehicleguid&"},
+						"quash","presurgewarn",
+						"alert","surgewarn",
+					},
+				},
+			},
+			-- Static field
+			{
+				type = "combatevent", 
+				eventtype = "SPELL_CAST_SUCCESS", 
+				spellid = 57430, 
+				execute = {
+					{
+						"alert","staticfieldwarn",
+					},
+				},
+			},
+			-- Yells
+			{
+				type = "event", 
+				event = "CHAT_MSG_MONSTER_YELL", 
+				execute = {
+					{
+						"expect",{"#1#","find",L.chat_northrend["I had hoped to end your lives quickly"]},
+						"quash","vortexdur",
+						"quash","vortexcd",
+						"quash","powersparkcd",
+						"set",{phase = 2},
+						"alert","deepbreathwarn",
+					},
+					{
+						"expect",{"#1#", "find", L.chat_northrend["ENOUGH!"]},
+						"quash","deepbreathwarn",
+						"set",{phase = 3},
+					},
+				},
+			},
+			-- Emotes
+			{
+				type = "event", 
+				event = "CHAT_MSG_RAID_BOSS_EMOTE", 
+				execute = {
+					{
+						"expect",{"<phase>","==","1"},
+						"quash","powersparkcd",
+						"alert","powersparkcd",
+					},
+					{
+						"expect",{"<phase>","==","2"},
+						"alert","deepbreathwarn",
+					},
+				},
+			},
+			-- Whispers
+			{
+				type = "event",
+				event = "WHISPER",
+				execute = {
+					{
+						"expect",{"#1#","find",L.chat_northrend["fixes his eyes on you!$"]},
+						"alert","presurgewarn",
+					},
+				},
+			},
+		},
+	}
+
+	DXE:RegisterEncounter(data)
+end
+
+---------------------------------
+-- SARTHARION
+---------------------------------
+
+do
+
+	local L_Sartharion = L.npc_northrend["Sartharion"]
+	local L_Vesperon = L.npc_northrend["Vesperon"]
+	local L_Shadron = L.npc_northrend["Shadron"]
+	local L_Tenebron = L.npc_northrend["Tenebron"]
+
+	local data = {
+		version = 300,
+		key = "sartharion", 
+		zone = L.zone["The Obsidian Sanctum"], 
+		category = L.zone["Northrend"],
+		name = L.npc_northrend["Sartharion"],
+		triggers = {
+			scan = {
+				28860, -- Sartharion
+				30452, -- Tenebron
+				30451, -- Shadron
+				30449, -- Vesperon
+			},
+		},
+		onactivate = {
+			tracing = {28860}, -- Sartharion
+			tracerstart = true,
+			tracerstop = true,
+			combatstop = true,
+			defeat = 28860,
+		},
+		userdata = {
+			tenebronarrived = 0,
+			shadronarrived = 0,
+			vesperonarrived = 0,
+			tenebrontimer = 0,
+			shadrontimer = 0,
+			vesperontimer = 0,
+		},
+		onstart = {
+			{
+				"alert","lavawallcd",
+			}
+		},
+		timers = {
+			updatetracers = {
+				-- Tenebron, Shadron, Vesperon
+				{
+					"expect",{"<tenebronarrived> <shadronarrived> <vesperonarrived>","==","0 0 1"},
+					"tracing",{28860,30449}, -- Sartharion, Vesperon
+				},
+				{
+					"expect",{"<tenebronarrived> <shadronarrived> <vesperonarrived>","==","0 1 0"},
+					"tracing",{28860,30451}, -- Sartharion, Shadron
+				},
+				{
+					"expect",{"<tenebronarrived> <shadronarrived> <vesperonarrived>","==","0 1 1"},
+					"tracing",{28860,30451,30449}, -- Sartharion, Shadron, Vesperon
+				},
+				{
+					"expect",{"<tenebronarrived> <shadronarrived> <vesperonarrived>","==","1 0 0"},
+					"tracing",{28860,30452}, -- Sartharion, Tenebron
+				},
+				{
+					"expect",{"<tenebronarrived> <shadronarrived> <vesperonarrived>","==","1 0 1"},
+					"tracing",{28860,30452,30449}, -- Sartharion, Tenebron, Vesperon
+				},
+				{
+					"expect",{"<tenebronarrived> <shadronarrived> <vesperonarrived>","==","1 1 0"},
+					"tracing",{28860,30452,30451}, -- Sartharion, Tenebron, Shadron
+				},
+				{
+					"expect",{"<tenebronarrived> <shadronarrived> <vesperonarrived>","==","1 1 1"},
+					"tracing",{28860,30452,30451,30449}, -- Sartharion, Tenebron, Shadron, Vesperon
+				},
+			},
+		},
+		alerts = {
+			lavawallcd = {
+				varname = format(L.alert["%s Cooldown"],L.alert["Lava Wall"]),
+				type = "dropdown", 
+				text = format(L.alert["%s Cooldown"],L.alert["Lava Wall"]),
+				time = 25, 
+				flashtime = 5, 
+				sound = "ALERT3", 
+				color1 = "ORANGE", 
+				icon = ST[43114],
+			},
+			lavawallwarn = {
+				varname = format(L.alert["%s Casting"],L.alert["Lava Wall"]),
+				type = "centerpopup", 
+				text = format(L.alert["Incoming %s"],L.alert["Lava Wall"]).."!",
+				time = 5, 
+				sound = "ALERT1", 
+				color1 = "RED", 
+				color2 = "ORANGE",
+				flashscreen = true,
+				icon = ST[43114],
+			},
+			shadowfissurewarn = {
+				varname = format(L.alert["%s Warning"],SN[59127]),
+				type = "simple", 
+				text = format(L.alert["%s Spawned"],SN[59127]).."!",
+				sound = "ALERT2",
+				color1 = "PURPLE",
+				time = 1.5, 
+				icon = ST[59127],
+			},
+			flamebreathwarn = {
+				varname = format(L.alert["%s Casting"],SN[56908]),
+				type = "centerpopup",
+				text = format(L.alert["%s Casting"],SN[56908]),
+				time = 2,
+				color1 = "DCYAN",
+				sound = "ALERT4",
+				icon = ST[56908],
+			},
+			shadronarrivescd = {
+				type = "dropdown",
+				varname = format(L.alert["%s Arrival"],L_Shadron),
+				text = format(L.alert["%s Arrives"],L_Shadron),
+				time = 80,
+				color1 = "DCYAN",
+				icon = ST[58105],
+			},
+			tenebronarrivescd = {
+				type = "dropdown",
+				varname = format(L.alert["%s Arrival"],L_Tenebron),
+				text = format(L.alert["%s Arrives"],L_Tenebron),
+				time = 30,
+				color1 = "CYAN",
+				icon = ST[61248],
+			},
+			vesperonarrivescd = {
+				type = "dropdown",
+				varname = format(L.alert["%s Arrival"],L_Vesperon),
+				text = format(L.alert["%s Arrives"],L_Vesperon),
+				time = 120,
+				color1 = "GREEN",
+				icon = ST[61251],
+			},
+		},
+		events = {
+			-- Shadow fissure
+			{
+				type = "combatevent", 
+				eventtype = "SPELL_CAST_SUCCESS", 
+				spellid = {59127,57579}, 
+				execute = {
+					{
+						"alert","shadowfissurewarn", 
+					},
+				},
+			},
+			-- Lava wall
+			{
+				type = "event", 
+				event = "CHAT_MSG_RAID_BOSS_EMOTE", 
+				execute = {
+					{
+						"expect",{"#1#","find",L.chat_northrend["lava surrounding"]},
+						"alert","lavawallwarn",
+						"alert","lavawallcd", 
+					},
+				},
+			},
+			{
+				type = "event",
+				event = "CHAT_MSG_MONSTER_YELL",
+				execute = {
+					-- Tenebron
+					{
+						"expect",{"#1#","find",L.chat_northrend["It is amusing to watch you struggle. Very well, witness how it is done."]},
+						"set",{tenebronarrived = 1},
+						"scheduletimer",{"updatetracers",0},
+					},
+					-- Shadron
+					{
+						"expect",{"#1#","find",L.chat_northrend["I will take pity on you, Sartharion, just this once"]},
+						"set",{shadronarrived = 1},
+						"scheduletimer",{"updatetracers",0},
+					},
+					-- Vesperon
+					{
+						"expect",{"#1#","find",L.chat_northrend["Father was right about you, Sartharion, you ARE a weakling."]},
+						"set",{vesperonarrived = 1},
+						"scheduletimer",{"updatetracers",0},
+					},
+				},
+			},
+			-- Flame Breath
+			{
+				type = "combatevent",
+				eventtype = "SPELL_CAST_START",
+				spellid = {56908,58956},
+				execute = {
+					{
+						"alert","flamebreathwarn",
+					},
+				},
+			},
+			-- Drake Arrivals
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellid = {58105, 61248, 61251},
+				execute = {
+					{
+						-- Shadron
+						"expect",{"#7# <shadrontimer>","==","58105 0"},
+						"set",{shadrontimer = 1},
+						"alert","shadronarrivescd",
+					},
+					{
+						-- Tenebron
+						"expect",{"#7# <tenebrontimer>","==","61248 0"},
+						"set",{tenebrontimer = 1},
+						"alert","tenebronarrivescd",
+					},
+					{
+						-- Vesperon
+						"expect",{"#7# <vesperontimer>","==","61251 0"},
+						"set",{vesperontimer = 1},
+						"alert","vesperonarrivescd",
+					},
+				},
+			},
+		},
+	}
+
+	DXE:RegisterEncounter(data)
+end
+
+---------------------------------
+-- TORAVON
+---------------------------------
+
+do
+	local data = {
+		version = 1,
+		key = "toravon",
+		zone = L.zone["Vault of Archavon"],
+		category = L.zone["Northrend"],
+		name = L.npc_northrend["Toravon"],
+		triggers = {
+			scan = {
+				38433, -- Toravon
+				38456, -- Frozen Orb
+			},
+		},
+		onactivate = {
+			tracing = {38433},
+			tracerstart = true,
+			combatstop = true,
+			defeat = 38433,
+		},
+		userdata = {
+			orbtime = {11,32,loop = false, type = "series"},
+			whiteouttime = {25,37,loop = false, type = "series"},
+		},
+		onstart = {
+			{
+				"alert","orbcd",
+				"alert","whiteoutcd",
+			},
+		},
+		alerts = {
+			orbcd = {
+				varname = format(L.alert["%s Cooldown"], SN[72095]),
+				type = "dropdown",
+				text = format(L.alert["%s Cooldown"], SN[72095]),
+				time = "<orbtime>",
+				flashtime = 10,
+				color1 = "BLUE",
+				sound = "ALERT4",
+				icon = ST[72095],
+			},
+			orbwarn = {
+				varname = format(L.alert["%s Casting"],SN[72095]),
+				type = "centerpopup",
+				text = format(L.alert["%s Casting"],SN[72095]),
+				time = 2,
+				flashtime = 2,
+				color1 = "INDIGO",
+				sound = "ALERT1",
+				icon = ST[72095],
+			},
+			whiteoutcd = {
+				varname = format(L.alert["%s Cooldown"],SN[72096]),
+				type = "dropdown",
+				text = format(L.alert["%s Cooldown"],SN[72096]),
+				time = "<whiteouttime>",
+				flashtime = 10,
+				color1 = "WHITE",
+				sound = "ALERT4",
+				icon = ST[72096],
+			},
+			whiteoutwarn = {
+				varname = format(L.alert["%s Casting"],SN[72096]),
+				type = "centerpopup",
+				text = format(L.alert["%s Casting"],SN[72096]),
+				time = 2.5,
+				flashtime = 2.5,
+				color1 = "PEACH",
+				sound = "ALERT2",
+				icon = ST[72096],
+			},
+		},
+		events = {
+			-- Frozen Orb
+			{
+				type = "combatevent",
+				eventtype = "SPELL_CAST_START",
+				spellid = {
+					72091,
+					72095, -- 25
+				},
+				execute = {
+					{
+						"quash","orbcd",
+						"alert","orbcd",
+						"alert","orbwarn",
+					},
+				},
+			},
+			-- Whiteout
+			{
+				type = "combatevent",
+				eventtype = "SPELL_CAST_START",
+				spellid = {
+					72034,
+					72096, -- 25
+				},
+				execute = {
+					{
+						"quash","whiteoutcd",
+						"alert","whiteoutcd",
+						"alert","whiteoutwarn",
+					},
+				},
+			},
+		},
+	}
+
+	DXE:RegisterEncounter(data)
+end

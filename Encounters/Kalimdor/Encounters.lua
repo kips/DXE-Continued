@@ -1,5 +1,10 @@
+local L,SN,ST = DXE.L,DXE.SN,DXE.ST
+
+---------------------------------
+-- ONYXIA
+---------------------------------
+
 do
-	local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 	local data = {
 		version = 5,
 		key = "onyxia", 

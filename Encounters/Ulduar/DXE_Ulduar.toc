@@ -7,18 +7,4 @@
 ## X-DXE-Zone: Ulduar
 
 Locales.lua
-
-Algalon.lua
-Auriaya.lua
-Flame_Leviathan.lua
-Freya.lua
-General_Vezax.lua
-Hodir.lua
-Ignis.lua
-Iron_Council.lua
-Kologarn.lua
-Mimiron.lua
-Razorscale.lua
-Thorim.lua
-XT002.lua
-Yogg-Saron.lua
+Encounters.lua

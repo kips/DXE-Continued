@@ -8,5 +8,4 @@
 ## X-DXE-Zone: Onyxia's Lair
 
 Locales.lua
-
-Onyxia.lua
+Encounters.lua

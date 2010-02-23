@@ -8,9 +8,4 @@
 ## X-DXE-Category: Coliseum
 
 Locales.lua
-
-Anub.lua
-Faction_Champions.lua
-Lord_Jaraxxus.lua
-Northrend_Beasts.lua
-Twin_Valkyr.lua
+Encounters.lua

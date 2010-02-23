@@ -8,18 +8,4 @@
 ## X-DXE-Zone: Icecrown Citadel
 
 Locales.lua
-
-Blood_Princes.lua
-Deathwhisper.lua
-Festergut.lua
-Gunship_Battle.lua
-Lanathel.lua
-Lich_King.lua
-Marrowgar.lua
-Putricide.lua
-Rotface.lua
-Saurfang.lua
-Sindragosa.lua
-Valithria.lua
-
-Trash.lua
+Encounters.lua

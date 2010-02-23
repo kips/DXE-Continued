@@ -4,72 +4,21 @@
 <Script file="Options\Locales.lua"/>
 
 <Script file="Encounters\Naxxramas\Locales.lua"/>
-<Script file="Encounters\Naxxramas\Anub.lua"/>
-<Script file="Encounters\Naxxramas\Faerlina.lua"/>
-<Script file="Encounters\Naxxramas\Four_Horsemen.lua"/>
-<Script file="Encounters\Naxxramas\Gluth.lua"/>
-<Script file="Encounters\Naxxramas\Gothik.lua"/>
-<Script file="Encounters\Naxxramas\Grobbulus.lua"/>
-<Script file="Encounters\Naxxramas\Heigan.lua"/>
-<Script file="Encounters\Naxxramas\KT.lua"/>
-<Script file="Encounters\Naxxramas\Loatheb.lua"/>
-<Script file="Encounters\Naxxramas\Maexxna.lua"/>
-<Script file="Encounters\Naxxramas\Noth.lua"/>
-<Script file="Encounters\Naxxramas\Patchwerk.lua"/>
-<Script file="Encounters\Naxxramas\Razuvious.lua"/>
-<Script file="Encounters\Naxxramas\Sapphiron.lua"/>
-<Script file="Encounters\Naxxramas\Thaddius.lua"/>
+<Script file="Encounters\Naxxramas\Encounters.lua"/>
 
 <Script file="Encounters\Northrend\Locales.lua"/>
-<Script file="Encounters\Northrend\Malygos.lua"/>
-<Script file="Encounters\Northrend\Sartharion.lua"/>
-<Script file="Encounters\Northrend\Archavon.lua"/>
-<Script file="Encounters\Northrend\Emalon.lua"/>
-<Script file="Encounters\Northrend\Koralon.lua"/>
-<Script file="Encounters\Northrend\Toravon.lua"/>
+<Script file="Encounters\Northrend\Encounters.lua"/>
 
-<!--
 <Script file="Encounters\Ulduar\Locales.lua"/>
-<Script file="Encounters\Ulduar\Algalon.lua"/>
-<Script file="Encounters\Ulduar\Auriaya.lua"/>
-<Script file="Encounters\Ulduar\Flame_Leviathan.lua"/>
-<Script file="Encounters\Ulduar\Freya.lua"/>
-<Script file="Encounters\Ulduar\General_Vezax.lua"/>
-<Script file="Encounters\Ulduar\Hodir.lua"/>
-<Script file="Encounters\Ulduar\Ignis.lua"/>
-<Script file="Encounters\Ulduar\Iron_Council.lua"/>
-<Script file="Encounters\Ulduar\Kologarn.lua"/>
-<Script file="Encounters\Ulduar\Mimiron.lua"/>
-<Script file="Encounters\Ulduar\Razorscale.lua"/>
-<Script file="Encounters\Ulduar\Thorim.lua"/>
-<Script file="Encounters\Ulduar\XT002.lua"/>
-<Script file="Encounters\Ulduar\Yogg-Saron.lua"/>
--->
+<Script file="Encounters\Ulduar\Encounters.lua"/>
 
 <Script file="Encounters\Coliseum\Locales.lua"/>
-<Script file="Encounters\Coliseum\Anub.lua"/>
-<Script file="Encounters\Coliseum\Faction_Champions.lua"/>
-<Script file="Encounters\Coliseum\Lord_Jaraxxus.lua"/>
-<Script file="Encounters\Coliseum\Northrend_Beasts.lua"/>
-<Script file="Encounters\Coliseum\Twin_Valkyr.lua"/>
+<Script file="Encounters\Coliseum\Encounters.lua"/>
 
 <Script file="Encounters\Kalimdor\Locales.lua"/>
-<Script file="Encounters\Kalimdor\Onyxia.lua"/>
+<Script file="Encounters\Kalimdor\Encounters.lua"/>
 
 <Script file="Encounters\Citadel\Locales.lua"/>
-<Script file="Encounters\Citadel\Blood_Princes.lua"/>
-<Script file="Encounters\Citadel\Deathwhisper.lua"/>
-<Script file="Encounters\Citadel\Deathbringer.lua"/>
-<Script file="Encounters\Citadel\Festergut.lua"/>
-<Script file="Encounters\Citadel\Gunship_Battle.lua"/>
-<Script file="Encounters\Citadel\Lanathel.lua"/>
-<Script file="Encounters\Citadel\Lich_King.lua"/>
-<Script file="Encounters\Citadel\Marrowgar.lua"/>
-<Script file="Encounters\Citadel\Putricide.lua"/>
-<Script file="Encounters\Citadel\Rotface.lua"/>
-<Script file="Encounters\Citadel\Saurfang.lua"/>
-<Script file="Encounters\Citadel\Sindragosa.lua"/>
-<Script file="Encounters\Citadel\Valithria.lua"/>
-<Script file="Encounters\Citadel\Trash.lua"/>
+<Script file="Encounters\Citadel\Encounters.lua"/>
 
 </Ui>
