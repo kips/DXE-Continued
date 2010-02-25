@@ -2351,7 +2351,7 @@ end
 
 do
 	local data = {
-		version = 25,
+		version = 28,
 		key = "putricide",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -2560,6 +2560,15 @@ do
 				icon = ST[72855],
 				flashscreen = true,
 			},
+			unboundplaguecd = {
+				varname = format(L.alert["%s Cooldown"],SN[72855]),
+				type = "dropdown",
+				text = format(L.alert["%s Cooldown"],SN[72855]),
+				time = 60,
+				flashtime = 10,
+				color1 = "MIDGREY",
+				icon = ST[72855],
+			},
 		},
 		raidicons = {
 			oozeadhesivemark = {
@@ -2740,6 +2749,22 @@ do
 					},
 				},
 			},
+			-- Volatile Experiment
+			{
+				type = "combatevent",
+				eventtype = "SPELL_CAST_START",
+				spellid = 72843, -- 25h
+				execute = {
+					{
+						"quash","puddlecd",
+						"quash","oozeaggrocd", -- don't cancel timer
+						"quash","malleablegoocd",
+						"quash","unstableexperimentcd",
+						"quash","gasbombcd",
+						"quash","unboundplaguecd",
+					},
+				},
+			},
 			-- Tear Gas duration
 			{
 				type = "combatevent",
@@ -2752,13 +2777,12 @@ do
 					},
 				},
 			},
-			-- Transition
+			-- Tear Gas removal
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_REMOVED",
 				spellid = {
 					71615, -- Tear Gas
-					74118, -- Gas/Ooze Variable
 				},
 				execute = {
 					{
@@ -2768,6 +2792,32 @@ do
 						"alert","gasbombcd",
 						"alert","puddlecd",
 						"set",{malleabletime = 25.5, experimenttime = 37.5, gasbombtime = 35.5, puddletime = 35},
+						"expect",{"<teargas>","==","0"},
+						"alert","unstableexperimentcd",
+						"set",{teargas = "1"},
+					},
+				},
+			},
+			-- Variable removal
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_REMOVED",
+				spellid = {
+					74118, -- Ooze Variable
+					74119, -- Gas Variable
+				},
+				execute = {
+					{
+						-- unbound plague cast 60s after 1st gas variable ends, 30s after 2nd variable ends
+						"expect",{"#4#","==","&playerguid&"},
+						-- TODO: verify all of these
+						"set",{malleabletime = 6, experimenttime = 20, gasbombtime = 16, puddletime = "<puddletimeaftergas>"},
+						"alert","malleablegoocd",
+						"alert","gasbombcd",
+						"alert","puddlecd",
+						"alert","unboundplaguecd",
+						-- TODO: verify all of these
+						"set",{malleabletime = 20, experimenttime = 37.5, gasbombtime = 35.5, puddletime = 35},
 						"expect",{"<teargas>","==","0"},
 						"alert","unstableexperimentcd",
 						"set",{teargas = "1"},
@@ -2914,6 +2964,17 @@ do
 				},
 			},
 			-- Unbound Plague
+			{
+				type = "combatevent",
+				eventtype = "SPELL_CAST_SUCCESS",
+				spellid = 72856, -- 25h
+				execute = {
+					{
+						"alert","unboundplaguecd",
+					},
+				},
+			},
+			-- Unbound Plague application
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",

@@ -4,19 +4,19 @@
 <Script file="Options\Locales.lua"/>
 
 <Script file="Encounters\Naxxramas\Locales.lua"/>
-<Script file="Encounters\Naxxramas\Encounters.lua"/>
+<!--<Script file="Encounters\Naxxramas\Encounters.lua"/>-->
 
 <Script file="Encounters\Northrend\Locales.lua"/>
 <Script file="Encounters\Northrend\Encounters.lua"/>
 
 <Script file="Encounters\Ulduar\Locales.lua"/>
-<Script file="Encounters\Ulduar\Encounters.lua"/>
+<!--<Script file="Encounters\Ulduar\Encounters.lua"/>-->
 
 <Script file="Encounters\Coliseum\Locales.lua"/>
 <Script file="Encounters\Coliseum\Encounters.lua"/>
 
 <Script file="Encounters\Kalimdor\Locales.lua"/>
-<Script file="Encounters\Kalimdor\Encounters.lua"/>
+<!--<Script file="Encounters\Kalimdor\Encounters.lua"/>-->
 
 <Script file="Encounters\Citadel\Locales.lua"/>
 <Script file="Encounters\Citadel\Encounters.lua"/>

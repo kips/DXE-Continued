@@ -96,5 +96,3 @@ do
 
 	DXE:RegisterEncounter(data)
 end
-
-
