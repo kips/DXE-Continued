@@ -2351,7 +2351,7 @@ end
 
 do
 	local data = {
-		version = 28,
+		version = 29,
 		key = "putricide",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -2668,6 +2668,7 @@ do
 				spellid = {
 					72463, -- 25
 					72451, -- 10
+					72672, -- 25h
 				},
 				execute = {
 					{
@@ -2689,6 +2690,7 @@ do
 				spellid = {
 					72463, -- 25
 					72451, -- 10
+					72672, -- 25h
 				},
 				execute = {
 					{
