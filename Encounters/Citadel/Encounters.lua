@@ -1444,7 +1444,7 @@ end
 
 do
 	local data = {
-		version = 44,
+		version = 47,
 		key = "lichking",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -1477,6 +1477,7 @@ do
 			harvestsoultext = "",
 			ragingtext = "",
 			enragecount = 0,
+			traptext = "",
 		},
 		alerts = {
 			zerotoonecd = {
@@ -1708,12 +1709,27 @@ do
 				sound = "ALERT1",
 				icon = ST[68980],
 			},
+			trapwarn = {
+				varname = format(L.alert["%s Casting"],L.alert["Shadow Trap"]),
+				type = "simple",
+				text = "<traptext>",
+				time = 3,
+				color1 = "BLACK",
+				sound = "ALERT8",
+				icon = ST[73539],
+				flashscreen = true,
+			},
 		},
 		announces = {
 			defilesay = {
 				varname = format(L.alert["Say %s on self"],SN[72762]),
 				type = "SAY",
 				msg = format(L.alert["%s on Me"],SN[72762]).."!",
+			},
+			trapsay = {
+				varname = format(L.alert["Say %s on self"],L.alert["Shadow Trap"]),
+				type = "SAY",
+				msg = format(L.alert["%s on Me"],L.alert["Shadow Trap"]).."!",
 			},
 			necroplaguesay = {
 				varname = format(L.alert["Say %s on self"],SN[70337]),
@@ -1726,6 +1742,13 @@ do
 				varname = SN[72762],
 				type = "FRIENDLY",
 				persist = 5,
+				unit = "&tft_unitname&",
+				icon = 1,
+			},
+			trapmark = {
+				varname = SN[72762],
+				type = "FRIENDLY",
+				persist = 6,
 				unit = "&tft_unitname&",
 				icon = 1,
 			},
@@ -1770,6 +1793,15 @@ do
 				spell = SN[72762],
 				fixed = true,
 			},
+			traparrow = {
+				varname = L.alert["Shadow Trap"],
+				unit = "&tft_unitname&",
+				persist = 5,
+				action = "AWAY",
+				msg = L.alert["MOVE AWAY"],
+				spell = L.alert["Shadow Trap"],
+				fixed = true,
+			},
 		},
 		timers = {
 			firedefile = {
@@ -1793,6 +1825,27 @@ do
 					"alert","defilewarn",
 				},
 			},
+			firetrap = {
+				{
+					"expect",{"&tft_unitexists& &tft_isplayer&","==","1 1"},
+					"set",{traptext = format("%s: %s!",L.alert["Shadow Trap"],L.alert["YOU"])},
+					"raidicon","trapmark",
+					"alert","trapwarn",
+					"announce","trapsay",
+				},
+				{
+					"expect",{"&tft_unitexists& &tft_isplayer&","==","1 nil"},
+					"set",{traptext = format("%s: &tft_unitname&!",L.alert["Shadow Trap"])},
+					"raidicon","trapmark",
+					"arrow","traparrow",
+					"alert","trapwarn",
+				},
+				{
+					"expect",{"&tft_unitexists&","==","nil"},
+					"set",{traptext = format(L.alert["%s Casting"],L.alert["Shadow Trap"])},
+					"alert","trapwarn",
+				},
+			},
 		},
 		events = {
 			-- Yell
@@ -1804,6 +1857,17 @@ do
 						"expect",{"#1#","find",L.chat_citadel["^I'll keep you alive to witness the end, Fordring"]},
 						"alert","enragecd",
 						"alert","infestcd",
+					},
+				},
+			},
+			-- Shadow Trap
+			{
+				type = "combatevent",
+				eventtype = "SPELL_CAST_START",
+				spellid = 73539, -- 10h, 25h
+				execute = {
+					{
+						"scheduletimer",{"firetrap",0.2},
 					},
 				},
 			},
