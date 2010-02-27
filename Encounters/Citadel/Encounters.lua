@@ -1474,7 +1474,7 @@ end
 
 do
 	local data = {
-		version = 48,
+		version = 49,
 		key = "lichking",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -1484,6 +1484,7 @@ do
 			yell = L.chat_citadel["^So the Light's vaunted justice has finally arrived"],
 		},
 		onactivate = {
+			tracerstart = true,
 			combatstop = true,
 			tracing = {
 				36597, -- Lich King
@@ -1491,7 +1492,14 @@ do
 		},
 		onstart = {
 			{
+				"expect",{"#1#","find",L.chat_citadel["^So the Light's vaunted justice has finally arrived"]},
 				"alert","zerotoonecd",
+			},
+			-- backup tracerstart
+			{
+				"expect",{"#1#","==","#1#"},
+				"alert","enragecd",
+				"alert","infestcd",
 			},
 		},
 		userdata = {
@@ -1885,6 +1893,9 @@ do
 				execute = {
 					{
 						"expect",{"#1#","find",L.chat_citadel["^I'll keep you alive to witness the end, Fordring"]},
+						-- just in case
+						"quash","enragecd",
+						"quash","infestcd",
 						"alert","enragecd",
 						"alert","infestcd",
 					},

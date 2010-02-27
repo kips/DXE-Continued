@@ -124,6 +124,8 @@ end
 local tuple = {}
 
 local function SetTuple(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11)
+	-- TODO: add or "nil" to each line before Cataclysm; it would break compatability if added now
+	-- use expect,{"#<num>#","==","#<num>#"} to check if a replace_num is "nil" ex. expect,{"#1#","==","#1#"}
 	tuple['1']  = a1
 	tuple['2']  = a2
 	tuple['3']  = a3
