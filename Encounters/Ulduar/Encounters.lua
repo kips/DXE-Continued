@@ -3041,10 +3041,7 @@ do
 				sound = "ALERT4",
 				color1 = "PURPLE",
 				flashscreen = true,
-				icon = ST[63138],---------------------------------
--- XT002
----------------------------------
-
+				icon = ST[63138],
 			},
 			blessingwarn = {
 				varname = format(L.alert["%s on self"],SN[63134]),
