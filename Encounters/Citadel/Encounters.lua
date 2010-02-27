@@ -1540,8 +1540,8 @@ do
 				varname = format(L.alert["%s Duration"],SN[70337]),
 				type = "centerpopup",
 				text = format("%s: #5#!",SN[70338]),
-				time = 15,
-				flashtime = 15,
+				time = 5,
+				flashtime = 5,
 				color1 = "GREEN",
 				icon = ST[70337],
 			},
@@ -1549,8 +1549,8 @@ do
 				varname = format(L.alert["%s on self"],SN[70337]),
 				type = "centerpopup",
 				text = format("%s: %s!",SN[70337],L.alert["YOU"]).."!",
-				time = 15,
-				flashtime = 15,
+				time = 5,
+				flashtime = 5,
 				color1 = "GREEN",
 				sound = "ALERT10",
 				icon = ST[70337],
@@ -1922,15 +1922,16 @@ do
 				},
 				execute = {
 					{
+						"raidicon","necroplaguemark",
+					},
+					{
 						"expect",{"#4#","==","&playerguid&"},
 						"alert","necroplagueself",
-						"raidicon","necroplaguemark",
 						"announce","necroplaguesay",
 					},
 					{
 						"expect",{"#4#","~=","&playerguid&"},
 						"alert","necroplaguedur",
-						"raidicon","necroplaguemark",
 					},
 				},
 			},
@@ -1941,10 +1942,10 @@ do
 				spellid2 = {
 					-- Note: there are two different ones for some reason
 					-- TODO: fix it when there are two bars. it could quash the wrong one
-					70337, --10
-					70338, --10
-					73785, --25
-					73912, --25
+					70337, -- 10
+					70338, -- 10h
+					73785, -- 25
+					73912, -- 25h
 				},
 				execute = {
 					{
