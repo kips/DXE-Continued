@@ -384,6 +384,7 @@ do
 			culttime = {7,60,loop = false, type = "series"},
 			insignificancetext = "",
 			dominatetext = format("%s: #5#!",SN[71289]),
+			dominatetime = {38.6,30.4,loop = false,type = "series"},
 		},
 		onstart = {
 			{
@@ -412,7 +413,6 @@ do
 			combatstop = true,
 			tracing = {36855,powers={true}}, -- Lady Deathwhisper
 			defeat = 36855, -- Lady Deathwhisper
-			dominatetime = {38.6,30.4,loop = false,type = "series"},
 		},
 		alerts = {
 			enragecd = {
@@ -437,7 +437,7 @@ do
 			martyrdomwarn = {
 				varname = format(L.alert["%s Casting"],SN[72500]),
 				type = "centerpopup",
-				varname = format(L.alert["%s Casting"],SN[72500]),
+				text = format(L.alert["%s Casting"],SN[72500]),
 				time = 4,
 				color1 = "WHITE",
 				sound = "ALERT9",

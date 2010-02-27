@@ -896,7 +896,7 @@ end
 
 do
 	local data = {
-		version = 1,
+		version = 2,
 		key = "toravon",
 		zone = L.zone["Vault of Archavon"],
 		category = L.zone["Northrend"],
@@ -916,6 +916,7 @@ do
 		userdata = {
 			orbtime = {11,32,loop = false, type = "series"},
 			whiteouttime = {25,37,loop = false, type = "series"},
+			frostbitetext = "",
 		},
 		onstart = {
 			{
@@ -964,8 +965,58 @@ do
 				sound = "ALERT2",
 				icon = ST[72096],
 			},
+			frostbitedur = {
+				varname = format(L.alert["%s Duration"],SN[72098]),
+				type = "centerpopup",
+				text = "<frostbitetext>",
+				time = 20,
+				color1 = "INDIGO",
+				icon = ST[72098],
+			},
 		},
 		events = {
+			-- Frostbite
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellid = {
+					72004, -- 10
+					72098, -- 25
+				},
+				execute = {
+					{
+						"expect",{"#4#","==","&playerguid&"},
+						"set",{frostbitetext = format("%s: %s!",SN[72098],L.alert["YOU"])},
+						"alert","frostbitedur",
+					},
+					{
+						"expect",{"#4#","~=","&playerguid&"},
+						"set",{frostbitetext = format("%s: #5#!",SN[72098])},
+						"alert","frostbitedur",
+					},
+				},
+			},
+			-- Frostbite applications
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED_DOSE",
+				spellid = {
+					72004, -- 10
+					72098, -- 25
+				},
+				execute = {
+					{
+						"expect",{"#4#","==","&playerguid&"},
+						"set",{frostbitetext = format("%s: %s! %s!",SN[72098],L.alert["YOU"],format(L.alert["%s Stacks"],"#11#"))},
+						"alert","frostbitedur",
+					},
+					{
+						"expect",{"#4#","~=","&playerguid&"},
+						"set",{frostbitetext = format("%s: #5#! %s!",SN[72098],format(L.alert["%s Stacks"],"#11#")) },
+						"alert","frostbitedur",
+					},
+				},
+			},
 			-- Frozen Orb
 			{
 				type = "combatevent",
