@@ -1593,7 +1593,7 @@ do
 				icon = ST[72143],
 			},
 			defilewarn = {
-				varname = format(L.alert["%s Warning"],SN[72762]),
+				varname = format(L.alert["%s Casting"],SN[72762]),
 				type = "centerpopup",
 				text = "<defiletext>",
 				time = 2,
