@@ -1059,17 +1059,20 @@ end
 ---------------------------------
 
 do
-
 	local faction = UnitFactionGroup("player")
 
-	local defeat_msg,portal_msg,add,portal_icon,faction_npc
+	local prestart_trigger,start_trigger,defeat_msg,portal_msg,add,portal_icon,faction_npc
 	if faction == "Alliance" then
+		prestart_trigger = L.chat_citadel["^Fire up the engines! We got"]
+		start_trigger = L.chat_citadel["^Cowardly dogs"]
 		defeat_msg = L.chat_citadel["^Don't say I didn't warn ya"]
 		portal_msg = L.chat_citadel["^Reavers, Sergeants, attack"]
 		add = L.alert["Reaver"]
 		portal_icon = "Interface\\Icons\\achievement_pvp_h_04"
 		faction_npc = "36939" -- Saurfang
 	elseif faction == "Horde" then
+		prestart_trigger = L.chat_citadel["^Rise up, sons and daughters of the"]
+		start_trigger = L.chat_citadel["^ALLIANCE GUNSHIP"]
 		defeat_msg = L.chat_citadel["^The Alliance falter"]
 		portal_msg = L.chat_citadel["^Marines, Sergeants, attack"]
 		add = L.alert["Marine"]
@@ -1078,7 +1081,7 @@ do
 	end
 
 	local data = {
-		version = 11,
+		version = 12,
 		key = "gunshipbattle",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -1090,8 +1093,8 @@ do
 				36948, -- Muradin
 			},
 			yell = {
-				L.chat_citadel["^Cowardly dogs"], -- Alliance
-				L.chat_citadel["^ALLIANCE GUNSHIP"], -- Horde
+				prestart_trigger,
+				start_trigger,
 			},
 		},
 		onactivate = {
@@ -1100,17 +1103,31 @@ do
 			defeat = defeat_msg,
 		},
 		userdata = {
-			portaltime = {11.5,60,loop = false, type = "series"}, -- TODO: initial time
+			portaltime = {11.5,60,loop = false, type = "series"},
 			belowzerotime = {34,45,loop = false, type = "series"},
 			battlefurytext = "",
 		},
 		onstart = {
 			{
+				"expect",{"#1#","find",prestart_trigger},
+				"alert","zerotoonecd",
+			},
+			{
+				"expect",{"#1#","find",start_trigger},
 				"alert","portalcd",
 				"alert","belowzerocd",
 			},
 		},
 		alerts = {
+			zerotoonecd = {
+				varname = format(L.alert["%s Timer"],L.alert["Phase One"]),
+				type = "centerpopup",
+				text = format(L.alert["%s Begins"],L.alert["Phase One"]),
+				time = 45,
+				flashtime = 20,
+				color1 = "MIDGREY",
+				icon = ST[3648],
+			},
 			belowzerocd = {
 				varname = format(L.alert["%s Cooldown"],SN[69705]),
 				type = "dropdown",
