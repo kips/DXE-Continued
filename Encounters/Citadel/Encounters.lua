@@ -3501,8 +3501,19 @@ end
 ---------------------------------
 
 do
+	local faction = UnitFactionGroup("player")
+
+	local prestart_trigger,prestart_time
+	if faction == "Alliance" then
+		prestart_trigger = L.chat_citadel["^Let's get a move on then"]
+		prestart_time = 47
+	elseif faction == "Horde" then
+		prestart_trigger = L.chat_citadel["^Kor'kron, move out! Champions, watch your backs"]
+		prestart_time = 98
+	end
+
 	local data = {
-		version = 13,
+		version = 15,
 		key = "saurfang",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -3511,6 +3522,7 @@ do
 			scan = {
 				37813, -- Deathbringer Saurfang
 			},
+			yell = prestart_trigger,
 		},
 		userdata = {
 			bloodtext = "",
@@ -3526,16 +3538,39 @@ do
 		},
 		onstart = {
 			{
-				"expect",{"&difficulty&",">=","3"},
-				"set",{enragetime = 360},
+				"expect",{"#1#","==","#1#"},
+				"alert","zerotoonecd",
+				"scheduletimer",{"fireinitial",0},
 			},
 			{
-				"alert","bloodbeastcd",
-				"alert","enragecd",
-				"alert","runeofbloodcd",
+				"expect",{"#1#","find",prestart_trigger},
+				"alert","zerotoonecd",
+				"scheduletimer",{"fireinitial",prestart_time},
+			},
+		},
+		timers = {
+			fireinitial = {
+				{
+					"expect",{"&difficulty&",">=","3"},
+					"set",{enragetime = 360},
+				},
+				{
+					"alert","bloodbeastcd",
+					"alert","enragecd",
+					"alert","runeofbloodcd",
+				},
 			},
 		},
 		alerts = {
+			zerotoonecd = {
+				varname = format(L.alert["%s Timer"],L.alert["Phase One"]),
+				type = "centerpopup",
+				text = format(L.alert["%s Begins"],L.alert["Phase One"]),
+				time = prestart_time,
+				flashtime = 20,
+				color1 = "MIDGREY",
+				icon = ST[3648],
+			},
 			enragecd = {
 				varname = L.alert["Enrage"],
 				type = "dropdown",
