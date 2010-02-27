@@ -7,7 +7,7 @@ local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 do
 	-- TODO: Empowered Shock cooldown for 10, 25, and 10h
 	local data = {
-		version = 19,
+		version = 20,
 		key = "bloodprincecouncil",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -128,6 +128,24 @@ do
 				time = 10,
 				color1 = "PURPLE",
 				icon = ST[72999],
+			},
+			kineticbombwarn = {
+				varname = format(L.alert["%s Cast"],SN[72080]),
+				type = "simple",
+				text = format(L.alert["%s Cast"],SN[72080]),
+				time = 3,
+				sound = "ALERT6",
+				color1 = "GOLD",
+				icon = ST[72080],
+			},
+			kineticbombcd = {
+				varname = format(L.alert["%s Cooldown"],SN[72080]),
+				type = "dropdown",
+				text = format(L.alert["%s Cooldown"],SN[72080]),
+				time = 17.7,
+				flashtime = 10,
+				color1 = "YELLOW",
+				icon = ST[72080],
 			},
 		},
 		arrows = {
@@ -324,6 +342,18 @@ do
 						"quash","empoweredshockcd",
 						"alert","empoweredshockcd",
 						"alert","empoweredshockwarn",
+					},
+				},
+			},
+			-- Kinetic Bomb
+			{
+				type = "event",
+				event = "UNIT_SPELLCAST_SUCCEEDED",
+				execute = {
+					{
+						"expect",{"#2#","==",SN[72080]},
+						"alert","kineticbombwarn",
+						"alert","kineticbombcd",
 					},
 				},
 			},
