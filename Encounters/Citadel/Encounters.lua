@@ -2457,7 +2457,7 @@ end
 
 do
 	local data = {
-		version = 29,
+		version = 30,
 		key = "putricide",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -2722,6 +2722,11 @@ do
 				varname = format(L.alert["Say %s on self"],SN[72615]),
 				type = "SAY",
 				msg = format(L.alert["%s on Me"],SN[72615]).."!",
+			},
+			plaguesay = {
+				varname = format(L.alert["Say %s on self"],SN[72855]),
+				type = "SAY",
+				msg = format(L.alert["%s on Me"],SN[72855]).."!",
 			},
 		},
 		timers = {
@@ -3097,6 +3102,7 @@ do
 					{
 						"expect",{"#4#","==","&playerguid&"},
 						"alert","unboundplagueself",
+						"announce","plaguesay",
 					},
 				},
 			},
