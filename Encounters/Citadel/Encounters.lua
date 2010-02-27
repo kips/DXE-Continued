@@ -3101,9 +3101,8 @@ end
 ---------------------------------
 
 do
-	-- TODO Add 25h Vile Gas warning and cooldown
 	local data = {
-		version = 10,
+		version = 12,
 		key = "rotface",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -3120,12 +3119,15 @@ do
 			defeat = 36627,
 		},
 		userdata = {
-			slimetime = {16,20,loop = false, type = "series"},
+			slimetime = {16,20, loop = false, type = "series"},
+			viletime = {24,30, loop = false, type = "series"},
 		},
 		onstart = {
 			{
 				"alert","slimespraycd",
 				"alert","enragecd",
+				"expect",{"&difficulty&",">=","3"},
+				"alert","vilegascd",
 			},
 		},
 		alerts = {
@@ -3226,6 +3228,16 @@ do
 				time = 3,
 				color1 = "YELLOW",
 				icon = ST[69558],
+			},
+			vilegascd = {
+				varname = format(L.alert["%s Cooldown"],SN[71218]),
+				type = "dropdown",
+				text = format(L.alert["%s Cooldown"],SN[71218]),
+				time = "<viletime>",
+				flashtime = 5,
+				color1 = "ORANGE",
+				icon = ST[71288],
+				throttle = 3,
 			},
 		},
 		timers = {
@@ -3366,6 +3378,17 @@ do
 				execute = {
 					{
 						"alert","unstableoozestackwarn",
+					},
+				},
+			},
+			-- Vile Gas
+			{
+				type = "event",
+				event = "UNIT_SPELLCAST_SUCCEEDED",
+				execute = {
+					{
+						"expect",{"#2#","==",SN[72287]},
+						"alert","vilegascd",
 					},
 				},
 			},
