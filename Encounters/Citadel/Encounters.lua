@@ -1500,6 +1500,7 @@ do
 				"expect",{"#1#","==","#1#"},
 				"alert","enragecd",
 				"alert","infestcd",
+				"alert","necroplaguecd",
 			},
 		},
 		userdata = {
@@ -1535,6 +1536,15 @@ do
 				flashtime = 10,
 				color1 = "RED",
 				icon = ST[12317],
+			},
+			necroplaguecd = {
+				varname = format(L.alert["%s Cooldown"],SN[70337]),
+				type = "dropdown",
+				text = format(L.alert["Next %s"],SN[70337]),
+				time = 30,
+				flashtime = 10,
+				color1 = "MAGENTA",
+				icon = ST[70337],
 			},
 			necroplaguedur = {
 				varname = format(L.alert["%s Duration"],SN[70337]),
@@ -1896,8 +1906,10 @@ do
 						-- just in case
 						"quash","enragecd",
 						"quash","infestcd",
+						"quash","necroplaguecd",
 						"alert","enragecd",
 						"alert","infestcd",
+						"alert","necroplaguecd",
 					},
 				},
 			},
@@ -1923,6 +1935,7 @@ do
 				execute = {
 					{
 						"raidicon","necroplaguemark",
+						"alert","necroplaguecd",
 					},
 					{
 						"expect",{"#4#","==","&playerguid&"},
@@ -2051,6 +2064,7 @@ do
 					{
 						"alert","remorsewarn",
 						"set",{phase = "<nextphase>"},
+						"quash","necroplaguecd",
 						"quash","defilecd",
 						"quash","valkyrcd",
 						"quash","infestcd",
