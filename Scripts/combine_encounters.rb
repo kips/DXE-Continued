@@ -28,7 +28,7 @@ class Combiner
 			enc_files = []
 			lines = []
 			file.each_line do |line|
-				if line =~ /^(?!Locales|Encounters)\w+\.lua/
+				if line =~ /^(?!Locales|Encounters)[-\w']+\.lua/
 					enc_files << line.chomp
 				end
 			end
