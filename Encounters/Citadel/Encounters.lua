@@ -1474,7 +1474,7 @@ end
 
 do
 	local data = {
-		version = 47,
+		version = 48,
 		key = "lichking",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -1661,7 +1661,7 @@ do
 			soulreaperwarn = {
 				varname = format(L.alert["%s Warning"],SN[69409]),
 				type = "centerpopup",
-				text = format(L.alert["%s Warning"],SN[69409]),
+				text = format(L.alert["%s Duration"],SN[69409]),
 				time = 5,
 				color1 = "ORANGE",
 				sound = "ALERT7",
