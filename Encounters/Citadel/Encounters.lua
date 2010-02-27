@@ -369,7 +369,7 @@ end
 
 do
 	local data = {
-		version = 28,
+		version = 29,
 		key = "deathwhisper",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -425,9 +425,18 @@ do
 				type = "simple",
 				time = 3,
 				sound = "ALERT1",
-				color1 = "PURPLE",
+				color1 = "GREEN",
 				icon = ST[71001],
 				flashscreen = true,
+			},
+			martyrdomwarn = {
+				varname = format(L.alert["%s Casting"],SN[72500]),
+				type = "centerpopup",
+				varname = format(L.alert["%s Casting"],SN[72500]),
+				time = 4,
+				color1 = "WHITE",
+				sound = "ALERT9",
+				icon = ST[72500],
 			},
 			cultcd = {
 				varname = format(L.alert["%s Spawns"],L.alert["Cult"]),
@@ -517,6 +526,24 @@ do
 			},
 		},
 		events = {
+			-- Dark Martyrdom
+			{
+				type = "combatevent",
+				eventtype = "SPELL_CAST_START",
+				spellid = {
+					72500, -- 25h Cult Adherent
+					72497, -- 25h Cult Fanatic
+					72498, -- 25 Cult Adherent
+					72495, -- 25 Cult Fanatic
+					72499, -- 10h Cult Adherent
+					72496, -- 10h Cult Fanatic
+				},
+				execute = {
+					{
+						"alert","martyrdomwarn",
+					},
+				},
+			},
 			-- Summon Spirit
 			{
 				type = "combatevent",
