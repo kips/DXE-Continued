@@ -2491,6 +2491,8 @@ do
 			mutatedtext = "",
 			puddletime = 10,
 			puddletimeaftergas = {10,15,loop = false, type = "series"},
+			plaguetimeaftervariables = {60,30,loop = false, type = "series"},
+			plaguetime = 60,
 		},
 		alerts = {
 			enragecd = {
@@ -2670,7 +2672,7 @@ do
 				varname = format(L.alert["%s Cooldown"],SN[72855]),
 				type = "dropdown",
 				text = format(L.alert["%s Cooldown"],SN[72855]),
-				time = 60,
+				time = "<plaguetime>",
 				flashtime = 10,
 				color1 = "MIDGREY",
 				icon = ST[72855],
@@ -2921,16 +2923,16 @@ do
 				},
 				execute = {
 					{
-						-- unbound plague cast 60s after 1st gas variable ends, 30s after 2nd variable ends
 						"expect",{"#4#","==","&playerguid&"},
+						-- TODO: find a more reliable way of detecting when Putricide aggros again
 						-- TODO: verify all of these
-						"set",{malleabletime = 6, experimenttime = 20, gasbombtime = 16, puddletime = "<puddletimeaftergas>"},
+						"set",{malleabletime = 6, experimenttime = 20, gasbombtime = 16, puddletime = "<puddletimeaftergas>", plaguetime = "<plaguetimeaftervariables"},
 						"alert","malleablegoocd",
 						"alert","gasbombcd",
 						"alert","puddlecd",
 						"alert","unboundplaguecd",
 						-- TODO: verify all of these
-						"set",{malleabletime = 20, experimenttime = 37.5, gasbombtime = 35.5, puddletime = 35},
+						"set",{malleabletime = 20, experimenttime = 37.5, gasbombtime = 35.5, puddletime = 35, plaguetime = 60},
 						"expect",{"<teargas>","==","0"},
 						"alert","unstableexperimentcd",
 						"set",{teargas = "1"},
