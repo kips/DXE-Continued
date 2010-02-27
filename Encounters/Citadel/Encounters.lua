@@ -3900,8 +3900,17 @@ do
 				color1 = "VIOLET",
 				icon = ST[69766],
 			},
+			chilledstackself = {
+				varname = format(L.alert["%s Stacks"],L.alert["Chilled"]).." == 4",
+				type = "simple",
+				text = format("%d "..L.alert["%s Stacks"].."! %s!",4,L.alert["Chilled"],L.alert["CAREFUL"]),
+				time = 3,
+				color1 = "CYAN",
+				icon = ST[70106],
+				flashscreen = true,
+			},
 			chilledself = {
-				varname = format(L.alert["%s on self"],SN[70106]),
+				varname = format(L.alert["%s on self"],L.alert["Chilled"]),
 				type = "centerpopup",
 				text = "<chilledtext>",
 				time = 8,
@@ -4365,7 +4374,7 @@ do
 				execute = {
 					{
 						"expect",{"#4#","==","&playerguid&"},
-						"set",{chilledtext = format("%s: %s!",SN[70106],L.alert["YOU"])},
+						"set",{chilledtext = format("%s: %s!",L.alert["Chilled"],L.alert["YOU"])},
 						"alert","chilledself",
 					},
 				},
@@ -4381,8 +4390,10 @@ do
 					{
 						"expect",{"#4#","==","&playerguid&"},
 						"quash","chilledself",
-						"set",{chilledtext = format("%s: %s! %s!",SN[70106],L.alert["YOU"],format(L.alert["%s Stacks"],"#11#"))},
+						"set",{chilledtext = format("%s: %s! %s!",L.alert["Chilled"],L.alert["YOU"],format(L.alert["%s Stacks"],"#11#"))},
 						"alert","chilledself",
+						"expect",{"#11#","==","4"},
+						"alert","chilledstackself",
 					},
 				},
 			},
