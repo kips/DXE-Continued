@@ -4293,7 +4293,7 @@ end
 
 do
 	local data = {
-		version = 10,
+		version = 11,
 		key = "valithria",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -4319,6 +4319,7 @@ do
 			portaltime = {33,45, loop = false, type = "series"},
 			corrosiontext = "",
 			blazingtime = {35,60, loop = false, type = "series"}, -- unknown
+			nightmaretext = "";
 		},
 		timers = {
 			firelaywaste = {
@@ -4434,6 +4435,14 @@ do
 				color1 = "CYAN",
 				icon = ST[70751],
 			},
+			nightmaredur = {
+				varname = format(L.alert["%s Duration"],SN[71940]),
+				type = "centerpopup",
+				text = "<nightmaretext>",
+				time = 35,
+				color1 = "GREY",
+				icon = ST[71940],
+			},
 		},
 		events = {
 			{
@@ -4447,6 +4456,45 @@ do
 						"scheduletimer",{"fireportaldur",15},
 					},
 				},
+			},
+			-- Twisted Nightmare
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellid = 71941, -- there seem to be two spellids, don't use 71940
+				execute = {
+					{
+						"expect",{"#4#","==","&playerguid&"},
+						"set",{nightmaretext = format("%s: %s!",SN[71941],L.alert["YOU"])},
+						"alert","nightmaredur",
+					},
+				}
+			},
+			-- Twisted Nightmare stacks
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED_DOSE",
+				spellid = 71941, -- there seem to be two spellids, don't use 71940
+				execute = {
+					{
+						"expect",{"#4#","==","&playerguid&"},
+						"set",{nightmaretext = format("%s: %s! %s",SN[71941],L.alert["YOU"],format(L.alert["%s Stacks"],"#11#"))},
+						"quash","nightmaredur",
+						"alert","nightmaredur",
+					},
+				}
+			},
+			-- Twisted Nightmare removal
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_REMOVED",
+				spellid = 71941, -- there seem to be two spellids, don't use 71940
+				execute = {
+					{
+						"expect",{"#4#","==","&playerguid&"},
+						"quash","nightmaredur",
+					},
+				}
 			},
 			-- Mana Void (hit)
 			{
