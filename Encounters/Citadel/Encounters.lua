@@ -369,7 +369,7 @@ end
 
 do
 	local data = {
-		version = 29,
+		version = 30,
 		key = "deathwhisper",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -395,6 +395,10 @@ do
 				"alert","enragecd",
 				"scheduletimer",{"firecult",7},
 			},
+			{
+				"expect",{"&difficulty&",">","1"},
+				"alert","dominatecd",
+			},
 		},
 		timers = {
 			firecult = {
@@ -408,6 +412,7 @@ do
 			combatstop = true,
 			tracing = {36855,powers={true}}, -- Lady Deathwhisper
 			defeat = 36855, -- Lady Deathwhisper
+			dominatetime = {38.6,30.4,loop = false,type = "series"},
 		},
 		alerts = {
 			enragecd = {
@@ -501,6 +506,16 @@ do
 				time = 3,
 				color1 = "GREY",
 				sound = "ALERT6",
+				icon = ST[71289],
+				throttle = 3,
+			},
+			dominatecd = {
+				varname = format(L.alert["%s Cooldown"],SN[71289]),
+				type = "dropdown",
+				text = format(L.alert["%s Cooldown"],SN[71289]),
+				time = "<dominatetime>",
+				flashtime = 10,
+				color1 = "INDIGO",
 				icon = ST[71289],
 				throttle = 3,
 			},
@@ -648,6 +663,7 @@ do
 				execute = {
 					{
 						"raidicon","dominatemark",
+						"alert","dominatecd",
 					},
 					{
 						"expect",{"#4#","~=","&playerguid&"},
