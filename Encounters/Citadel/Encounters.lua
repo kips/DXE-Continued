@@ -1534,7 +1534,7 @@ end
 
 do
 	local data = {
-		version = 49,
+		version = 50,
 		key = "lichking",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -1553,18 +1553,19 @@ do
 		onstart = {
 			{
 				"expect",{"#1#","find",L.chat_citadel["^So the Light's vaunted justice has finally arrived"]},
+				"set",{phase = "RP"},
 				"alert","zerotoonecd",
 			},
 			-- backup tracerstart
 			{
-				"expect",{"#1#","==","#1#"},
+				"expect",{"<phase>","==","0"},
 				"alert","enragecd",
 				"alert","infestcd",
 				"alert","necroplaguecd",
 			},
 		},
 		userdata = {
-			phase = "1",
+			phase = "0",
 			nextphase = {"T","2","T","3",loop = false, type = "series"},
 			defiletext = "",
 			defiletime = 37,
@@ -1963,6 +1964,7 @@ do
 				execute = {
 					{
 						"expect",{"#1#","find",L.chat_citadel["^I'll keep you alive to witness the end, Fordring"]},
+						"set",{phase = "1"},
 						-- just in case
 						"quash","enragecd",
 						"quash","infestcd",
