@@ -3515,7 +3515,7 @@ do
 	end
 
 	local data = {
-		version = 15,
+		version = 16,
 		key = "saurfang",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -3531,6 +3531,7 @@ do
 			markfallentext = "",
 			runebloodtime = {22,20,loop = false, type = "series"},
 			enragetime = 480,
+			started = 0,
 		},
 		onactivate = {
 			tracerstart = true,
@@ -3540,14 +3541,15 @@ do
 		},
 		onstart = {
 			{
-				"expect",{"#1#","==","#1#"},
-				"alert","zerotoonecd",
-				"scheduletimer",{"fireinitial",0},
-			},
-			{
 				"expect",{"#1#","find",prestart_trigger},
 				"alert","zerotoonecd",
 				"scheduletimer",{"fireinitial",prestart_time},
+				"set",{started = 1},
+			},
+			{
+				"expect",{"<started>","~=","1"},
+				"alert","zerotoonecd",
+				"scheduletimer",{"fireinitial",0},
 			},
 		},
 		timers = {
