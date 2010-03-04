@@ -2297,7 +2297,7 @@ end
 
 do
 	local data = {
-		version = 13,
+		version = 14,
 		key = "marrowgar",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
