@@ -1534,7 +1534,7 @@ end
 
 do
 	local data = {
-		version = 50,
+		version = 51,
 		key = "lichking",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -2088,7 +2088,12 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
-				spellid = 72762, -- 10/25
+				spellid = {
+					72762, -- 10/25
+					73708,
+					73709,
+					73710,
+				},
 				execute = {
 					{
 						"scheduletimer",{"firedefile",0.2},
@@ -2121,6 +2126,10 @@ do
 					72259, -- 10 second
 					74270, -- 25 first
 					74273, -- 25 second
+					74271,
+					74272,
+					74274,
+					74275,
 				},
 				execute = {
 					{
@@ -2143,6 +2152,10 @@ do
 					72259, -- 10 second
 					74270, -- 25
 					74273, -- 25 second
+					74271,
+					74272,
+					74274,
+					74275,
 				},
 				execute = {
 					{
@@ -2234,6 +2247,8 @@ do
 				spellid = {
 					70541, -- 10
 					73779, -- 25
+					73780, -- 10h
+					73781, -- 25h
 				},
 				execute = {
 					{
