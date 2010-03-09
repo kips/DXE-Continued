@@ -1982,7 +1982,7 @@ do
 				spellid = 73539, -- 10h, 25h
 				execute = {
 					{
-						"scheduletimer",{"firetrap",0.2},
+						"scheduletimer",{"firetrap",0},
 					},
 				},
 			},
