@@ -3798,7 +3798,7 @@ end
 
 do
 	local data = {
-		version = 32,
+		version = 33,
 		key = "sindragosa",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -3829,8 +3829,8 @@ do
 				"alert","aircd",
 			},
 			{
-				"expect",{"&difficulty&","==","4"},
-				"set",{instabilitytime = 4},
+				"expect",{"&difficulty&",">=","3"},
+				"set",{instabilitytime = 5},
 			},
 		},
 		alerts = {
