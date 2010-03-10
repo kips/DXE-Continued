@@ -1009,6 +1009,9 @@ do
 				},
 				execute = {
 					{
+						"quash","frostbitedur",
+					},
+					{
 						"expect",{"#4#","==","&playerguid&"},
 						"set",{frostbitetext = format("%s: %s! %s!",SN[72098],L.alert["YOU"],format(L.alert["%s Stacks"],"#11#"))},
 						"alert","frostbitedur",
