@@ -4462,7 +4462,7 @@ end
 
 do
 	local data = {
-		version = 11,
+		version = 12,
 		key = "valithria",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -4608,7 +4608,7 @@ do
 				varname = format(L.alert["%s Duration"],SN[71940]),
 				type = "centerpopup",
 				text = "<nightmaretext>",
-				time = 35,
+				time = 40,
 				color1 = "GREY",
 				icon = ST[71940],
 			},
