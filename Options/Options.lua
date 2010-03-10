@@ -1606,7 +1606,16 @@ local function InitializeOptions()
 			order = 121,
 			get = function(info) return RaidIcons.db.profile[tonumber(info[#info])] end,
 			set = function(info,v) RaidIcons.db.profile[tonumber(info[#info])] = v end,
-			args = {}
+			args = {
+				Enabled = {
+					type = "toggle",
+					get = function(info) return RaidIcons.db.profile.Enabled end,
+					set = function(info,v) RaidIcons.db.profile.Enabled = v end,
+					name = L.options["Enable"],
+					desc = L.options["Enable raid icon marking. If this is disabled then you will not mark targets even if you have raid assist and raid icons enabled in encounters"],
+					order = 0.1,
+				},
+			}
 		}
 
 		do

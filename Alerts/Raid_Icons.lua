@@ -1,5 +1,5 @@
 local defaults = {
-	profile = {8,7,6,5,4,3,2,1},
+	profile = {8,7,6,5,4,3,2,1,Enabled = true},
 	--@debug@
 	global = {
 		debug = {
@@ -72,6 +72,8 @@ do
 	end
 
 	function module:MarkFriendly(unit,icon,persist)
+		if not pfl.Enabled then return end
+
 		-- Unschedule unit's icon removal. The schedule is effectively reset.
 		if units[unit] then 
 			self:CancelTimer(units[unit],true) 
@@ -84,6 +86,8 @@ do
 
 	-- Actual icon is chosen by increasing icon parameter
 	function module:MultiMarkFriendly(var,unit,icon,persist,reset,total)
+		if not pfl.Enabled then return end
+
 		local ix = friendly_cnt[var] or 0
 		-- maxed out
 		if ix >= total then return end
@@ -211,6 +215,8 @@ do
 	-- @param persist <number> number of seconds to attempt marking
 	-- @param remove <boolean> whether or not to remove after persist
 	function module:MarkEnemy(guid,icon,persist,remove)
+		if not pfl.Enabled then return end
+
 		local success = MarkGUID(guid,icon)
 		if not success then
 			guids[guid] = icon
@@ -227,6 +233,8 @@ do
 	end
 
 	function module:MultiMarkEnemy(var,guid,icon,persist,remove,reset,total)
+		if not pfl.Enabled then return end
+
 		-- var keeps track of icon count
 		local ix = enemy_cnt[var] or 0
 		-- maxed out
@@ -267,6 +275,8 @@ end
 -------------------------------------------
 
 function module:RemoveAll()
+	if not pfl.Enabled then return end
+
 	self:RemoveAllFriendly()
 	self:RemoveAllEnemy()
 	self:CancelAllTimers() -- goes last
