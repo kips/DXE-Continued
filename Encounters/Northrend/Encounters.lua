@@ -896,7 +896,7 @@ end
 
 do
 	local data = {
-		version = 2,
+		version = 3,
 		key = "toravon",
 		zone = L.zone["Vault of Archavon"],
 		category = L.zone["Northrend"],
@@ -984,6 +984,9 @@ do
 					72098, -- 25
 				},
 				execute = {
+					{
+						"quash","frostbitedur",
+					},
 					{
 						"expect",{"#4#","==","&playerguid&"},
 						"set",{frostbitetext = format("%s: %s!",SN[72098],L.alert["YOU"])},
