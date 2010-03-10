@@ -66,6 +66,8 @@ do
 	---------------------------------
 
 	function module:RemoveIcon(unit)
+		if not pfl.Enabled then return end
+
 		module:CancelTimer(units[unit],true)
 		SetRaidTarget(unit,0)
 		units[unit] = nil
