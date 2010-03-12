@@ -652,6 +652,7 @@ do
 		if stgs.enabled then
 			local announceInfo = announces[info]
 			if announceInfo.type == "SAY" then
+				local msg = ReplaceTokens(announceInfo.msg)
 				SendChatMessage(announceInfo.msg,"SAY")
 			end
 		end
