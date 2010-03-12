@@ -2553,7 +2553,7 @@ end
 
 do
 	local data = {
-		version = 30,
+		version = 32,
 		key = "putricide",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -2922,6 +2922,7 @@ do
 				spellid = {
 					72615, -- 25
 					72295, -- 10
+					74280, -- 10h
 					74281, -- 25h
 				},
 				execute = {
@@ -2965,7 +2966,10 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
-				spellid = 72843, -- 25h
+				spellid ={
+					72843, -- 25h
+					72842, -- 10h
+				},
 				execute = {
 					{
 						"quash","puddlecd",
@@ -3041,8 +3045,9 @@ do
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
 				spellid = {
-					72455, -- 25
 					70672, -- 10
+					72859, -- 10h
+					72455, -- 25
 					72833, -- 25h
 				},
 				execute = {
@@ -3057,8 +3062,9 @@ do
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
 				spellid = {
-					72455, -- 25
 					70672, -- 10
+					72455, -- 25
+					72859, -- 10h
 					72833, -- 25h
 				},
 				execute = {
@@ -3082,6 +3088,7 @@ do
 				spellid = {
 					72455, -- 25
 					70672, -- 10
+					72859, -- 10h
 					72833, -- 25h
 				},
 				execute = {
@@ -3097,6 +3104,7 @@ do
 				spellid = {
 					72836, -- 25
 					70447, -- 10
+					72837, -- 10h
 					72838, -- 25h
 				},
 				execute = {
@@ -3113,6 +3121,7 @@ do
 				spellid = {
 					72836, -- 25
 					70447, -- 10
+					72837, -- 10h
 					72838, -- 25h
 				},
 				execute = {
@@ -3133,6 +3142,7 @@ do
 				spellid = {
 					72836, -- 25
 					70447, -- 10
+					72837, -- 10h
 					72838, -- 25h
 				},
 				execute = {
@@ -3148,6 +3158,7 @@ do
 				spellid = {
 					71966,
 					70351,
+					71967, -- 10h
 					71968, -- 25h
 				},
 				execute = {
