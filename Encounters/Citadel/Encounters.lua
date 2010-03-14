@@ -1264,7 +1264,7 @@ end
 
 do
 	local data = {
-		version = 22,
+		version = 23,
 		key = "lanathel",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -1281,6 +1281,14 @@ do
 		onstart = {
 			{
 				"expect",{"&difficulty&","==","1"},
+				"set",{
+					essencetime = 75,
+					bloodtime = {127,120, loop = false, type = "series"},
+					incitetime = {122,115, loop = false, type = "series"},
+				},
+			},
+			{
+				"expect",{"&difficulty&","==","3"},
 				"set",{
 					essencetime = 75,
 					bloodtime = {127,120, loop = false, type = "series"},
