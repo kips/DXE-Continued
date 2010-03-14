@@ -2553,7 +2553,7 @@ end
 
 do
 	local data = {
-		version = 32,
+		version = 34,
 		key = "putricide",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -2588,7 +2588,7 @@ do
 			puddletime = 10,
 			puddletimeaftertransition = {10,15,loop = false, type = "series"},
 			puddletimeperphase = {35,20,loop = false, type = "series"},
-			plaguetimeaftervariables = {60,30,loop = false, type = "series"},
+			plaguetimeaftertrans = {60,30,loop = false, type = "series"},
 			plaguetime = 60,
 		},
 		alerts = {
@@ -2774,6 +2774,16 @@ do
 				color1 = "MIDGREY",
 				icon = ST[72855],
 			},
+			putricideaggrocd = {
+				varname = format(L.alert["%s Aggros"],L.npc_citadel["Putricide"]),
+				type = "centerpopup",
+				text = format(L.alert["%s Aggros"],L.npc_citadel["Putricide"]),
+				color1 = "PEACH",
+				time = 10,
+				flashtime = 10,
+				color1 = "TAN",
+				icon = "Interface\\Icons\\Achievement_Boss_ProfPutricide",
+			},
 		},
 		raidicons = {
 			oozeadhesivemark = {
@@ -2855,6 +2865,24 @@ do
 					"alert","malleablegoowarn",
 				},
 			},
+			fireputraggro = {
+				{
+					"alert","putricideaggrocd",
+				},
+			},
+			heroictrans = {
+				{
+					"set",{malleabletime = 6, experimenttime = 20, gasbombtime = 11, puddletime = "<puddletimeaftertransition>", plaguetime = "<plaguetimeaftertrans"},
+					"alert","malleablegoocd",
+					"alert","gasbombcd",
+					"alert","puddlecd",
+					"alert","unboundplaguecd",
+					"set",{malleabletime = 20, experimenttime = 37.5, gasbombtime = 35.5, puddletime = "<puddletimeperphase>", plaguetime = 60},
+					"expect",{"<transitioned>","==","0"},
+					"alert","unstableexperimentcd",
+					"set",{transitioned = "1"},
+				},
+			},
 		},
 		events = {
 			-- Slime Puddle
@@ -2878,6 +2906,7 @@ do
 				spellid = {
 					72463, -- 25
 					72451, -- 10
+					72671, -- 10h
 					72672, -- 25h
 				},
 				execute = {
@@ -3014,6 +3043,7 @@ do
 					},
 				},
 			},
+			--[[
 			-- Variable removal
 			{
 				type = "combatevent",
@@ -3024,19 +3054,24 @@ do
 				},
 				execute = {
 					{
-						"expect",{"#4#","==","&playerguid&"},
-						-- TODO: find a more reliable way of detecting when Putricide aggros again
-						-- TODO: verify all of these
-						"set",{malleabletime = 6, experimenttime = 20, gasbombtime = 16, puddletime = "<puddletimeaftertransition>", plaguetime = "<plaguetimeaftervariables"},
-						"alert","malleablegoocd",
-						"alert","gasbombcd",
-						"alert","puddlecd",
-						"alert","unboundplaguecd",
-						-- TODO: verify all of these
-						"set",{malleabletime = 20, experimenttime = 37.5, gasbombtime = 35.5, puddletime = "<puddletimeperphase>", plaguetime = 60},
-						"expect",{"<transitioned>","==","0"},
-						"alert","unstableexperimentcd",
-						"set",{transitioned = "1"},
+					},
+				},
+			},
+			]]
+			-- Create Concoction/Guzzle Potions
+			{
+				type = "combatevent",
+				eventtype = "SPELL_CAST_START",
+				spellid = {
+					72851, -- Create Concoction 10h
+					72852, -- Create Concoction 25h
+					73121, -- Guzzle Potions 10h
+					73122, -- Guzzle Potions 25h
+				},
+				execute = {
+					{
+						"scheduletimer",{"fireputraggro",30},
+						"scheduletimer",{"heroictrans",40}, -- 30s cast + 10s wait time
 					},
 				},
 			},
@@ -3046,7 +3081,7 @@ do
 				eventtype = "SPELL_CAST_START",
 				spellid = {
 					70672, -- 10
-					72859, -- 10h
+					72832, -- 10h
 					72455, -- 25
 					72833, -- 25h
 				},
@@ -3064,7 +3099,7 @@ do
 				spellid = {
 					70672, -- 10
 					72455, -- 25
-					72859, -- 10h
+					72832, -- 10h
 					72833, -- 25h
 				},
 				execute = {
@@ -3088,7 +3123,7 @@ do
 				spellid = {
 					72455, -- 25
 					70672, -- 10
-					72859, -- 10h
+					72832, -- 10h
 					72833, -- 25h
 				},
 				execute = {
@@ -3178,6 +3213,7 @@ do
 					72456, -- 25
 					72869, -- 25h Slime Puddle
 					70346, -- 10 Slime Puddle
+					72868, -- 10h Slime Puddle
 				},
 				execute = {
 					{
