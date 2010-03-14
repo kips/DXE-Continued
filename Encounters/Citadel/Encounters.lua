@@ -1855,7 +1855,7 @@ do
 				icon = 1,
 			},
 			trapmark = {
-				varname = SN[72762],
+				varname = L.alert["Shadow Trap"],
 				type = "FRIENDLY",
 				persist = 6,
 				unit = "&tft_unitname&",
