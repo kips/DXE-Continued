@@ -1542,7 +1542,7 @@ end
 
 do
 	local data = {
-		version = 51,
+		version = 52,
 		key = "lichking",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -2116,7 +2116,9 @@ do
 				eventtype = "SPELL_AURA_APPLIED",
 				spellid = {
 					72754, -- 10
+					73709, -- 10h
 					73708, -- 25
+					73710, -- 25h
 				},
 				execute = {
 					{
