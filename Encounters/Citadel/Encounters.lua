@@ -1999,8 +1999,10 @@ do
 				type = "combatevent",
 				eventtype = "SPELL_CAST_SUCCESS",
 				spellid = {
-					70337, --10
-					73912, --25
+					70337, -- 10
+					73912, -- 25
+					73913, -- 10h
+					73914, -- 25h
 				},
 				execute = {
 					{
@@ -2026,9 +2028,11 @@ do
 					-- Note: there are two different ones for some reason
 					-- TODO: fix it when there are two bars. it could quash the wrong one
 					70337, -- 10
-					70338, -- 10h
+					73913, -- 10h initial
+					73786, -- 10h
 					73785, -- 25
-					73912, -- 25h
+					73914, -- 25h initial
+					73787, -- 25h
 				},
 				execute = {
 					{
