@@ -17,6 +17,7 @@
 		resettimer 			= [BOOLEAN]
 		tracing 				= {<name>,...,<name_n>}
 		proximitycheck 	= {"<token>",[10,11,18, or 28]}
+		outproximitycheck	= {"<token>",[10,11,18, or 28]}
 		raidicon 			= "<raidicon>"
 		removeraidicon    = "<token>"
 		arrow 				= "<arrow>"
@@ -549,6 +550,12 @@ do
 		local target,range = info[1],info[2]
 		target = ReplaceTokens(target)
 		return ProximityFuncs[range](target)
+	end
+
+	handlers.outproximitycheck = function(info)
+		local target,range = info[1],info[2]
+		target = ReplaceTokens(target)
+		return not ProximityFuncs[range](target)
 	end
 end
 

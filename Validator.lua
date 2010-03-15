@@ -65,6 +65,7 @@ local baseLineKeys = {
 	resettimer = isboolean,
 	tracing = istable,
 	proximitycheck = istable,
+	outproximitycheck = istable,
 	raidicon = isstring,
 	removeraidicon = isstring,
 	arrow = isstring,
@@ -381,8 +382,8 @@ function validateCommandLine(data,type,info,errlvl,...)
 		end
 	elseif type == "tracing" then
 		validateTracing(info,errlvl,...)
-	elseif type == "proximitycheck" then
-		validateIsArray(info,errlvl,"proximitycheck",...)
+	elseif type == "proximitycheck" or type == "outproximitycheck" then
+		validateIsArray(info,errlvl,type,...)
 		if #info ~= 2 then
 			err(": array is not size 2",errlvl,type,...)
 		end
