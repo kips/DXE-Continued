@@ -2561,7 +2561,7 @@ end
 
 do
 	local data = {
-		version = 34,
+		version = 35,
 		key = "putricide",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -2880,7 +2880,7 @@ do
 			},
 			heroictrans = {
 				{
-					"set",{malleabletime = 6, experimenttime = 20, gasbombtime = 11, puddletime = "<puddletimeaftertransition>", plaguetime = "<plaguetimeaftertrans"},
+					"set",{malleabletime = 6, experimenttime = 20, gasbombtime = 11, puddletime = "<puddletimeaftertransition>", plaguetime = "<plaguetimeaftertrans>"},
 					"alert","malleablegoocd",
 					"alert","gasbombcd",
 					"alert","puddlecd",
@@ -3234,7 +3234,10 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_SUCCESS",
-				spellid = 72856, -- 25h
+				spellid = {
+					72855, -- 10h
+					72856, -- 25h
+				},
 				execute = {
 					{
 						"alert","unboundplaguecd",
