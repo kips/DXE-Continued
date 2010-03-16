@@ -5067,3 +5067,76 @@ do
 		DXE:RegisterEncounter(data)
 	end
 end
+
+do
+	local data = {
+		version = 1,
+		key = "icctrashfour",
+		zone = L.zone["Icecrown Citadel"],
+		category = L.zone["Citadel"],
+		name = format(L.alert["%s (T)"],L.npc_citadel["Deathspeaker High Priest"]),
+		triggers = {
+			scan = {
+				36829, -- Deathspeaker High Priest 
+			},
+		},
+		onactivate = {
+			tracing = {36829}, -- Deathspeaker High Priest 
+			tracerstart = true,
+			combatstop = true,
+		},
+		alerts = {
+			darkreckoningwarn = {
+				varname = format(L.alert["%s on others"],SN[69483]),
+				type = "simple",
+				text = format("%s: #5#!",SN[69483]),
+				time = 8,
+				color1 = "PURPLE",
+				sound = "ALERT5",
+				icon = ST[69483],
+			},
+			darkreckoningself = {
+				varname = format(L.alert["%s on self"],SN[69483]),
+				type = "simple",
+				text = format("%s: %s! %s!",SN[69483],L.alert["YOU"],L.alert["MOVE AWAY"]),
+				time = 8,
+				color1 = "PURPLE",
+				sound = "ALERT5",
+				icon = ST[69483],
+				flashscreen = true,
+			},
+		},
+		raidicons = {
+			darkreckoningmark = {
+				varname = SN[69483],
+				type = "FRIENDLY",
+				persist = 8,
+				unit = "#5#",
+				icon = 1,
+			},
+		},
+		events = {
+			-- Dark Reckoning 
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellid = 69483, -- 10/25
+				execute = {
+					{
+						"raidicon","darkreckoningmark",
+					},
+					{
+						"expect",{"#4#","==","&playerguid&"},
+						"alert","darkreckoningself",
+					},
+					{
+						"expect",{"#4#","~=","&playerguid&"},
+						"alert","darkreckoningwarn",
+					},
+				}
+			}
+		},
+	}
+
+	DXE:RegisterEncounter(data)
+end
