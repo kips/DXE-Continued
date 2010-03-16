@@ -725,7 +725,7 @@ end
 
 do
 	local data = {
-		version = 11,
+		version = 12,
 		key = "festergut",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -951,6 +951,7 @@ do
 				spellid = { -- Note: Don't use 71307
 					71218, -- 25
 					69240, -- 10
+					73019, -- 10h
 					73020, -- 25h
 				},
 				execute = {
