@@ -208,7 +208,8 @@ local eventtypes = {
 	UNIT_DIED = true,
 }
 
-local function err(msg, errlvl, ...)
+local function err(msg,errlvl,...)
+	errlvl = errlvl + 1
 	local work = {}
 	for i=select("#",...),1,-1 do
 		local key = (select(i,...))
@@ -221,11 +222,11 @@ local function err(msg, errlvl, ...)
 		end
 		work[#work+1] = key
 	end
-	error("DXE:ValidateOptions() "..concat(work)..": "..msg, errlvl+2)
+	error("DXE:ValidateOptions() "..concat(work)..": "..msg, errlvl)
 end
 
 local function validateIsArray(tbl,errlvl,...)
-	errlvl = (errlvl or 0)+1
+	errlvl = errlvl + 1
 	if #tbl < 1 then
 		err("table should be an array - got an empty table",errlvl,...)
 	end
@@ -237,7 +238,7 @@ local function validateIsArray(tbl,errlvl,...)
 end
 
 local function validateVal(v, oktypes, errlvl, ...)
-	errlvl = (errlvl or 0)+1
+	errlvl = errlvl + 1
 	local isok=oktypes[type(v)]
 	if not isok then
 		err("expected a "..oktypes._..", got '"..tostring(v).."'", errlvl, ...)
@@ -245,7 +246,7 @@ local function validateVal(v, oktypes, errlvl, ...)
 end
 
 local function validateReplaceFuncs(data,text,errlvl,...)
-	errlvl=(errlvl or 0)+1
+	errlvl = errlvl + 1
 	for rep in gmatch(text,"%b&&") do
 		local func = match(rep,"&(.+)&")
 		if func:find("|") then func = match(func,"^([^|]+)|(.+)") end
@@ -256,7 +257,7 @@ local function validateReplaceFuncs(data,text,errlvl,...)
 end
 
 local function validateReplaceNums(data,text,errlvl,...)
-	errlvl=(errlvl or 0)+1
+	errlvl = errlvl + 1
 	for var in gmatch(text,"%b##") do 
 		local key = tonumber(match(var,"#(%d+)#"))
 		if not key or key < 1 or key > 11 then
@@ -266,7 +267,7 @@ local function validateReplaceNums(data,text,errlvl,...)
 end
 
 local function validateReplaceVars(data,text,errlvl,...)
-	errlvl=(errlvl or 0)+1
+	errlvl = errlvl + 1
 	for var in gmatch(text,"%b<>") do 
 		local key = match(var,"<(.+)>")
 		if not data.userdata[key] then
@@ -276,7 +277,7 @@ local function validateReplaceVars(data,text,errlvl,...)
 end
 
 local function unclosed_helper(text,errlvl,left,right,...)
-	assert(left and right)
+	errlvl = errlvl + 1
 
 	local work = text
 	-- check for opening
@@ -284,6 +285,7 @@ local function unclosed_helper(text,errlvl,left,right,...)
 		while work ~= "" do
 			-- balanced match (discard)
 			local rest = work:match("%b"..left..right.."(.*)")
+			-- a match implies closure
 			if rest then
 				-- check the rest of the string
 				if not rest:find(left) then break end
@@ -296,7 +298,7 @@ local function unclosed_helper(text,errlvl,left,right,...)
 end
 
 local function checkForUnclosedReplaces(data,text,errlvl,...)
-	errlvl=(errlvl or 0)+1
+	errlvl = errlvl + 1
 
 	unclosed_helper(text,errlvl,'#','#',...)
 	unclosed_helper(text,errlvl,'<','>',...)
@@ -305,7 +307,7 @@ end
 
 local function validateReplaces(data,text,errlvl,...)
 	if type(text) ~= "string" then return end
-	errlvl=(errlvl or 0)+1
+	errlvl = errlvl + 1
 
 	validateReplaceFuncs(data,text,errlvl,...)
 	validateReplaceVars(data,text,errlvl,...)
@@ -313,7 +315,7 @@ local function validateReplaces(data,text,errlvl,...)
 end
 
 local function validateTracing(tbl,errlvl,...)
-	errlvl=(errlvl or 0)+1
+	errlvl = errlvl + 1
 	if #tbl > 4 or #tbl == 0 then
 		err("not an array with 1 <= size <= 4",errlvl,"tracing",...)
 	end
@@ -329,7 +331,7 @@ local function validateTracing(tbl,errlvl,...)
 end
 
 local function validateSortedTracing(tbl,errlvl,...)
-	errlvl=(errlvl or 0)+1
+	errlvl = errlvl + 1
 	validateIsArray(tbl,errlvl,"sortedtracing",...)
 	if #tbl == 0 then
 		err("got an empty array",errlvl,"sortedtracing",...)
@@ -340,7 +342,7 @@ local function validateSortedTracing(tbl,errlvl,...)
 end
 
 local function validateUnitTracing(tbl,errlvl,...)
-	errlvl=(errlvl or 0)+1
+	errlvl = errlvl + 1
 	validateIsArray(tbl,errlvl,"unittracing",...)
 	if #tbl == 0 then
 		err("got an empty array",errlvl,"unittracing",...)
@@ -353,6 +355,7 @@ end
 local validateCommandLine, validateCommandList, validateCommandBundle
 
 function validateCommandLine(data,type,info,errlvl,...)
+	errlvl = errlvl + 1
 	local oktype = baseLineKeys[type]
 	if not oktype then
 		err("unknown command line type",errlvl,...)
@@ -445,6 +448,7 @@ function validateCommandLine(data,type,info,errlvl,...)
 end
 
 function validateCommandList(data,list,errlvl,...)
+	errlvl = errlvl + 1
 	for k=1,#list,2 do
 		validateVal(list[k],isstring,errlvl,k,...)
 		validateVal(list[k+1],isstringtableboolean,errlvl,k+1,...)
@@ -453,7 +457,7 @@ function validateCommandList(data,list,errlvl,...)
 end
 
 function validateCommandBundle(data,bundle,errlvl,...)
-	errlvl=(errlvl or 0)+1
+	errlvl = errlvl + 1
 	validateIsArray(bundle,errlvl,...)
 	for k,list in ipairs(bundle) do
 		validateVal(list,istable,errlvl,k,...)
@@ -466,7 +470,7 @@ function validateCommandBundle(data,bundle,errlvl,...)
 end
 
 local function validateAlert(data,info,errlvl,...)
-	errlvl=(errlvl or 0)+1
+	errlvl = errlvl + 1
 	-- Consistency check
 	for k in pairs(info) do
 		if not alertBaseKeys[k] then
@@ -515,7 +519,7 @@ local function validateAlert(data,info,errlvl,...)
 end
 
 local function validateAlerts(data,alerts,errlvl,...)
-	errlvl=(errlvl or 0)+1
+	errlvl = errlvl + 1
 	for k,info in pairs(alerts) do
 		validateVal(k,isstring,errlvl,...)
 		validateAlert(data,info,errlvl,k,...)
@@ -523,7 +527,7 @@ local function validateAlerts(data,alerts,errlvl,...)
 end
 
 local function validateArrow(data,info,errlvl,...)
-	errlvl=(errlvl or 0)+1
+	errlvl = errlvl + 1
 	for k in pairs(info) do
 		if not arrowBaseKeys[k] then
 			err("unknown key '"..k.."'",errlvl,tostring(k),...)
@@ -545,7 +549,7 @@ local function validateArrow(data,info,errlvl,...)
 end
 
 local function validateArrows(data,arrows,errlvl,...)
-	errlvl=(errlvl or 0)+1
+	errlvl = errlvl + 1
 	for k,info in pairs(arrows) do
 		validateVal(k,isstring,errlvl,...)
 		validateArrow(data,info,errlvl,k,...)
@@ -553,7 +557,7 @@ local function validateArrows(data,arrows,errlvl,...)
 end
 
 local function validateRaidIcon(data,info,errlvl,...)
-	errlvl=(errlvl or 0)+1
+	errlvl = errlvl + 1
 	for k in pairs(info) do
 		if not raidIconBaseKeys[k] then
 			err("unknown key '"..k.."'",errlvl,tostring(k),...)
@@ -584,7 +588,7 @@ local function validateRaidIcon(data,info,errlvl,...)
 end
 
 local function validateRaidIcons(data,raidicons,errlvl,...)
-	errlvl=(errlvl or 0)+1
+	errlvl = errlvl + 1
 	for k,info in pairs(raidicons) do
 		validateVal(k,isstring,errlvl,...)
 		validateRaidIcon(data,info,errlvl,k,...)
@@ -592,7 +596,7 @@ local function validateRaidIcons(data,raidicons,errlvl,...)
 end
 
 local function validateAnnounce(data,info,errlvl,...)
-	errlvl=(errlvl or 0)+1
+	errlvl = errlvl + 1
 	for k in pairs(info) do
 		if not announceBaseKeys[k] then
 			err("unknown key '"..k.."'",errlvl,tostring(k),...)
@@ -610,7 +614,7 @@ local function validateAnnounce(data,info,errlvl,...)
 end
 
 local function validateAnnounces(data,announces,errlvl,...)
-	errlvl=(errlvl or 0)+1
+	errlvl = errlvl + 1
 	for k,info in pairs(announces) do
 		validateVal(k,isstring,errlvl,...)
 		validateAnnounce(data,info,errlvl,k,...)
@@ -618,6 +622,7 @@ local function validateAnnounces(data,announces,errlvl,...)
 end
 
 local function validateSpellID(data,info,errlvl,k,...)
+	errlvl = errlvl + 1
 	if info[k] and type(info[k]) == "number" then
 		local exists = GetSpellInfo(info[k])
 		if not exists then
@@ -635,6 +640,7 @@ local function validateSpellID(data,info,errlvl,k,...)
 end
 
 local function validateUserData(data,info,errlvl,...)
+	errlvl = errlvl + 1
 	for var,value in pairs(info) do
 		if _G.type(value) == "string" then
 			validateReplaceFuncs(data,value,errlvl,...)
@@ -648,6 +654,7 @@ local function validateUserData(data,info,errlvl,...)
 end
 
 local function validateEvent(data,info,errlvl,...)
+	errlvl = errlvl + 1
 	for k in pairs(info) do
 		if not eventBaseKeys[k] then
 			err("unknown parameter",errlvl,k,...)
@@ -674,7 +681,7 @@ local function validateEvent(data,info,errlvl,...)
 end
 
 local function validateEvents(data,events,errlvl,...)
-	errlvl=(errlvl or 0)+1
+	errlvl = errlvl + 1
 	for k,info in pairs(events) do
 		validateVal(info,istable,errlvl,k,...)
 		validateEvent(data,info,errlvl,k,...)
@@ -683,7 +690,7 @@ end
 
 
 local function validate(data,errlvl,...)
-	errlvl=(errlvl or 0)+1
+	errlvl = errlvl + 1
 	-- Consistency check
 	for k in pairs(data) do
 		if not baseKeys[k] then
@@ -771,7 +778,7 @@ local function validate(data,errlvl,...)
 end
 
 function addon:ValidateData(data)
-	errlvl=(errlvl or 0)+1
+	local errlvl = 1
 	local name = data.name or data.key or "Data"
 	validate(data,errlvl,name)
 end
