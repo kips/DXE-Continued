@@ -222,7 +222,7 @@ local function err(msg,errlvl,...)
 		end
 		work[#work+1] = key
 	end
-	error("DXE:ValidateOptions() "..concat(work)..": "..msg, errlvl)
+	error("DXE:ValidateOptions() "..concat(work)..": "..msg, errlvl + 1)
 end
 
 local function validateIsArray(tbl,errlvl,...)
@@ -283,8 +283,8 @@ local function unclosed_helper(text,errlvl,left,right,...)
 	-- check for opening
 	if work:find(left) then
 		while work ~= "" do
-			-- balanced match (discard)
-			local rest = work:match("%b"..left..right.."(.*)")
+			-- discard closure
+			local rest = work:match(left..".-"..right.."(.*)")
 			-- a match implies closure
 			if rest then
 				-- check the rest of the string
@@ -308,6 +308,8 @@ end
 local function validateReplaces(data,text,errlvl,...)
 	if type(text) ~= "string" then return end
 	errlvl = errlvl + 1
+
+	checkForUnclosedReplaces(data,text,errlvl,...)
 
 	validateReplaceFuncs(data,text,errlvl,...)
 	validateReplaceVars(data,text,errlvl,...)
