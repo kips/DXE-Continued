@@ -98,6 +98,9 @@ local debugDefaults = {
 	REG_EVENT = false,
 	["handlers.set"] = false,
 	replace_funcs = false,
+	insert = false,
+	wipe = false,
+	wipe_container = false,
 }
 
 --@end-debug@
@@ -341,8 +344,14 @@ end
 ---------------------------------------------
 
 do
+	local wipeins = {} -- var -> handles
+
 	function module:ResetUserData()
 		wipe(userdata)
+		for k,handle in pairs(wipeins) do
+			module:CancelTimer(handle)
+			wipeins[k] = nil
+		end
 		if not CE.userdata then return end
 		-- Copy defaults into userdata
 		for k,v in pairs(CE.userdata) do
@@ -385,6 +394,42 @@ do
 				userdata[k] = v 
 			end
 		end
+		return true
+	end
+
+	local function wipe_container(k)
+		wipeins[k] = nil
+		wipe(userdata[k])
+		--@debug@
+		debug("wipe_container","var: %s table values: %s",k,table.concat(userdata[k],", "))
+		--@end-debug@
+	end
+
+	-- @ADD TO HANDLERS
+	handlers.insert = function(info)
+		local k,v = info[1],info[2]
+		v = ReplaceTokens(v)
+		local t = userdata[k]
+		t[#t+1] = v
+
+		local ct = CE.userdata[k]
+		if ct.wipein and not wipeins[k] then
+			wipeins[k] = module:ScheduleTimer(wipe_container,ct.wipein,k)
+		end
+
+		--@debug@
+		debug("insert","var: %s value: %s table values: %s",k,v,table.concat(userdata[k],", "))
+		--@end-debug@
+
+		return true
+	end
+
+	-- @ADD TO HANDLERS
+	handlers.wipe = function(info)
+		wipe(userdata[info])
+		--@debug@
+		debug("wipe","var: %s table values: %s",info,table.concat(userdata[info],", "))
+		--@end-debug@
 		return true
 	end
 end
