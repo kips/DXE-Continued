@@ -725,7 +725,7 @@ end
 
 do
 	local data = {
-		version = 12,
+		version = 13,
 		key = "festergut",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -742,6 +742,7 @@ do
 		userdata = {
 			inhaletime = {29, 33.5, loop = false, type = "series"}, -- placeholder
 			sporetime = {21,40,40,51, loop = false, type = "series"}, -- placeholder
+			sporeunits = {type = "container", wipein = 2},
 			pungenttime = {133, 138, loop = false, type = "series"},
 			gastrictext = "",
 		},
@@ -875,6 +876,24 @@ do
 		windows = {
 			proxwindow = true,
 		},
+		timers = {
+			firegassporearrow = {
+				{
+					"expect",{"&playerdebuff|"..SN[71221].."&","==","false"},
+					"arrow","gassporearrow",
+				},
+			},
+		},
+		arrows = {
+			gassporearrow = {
+				varname = format(L.alert["Closest %s"],SN[71221]),
+				unit = "&closest|sporeunits&",
+				persist = 12,
+				action = "TOWARD",
+				msg = L.alert["MOVE TOWARD"],
+				spell = format(L.alert["Closest %s"],SN[71221]),
+			},
+		},
 		raidicons = {
 			vilegasmark = {
 				varname = SN[71307],
@@ -915,14 +934,15 @@ do
 				type = "combatevent",
 				eventtype = "SPELL_CAST_SUCCESS",
 				spellid = {
-					71221, -- 25
-					69278, -- 10
+					71221, -- 25/25h
+					69278, -- 10/10h?
 				},
 				execute = {
 					{
 						"quash","gassporecd",
 						"alert","gassporedur",
 						"alert","gassporecd",
+						"scheduletimer",{"firegassporearrow",0.5},
 					},
 				},
 			},
@@ -930,13 +950,11 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellid = {
-					71221, -- 25
-					69279, -- 10
-				},
+				spellid = 69279, -- 10/10h/25/25h
 				execute = {
 					{
 						"raidicon","gassporemark",
+						"insert",{"sporeunits","#5#"},
 					},
 					{
 						"expect",{"#4#","==","&playerguid&"},
