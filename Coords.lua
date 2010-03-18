@@ -1,6 +1,7 @@
 local addon = DXE
 
 local MapDims
+local sort = table.sort
 local GetPlayerMapPosition = GetPlayerMapPosition
 local SetMapToCurrentZone = SetMapToCurrentZone
 local GetCurrentMapDungeonLevel = GetCurrentMapDungeonLevel
@@ -48,6 +49,16 @@ function addon:GetDistanceToUnit(unit,fx2,fy2)
 	local dy = (y2 - y1) * dims.h
 
 	return (dx*dx + dy*dy)^(0.5),dx,dy -- dx*dx is faster than dx^2
+end
+
+local function comp(a,b)
+	return addon:GetDistanceToUnit(a) < addon:GetDistanceToUnit(b)
+end
+
+-- @param units an array of units
+function addon:FindClosestUnit(units)
+	sort(units,comp)
+	return units[1]
 end
 
 -------------------------

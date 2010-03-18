@@ -214,6 +214,7 @@ do
 		debuffstacks = function(unit,debuff) local c = select(4,UnitDebuff(unit,debuff)) return tostring(c) end,
 		buffstacks = function(unit,buff) local c = select(4,UnitBuff(unit,buff)) return tostring(c) end,
 		hasicon = function(unit,icon) return tostring(RaidIcons:HasIcon(unit,icon)) end,
+		closest = function(container) addon:FindClosestUnit(userdata[container]) end,
 	}
 
 	-- Add funcs for the other health watchers

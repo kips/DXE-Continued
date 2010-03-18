@@ -247,13 +247,52 @@ local function validateVal(v, oktypes, errlvl, ...)
 	end
 end
 
+local function checkParams(func,params,num,errlvl,...)
+	errlvl = errlvl + 1
+	if select('#',string.split("|",params)) ~= num then
+		err("missing parameters",errlvl,func,...)
+	end
+	return string.split("|",params)
+end
+
 local function validateReplaceFuncs(data,text,errlvl,...)
 	errlvl = errlvl + 1
 	for rep in gmatch(text,"%b&&") do
 		local func = match(rep,"&(.+)&")
-		if func:find("|") then func = match(func,"^([^|]+)|(.+)") end
+		local params
+		if func:find("|") then func,params = match(func,"^([^|]+)|(.+)") end
 		if not RepFuncs[func] then
 			err("replace func does not exist, got '"..rep.."'",errlvl,...)
+		end
+
+		-- params
+		if func == "closest" then
+			checkParams(func,params,1,errlvl,...)
+			local ud = data.userdata
+			if not (ud and ud[params] and type(ud[params]) == "table" and ud[params].type == "container") then
+				err("using closest replace func on an invalid userdata variable '"..params.."'",errlvl,...)
+			end
+		elseif func == "timeleft" then
+			-- skip param checking, delta is optional
+			local id,delta = string.split("|",params)
+			if not data.alerts[id] then
+				err("using timeleft replace func on an invalid alert id '"..id.."'",errlvl,...)
+			end
+			if delta and not tonumber(delta) then
+				err("invalid delta passed to timeleft replace func - got '"..delta.."'",errlvl,...)
+			end
+		elseif func == "npcid" then
+			checkParams(func,params,1,errlvl,...)
+		elseif func == "playerdebuff" then
+			checkParams(func,params,1,errlvl,...)
+		elseif func == "playerbuff" then
+			checkParams(func,params,1,errlvl,...)
+		elseif func == "debuffstacks" then
+			checkParams(func,params,2,errlvl,...)
+		elseif func == "buffstacks" then
+			checkParams(func,params,2,errlvl,...)
+		elseif func == "hasicon" then
+			checkParams(func,params,2,errlvl,...)
 		end
 	end
 end
