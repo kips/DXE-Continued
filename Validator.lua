@@ -74,6 +74,8 @@ local baseLineKeys = {
 	announce = isstring,
 	invoke = istable,
 	defeat = isboolean,
+	wipe = isstring,
+	insert = istable,
 }
 
 local alertBaseKeys = {
@@ -446,6 +448,25 @@ function validateCommandLine(data,type,info,errlvl,...)
 		validateReplaces(data,info,errlvl,type,...)
 	elseif type == "invoke" then
 		validateCommandBundle(data,info,errlvl,type,...)
+	elseif type == "insert" then
+		validateIsArray(info,errlvl,type,...)
+		if #info ~= 2 then
+			err("array is not size 2",errlvl,type,...)
+		end
+		local var,token = info[1],info[2]
+		validateVal(var,isstring,errlvl,1,type,...)
+		validateVal(token,isstring,errlvl,2,type,...)
+		local ud = data.userdata
+		if not (ud and ud[var] and _G.type(ud[var]) == "table" and ud[var].type == "container") then
+			err("wiping an invalid userdata variable '"..var.."'",errlvl,1,type,...)
+		end
+		validateReplaces(data,token,errlvl,2,type,...)
+	elseif type == "wipe" then
+		validateVal(info,isstring,errlvl,type,...)
+		local ud = data.userdata
+		if not (ud and ud[info] and _G.type(ud[info]) == "table" and ud[info].type == "container") then
+			err("wiping an invalid userdata variable '"..info.."'",errlvl,type,...)
+		end
 	end
 end
 
@@ -649,7 +670,12 @@ local function validateUserData(data,info,errlvl,...)
 			validateReplaceNums(data,value,errlvl,...)
 		elseif _G.type(value) == "table" then
 			if value.type ~= "series" and value.type ~= "container" then
-				err("invalid userdata table variable expected 'container' or 'series'",errlvl,"type",...)
+				err("invalid userdata table variable expected 'container' or 'series'",errlvl,"type",var,...)
+			end
+			if value.type == "container" then
+				if value.wipein then
+					validateVal(value.wipein,isnumber,errlvl,"wipein",var,...)
+				end
 			end
 		end
 	end
