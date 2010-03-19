@@ -89,7 +89,7 @@ local RaidIcons = addon.RaidIcons
 local RegEvents,CombatEvents,CombatEvents2 = {},{},{}
 COMBATEVENTS2 = CombatEvents2
 
---@debu@
+--@debug@
 local debug
 
 local debugDefaults = {
