@@ -14,11 +14,9 @@ if L then
 
 -- Zone names
 local zone = AL:NewLocale("DXE Zone", "enUS", true, silent)
---@localization(locale="enUS", format="lua_additive_table", same-key-is-true=true, namespace="zone", table-name="zone")@
 AL:GetLocale("DXE").zone = AL:GetLocale("DXE Zone")
 -- Loader
 local loader = AL:NewLocale("DXE Loader", "enUS", true, silent)
---@localization(locale="enUS", format="lua_additive_table", same-key-is-true=true, namespace="loader", table-name="loader")@
 AL:GetLocale("DXE").loader = AL:GetLocale("DXE Loader")
 
 if GetLocale() == "enUS" or GetLocale() == "enGB" then return end

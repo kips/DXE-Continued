@@ -13,11 +13,9 @@ if L then
 
 -- Chat triggers
 local chat_ulduar = AL:NewLocale("DXE Chat Ulduar", "enUS", true, silent)
---@localization(locale="enUS", format="lua_additive_table", same-key-is-true=true, namespace="chat_ulduar", table-name="chat_ulduar")@
 AL:GetLocale("DXE").chat_ulduar = AL:GetLocale("DXE Chat Ulduar")
 -- NPC names
 local npc_ulduar = AL:NewLocale("DXE NPC Ulduar", "enUS", true, silent)
---@localization(locale="enUS", format="lua_additive_table", same-key-is-true=true, namespace="npc_ulduar", table-name="npc_ulduar")@
 AL:GetLocale("DXE").npc_ulduar = AL:GetLocale("DXE NPC Ulduar")
 if GetLocale() == "enUS" or GetLocale() == "enGB" then return end
 end

@@ -13,11 +13,9 @@ if L then
 
 -- Chat triggers
 local chat_naxxramas = AL:NewLocale("DXE Chat Naxxramas", "enUS", true, silent)
---@localization(locale="enUS", format="lua_additive_table", same-key-is-true=true, namespace="chat_naxxramas", table-name="chat_naxxramas")@
 AL:GetLocale("DXE").chat_naxxramas = AL:GetLocale("DXE Chat Naxxramas")
 -- NPC names
 local npc_naxxramas = AL:NewLocale("DXE NPC Naxxramas", "enUS", true, silent)
---@localization(locale="enUS", format="lua_additive_table", same-key-is-true=true, namespace="npc_naxxramas", table-name="npc_naxxramas")@
 AL:GetLocale("DXE").npc_naxxramas = AL:GetLocale("DXE NPC Naxxramas")
 if GetLocale() == "enUS" or GetLocale() == "enGB" then return end
 end

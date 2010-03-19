@@ -13,10 +13,8 @@ local L = AL:NewLocale("DXE", "enUS", true, silent)
 if L then
 
 -- Main phrases
---@localization(locale="enUS", format="lua_additive_table", same-key-is-true=true, namespace="main")@
 -- Alert phrases
 local alert = AL:NewLocale("DXE Alert", "enUS", true, silent)
---@localization(locale="enUS", format="lua_additive_table", same-key-is-true=true, namespace="alert", table-name="alert")@
 AL:GetLocale("DXE").alert = AL:GetLocale("DXE Alert")
 
 if GetLocale() == "enUS" or GetLocale() == "enGB" then return end

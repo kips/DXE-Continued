@@ -12,7 +12,6 @@ local L = AL:NewLocale("DXE", "enUS", true, silent)
 if L then
 
 local options = AL:NewLocale("DXE Options", "enUS", true, silent)
---@localization(locale="enUS", format="lua_additive_table", same-key-is-true=true, namespace="options", table-name="options")@
 AL:GetLocale("DXE").options = AL:GetLocale("DXE Options")
 
 if GetLocale() == "enUS" or GetLocale() == "enGB" then return end
