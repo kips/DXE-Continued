@@ -6,20 +6,17 @@
 
 local AL = LibStub("AceLocale-3.0")
 
-local debug = false
---@debug@
-debug = true
---@end-debug@
+local silent = true
 
-local L = AL:NewLocale("DXE", "enUS", true, debug)
+local L = AL:NewLocale("DXE", "enUS", true, silent)
 if L then
 
 -- Chat triggers
-local chat_coliseum = AL:NewLocale("DXE Chat Coliseum", "enUS", true, debug)
+local chat_coliseum = AL:NewLocale("DXE Chat Coliseum", "enUS", true, silent)
 --@localization(locale="enUS", format="lua_additive_table", same-key-is-true=true, namespace="chat_coliseum", table-name="chat_coliseum")@
 AL:GetLocale("DXE").chat_coliseum = AL:GetLocale("DXE Chat Coliseum")
 -- NPC names
-local npc_coliseum = AL:NewLocale("DXE NPC Coliseum", "enUS", true, debug)
+local npc_coliseum = AL:NewLocale("DXE NPC Coliseum", "enUS", true, silent)
 --@localization(locale="enUS", format="lua_additive_table", same-key-is-true=true, namespace="npc_coliseum", table-name="npc_coliseum")@
 AL:GetLocale("DXE").npc_coliseum = AL:GetLocale("DXE NPC Coliseum")
 if GetLocale() == "enUS" or GetLocale() == "enGB" then return end

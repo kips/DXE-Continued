@@ -6,15 +6,12 @@
 
 local AL = LibStub("AceLocale-3.0")
 
-local debug = false
---@debug@
-debug = true
---@end-debug@
+local silent = true
 
-local L = AL:NewLocale("DXE", "enUS", true, debug)
+local L = AL:NewLocale("DXE", "enUS", true, silent)
 if L then
 
-local options = AL:NewLocale("DXE Options", "enUS", true, debug)
+local options = AL:NewLocale("DXE Options", "enUS", true, silent)
 --@localization(locale="enUS", format="lua_additive_table", same-key-is-true=true, namespace="options", table-name="options")@
 AL:GetLocale("DXE").options = AL:GetLocale("DXE Options")
 

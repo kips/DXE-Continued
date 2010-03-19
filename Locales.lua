@@ -6,19 +6,16 @@
 
 local AL = LibStub("AceLocale-3.0")
 
-local debug = false
---@debug@
-debug = true
---@end-debug@
+local silent = true
 
-local L = AL:NewLocale("DXE", "enUS", true, debug)
+local L = AL:NewLocale("DXE", "enUS", true, silent)
 
 if L then
 
 -- Main phrases
 --@localization(locale="enUS", format="lua_additive_table", same-key-is-true=true, namespace="main")@
 -- Alert phrases
-local alert = AL:NewLocale("DXE Alert", "enUS", true, debug)
+local alert = AL:NewLocale("DXE Alert", "enUS", true, silent)
 --@localization(locale="enUS", format="lua_additive_table", same-key-is-true=true, namespace="alert", table-name="alert")@
 AL:GetLocale("DXE").alert = AL:GetLocale("DXE Alert")
 

@@ -6,20 +6,17 @@
 
 local AL = LibStub("AceLocale-3.0")
 
-local debug = false
---@debug@
-debug = true
---@end-debug@
+local silent = true
 
-local L = AL:NewLocale("DXE", "enUS", true, debug)
+local L = AL:NewLocale("DXE", "enUS", true, silent)
 if L then
 
 -- Chat triggers
-local chat_kalimdor = AL:NewLocale("DXE Chat Kalimdor", "enUS", true, debug)
+local chat_kalimdor = AL:NewLocale("DXE Chat Kalimdor", "enUS", true, silent)
 --@localization(locale="enUS", format="lua_additive_table", same-key-is-true=true, namespace="chat_kalimdor", table-name="chat_kalimdor")@
 AL:GetLocale("DXE").chat_kalimdor = AL:GetLocale("DXE Chat Kalimdor")
 -- NPC names
-local npc_kalimdor = AL:NewLocale("DXE NPC Kalimdor", "enUS", true, debug)
+local npc_kalimdor = AL:NewLocale("DXE NPC Kalimdor", "enUS", true, silent)
 --@localization(locale="enUS", format="lua_additive_table", same-key-is-true=true, namespace="npc_kalimdor", table-name="npc_kalimdor")@
 AL:GetLocale("DXE").npc_kalimdor = AL:GetLocale("DXE NPC Kalimdor")
 if GetLocale() == "enUS" or GetLocale() == "enGB" then return end
