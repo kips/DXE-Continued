@@ -69,6 +69,37 @@ function prototype:SetTitle(text)
 end
 
 ---------------------------------------
+-- HANDLERS
+---------------------------------------
+
+local handlers = {
+	Anchor_OnSizeChanged = function(self)
+		local width = self:GetWidth()
+		self:SetWidth(width)
+		self:SetHeight(width*self.ratio)
+		local s = width / self.owidth
+		self.frame:SetScale(s)
+	end,
+
+	Corner_OnMouseDown = function(self)
+		self.anchor:StartSizing("BOTTOMRIGHT")
+	end,
+
+	Corner_OnMouseUp = function(self)
+		self.anchor:StopMovingOrSizing()
+		addon:SavePosition(self.anchor,true)
+	end,
+
+	Button_OnLeave = function(self)
+		self.t:SetVertexColor(0.33,0.33,0.33)
+	end,
+
+	Button_OnEnter = function(self)
+		self.t:SetVertexColor(0,1,0)
+	end,
+}
+
+---------------------------------------
 -- WINDOW CREATION
 ---------------------------------------
 
@@ -80,15 +111,6 @@ function addon:CreateWindow(name,width,height)
 	--@end-debug@
 
 	local properName = name:gsub(" ","")
-
-	-- Anchor
-	handlers.Anchor_OnSizeChanged = handlers.Anchor_OnSizeChanged or function(self)
-		local width = self:GetWidth()
-		self:SetWidth(width)
-		self:SetHeight(width*self.ratio)
-		local s = width / self.owidth
-		self.frame:SetScale(s)
-	end
 
 	local anchor = CreateFrame("Frame","DXEWindow" ..properName,UIParent)
 	anchor:SetWidth(width)
@@ -109,37 +131,18 @@ function addon:CreateWindow(name,width,height)
 	frame:SetPoint("TOPLEFT")
 	anchor.frame = frame
 
-	-- Corner
-	handlers.Corner_OnMouseDown = handlers.Corner_OnMouseDown or function(self)
-		self.anchor:StartSizing("BOTTOMRIGHT")
-	end
-
-	handlers.Corner_OnMouseUp = handlers.Corner_OnMouseUp or function(self)
-		self.anchor:StopMovingOrSizing()
-		addon:SavePosition(self.anchor,true)
-	end
-
-	--[[
-	handlers.Corner_OnEnter = handlers.Corner_OnEnter or function(self) self.t:SetVertexColor(0,1,1) end
-	handlers.Corner_OnLeave = handlers.Corner_OnLeave or function(self) self.t:SetVertexColor(1,1,1) end
-	]]
-
 	local corner = CreateFrame("Frame", nil, frame)
 	corner:SetFrameLevel(frame:GetFrameLevel() + 9)
 	corner:EnableMouse(true)
 	corner:SetScript("OnMouseDown", handlers.Corner_OnMouseDown)
 	corner:SetScript("OnMouseUp", handlers.Corner_OnMouseUp)
-	--[[
-	corner:SetScript("OnEnter", handlers.Corner_OnEnter)
-	corner:SetScript("OnLeave", handlers.Corner_OnLeave)
-	]]
 	corner:SetHeight(12)
 	corner:SetWidth(12)
 	corner:SetPoint("BOTTOMRIGHT")
 	corner.t = corner:CreateTexture(nil,"ARTWORK")
 	corner.t:SetAllPoints(true)
 	corner.t:SetTexture("Interface\\Addons\\DXE\\Textures\\ResizeGrip.tga")
-	addon:AddTooltipText(corner,L["|cffffff00Click|r to resize"])
+	addon:AddTooltipText(corner,L["|cffffff00Click|r to scale"].."\n"..L["|cffffff00Shift + Click|r to resize"])
 	corner.anchor = anchor
 
 	-- Border
@@ -168,9 +171,6 @@ function addon:CreateWindow(name,width,height)
 	titleText:SetShadowOffset(1,-1)
 	titleText:SetShadowColor(0,0,0)
 	anchor.titleText = titleText
-
-	handlers.Button_OnLeave = handlers.Button_OnLeave or function(self) self.t:SetVertexColor(0.33,0.33,0.33) end
-	handlers.Button_OnEnter = handlers.Button_OnEnter or function(self) self.t:SetVertexColor(0,1,0) end
 
 	local close = CreateFrame("Button",nil,frame)
 	close:SetFrameLevel(close:GetFrameLevel()+5)
