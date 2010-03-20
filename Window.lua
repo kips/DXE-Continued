@@ -30,10 +30,12 @@ end
 addon:AddToRefreshProfile(RefreshProfile)
 
 ---------------------------------------
--- API
+-- PROTOTYPE
 ---------------------------------------
 
-local function AddTitleButton(self,texture,OnClick,text)
+local prototype = {}
+
+function prototype:AddTitleButton(texture,OnClick,text)
 	--@debug@
 	assert(type(texture) == "string")
 	assert(type(OnClick) == "function")
@@ -56,13 +58,13 @@ local function AddTitleButton(self,texture,OnClick,text)
 	self.anchorButton = button
 end
 
-local function SetContentInset(self,inset)
+function prototype:SetContentInset(inset)
 	self.content:ClearAllPoints()
 	self.content:SetPoint("TOPLEFT",self.container,"TOPLEFT",inset,-inset)
 	self.content:SetPoint("BOTTOMRIGHT",self.container,"BOTTOMRIGHT",-inset,inset)
 end
 
-local function SetTitle(self,text)
+function prototype:SetTitle(text)
 	self.titleText:SetText(text)
 end
 
@@ -161,7 +163,6 @@ function addon:CreateWindow(name,width,height)
 
 	local titleText = titleBar:CreateFontString(nil,"OVERLAY")
 	titleText:SetFont(GameFontNormal:GetFont(),8)
-	--addon:RegisterFontString(titleText,8)
 	titleText:SetPoint("LEFT",titleBar,"LEFT",5,0)
 	titleText:SetText(name)
 	titleText:SetShadowOffset(1,-1)
@@ -199,9 +200,7 @@ function addon:CreateWindow(name,width,height)
 	content:SetPoint("BOTTOMRIGHT",container,"BOTTOMRIGHT")
 	anchor.content = content
 
-	anchor.SetContentInset = SetContentInset
-	anchor.AddTitleButton = AddTitleButton
-	anchor.SetTitle = SetTitle
+	for k,v in pairs(prototype) do anchor[k] = v end
 
 	windows[anchor] = true
 
