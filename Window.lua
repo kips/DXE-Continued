@@ -233,6 +233,10 @@ function addon:CreateWindow(name,width,height)
 
 	windows[window] = true
 
+	self:RegisterDefaultScale(faux_window)
+	self:RegisterDefaultDimensions(window)
+	self:RegisterDefaultDimensions(faux_window)
+
 	self:LoadScale(faux_window:GetName())
 	self:LoadPosition(window:GetName())
 	self:LoadDimensions(window:GetName())

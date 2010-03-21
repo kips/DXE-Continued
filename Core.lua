@@ -1060,6 +1060,10 @@ do
 		frameNames[name] = true
 		f:SetScale(pfl.Scales[name] or 1)
 	end
+
+	function addon:RegisterDefaultScale(f)
+		defaults.profile.Scales[f:GetName()] = f:GetScale()
+	end
 end
 
 ---------------------------------------------
@@ -1097,6 +1101,13 @@ do
 			f:SetWidth(dims.width)
 			f:SetHeight(dims.height)
 		end
+	end
+
+	function addon:RegisterDefaultDimensions(f)
+		local dims = {}
+		dims.width = f:GetWidth()
+		dims.height = f:GetHeight()
+		defaults.profile.Dimensions[f:GetName()] = dims
 	end
 end
 
