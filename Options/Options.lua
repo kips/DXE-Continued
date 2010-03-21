@@ -1791,6 +1791,13 @@ local function InitializeOptions()
 							name = L.options["Auto Popup"],
 							desc = L.options["Automatically show the proximity window if the option is enabled in an encounter (Encounters > ... > Windows > Proximity)"],
 						},
+						AutoHide = {
+							type = "toggle",
+							order = 60,
+							width = "full",
+							name = L.options["Auto Hide"],
+							desc = L.options["Automatically hide the proximity window when an encounter is defeated"],
+						},
 						Invert = {
 							type = "toggle",
 							order = 75,

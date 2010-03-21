@@ -76,11 +76,17 @@ end
 --------------------------------------
 local rows
 
-local function SetSizesAndPoints()
+local function UpdateBars()
 	local content = window.content
 	local width = content:GetWidth()
 	local height = content:GetHeight()/rows
 	for i,bar in ipairs(bars) do
+		local r,g,b = bar.statusbar:GetStatusBarColor()
+		bar.statusbar:SetStatusBarColor(r,g,b,pfl.BarAlpha)
+		bar.name:SetFont(bar.name:GetFont(),pfl.NameFontSize)
+		bar.left:SetFont(bar.left:GetFont(),pfl.TimeFontSize)
+		bar.right:SetFont(bar.right:GetFont(),pfl.TimeFontSize * 2/3)
+
 		bar:SetWidth(width)
 		bar:SetHeight(height)
 		bar:SetPoint("TOP",content,"TOP",0,-(i-1)*height)
@@ -107,7 +113,7 @@ local function SetSizesAndPoints()
 	end
 end
 
-local function SetRows()
+local function UpdateRows()
 	for i=1,rows do
 		if not bars[i] then
 			bars[i] = GetBar()
@@ -236,7 +242,7 @@ local function CreateWindow()
 	window:SetContentInset(1)
 	local content = window.content
 
-	window:RegisterCallback("OnSizeChanged",SetSizesAndPoints)
+	window:RegisterCallback("OnSizeChanged",UpdateBars)
 
 	window:SetScript("OnUpdate",OnUpdate)
 	window:SetScript("OnShow",OnShow)
@@ -261,6 +267,10 @@ function addon:Proximity(popup,enc_range)
 	UpdateTitle()
 end
 
+function addon:HideProximity()
+	if window then window:Hide() end
+end
+
 addon:RegisterWindow(L["Proximity"],function() addon:Proximity() end)
 
 ---------------------------------------
@@ -270,22 +280,14 @@ addon:RegisterWindow(L["Proximity"],function() addon:Proximity() end)
 function addon:UpdateProximitySettings()
 	rows = pfl.Rows
 	range = pfl.Range
-	rangefunc = range <= 10 and ProximityFuncs[10] or (range <= 11 and ProximityFuncs[11] or ProximityFuncs[18])
-	if window then
-		UpdateTitle()
-		SetRows()
-		SetSizesAndPoints()
-	end
-
 	delay = pfl.Delay
 	invert = pfl.Invert
+	rangefunc = range <= 10 and ProximityFuncs[10] or (range <= 11 and ProximityFuncs[11] or ProximityFuncs[18])
 
-	for i,bar in ipairs(bars) do
-		local r,g,b = bar.statusbar:GetStatusBarColor()
-		bar.statusbar:SetStatusBarColor(r,g,b,pfl.BarAlpha)
-		bar.name:SetFont(bar.name:GetFont(),pfl.NameFontSize)
-		bar.left:SetFont(bar.left:GetFont(),pfl.TimeFontSize)
-		bar.right:SetFont(bar.right:GetFont(),pfl.TimeFontSize * 2/3)
+	if window then
+		UpdateTitle()
+		UpdateRows()
+		UpdateBars()
 	end
 end
 

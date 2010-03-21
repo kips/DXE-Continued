@@ -63,6 +63,7 @@ local defaults = {
 		},
 		Proximity = {
 			AutoPopup = true,
+			AutoHide = true,
 			BarAlpha = 0.4,
 			Range = 10,
 			Delay = 0.05,
@@ -487,6 +488,7 @@ do
 	function addon:TriggerDefeat()
 		self:StopEncounter()
 		PlaySoundFile(SM:Fetch("sound",pfl.Sounds.VICTORY))
+		if pfl.Proximity.AutoHide then self:HideProximity() end
 		--@debug@
 		debug("TriggerDefeat","key: %s",CE.key)
 		--@end-debug@
