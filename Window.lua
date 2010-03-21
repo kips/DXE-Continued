@@ -42,10 +42,10 @@ function prototype:AddTitleButton(texture,OnClick,text)
 	assert(type(text) == "string")
 	--@end-debug@
 
-	local button = CreateFrame("Button",nil,self.frame)
+	local button = CreateFrame("Button",nil,self.faux_window)
 	button:SetWidth(buttonSize)
 	button:SetHeight(buttonSize)
-	button:SetPoint("RIGHT",self.anchorButton,"LEFT")
+	button:SetPoint("RIGHT",self.lastbutton,"LEFT")
 	button:SetScript("OnClick",OnClick)
 	button:SetScript("OnEnter",handlers.Button_OnEnter)
 	button:SetScript("OnLeave",handlers.Button_OnLeave)
@@ -55,7 +55,7 @@ function prototype:AddTitleButton(texture,OnClick,text)
 	button.t:SetAllPoints(true)
 	button.t:SetTexture(texture)
 	addon:AddTooltipText(button,text)
-	self.anchorButton = button
+	self.lastbutton = button
 end
 
 function prototype:SetContentInset(inset)
@@ -65,29 +65,60 @@ function prototype:SetContentInset(inset)
 end
 
 function prototype:SetTitle(text)
-	self.titleText:SetText(text)
+	self.titletext:SetText(text)
+end
+
+function prototype:RegisterCallback(event,func)
+	self.callbacks[event] = func
+end
+
+function prototype:Fire(event)
+	if self.callbacks[event] then
+		self.callbacks[event]()
+	end
 end
 
 ---------------------------------------
 -- HANDLERS
 ---------------------------------------
+local handlers
 
-local handlers = {
-	Anchor_OnSizeChanged = function(self)
-		local width = self:GetWidth()
-		self:SetWidth(width)
-		self:SetHeight(width*self.ratio)
-		local s = width / self.owidth
-		self.frame:SetScale(s)
+handlers = {
+	Anchor_OnSizeChanged = function(self, width, height)
+		if self._sizing then
+			if IsShiftKeyDown() then
+				self.ratio = height / width
+
+				self.faux_window:SetWidth((width * self:GetEffectiveScale()) / self.faux_window:GetEffectiveScale())
+				self.faux_window:SetHeight((height * self:GetEffectiveScale()) / self.faux_window:GetEffectiveScale())
+
+				self:Fire("OnScaleChanged")
+			else
+				local h = width * self.ratio
+				self:SetHeight(h)
+				-- self.faux_window:GetEffectiveScale() doesn't work because this 
+				-- handler is called again by SetHeight, which then causes the 
+				-- calculated scale to become 1
+				local scale = (width * self:GetEffectiveScale()) / (self.faux_window:GetWidth() * UIParent:GetEffectiveScale())
+				self.faux_window:SetScale(scale)
+
+				self:Fire("OnSizeChanged")
+			end
+		end
 	end,
 
 	Corner_OnMouseDown = function(self)
-		self.anchor:StartSizing("BOTTOMRIGHT")
+		self.window._sizing = true
+		self.window:StartSizing("BOTTOMRIGHT")
 	end,
 
 	Corner_OnMouseUp = function(self)
-		self.anchor:StopMovingOrSizing()
-		addon:SavePosition(self.anchor,true)
+		self.window:StopMovingOrSizing()
+		self.window._sizing = nil
+		addon:SaveDimensions(self.window.faux_window)
+		addon:SaveScale(self.window.faux_window)
+		addon:SaveDimensions(self.window)
+		addon:SavePosition(self.window)
 	end,
 
 	Button_OnLeave = function(self)
@@ -112,27 +143,25 @@ function addon:CreateWindow(name,width,height)
 
 	local properName = name:gsub(" ","")
 
-	local anchor = CreateFrame("Frame","DXEWindow" ..properName,UIParent)
-	anchor:SetWidth(width)
-	anchor:SetHeight(height)
-	anchor:SetMovable(true)
-	anchor:SetClampedToScreen(true)
-	anchor:SetResizable(true)
-	anchor:SetMinResize(50,50)
-	anchor:SetScript("OnSizeChanged", handlers.Anchor_OnSizeChanged)
-	anchor.ratio = height/width
-	anchor.owidth = width
+	local window = CreateFrame("Frame","DXEWindow"..properName,UIParent)
+	window:SetWidth(width)
+	window:SetHeight(height)
+	window:SetMovable(true)
+	window:SetClampedToScreen(true)
+	window:SetResizable(true)
+	window:SetMinResize(50,50)
 
 	-- Inside
-	local frame = CreateFrame("Frame","DXEWindow" .. properName,anchor)
-	frame:SetWidth(width)
-	frame:SetHeight(height)
-	addon:RegisterBackground(frame)
-	frame:SetPoint("TOPLEFT")
-	anchor.frame = frame
+	-- Important: Make sure faux_window:GetEffectiveScale() == UIParent:GetEffectiveScale() on creation
+	local faux_window = CreateFrame("Frame","DXEWindow"..properName.."Frame",window)
+	faux_window:SetWidth(width)
+	faux_window:SetHeight(height)
+	addon:RegisterBackground(faux_window)
+	faux_window:SetPoint("TOPLEFT")
+	window.faux_window = faux_window
 
-	local corner = CreateFrame("Frame", nil, frame)
-	corner:SetFrameLevel(frame:GetFrameLevel() + 9)
+	local corner = CreateFrame("Frame", nil, faux_window)
+	corner:SetFrameLevel(faux_window:GetFrameLevel() + 9)
 	corner:EnableMouse(true)
 	corner:SetScript("OnMouseDown", handlers.Corner_OnMouseDown)
 	corner:SetScript("OnMouseUp", handlers.Corner_OnMouseUp)
@@ -143,38 +172,38 @@ function addon:CreateWindow(name,width,height)
 	corner.t:SetAllPoints(true)
 	corner.t:SetTexture("Interface\\Addons\\DXE\\Textures\\ResizeGrip.tga")
 	addon:AddTooltipText(corner,L["|cffffff00Click|r to scale"].."\n"..L["|cffffff00Shift + Click|r to resize"])
-	corner.anchor = anchor
+	corner.window = window
 
 	-- Border
-	local border = CreateFrame("Frame",nil,frame)
+	local border = CreateFrame("Frame",nil,faux_window)
 	border:SetAllPoints(true)
 	border:SetFrameLevel(border:GetFrameLevel()+10)
 	addon:RegisterBorder(border)
 
 	-- Title Bar
-	local titleBar = CreateFrame("Frame",nil,frame)
-	titleBar:SetPoint("TOPLEFT",frame,"TOPLEFT",titleBarInset,-titleBarInset)
-	titleBar:SetPoint("BOTTOMRIGHT",frame,"TOPRIGHT",-titleBarInset, -(titleHeight+titleBarInset))
-	titleBar:EnableMouse(true)
-	titleBar:SetMovable(true)
-	addon:AddTooltipText(titleBar,L["|cffffff00Shift + Click|r to move"])
-	self:RegisterMoveSaving(titleBar,"CENTER","UIParent","CENTER",0,0,true,anchor,true)
+	local titlebar = CreateFrame("Frame",nil,faux_window)
+	titlebar:SetPoint("TOPLEFT",faux_window,"TOPLEFT",titleBarInset,-titleBarInset)
+	titlebar:SetPoint("BOTTOMRIGHT",faux_window,"TOPRIGHT",-titleBarInset, -(titleHeight+titleBarInset))
+	titlebar:EnableMouse(true)
+	titlebar:SetMovable(true)
+	addon:AddTooltipText(titlebar,L["|cffffff00Shift + Click|r to move"])
+	self:RegisterMoveSaving(titlebar,"CENTER","UIParent","CENTER",0,0,true,window)
 
-	local gradient = titleBar:CreateTexture(nil,"ARTWORK")
+	local gradient = titlebar:CreateTexture(nil,"ARTWORK")
 	gradient:SetAllPoints(true)
-	anchor.gradient = gradient
+	window.gradient = gradient
 
-	local titleText = titleBar:CreateFontString(nil,"OVERLAY")
-	titleText:SetFont(GameFontNormal:GetFont(),8)
-	titleText:SetPoint("LEFT",titleBar,"LEFT",5,0)
-	titleText:SetText(name)
-	titleText:SetShadowOffset(1,-1)
-	titleText:SetShadowColor(0,0,0)
-	anchor.titleText = titleText
+	local titletext = titlebar:CreateFontString(nil,"OVERLAY")
+	titletext:SetFont(GameFontNormal:GetFont(),8)
+	titletext:SetPoint("LEFT",titlebar,"LEFT",5,0)
+	titletext:SetText(name)
+	titletext:SetShadowOffset(1,-1)
+	titletext:SetShadowColor(0,0,0)
+	window.titletext = titletext
 
-	local close = CreateFrame("Button",nil,frame)
+	local close = CreateFrame("Button",nil,faux_window)
 	close:SetFrameLevel(close:GetFrameLevel()+5)
-	close:SetScript("OnClick",function() anchor:Hide() end)
+	close:SetScript("OnClick",function() window:Hide() end)
 	close.t = close:CreateTexture(nil,"ARTWORK")
 	close.t:SetAllPoints(true)
 	close.t:SetTexture("Interface\\Addons\\DXE\\Textures\\Window\\X.tga")
@@ -184,31 +213,39 @@ function addon:CreateWindow(name,width,height)
 	addon:AddTooltipText(close,L["Close"])
 	close:SetWidth(buttonSize)
 	close:SetHeight(buttonSize)
-	close:SetPoint("RIGHT",titleBar,"RIGHT")
+	close:SetPoint("RIGHT",titlebar,"RIGHT")
 
-	anchor.anchorButton = close
+	window.lastbutton = close
 
 	-- Container
-	local container = CreateFrame("Frame",nil,frame)
-	container:SetPoint("TOPLEFT",frame,"TOPLEFT",1,-titleHeight-titleBarInset)
-	container:SetPoint("BOTTOMRIGHT",frame,"BOTTOMRIGHT",-1,1)
-	anchor.container = container
+	local container = CreateFrame("Frame",nil,faux_window)
+	container:SetPoint("TOPLEFT",faux_window,"TOPLEFT",1,-titleHeight-titleBarInset)
+	container:SetPoint("BOTTOMRIGHT",faux_window,"BOTTOMRIGHT",-1,1)
+	window.container = container
 
 	-- Content
 	local content = CreateFrame("Frame",nil,container)
 	content:SetPoint("TOPLEFT",container,"TOPLEFT")
 	content:SetPoint("BOTTOMRIGHT",container,"BOTTOMRIGHT")
-	anchor.content = content
+	window.content = content
 
-	for k,v in pairs(prototype) do anchor[k] = v end
+	for k,v in pairs(prototype) do window[k] = v end
 
-	windows[anchor] = true
+	windows[window] = true
 
-	self:LoadPosition(anchor:GetName())
+	self:LoadScale(faux_window:GetName())
+	self:LoadPosition(window:GetName())
+	self:LoadDimensions(window:GetName())
+	self:LoadDimensions(faux_window:GetName())
 
-	SkinWindow(anchor)
+	window.ratio = window:GetHeight() / window:GetWidth()
+	window:SetScript("OnSizeChanged", handlers.Anchor_OnSizeChanged)
 
-	return anchor
+	SkinWindow(window)
+
+	window.callbacks = {}
+
+	return window
 end
 
 function addon:CloseAllWindows()
