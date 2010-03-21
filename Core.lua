@@ -916,11 +916,13 @@ do
 
 	function addon:RefreshProfile()
 		pfl = db.profile
+		-- Has to go before pointers are refreshed
+		self:LoadAllScales()
+		self:LoadAllDimensions()
+
 		self:RefreshProfilePointers()
 		
 		self:LoadAllPositions()
-		self:LoadAllScales()
-		self:LoadAllDimensions()
 		self.Pane:SetScale(pfl.Pane.Scale)
 		self:LayoutHealthWatchers()
 		self:SkinPane()
@@ -1063,6 +1065,7 @@ do
 
 	function addon:RegisterDefaultScale(f)
 		defaults.profile.Scales[f:GetName()] = f:GetScale()
+		self:RefreshDefaults()
 	end
 end
 
@@ -1108,6 +1111,7 @@ do
 		dims.width = f:GetWidth()
 		dims.height = f:GetHeight()
 		defaults.profile.Dimensions[f:GetName()] = dims
+		self:RefreshDefaults()
 	end
 end
 
