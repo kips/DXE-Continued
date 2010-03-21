@@ -1561,7 +1561,7 @@ end
 
 do
 	local data = {
-		version = 52,
+		version = 53,
 		key = "lichking",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -1576,6 +1576,7 @@ do
 			tracing = {
 				36597, -- Lich King
 			},
+			defeat = 36597,
 		},
 		onstart = {
 			{
