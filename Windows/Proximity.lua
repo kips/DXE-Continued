@@ -203,7 +203,7 @@ do
 		for i=n+1,#bars do 
 			local bar = bars[i]
 			if pfl.Dummy then
-				bar.name:SetText("Abracadabra")
+				bar.name:SetText("Abracadabrah")
 				bar.icon:SetTexCoord(unpack(ICON_COORDS["WARRIOR"]))
 				local c = RAID_CLASS_COLORS["WARRIOR"]
 				bar.statusbar:SetStatusBarColor(c.r,c.g,c.b,pfl.BarAlpha)
