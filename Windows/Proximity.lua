@@ -4,20 +4,13 @@ local name_to_unit = addon.Roster.name_to_unit
 local name_to_class = addon.Roster.name_to_class
 
 local window
-
-local rows
-local bars = {}
-local bar_pool = {}
-
-local ProximityFuncs = addon:GetProximityFuncs()
 local pfl
-local range -- yds
-local invert
-local rangefunc -- proximity function
 
 ---------------------------------------
 -- BARS
 ---------------------------------------
+local bars = {}
+local bar_pool = {}
 
 local function Destroy(self)
 	self.destroyed = true
@@ -86,6 +79,7 @@ end
 ---------------------------------------
 -- SETTERS
 --------------------------------------
+local rows
 
 local function SetSizes()
 	local content = window.content
@@ -119,20 +113,16 @@ end
 ---------------------------------------
 -- WINDOW CREATION
 --------------------------------------
+local ProximityFuncs = addon:GetProximityFuncs()
+local range -- yds
+local invert
+local delay
+local rangefunc -- proximity function
 
-local function UpdateTitle()
-	window:SetTitle(format("%s - %d",L["Proximity"],range))
-end
+local OnUpdate
+local counter = 0
 
-local function CreateWindow()
-	window = addon:CreateWindow(L["Proximity"],110,100)
-	window:Hide()
-	window:SetContentInset(1)
-	local content = window.content
-
-	window:RegisterCallback("OnSizeChanged",SetSizes)
-
-
+do
 	local ICON_COORDS = {}
 	local e = 0.02
 	for class,coords in pairs(CLASS_ICON_TCOORDS) do
@@ -144,8 +134,8 @@ local function CreateWindow()
 	local CN = addon.CN
 	local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 	local floor = math.floor
-	local counter = 0
-	local function Execute(_,elapsed)
+
+	function OnUpdate(_,elapsed)
 		if delay > 0 then
 			counter = counter + elapsed
 			if counter < delay then return end
@@ -208,29 +198,48 @@ local function CreateWindow()
 			end
 		end
 	end
+end
 
+local function UpdateTitle()
+	window:SetTitle(format("%s - %d",L["Proximity"],range))
+end
 
-	local updater = CreateFrame("Frame",nil,window)
-	updater:SetScript("OnUpdate",Execute)
+local function OpenOptions()
+	addon:ToggleConfig()
+	if not addon.Options then return end
+	if LibStub("AceConfigDialog-3.0").OpenFrames.DXE then LibStub("AceConfigDialog-3.0"):SelectGroup("DXE","windows_group","proximity_group") end
+end
 
-	window:SetScript("OnShow",function(self) counter = 0 end)
+local function OnShow(self)
+	counter = 0
+end
 
-	window:SetScript("OnHide",function(self)
-		for i,bar in ipairs(bars) do bar:Destroy() end
-	end)
+local function OnHide(self)
+	for i,bar in ipairs(bars) do bar:Destroy() end
+end
 
-	local function options()
-		addon:ToggleConfig()
-		if not addon.Options then return end
-		if LibStub("AceConfigDialog-3.0").OpenFrames.DXE then LibStub("AceConfigDialog-3.0"):SelectGroup("DXE","windows_group","proximity_group") end
-	end
+local function CreateWindow()
+	window = addon:CreateWindow(L["Proximity"],110,100)
+	window:Hide()
+	window:SetContentInset(1)
+	local content = window.content
 
-	window:AddTitleButton("Interface\\AddOns\\DXE\\Textures\\Pane\\Menu.tga",options,L["Options"])
+	window:RegisterCallback("OnSizeChanged",SetSizes)
+
+	window:SetScript("OnUpdate",OnUpdate)
+	window:SetScript("OnShow",OnShow)
+	window:SetScript("OnHide",OnHide)
+
+	window:AddTitleButton("Interface\\AddOns\\DXE\\Textures\\Pane\\Menu.tga",OpenOptions,L["Options"])
 	addon:UpdateProximitySettings()
 
 	window:Show()
 	CreateWindow = nil
 end
+
+---------------------------------------
+-- API
+---------------------------------------
 
 function addon:Proximity(popup,enc_range)
 	if popup and not pfl.Proximity.AutoPopup then return end
