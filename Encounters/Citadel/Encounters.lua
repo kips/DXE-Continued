@@ -2568,7 +2568,7 @@ end
 
 do
 	local data = {
-		version = 35,
+		version = 36,
 		key = "putricide",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -2761,6 +2761,15 @@ do
 				sound = "ALERT8",
 				icon = ST[72463],
 			},
+			mutatedcd = {
+				varname = format(L.alert["%s Cooldown"],SN[72463]),
+				type = "dropdown",
+				text = format(L.alert["%s Cooldown"],SN[72463]),
+				time = 10,
+				flashtime = 10,
+				color1 = "RED",
+				icon = ST[72463],
+			},
 			puddlecd = {
 				varname = format(L.alert["%s Cooldown"],SN[70343]),
 				type = "dropdown",
@@ -2928,12 +2937,16 @@ do
 					{
 						"expect",{"#4#","==","&playerguid&"},
 						"set",{mutatedtext = format("%s: %s!",SN[72463],L.alert["YOU"])},
+						"quash","mutatedcd",
 						"alert","mutatedwarn",
+						"alert","mutatedcd",
 					},
 					{
 						"expect",{"#4#","~=","&playerguid&"},
 						"set",{mutatedtext = format("%s: #5#!",SN[72463])},
+						"quash","mutatedcd",
 						"alert","mutatedwarn",
+						"alert","mutatedcd",
 					},
 				},
 			},
@@ -2950,12 +2963,16 @@ do
 					{
 						"expect",{"#4#","==","&playerguid&"},
 						"set",{mutatedtext = format("%s: %s! %s!",SN[72463],L.alert["YOU"],format(L.alert["%s Stacks"],"#11#"))},
+						"quash","mutatedcd",
 						"alert","mutatedwarn",
+						"alert","mutatedcd",
 					},
 					{
 						"expect",{"#4#","~=","&playerguid&"},
 						"set",{mutatedtext = format("%s: #5#! %s!",SN[72463],format(L.alert["%s Stacks"],"#11#")) },
+						"quash","mutatedcd",
 						"alert","mutatedwarn",
+						"alert","mutatedcd",
 					},
 				},
 			},
