@@ -30,6 +30,8 @@ local defaults = {
 	profile = {
 		Enabled = true,
 		Positions = {},
+		Dimensions = {},
+		Scales = {},
 		Encounters = {},
 		Globals = {
 			BarTexture = "Blizzard",
@@ -915,6 +917,8 @@ do
 		self:RefreshProfilePointers()
 		
 		self:LoadAllPositions()
+		self:LoadAllScales()
+		self:LoadAllDimensions()
 		self.Pane:SetScale(pfl.Pane.Scale)
 		self:LayoutHealthWatchers()
 		self:SkinPane()
@@ -1031,13 +1035,77 @@ function addon:RefreshDefaults()
 end
 
 ---------------------------------------------
--- POSITIONING + DIMENSIONS
+-- SCALES
 ---------------------------------------------
 
 do
 	local frameNames = {}
 
-	function addon:SavePosition(f,dims)
+	function addon:SaveScale(f)
+		pfl.Scales[f:GetName()] = f:GetScale()
+	end
+
+	-- Used after the profile is changed
+	function addon:LoadAllScales()
+		for name in pairs(frameNames) do
+			self:LoadScale(name)
+		end
+	end
+
+	function addon:LoadScale(name)
+		local f = _G[name]
+		if not f then return end
+		frameNames[name] = true
+		f:SetScale(pfl.Scales[name] or 1)
+	end
+end
+
+---------------------------------------------
+-- DIMENSIONS
+---------------------------------------------
+
+do
+	local frameNames = {}
+
+	function addon:SaveDimensions(f)
+		local name = f:GetName()
+		local dims = pfl.Dimensions[name]
+		dims.width = f:GetWidth()
+		dims.height = f:GetHeight()
+	end
+
+	-- Used after the profile is changed
+	function addon:LoadAllDimensions()
+		for name in pairs(frameNames) do
+			self:LoadDimensions(name)
+		end
+	end
+
+	function addon:LoadDimensions(name)
+		local f = _G[name]
+		if not f then return end
+		frameNames[name] = true
+		local dims = pfl.Dimensions[name]
+		if not dims then
+			pfl.Dimensions[name] = {
+				width = f:GetWidth(),
+				height = f:GetHeight(),
+			}
+		else
+			f:SetWidth(dims.width)
+			f:SetHeight(dims.height)
+		end
+	end
+end
+
+---------------------------------------------
+-- POSITIONING
+---------------------------------------------
+
+do
+	local frameNames = {}
+
+	function addon:SavePosition(f)
 		local point, relativeTo, relativePoint, xOfs, yOfs = f:GetPoint()
 		local name = f:GetName()
 		local pos = pfl.Positions[name]
@@ -1046,10 +1114,6 @@ do
 		pos.relativePoint = relativePoint
 		pos.xOfs = xOfs
 		pos.yOfs = yOfs
-		if dims then
-			pos.width = f:GetWidth()
-			pos.height = f:GetHeight()
-		end
 		f:SetUserPlaced(false)
 	end
 
@@ -1077,10 +1141,6 @@ do
 			}
 		else
 			f:SetPoint(pos.point,_G[pos.relativeTo] or UIParent,pos.relativePoint,pos.xOfs,pos.yOfs)
-			if pos.width and pos.height then
-				f:SetWidth(pos.width)
-				f:SetHeight(pos.height)
-			end
 		end
 	end
 
@@ -1105,15 +1165,15 @@ do
 	local function StopMoving(self)
 		if self.__redirect then
 			self.__redirect:StopMovingOrSizing()
-			addon:SavePosition(self.__redirect,self.__dims)
+			addon:SavePosition(self.__redirect)
 		else
 			self:StopMovingOrSizing()
-			addon:SavePosition(self,self.__dims)
+			addon:SavePosition(self)
 		end
 	end
 
 	-- Registers saving positions in database
-	function addon:RegisterMoveSaving(frame,point,relativeTo,relativePoint,xOfs,yOfs,withShift,redirect,dims)
+	function addon:RegisterMoveSaving(frame,point,relativeTo,relativePoint,xOfs,yOfs,withShift,redirect)
 		--@debug@
 		assert(type(frame) == "table","expected 'frame' to be a table")
 		assert(frame.IsObjectType and frame:IsObjectType("Region"),"'frame' is not a blizzard frame")
@@ -1123,7 +1183,6 @@ do
 		end
 		--@end-debug@
 		frame.__redirect = redirect
-		frame.__dims = dims
 		if withShift then
 			frame:SetScript("OnMouseDown",StartMovingShift)
 		else
@@ -1139,11 +1198,6 @@ do
 			xOfs = xOfs,
 			yOfs = yOfs,
 		}
-
-		if dims then
-			pos.width = redirect and redirect:GetWidth() or frame:GetWidth()
-			pos.height = redirect and redirect:GetHeight() or frame:GetHeight()
-		end
 
 		defaults.profile.Positions[redirect and redirect:GetName() or frame:GetName()] = pos
 		self:RefreshDefaults()
