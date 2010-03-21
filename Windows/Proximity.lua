@@ -37,7 +37,6 @@ local function CreateBar()
 	bar.statusbar = statusbar
 
 	local name = statusbar:CreateFontString(nil,"ARTWORK")
-	name:SetPoint("CENTER",-10,0)
 	name:SetShadowOffset(1,-1)
 	addon:RegisterFontString(name,pfl.NameFontSize)
 	bar.name = name
@@ -47,7 +46,6 @@ local function CreateBar()
 	--         left  right
 
 	local left = statusbar:CreateFontString(nil,"ARTWORK")
-	left:SetPoint("RIGHT",-12,0)
 	left:SetShadowOffset(1,-1)
 	addon:RegisterFontString(left,pfl.TimeFontSize)
 	bar.left = left
@@ -78,7 +76,7 @@ end
 --------------------------------------
 local rows
 
-local function SetSizes()
+local function SetSizesAndPoints()
 	local content = window.content
 	local width = content:GetWidth()
 	local height = content:GetHeight()/rows
@@ -89,6 +87,11 @@ local function SetSizes()
 		bar.icon:SetWidth(height-2)
 		bar.icon:SetHeight(height-2)
 		bar.statusbar:SetHeight(height-2)
+
+		bar.name:ClearAllPoints()
+		bar.name:SetPoint("CENTER",pfl.NameOffset,0)
+		bar.left:ClearAllPoints()
+		bar.left:SetPoint("RIGHT",pfl.TimeOffset,0)
 
 		bar.icon:ClearAllPoints()
 		bar.statusbar:ClearAllPoints()
@@ -233,7 +236,7 @@ local function CreateWindow()
 	window:SetContentInset(1)
 	local content = window.content
 
-	window:RegisterCallback("OnSizeChanged",SetSizes)
+	window:RegisterCallback("OnSizeChanged",SetSizesAndPoints)
 
 	window:SetScript("OnUpdate",OnUpdate)
 	window:SetScript("OnShow",OnShow)
@@ -271,7 +274,7 @@ function addon:UpdateProximitySettings()
 	if window then
 		UpdateTitle()
 		SetRows()
-		SetSizes()
+		SetSizesAndPoints()
 	end
 
 	delay = pfl.Delay

@@ -70,8 +70,10 @@ local defaults = {
 			Invert = false,
 			Dummy = false,
 			Rows = 5,
-			TimeFontSize = 9,
 			NameFontSize = 10,
+			TimeFontSize = 9,
+			NameOffset = -10,
+			TimeOffset = -12,
 			IconPosition = "LEFT",
 		},
 		Sounds = {
