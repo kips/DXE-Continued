@@ -42,7 +42,7 @@ local function CreateWindow()
 	window:Hide()
 	window:SetContentInset(1)
 	local content = window.content
-	local w,h = content:GetWidth(),content:GetHeight()/rows
+	--local w,h = content:GetWidth(),content:GetHeight()/rows
 
 	local function Destroy(self)
 		self.destroyed = true
@@ -55,21 +55,31 @@ local function CreateWindow()
 		self.bar:SetValue(1)
 	end
 
+	local function SetSizes()
+		local width = content:GetWidth()
+		local height = content:GetHeight()/rows
+		for i,label in ipairs(labels) do
+			label:SetWidth(width)
+			label:SetHeight(height)
+			label:SetPoint("TOP",content,"TOP",0,-(i-1)*height)
+			label.icon:SetWidth(height-2)
+			label.icon:SetHeight(height-2)
+			label.bar:SetHeight(height-2)
+		end
+	end
+
+	window:RegisterCallback("OnSizeChanged",SetSizes)
+
 	for i=1,rows do
 		local label = CreateFrame("Frame",nil,content)
 		label:Hide()
-		label:SetWidth(w); label:SetHeight(h)
-		label:SetPoint("TOP",content,"TOP",0,-(i-1)*h)
 
 		local icon = label:CreateTexture(nil,"ARTWORK")
 		icon:SetTexture("Interface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes")
-		icon:SetWidth(h-2)
-		icon:SetHeight(h-2)
 		icon:SetPoint("LEFT",label,"LEFT",2,0)
 		label.icon = icon
 
 		local bar = CreateFrame("StatusBar",nil,label)
-		bar:SetHeight(h-2)
 		bar:SetMinMaxValues(0,1)
 		bar:SetPoint("LEFT",icon,"RIGHT")
 		bar:SetPoint("RIGHT",label,"RIGHT")
@@ -81,6 +91,10 @@ local function CreateWindow()
 		name:SetShadowOffset(1,-1)
 		addon:RegisterFontString(name,10)
 		label.name = name
+
+		-- format "%d".."%02d"
+		--         ^     ^
+		--         left  right
 
 		local left = bar:CreateFontString(nil,"ARTWORK")
 		left:SetPoint("RIGHT",-12,0)
@@ -97,6 +111,8 @@ local function CreateWindow()
 		label.Destroy = Destroy
 		labels[i] = label
 	end
+
+	SetSizes()
 
 	local ICON_COORDS = {}
 	local e = 0.02

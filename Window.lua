@@ -92,7 +92,7 @@ handlers = {
 				self.faux_window:SetWidth((width * self:GetEffectiveScale()) / self.faux_window:GetEffectiveScale())
 				self.faux_window:SetHeight((height * self:GetEffectiveScale()) / self.faux_window:GetEffectiveScale())
 
-				self:Fire("OnScaleChanged")
+				self:Fire("OnSizeChanged")
 			else
 				local h = width * self.ratio
 				self:SetHeight(h)
@@ -102,7 +102,7 @@ handlers = {
 				local scale = (width * self:GetEffectiveScale()) / (self.faux_window:GetWidth() * UIParent:GetEffectiveScale())
 				self.faux_window:SetScale(scale)
 
-				self:Fire("OnSizeChanged")
+				self:Fire("OnScaleChanged")
 			end
 		end
 	end,
