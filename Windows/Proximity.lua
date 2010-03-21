@@ -175,7 +175,18 @@ local function CreateWindow()
 		end
 		for i=n+1,#labels do 
 			local label = labels[i]
-			if not label.destroyed then label:Destroy() end
+			if pfl.Proximity.Dummy then
+				label.name:SetText("DUMMY")
+				label.icon:SetTexCoord(unpack(ICON_COORDS["WARRIOR"]))
+				local c = RAID_CLASS_COLORS["WARRIOR"]
+				label.bar:SetStatusBarColor(c.r,c.g,c.b,pfl.Proximity.BarAlpha)
+				label.destroyed = nil
+				label.left:SetFormattedText("%d",15)
+				label.right:SetFormattedText("%02d",75)
+				label:Show()
+			else
+				if not label.destroyed then label:Destroy() end
+			end
 		end
 	end
 

@@ -68,6 +68,8 @@ local defaults = {
 			Delay = 0.05,
 			ClassFilter = {['*'] = true},
 			Invert = false,
+			Dummy = false,
+			Rows = 5,
 		},
 		Sounds = {
 			ALERT1 = "Bell Toll Alliance",

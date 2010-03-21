@@ -1785,6 +1785,20 @@ local function InitializeOptions()
 					name = L.options["Auto Popup"],
 					desc = L.options["Automatically show the proximity window if the option is enabled in an encounter (Encounters > ... > Windows > Proximity)"],
 				},
+				Invert = {
+					type = "toggle",
+					order = 75,
+					width = "full",
+					name = L.options["Invert Bars"],
+					desc = L.options["Inverts all range bars"],
+				},
+				Dummy = {
+					type = "toggle",
+					order = 80,
+					width = "full",
+					name = L.options["Dummy Bars"],
+					desc = L.options["Displays dummy bars that can be useful for configuration"],
+				},
 				Range = {
 					type = "range",
 					order = 100,
