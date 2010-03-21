@@ -78,6 +78,10 @@ function prototype:Fire(event)
 	end
 end
 
+function prototype:DisableResizing()
+	self.__noresizing = true
+end
+
 ---------------------------------------
 -- HANDLERS
 ---------------------------------------
@@ -86,7 +90,7 @@ local handlers
 handlers = {
 	Anchor_OnSizeChanged = function(self, width, height)
 		if self._sizing then
-			if IsShiftKeyDown() then
+			if not self.__noresizing and IsShiftKeyDown() then
 				self.ratio = height / width
 
 				self.faux_window:SetWidth((width * self:GetEffectiveScale()) / self.faux_window:GetEffectiveScale())

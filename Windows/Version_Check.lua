@@ -279,6 +279,7 @@ local function CreateWindow()
 	end)
 
 	window.OnRefreshVersionList = OnRefreshVersionList
+	window:DisableResizing()
 	addon.RegisterCallback(window,"OnRefreshVersionList")
 	addon:RefreshVersionList()
 	UpdateScroll()
