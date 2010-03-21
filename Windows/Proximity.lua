@@ -5,114 +5,133 @@ local name_to_class = addon.Roster.name_to_class
 
 local window
 
-local rows = 5
-local labels = {}
+local rows
+local bars = {}
+local bar_pool = {}
 
 local ProximityFuncs = addon:GetProximityFuncs()
 local pfl
-local range
+local range -- yds
 local invert
-local proxFunc
+local rangefunc -- proximity function
+
+---------------------------------------
+-- BARS
+---------------------------------------
+
+local function Destroy(self)
+	self.destroyed = true
+	self:Hide()
+	self.curr = nil
+	self.lastd = nil
+	self.dblank = true
+	self.left:SetText("")
+	self.right:SetText("")
+	self.statusbar:SetValue(1)
+end
+
+local function CreateBar()
+	local bar = CreateFrame("Frame",nil,window.content)
+	bar:Hide()
+
+	local icon = bar:CreateTexture(nil,"ARTWORK")
+	icon:SetTexture("Interface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes")
+	icon:SetPoint("LEFT",bar,"LEFT",2,0)
+	bar.icon = icon
+
+	local statusbar = CreateFrame("StatusBar",nil,bar)
+	statusbar:SetMinMaxValues(0,1)
+	statusbar:SetPoint("LEFT",icon,"RIGHT")
+	statusbar:SetPoint("RIGHT",bar,"RIGHT")
+	addon:RegisterStatusBar(statusbar)
+	bar.statusbar = statusbar
+
+	local name = statusbar:CreateFontString(nil,"ARTWORK")
+	name:SetAllPoints(bar)
+	name:SetShadowOffset(1,-1)
+	addon:RegisterFontString(name,10)
+	bar.name = name
+
+	-- format "%d".."%02d"
+	--         ^     ^
+	--         left  right
+
+	local left = statusbar:CreateFontString(nil,"ARTWORK")
+	left:SetPoint("RIGHT",-12,0)
+	left:SetShadowOffset(1,-1)
+	addon:RegisterFontString(left,9)
+	bar.left = left
+
+	local right = statusbar:CreateFontString(nil,"ARTWORK")
+	right:SetPoint("BOTTOMLEFT",left,"BOTTOMRIGHT")
+	right:SetShadowOffset(1,-1)
+	addon:RegisterFontString(right,6)
+	bar.right = right
+
+	bar.Destroy = Destroy
+
+	return bar
+end
+
+local function GetBar()
+	local bar = next(bar_pool)
+	if not bar then
+		return CreateBar()
+	else
+		bar_pool[bar] = nil
+		return bar
+	end
+end
+
+---------------------------------------
+-- SETTERS
+--------------------------------------
+
+local function SetSizes()
+	local content = window.content
+	local width = content:GetWidth()
+	local height = content:GetHeight()/rows
+	for i,bar in ipairs(bars) do
+		bar:SetWidth(width)
+		bar:SetHeight(height)
+		bar:SetPoint("TOP",content,"TOP",0,-(i-1)*height)
+		bar.icon:SetWidth(height-2)
+		bar.icon:SetHeight(height-2)
+		bar.statusbar:SetHeight(height-2)
+	end
+end
+
+local function SetRows()
+	for i=1,rows do
+		if not bars[i] then
+			bars[i] = GetBar()
+		end
+	end
+
+	for i=rows+1,#bars do
+		local bar = bars[i]
+		bar:Destroy()
+		bar_pool[bar] = true
+		bars[i] = nil
+	end
+end
+
+---------------------------------------
+-- WINDOW CREATION
+--------------------------------------
 
 local function UpdateTitle()
 	window:SetTitle(format("%s - %d",L["Proximity"],range))
 end
-
-function addon:UpdateProximitySettings()
-	range = pfl.Proximity.Range
-	proxFunc = range <= 10 and ProximityFuncs[10] or (range <= 11 and ProximityFuncs[11] or ProximityFuncs[18])
-	if window then UpdateTitle() end
-	delay = pfl.Proximity.Delay
-	invert = pfl.Proximity.Invert
-
-	for i,label in ipairs(labels) do
-		local r,g,b = label.bar:GetStatusBarColor()
-		label.bar:SetStatusBarColor(r,g,b,pfl.Proximity.BarAlpha)
-	end
-end
-
-local function RefreshProfile(db) 
-	pfl = db.profile 
-	addon:UpdateProximitySettings()
-end
-addon:AddToRefreshProfile(RefreshProfile)
 
 local function CreateWindow()
 	window = addon:CreateWindow(L["Proximity"],110,100)
 	window:Hide()
 	window:SetContentInset(1)
 	local content = window.content
-	--local w,h = content:GetWidth(),content:GetHeight()/rows
-
-	local function Destroy(self)
-		self.destroyed = true
-		self:Hide()
-		self.curr = nil
-		self.lastd = nil
-		self.dblank = true
-		self.left:SetText("")
-		self.right:SetText("")
-		self.bar:SetValue(1)
-	end
-
-	local function SetSizes()
-		local width = content:GetWidth()
-		local height = content:GetHeight()/rows
-		for i,label in ipairs(labels) do
-			label:SetWidth(width)
-			label:SetHeight(height)
-			label:SetPoint("TOP",content,"TOP",0,-(i-1)*height)
-			label.icon:SetWidth(height-2)
-			label.icon:SetHeight(height-2)
-			label.bar:SetHeight(height-2)
-		end
-	end
 
 	window:RegisterCallback("OnSizeChanged",SetSizes)
 
-	for i=1,rows do
-		local label = CreateFrame("Frame",nil,content)
-		label:Hide()
-
-		local icon = label:CreateTexture(nil,"ARTWORK")
-		icon:SetTexture("Interface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes")
-		icon:SetPoint("LEFT",label,"LEFT",2,0)
-		label.icon = icon
-
-		local bar = CreateFrame("StatusBar",nil,label)
-		bar:SetMinMaxValues(0,1)
-		bar:SetPoint("LEFT",icon,"RIGHT")
-		bar:SetPoint("RIGHT",label,"RIGHT")
-		addon:RegisterStatusBar(bar)
-		label.bar = bar
-
-		local name = bar:CreateFontString(nil,"ARTWORK")
-		name:SetAllPoints(label)
-		name:SetShadowOffset(1,-1)
-		addon:RegisterFontString(name,10)
-		label.name = name
-
-		-- format "%d".."%02d"
-		--         ^     ^
-		--         left  right
-
-		local left = bar:CreateFontString(nil,"ARTWORK")
-		left:SetPoint("RIGHT",-12,0)
-		left:SetShadowOffset(1,-1)
-		addon:RegisterFontString(left,9)
-		label.left = left
-
-		local right = bar:CreateFontString(nil,"ARTWORK")
-		right:SetPoint("BOTTOMLEFT",left,"BOTTOMRIGHT")
-		right:SetShadowOffset(1,-1)
-		addon:RegisterFontString(right,6)
-		label.right = right
-
-		label.Destroy = Destroy
-		labels[i] = label
-	end
-
-	SetSizes()
 
 	local ICON_COORDS = {}
 	local e = 0.02
@@ -134,80 +153,80 @@ local function CreateWindow()
 		counter = 0
 		local n = 0
 		for name in pairs(name_to_unit) do
-			-- Use CheckInteractDistance (proxFunc) to take the z-axis into account
+			-- Use CheckInteractDistance (rangefunc) to take the z-axis into account
 			local class = name_to_class[name]
-			if name ~= addon.PNAME and proxFunc(name) and pfl.Proximity.ClassFilter[class] then
+			if name ~= addon.PNAME and rangefunc(name) and pfl.Proximity.ClassFilter[class] then
 				local d = addon:GetDistanceToUnit(name)
 				local flag = true
 				if d and d > range then flag = false end
 				if flag then
 					n = n + 1
-					local label = labels[n]
-					if not label then break
-					elseif label.curr ~= name then
-						label.curr = name
-						label.name:SetText(CN[name])
-						label.icon:SetTexCoord(unpack(ICON_COORDS[class]))
+					local bar = bars[n]
+					if not bar then break
+					elseif bar.curr ~= name then
+						bar.curr = name
+						bar.name:SetText(CN[name])
+						bar.icon:SetTexCoord(unpack(ICON_COORDS[class]))
 						local c = RAID_CLASS_COLORS[class]
-						label.bar:SetStatusBarColor(c.r,c.g,c.b,pfl.Proximity.BarAlpha)
-						label.destroyed = nil
-						label:Show()
+						bar.statusbar:SetStatusBarColor(c.r,c.g,c.b,pfl.Proximity.BarAlpha)
+						bar.destroyed = nil
+						bar:Show()
 					end
 					if d then
-						if d ~= label.lastd then
+						if d ~= bar.lastd then
 							local perc = d / range
-							label.bar:SetValue(invert and (1-perc) or perc)
+							bar.statusbar:SetValue(invert and (1-perc) or perc)
 							local sec = floor(d)
-							label.left:SetFormattedText("%d",sec)
-							label.right:SetFormattedText("%02d",100*(d - sec))
-							label.dblank = nil
-							label.lastd = d
+							bar.left:SetFormattedText("%d",sec)
+							bar.right:SetFormattedText("%02d",100*(d - sec))
+							bar.dblank = nil
+							bar.lastd = d
 						end
-					elseif not label.dblank then 
-						label.left:SetText("")
-						label.right:SetText("")
-						label.bar:SetValue(1)
-						label.dblank = true 
-						label.lastd = nil
+					elseif not bar.dblank then 
+						bar.left:SetText("")
+						bar.right:SetText("")
+						bar.statusbar:SetValue(1)
+						bar.dblank = true 
+						bar.lastd = nil
 					end
 				end
 			end
 		end
-		for i=n+1,#labels do 
-			local label = labels[i]
+		for i=n+1,#bars do 
+			local bar = bars[i]
 			if pfl.Proximity.Dummy then
-				label.name:SetText("DUMMY")
-				label.icon:SetTexCoord(unpack(ICON_COORDS["WARRIOR"]))
+				bar.name:SetText("DUMMY")
+				bar.icon:SetTexCoord(unpack(ICON_COORDS["WARRIOR"]))
 				local c = RAID_CLASS_COLORS["WARRIOR"]
-				label.bar:SetStatusBarColor(c.r,c.g,c.b,pfl.Proximity.BarAlpha)
-				label.destroyed = nil
-				label.left:SetFormattedText("%d",15)
-				label.right:SetFormattedText("%02d",75)
-				label:Show()
+				bar.statusbar:SetStatusBarColor(c.r,c.g,c.b,pfl.Proximity.BarAlpha)
+				bar.destroyed = nil
+				bar.left:SetFormattedText("%d",15)
+				bar.right:SetFormattedText("%02d",75)
+				bar:Show()
 			else
-				if not label.destroyed then label:Destroy() end
+				if not bar.destroyed then bar:Destroy() end
 			end
 		end
 	end
 
-	local updateFrame = CreateFrame("Frame",nil,window)
-	updateFrame:SetScript("OnUpdate",Execute)
+
+	local updater = CreateFrame("Frame",nil,window)
+	updater:SetScript("OnUpdate",Execute)
 
 	window:SetScript("OnShow",function(self) counter = 0 end)
 
 	window:SetScript("OnHide",function(self)
-		for i,label in ipairs(labels) do label:Destroy() end
+		for i,bar in ipairs(bars) do bar:Destroy() end
 	end)
 
-	local function optionsFunc()
+	local function options()
 		addon:ToggleConfig()
 		if not addon.Options then return end
 		if LibStub("AceConfigDialog-3.0").OpenFrames.DXE then LibStub("AceConfigDialog-3.0"):SelectGroup("DXE","windows_group","proximity_group") end
 	end
 
+	window:AddTitleButton("Interface\\AddOns\\DXE\\Textures\\Pane\\Menu.tga",options,L["Options"])
 	addon:UpdateProximitySettings()
-	
-	window:AddTitleButton("Interface\\AddOns\\DXE\\Textures\\Pane\\Menu.tga",optionsFunc,L["Options"])
 
 	window:Show()
 	CreateWindow = nil
@@ -222,3 +241,32 @@ function addon:Proximity(popup,enc_range)
 end
 
 addon:RegisterWindow(L["Proximity"],function() addon:Proximity() end)
+
+---------------------------------------
+-- SETTINGS
+---------------------------------------
+
+function addon:UpdateProximitySettings()
+	rows = pfl.Proximity.Rows
+	range = pfl.Proximity.Range
+	rangefunc = range <= 10 and ProximityFuncs[10] or (range <= 11 and ProximityFuncs[11] or ProximityFuncs[18])
+	if window then
+		UpdateTitle()
+		SetRows()
+		SetSizes()
+	end
+
+	delay = pfl.Proximity.Delay
+	invert = pfl.Proximity.Invert
+
+	for i,bar in ipairs(bars) do
+		local r,g,b = bar.statusbar:GetStatusBarColor()
+		bar.statusbar:SetStatusBarColor(r,g,b,pfl.Proximity.BarAlpha)
+	end
+end
+
+local function RefreshProfile(db)
+	pfl = db.profile
+	addon:UpdateProximitySettings()
+end
+addon:AddToRefreshProfile(RefreshProfile)

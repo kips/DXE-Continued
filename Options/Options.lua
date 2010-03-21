@@ -1826,11 +1826,14 @@ local function InitializeOptions()
 					max = 1,
 					step = 0.1,
 				},
-				Invert = {
-					type = "toggle",
-					order = 275,
-					name = L.options["Invert Bars"],
-					desc = L.options["Inverts all range bars"],
+				Rows = {
+					type = "range",
+					order = 260,
+					name = L.options["Rows"],
+					desc = L.options["The number of bars to show"],
+					min = 1,
+					max = 15,
+					step = 1,
 				},
 				ClassFilter = {
 					type = "multiselect",
