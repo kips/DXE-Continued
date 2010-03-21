@@ -70,6 +70,9 @@ local defaults = {
 			Invert = false,
 			Dummy = false,
 			Rows = 5,
+			TimeFontSize = 9,
+			NameFontSize = 10,
+			IconPosition = "LEFT",
 		},
 		Sounds = {
 			ALERT1 = "Bell Toll Alliance",
