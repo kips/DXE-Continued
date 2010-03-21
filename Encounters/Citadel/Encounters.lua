@@ -7,7 +7,7 @@ local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 do
 	-- TODO: Empowered Shock cooldown for 10, 25, and 10h
 	local data = {
-		version = 20,
+		version = 21,
 		key = "bloodprincecouncil",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -34,11 +34,8 @@ do
 				"boss2",
 				"boss1",
 			},
-			defeat = {
-				37970, -- Valanar
-				37972, -- Keleseth
-				37973, -- Taldaram
-			},
+			-- They despawn instead of triggering a UNIT_DIED
+			defeat = L.chat_citadel["^My queen, they"],
 		},
 		userdata = {
 			invocationtime = {33,46.5,loop = false, type = "series"},
