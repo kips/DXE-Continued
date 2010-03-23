@@ -1558,7 +1558,7 @@ end
 
 do
 	local data = {
-		version = 53,
+		version = 54,
 		key = "lichking",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -1853,6 +1853,15 @@ do
 				icon = ST[73539],
 				flashscreen = true,
 			},
+			massrescd = {
+				varname = format(L.alert["%s Timer"],SN[72429]),
+				type = "centerpopup",
+				text = SN[72429],
+				time = 157.1,
+				flashtime = 20,
+				color1 = "MIDGREY",
+				icon = ST[72429],
+			},
 		},
 		announces = {
 			defilesay = {
@@ -1997,6 +2006,23 @@ do
 						"alert","enragecd",
 						"alert","infestcd",
 						"alert","necroplaguecd",
+					},
+				},
+			},
+			-- Fury of Frostmourne
+			{
+				type = "combatevent",
+				eventtype = "SPELL_CAST_START",
+				spellid = 72350,
+				execute = {
+					{
+						"quash","vilespiritcd",
+						"quash","harvestsoulcd",
+						"quash","infestcd",
+						"quash","defilecd",
+						"quash","soulreapercd",
+						"quash","enragecd",
+						"alert","massrescd",
 					},
 				},
 			},
