@@ -1892,6 +1892,17 @@ local function InitializeOptions()
 							max = 175,
 							step = 1,
 						},
+						NameAlignment = {
+							order = 2.3,
+							type = "select",
+							name = L.options["Name Alignment"],
+							desc = L.options["The text alignment of the name text"],
+							values = {
+								LEFT = L.options["Left"],
+								CENTER = L.options["Center"],
+								RIGHT = L.options["Right"],
+							},
+						},
 						blank = genblank(2.5),
 						TimeFontSize = {
 							order = 3,

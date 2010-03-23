@@ -95,7 +95,7 @@ local function UpdateBars()
 		bar.statusbar:SetHeight(height-2)
 
 		bar.name:ClearAllPoints()
-		bar.name:SetPoint("CENTER",pfl.NameOffset,0)
+		bar.name:SetPoint(pfl.NameAlignment,pfl.NameOffset,0)
 		bar.left:ClearAllPoints()
 		bar.left:SetPoint("RIGHT",pfl.TimeOffset,0)
 

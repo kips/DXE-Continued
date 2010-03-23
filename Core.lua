@@ -74,6 +74,7 @@ local defaults = {
 			NameFontSize = 9,
 			TimeFontSize = 9,
 			NameOffset = -12,
+			NameAlignment = "CENTER",
 			TimeOffset = -12,
 			IconPosition = "LEFT",
 		},
