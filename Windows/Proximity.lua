@@ -38,7 +38,7 @@ local function CreateBar()
 
 	local name = statusbar:CreateFontString(nil,"ARTWORK")
 	name:SetShadowOffset(1,-1)
-	addon:RegisterFontString(name,pfl.NameFontSize)
+	addon:RegisterFontString(name,pfl.Proximity.NameFontSize)
 	bar.name = name
 
 	-- format "%d".."%02d"
@@ -47,13 +47,13 @@ local function CreateBar()
 
 	local left = statusbar:CreateFontString(nil,"ARTWORK")
 	left:SetShadowOffset(1,-1)
-	addon:RegisterFontString(left,pfl.TimeFontSize)
+	addon:RegisterFontString(left,pfl.Proximity.TimeFontSize)
 	bar.left = left
 
 	local right = statusbar:CreateFontString(nil,"ARTWORK")
 	right:SetPoint("BOTTOMLEFT",left,"BOTTOMRIGHT")
 	right:SetShadowOffset(1,-1)
-	addon:RegisterFontString(right,pfl.TimeFontSize * 2/3)
+	addon:RegisterFontString(right,pfl.Proximity.TimeFontSize * 2/3)
 	bar.right = right
 
 	bar.Destroy = Destroy
@@ -82,10 +82,10 @@ local function UpdateBars()
 	local height = content:GetHeight()/rows
 	for i,bar in ipairs(bars) do
 		local r,g,b = bar.statusbar:GetStatusBarColor()
-		bar.statusbar:SetStatusBarColor(r,g,b,pfl.BarAlpha)
-		bar.name:SetFont(bar.name:GetFont(),pfl.NameFontSize)
-		bar.left:SetFont(bar.left:GetFont(),pfl.TimeFontSize)
-		bar.right:SetFont(bar.right:GetFont(),pfl.TimeFontSize * 2/3)
+		bar.statusbar:SetStatusBarColor(r,g,b,pfl.Proximity.BarAlpha)
+		bar.name:SetFont(bar.name:GetFont(),pfl.Proximity.NameFontSize)
+		bar.left:SetFont(bar.left:GetFont(),pfl.Proximity.TimeFontSize)
+		bar.right:SetFont(bar.right:GetFont(),pfl.Proximity.TimeFontSize * 2/3)
 
 		bar:SetWidth(width)
 		bar:SetHeight(height)
@@ -95,17 +95,17 @@ local function UpdateBars()
 		bar.statusbar:SetHeight(height-2)
 
 		bar.name:ClearAllPoints()
-		bar.name:SetPoint(pfl.NameAlignment,pfl.NameOffset,0)
+		bar.name:SetPoint(pfl.Proximity.NameAlignment,pfl.Proximity.NameOffset,0)
 		bar.left:ClearAllPoints()
-		bar.left:SetPoint("RIGHT",pfl.TimeOffset,0)
+		bar.left:SetPoint("RIGHT",pfl.Proximity.TimeOffset,0)
 
 		bar.icon:ClearAllPoints()
 		bar.statusbar:ClearAllPoints()
-		if pfl.IconPosition == "LEFT" then
+		if pfl.Proximity.IconPosition == "LEFT" then
 			bar.icon:SetPoint("LEFT",bar,"LEFT",2,0)
 			bar.statusbar:SetPoint("LEFT",bar.icon,"RIGHT")
 			bar.statusbar:SetPoint("RIGHT",bar,"RIGHT")
-		elseif pfl.IconPosition == "RIGHT" then
+		elseif pfl.Proximity.IconPosition == "RIGHT" then
 			bar.icon:SetPoint("RIGHT",bar,"RIGHT",-2,0)
 			bar.statusbar:SetPoint("RIGHT",bar.icon,"LEFT")
 			bar.statusbar:SetPoint("LEFT",bar,"LEFT")
@@ -163,7 +163,7 @@ do
 		for name in pairs(name_to_unit) do
 			-- Use CheckInteractDistance (rangefunc) to take the z-axis into account
 			local class = name_to_class[name]
-			if name ~= addon.PNAME and rangefunc(name) and pfl.ClassFilter[class] then
+			if name ~= addon.PNAME and rangefunc(name) and pfl.Proximity.ClassFilter[class] then
 				local d = addon:GetDistanceToUnit(name)
 				local flag = true
 				if d and d > range then flag = false end
@@ -176,7 +176,7 @@ do
 						bar.name:SetText(CN[name])
 						bar.icon:SetTexCoord(unpack(ICON_COORDS[class]))
 						local c = RAID_CLASS_COLORS[class]
-						bar.statusbar:SetStatusBarColor(c.r,c.g,c.b,pfl.BarAlpha)
+						bar.statusbar:SetStatusBarColor(c.r,c.g,c.b,pfl.Proximity.BarAlpha)
 						bar.destroyed = nil
 						bar:Show()
 					end
@@ -202,11 +202,11 @@ do
 		end
 		for i=n+1,#bars do 
 			local bar = bars[i]
-			if pfl.Dummy then
+			if pfl.Proximity.Dummy then
 				bar.name:SetText("Abracadabrah")
 				bar.icon:SetTexCoord(unpack(ICON_COORDS["WARRIOR"]))
 				local c = RAID_CLASS_COLORS["WARRIOR"]
-				bar.statusbar:SetStatusBarColor(c.r,c.g,c.b,pfl.BarAlpha)
+				bar.statusbar:SetStatusBarColor(c.r,c.g,c.b,pfl.Proximity.BarAlpha)
 				bar.destroyed = nil
 				bar.left:SetFormattedText("%d",15)
 				bar.right:SetFormattedText("%02d",75)
@@ -260,10 +260,10 @@ end
 ---------------------------------------
 
 function addon:Proximity(popup,enc_range)
-	if popup and not pfl.AutoPopup then return end
+	if popup and not pfl.Proximity.AutoPopup then return end
 	if window then window:Show()
 	else CreateWindow() end
-	range = enc_range or pfl.Range
+	range = enc_range or pfl.Proximity.Range
 	UpdateTitle()
 end
 
@@ -278,10 +278,10 @@ addon:RegisterWindow(L["Proximity"],function() addon:Proximity() end)
 ---------------------------------------
 
 function addon:UpdateProximitySettings()
-	rows = pfl.Rows
-	range = pfl.Range
-	delay = pfl.Delay
-	invert = pfl.Invert
+	rows = pfl.Proximity.Rows
+	range = pfl.Proximity.Range
+	delay = pfl.Proximity.Delay
+	invert = pfl.Proximity.Invert
 	rangefunc = range <= 10 and ProximityFuncs[10] or (range <= 11 and ProximityFuncs[11] or ProximityFuncs[18])
 
 	if window then
@@ -292,7 +292,7 @@ function addon:UpdateProximitySettings()
 end
 
 local function RefreshProfile(db)
-	pfl = db.profile.Proximity
+	pfl = db.profile
 	addon:UpdateProximitySettings()
 end
 addon:AddToRefreshProfile(RefreshProfile)
