@@ -82,6 +82,7 @@ do
 		["Neo Beep"] = "Interface\\AddOns\\DXE\\Sounds\\NeoBeep.mp3",
 		["PvP Flag Taken"] = "Sound\\Spells\\PVPFlagTaken.wav",
 		["Bad Press"] = "Sound\\Spells\\SimonGame_Visual_BadPress.wav",
+		["Run Away"] = "Sound\\Creature\\HoodWolf\\HoodWolfTransformPlayer01.wav",
 		["FF1 Victory"] = "Interface\\AddOns\\DXE\\Sounds\\FF1_Victory.mp3",
 	}
 	local sound_defaults = addon.defaults.profile.Sounds
