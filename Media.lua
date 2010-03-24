@@ -131,6 +131,7 @@ do
 	function addon:RegisterStatusBar(statusbar)
 		reg[#reg+1] = statusbar
 		statusbar:SetStatusBarTexture(SM:Fetch("statusbar",pfl.Globals.BarTexture))
+		statusbar:GetStatusBarTexture():SetHorizTile(false)
 	end
 
 	function addon:NotifyBarTextureChanged(name)
