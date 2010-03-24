@@ -2610,7 +2610,7 @@ end
 
 do
 	local data = {
-		version = 37,
+		version = 38,
 		key = "putricide",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -2645,7 +2645,7 @@ do
 			puddletime = 10,
 			puddletimeaftertransition = {10,15,loop = false, type = "series"},
 			puddletimeperphase = {35,20,loop = false, type = "series"},
-			plaguetimeaftertrans = {60,30,loop = false, type = "series"},
+			plaguetimeaftertrans = {50,50,loop = false, type = "series"},
 			plaguetime = 60,
 			concocted = 0,
 		},
