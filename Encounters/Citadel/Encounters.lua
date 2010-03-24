@@ -2610,7 +2610,7 @@ end
 
 do
 	local data = {
-		version = 36,
+		version = 37,
 		key = "putricide",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -2647,6 +2647,7 @@ do
 			puddletimeperphase = {35,20,loop = false, type = "series"},
 			plaguetimeaftertrans = {60,30,loop = false, type = "series"},
 			plaguetime = 60,
+			concocted = 0,
 		},
 		alerts = {
 			enragecd = {
@@ -3144,8 +3145,27 @@ do
 				},
 				execute = {
 					{
+						"expect",{"<concocted>","==","0"},
 						"scheduletimer",{"fireputraggro",30},
 						"scheduletimer",{"heroictrans",40}, -- 30s cast + 10s wait time
+					},
+					{
+						"expect",{"<concocted>","==","1"},
+						"invoke",{
+							{
+								"expect",{"&difficulty&","<=","3"},
+								"scheduletimer",{"fireputraggro",30},
+								"scheduletimer",{"heroictrans",40}, -- 30s cast + 10s wait time
+							},
+							{
+								"expect",{"&difficulty&","==","4"},
+								"scheduletimer",{"fireputraggro",20},
+								"scheduletimer",{"heroictrans",30}, -- 20s cast + 10s wait time
+							},
+						},
+					},
+					{
+						"set",{concocted = 1},
 					},
 				},
 			},
