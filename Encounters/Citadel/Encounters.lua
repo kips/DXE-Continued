@@ -3942,7 +3942,7 @@ end
 
 do
 	local data = {
-		version = 33,
+		version = 34,
 		key = "sindragosa",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -3965,16 +3965,11 @@ do
 			frostbeacontext = "",
 			icygriptime = {33.8,67.2, loop = false, type = "series"},
 			bombcount = "1",
-			instabilitytime = 8,
 		},
 		onstart = {
 			{
 				"alert","enragecd",
 				"alert","aircd",
-			},
-			{
-				"expect",{"&difficulty&",">=","3"},
-				"set",{instabilitytime = 5},
 			},
 		},
 		alerts = {
@@ -4060,7 +4055,7 @@ do
 				varname = format(L.alert["%s on self"],SN[69766]),
 				type = "centerpopup",
 				text = "<instabilitytext>",
-				time = "<instabilitytime>",
+				time = 5,
 				flashtime = 4,
 				color1 = "VIOLET",
 				icon = ST[69766],
