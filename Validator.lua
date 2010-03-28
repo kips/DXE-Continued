@@ -726,7 +726,7 @@ local function validateSpellName(data,info,errlvl,k,...)
 	errlvl = errlvl + 1
 	fillspellnames()
 	if info[k] and type(info[k]) == "string" then
-		local exists = spellnames(info[k])
+		local exists = spellnames[info[k]]
 		if not exists then
 			err("["..info[k].."]: unknown spell name",errlvl,k,...)
 		end
@@ -783,6 +783,8 @@ local function validateEvent(data,info,errlvl,...)
 			end
 		elseif k == "spellid" or k == "spellid2" then
 			validateSpellID(data,info,errlvl,k,...)
+		elseif k == "spellname" or k == "spellname2" then
+			validateSpellName(data,info,errlvl,k,...)
 		elseif k == "execute" then
 			validateCommandBundle(data,info.execute,errlvl,"execute",...)
 		end

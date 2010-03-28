@@ -86,8 +86,8 @@ local Alerts = addon.Alerts
 local Arrows = addon.Arrows
 local RaidIcons = addon.RaidIcons
 -- Hold event info
-local RegEvents,CombatEvents,CombatEvents2 = {},{},{}
-COMBATEVENTS2 = CombatEvents2
+local RegEvents = {}
+local SIDEvents,SIDEvents2 = {},{}
 
 --@debug@
 local debug
@@ -148,7 +148,7 @@ end
 
 function module:OnStart(_,...)
 	if not CE then return end
-	if next(CombatEvents) or next(CombatEvents2) then
+	if next(SIDEvents) or next(SIDEvents2) then
 		self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED","COMBAT_EVENT")
 	end
 	for event in pairs(RegEvents) do
@@ -750,17 +750,17 @@ end
 
 --event, timestamp, eventtype, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, spellID, spellName,...
 function module:COMBAT_EVENT(event,timestamp,eventtype,...)
-	if CombatEvents[eventtype] then
+	if SIDEvents[eventtype] then
 		local spellID = select(7,...)
-		local bundle = CombatEvents[eventtype]["*"] or CombatEvents[eventtype][spellID]
+		local bundle = SIDEvents[eventtype]["*"] or SIDEvents[eventtype][spellID]
 		if bundle then self:InvokeCommands(bundle,...) end
 	end
 
 	-- Usually used for SPELL_INTERRUPT
-	if CombatEvents2[eventtype] then
+	if SIDEvents2[eventtype] then
 		local spellID = select(10,...)
 		if spellID then 
-			local bundle = CombatEvents2[eventtype][spellID]
+			local bundle = SIDEvents2[eventtype][spellID]
 			if bundle then self:InvokeCommands(bundle,...) end
 		end
 	end
@@ -799,11 +799,11 @@ do
 			if info.type == "combatevent" then
 				-- Register combat log event
 				if not info.spellid and not info.spellid2 then
-					CombatEvents[info.eventtype] = CombatEvents[info.eventtype] or {}
-					CombatEvents[info.eventtype]["*"] = info.execute
+					SIDEvents[info.eventtype] = SIDEvents[info.eventtype] or {}
+					SIDEvents[info.eventtype]["*"] = info.execute
 				end
-				if info.spellid then add(CombatEvents,"spellid",info) end
-				if info.spellid2 then add(CombatEvents2,"spellid2",info) end
+				if info.spellid then add(SIDEvents,"spellid",info) end
+				if info.spellid2 then add(SIDEvents2,"spellid2",info) end
 			elseif info.type == "event" then
 				local event = REG_ALIASES[info.event] or info.event
 				-- Register regular event
@@ -816,8 +816,8 @@ end
 
 function module:WipeEvents()
 	wipe(RegEvents)
-	for k,v in pairs(CombatEvents) do CombatEvents[k] = nil end
-	for k,v in pairs(CombatEvents2) do CombatEvents2[k] = nil end
+	for k,v in pairs(SIDEvents) do SIDEvents[k] = nil end
+	for k,v in pairs(SIDEvents2) do SIDEvents2[k] = nil end
 	self:UnregisterAllEvents()
 end
 
