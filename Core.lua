@@ -130,11 +130,12 @@ local AceTimer = LibStub("AceTimer-3.0")
 local L = LibStub("AceLocale-3.0"):GetLocale("DXE")
 local SM = LibStub("LibSharedMedia-3.0")
 
--- Localized spell names - caching is unnecessary
+-- Localized spell names
 local SN = setmetatable({},{
 	__index = function(t,k)
 		if type(k) ~= "number" then return "nil" end
 		local name = GetSpellInfo(k)
+		t[k] = name
 		if not name then 
 			geterrorhandler()("Invalid spell name attempted to be retrieved") 
 			return tostring(k)
