@@ -1558,7 +1558,7 @@ end
 
 do
 	local data = {
-		version = 54,
+		version = 55,
 		key = "lichking",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -1773,9 +1773,9 @@ do
 			},
 			ragingspiritself = {
 				varname = format(L.alert["%s on self"],SN[69200]),
-				type = "centerpopup",
+				type = "simple",
 				text = format("%s: %s! %s!",SN[69200],L.alert["YOU"],L.alert["MOVE"]),
-				time = 7.5,
+				time = 4,
 				color1 = "BLACK",
 				sound = "ALERT8",
 				flashscreen = true,
@@ -1783,9 +1783,9 @@ do
 			},
 			ragingspiritwarn = {
 				varname = format(L.alert["%s on others"],SN[69200]),
-				type = "centerpopup",
+				type = "simple",
 				text = format("%s: #5#!",SN[69200]),
-				time = 7.5,
+				time = 4,
 				color1 = "BLACK",
 				sound = "ALERT8",
 				icon = ST[69200],
