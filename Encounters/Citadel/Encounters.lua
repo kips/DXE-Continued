@@ -1558,7 +1558,7 @@ end
 
 do
 	local data = {
-		version = 56,
+		version = 57,
 		key = "lichking",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -1587,6 +1587,7 @@ do
 				"alert","enragecd",
 				"alert","infestcd",
 				"alert","necroplaguecd",
+				"alert","trapcd",
 			},
 		},
 		userdata = {
@@ -1603,6 +1604,7 @@ do
 			ragingtext = "",
 			enragecount = 0,
 			traptext = "",
+			traptime = {16.1,15.5,loop = false, type = "series"},
 		},
 		alerts = {
 			zerotoonecd = {
@@ -1857,7 +1859,7 @@ do
 				varname = format(L.alert["%s Cooldown"],L.alert["Shadow Trap"]),
 				type = "dropdown",
 				text = format(L.alert["%s Cooldown"],L.alert["Shadow Trap"]),
-				time = 15.5,
+				time = "<traptime>",
 				flashtime = 7,
 				color1 = "BROWN",
 				sound = "ALERT3",
@@ -2013,9 +2015,11 @@ do
 						"quash","enragecd",
 						"quash","infestcd",
 						"quash","necroplaguecd",
+						"quash","trapcd",
 						"alert","enragecd",
 						"alert","infestcd",
 						"alert","necroplaguecd",
+						"alert","trapcd",
 					},
 				},
 			},
