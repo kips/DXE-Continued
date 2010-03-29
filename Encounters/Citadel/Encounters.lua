@@ -1592,7 +1592,7 @@ do
 		},
 		userdata = {
 			phase = "0",
-			nextphase = {"T","2","T","3",loop = false, type = "series"},
+			nextphase = {"T1","2","T2","3",loop = false, type = "series"},
 			defiletext = "",
 			defiletime = 37,
 			infesttime = 6,
@@ -1605,6 +1605,7 @@ do
 			enragecount = 0,
 			traptext = "",
 			traptime = {16.1,15.5,loop = false, type = "series"},
+			ragingtime = 6,
 		},
 		alerts = {
 			zerotoonecd = {
@@ -1790,6 +1791,16 @@ do
 				time = 4,
 				color1 = "BLACK",
 				sound = "ALERT8",
+				icon = ST[69200],
+			},
+			ragingspiritcd = {
+				varname = format(L.alert["%s Cooldown"],SN[69200]),
+				type = "dropdown",
+				text = format(L.alert["%s Cooldown"],SN[69200]),
+				time = "<ragingtime>",
+				flashtime = 5,
+				sound = "ALERT6",
+				color1 = "YELLOW",
 				icon = ST[69200],
 			},
 			infestcd = {
@@ -2216,6 +2227,18 @@ do
 						"quash","shamblinghorrorcd",
 						"quash","trapcd",
 					},
+					{
+						"set",{ragingtime = 6},
+						"alert","ragingspiritcd",
+					},
+					{
+						"expect",{"<phase>","==","T1"},
+						"set",{ragingtime = 22},
+					},
+					{
+						"expect",{"<phase>","==","T2"},
+						"set",{ragingtime = 18},
+					},
 				},
 			},
 			-- Remorseless Winter app
@@ -2250,6 +2273,7 @@ do
 						"set",{phase = "<nextphase>"},
 						"set",{defiletime = 37},
 						"alert","defilecd",
+						"quash","ragingspiritcd",
 					},
 					{
 						"expect",{"<phase>","==","2"},
@@ -2306,6 +2330,8 @@ do
 				execute = {
 					{
 						"raidicon","ragingspiritmark",
+						"quash","ragingspiritcd",
+						"alert","ragingspiritcd",
 					},
 					{
 						"expect",{"#4#","==","&playerguid&"},
