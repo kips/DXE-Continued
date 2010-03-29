@@ -1840,9 +1840,10 @@ do
 			},
 			harvestsoulwarn = {
 				varname = format(L.alert["%s Warning"],SN[68980]),
-				type = "simple",
+				type = "centerpopup",
 				text = "<harvestsoultext>",
-				time = 5,
+				color1 = "BLACK",
+				time = 6,
 				sound = "ALERT10",
 				icon = ST[68980],
 			},

@@ -718,7 +718,7 @@ local function fillspellnames()
 				spellnames[spellname] = true
 			end
 		end
-		-- 3.3.0a 26837 distinct spell names
+		-- 3.3.3a 26837 distinct spell names
 	end
 end
 
