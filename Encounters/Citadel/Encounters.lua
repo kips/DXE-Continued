@@ -1558,7 +1558,7 @@ end
 
 do
 	local data = {
-		version = 55,
+		version = 56,
 		key = "lichking",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -1853,6 +1853,16 @@ do
 				icon = ST[73539],
 				flashscreen = true,
 			},
+			trapcd = {
+				varname = format(L.alert["%s Cooldown"],L.alert["Shadow Trap"]),
+				type = "dropdown",
+				text = format(L.alert["%s Cooldown"],L.alert["Shadow Trap"]),
+				time = 15.5,
+				flashtime = 7,
+				color1 = "BROWN",
+				sound = "ALERT3",
+				icon = ST[73539],
+			},
 			massrescd = {
 				varname = format(L.alert["%s Timer"],SN[72429]),
 				type = "centerpopup",
@@ -2034,6 +2044,8 @@ do
 				execute = {
 					{
 						"scheduletimer",{"firetrap",0},
+						"quash","trapcd",
+						"alert","trapcd",
 					},
 				},
 			},
@@ -2197,6 +2209,8 @@ do
 						"quash","valkyrcd",
 						"quash","infestcd",
 						"quash","soulreapercd",
+						"quash","shamblinghorrorcd",
+						"quash","trapcd",
 					},
 				},
 			},
