@@ -1873,7 +1873,7 @@ do
 				text = format(L.alert["%s Cooldown"],L.alert["Shadow Trap"]),
 				time = "<traptime>",
 				flashtime = 7,
-				color1 = "BROWN",
+				color1 = "INDIGO",
 				sound = "ALERT3",
 				icon = ST[73539],
 			},
