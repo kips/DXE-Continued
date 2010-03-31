@@ -5100,7 +5100,7 @@ do
 
 	do
 		local data = {
-			version = 4,
+			version = 5,
 			key = "icctrashtwo",
 			zone = L.zone["Icecrown Citadel"],
 			category = L.zone["Citadel"],
@@ -5116,6 +5116,7 @@ do
 				},
 				tracerstart = true,
 				combatstop = true,
+				defeat = 37025, -- Stinky
 			},
 			userdata = {
 				mortaltext = "",
@@ -5139,7 +5140,7 @@ do
 
 	do
 		local data = {
-			version = 2,
+			version = 3,
 			key = "icctrashthree",
 			zone = L.zone["Icecrown Citadel"],
 			category = L.zone["Citadel"],
@@ -5155,6 +5156,7 @@ do
 				},
 				tracerstart = true,
 				combatstop = true,
+				defeat = 37217, -- Precious
 			},
 			userdata = {
 				mortaltext = "",
