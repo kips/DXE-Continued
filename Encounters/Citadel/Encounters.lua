@@ -3991,7 +3991,7 @@ end
 
 do
 	local data = {
-		version = 34,
+		version = 35,
 		key = "sindragosa",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -4013,6 +4013,7 @@ do
 			unchainedtime = 30,
 			frostbeacontext = "",
 			icygriptime = {33.8,67.2, loop = false, type = "series"},
+			tailsmashtime = 27,
 			bombcount = "1",
 		},
 		onstart = {
@@ -4176,6 +4177,15 @@ do
 				icon = ST[72528],
 				throttle = 4,
 			},
+			tailsmashcd = {
+				varname = format(L.alert["%s Cooldown"],SN[71077]),
+				type = "dropdown",
+				text = format(L.alert["%s Cooldown"],SN[71077]),
+				time = "<tailsmashtime>",
+				flashtime = 10,
+				color1 = "BLACK",
+				icon = ST[71077],
+			},
 		},
 		windows = {
 			proxwindow = true,
@@ -4318,6 +4328,17 @@ do
 			},
 		},
 		events = {
+			-- Tail Smash
+			{
+				type = "combatevent",
+				eventtype = "SPELL_CAST_START",
+				spellid = 71077,
+				execute = {
+					{
+						"alert","tailsmashcd",
+					},
+				},
+			},
 			-- Mystic Buffet
 			{
 				type = "combatevent",
@@ -4367,9 +4388,11 @@ do
 						"expect",{"#1#","find",L.chat_citadel["^Your incursion ends here"]},
 						"quash","aircd",
 						"quash","unchainedcd",
-						"set",{unchainedtime = 55},
+						"quash","tailsmashcd",
+						"set",{unchainedtime = 55, tailsmashtime = 61},
 						"alert","unchainedcd",
-						"set",{unchainedtime = 30},
+						"alert","tailsmashcd",
+						"set",{unchainedtime = 30, tailsmashtime = 27},
 						"alert","aircd",
 						"alert","airdur",
 					},
