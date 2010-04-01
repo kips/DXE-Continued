@@ -31,6 +31,7 @@
 
 local addon = DXE
 local L = addon.L
+local NID = addon.NID
 
 local GetTime = GetTime
 local wipe = table.wipe
@@ -85,9 +86,10 @@ local HW = addon.HW
 local Alerts = addon.Alerts
 local Arrows = addon.Arrows
 local RaidIcons = addon.RaidIcons
--- Hold event info
-local RegEvents = {}
-local SIDEvents,SIDEvents2 = {},{}
+-- command bundles executed upon events
+local event_to_bundle = {}
+local eventtype_to_bundle = {}
+local bundle_to_filter = {}
 
 --@debug@
 local debug
@@ -148,10 +150,10 @@ end
 
 function module:OnStart(_,...)
 	if not CE then return end
-	if next(SIDEvents) or next(SIDEvents2) then
+	if next(eventtype_to_bundle) then
 		self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED","COMBAT_EVENT")
 	end
-	for event in pairs(RegEvents) do
+	for event in pairs(event_to_bundle) do
 		self:RegisterEvent(event,"REG_EVENT")
 	end
 	addon:SetTracing(CE.onactivate.tracing)
@@ -170,7 +172,7 @@ end
 function module:OnStop()
 	if not CE then return end
 	self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
-	for event in pairs(RegEvents) do
+	for event in pairs(event_to_bundle) do
 		self:UnregisterEvent(event)
 	end
 	self:ResetUserData()
@@ -188,8 +190,6 @@ end
 local ReplaceTokens
 
 do
-	local NID = addon.NID
-
 	local function tft()
 		return HW[1].tracer:First() and HW[1].tracer:First().."target" or ""
 	end
@@ -748,48 +748,104 @@ end
 -- EVENTS
 ---------------------------------------------
 
---event, timestamp, eventtype, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, spellID, spellName,...
-function module:COMBAT_EVENT(event,timestamp,eventtype,...)
-	if SIDEvents[eventtype] then
-		local spellID = select(7,...)
-		local bundle = SIDEvents[eventtype]["*"] or SIDEvents[eventtype][spellID]
-		if bundle then self:InvokeCommands(bundle,...) end
-	end
-
-	-- Usually used for SPELL_INTERRUPT
-	if SIDEvents2[eventtype] then
-		local spellID = select(10,...)
-		if spellID then 
-			local bundle = SIDEvents2[eventtype][spellID]
-			if bundle then self:InvokeCommands(bundle,...) end
-		end
-	end
-end
-
-function module:REG_EVENT(event,...)
-	--@debug@
-	debug("REG_EVENT",event,...)
-	--@end-debug@
-	-- Pass in command list and arguments
-	self:InvokeCommands(RegEvents[event],...)
-end
-
-local REG_ALIASES = {
-	YELL = "CHAT_MSG_MONSTER_YELL",
-	EMOTE = "CHAT_MSG_RAID_BOSS_EMOTE",
-	WHISPER = "CHAT_MSG_RAID_BOSS_WHISPER",
-}
-
 do
-	local function add(tbl,k,info)
-		tbl[info.eventtype] = tbl[info.eventtype] or {}
-		if type(info[k]) == "table" then
-			for _,v in ipairs(info[k]) do
-				tbl[info.eventtype][v] = info.execute
+	local attribute_handles = {
+		spellid = function(hash,...)
+			return hash[select(7,...)]
+		end,
+
+		spellid2 = function(hash,...)
+			return hash[select(10,...)]
+		end,
+
+		spellname = function(hash,...)
+			return hash[select(8,...)]
+		end,
+
+		spellname2 = function(hash,...)
+			return hash[select(11,...)]
+		end,
+
+		srcnpcid = function(hash,...)
+			return hash[NID[...]]
+		end,
+
+		dstnpcid = function(hash,...)
+			return hash[NID[select(4,...)]]
+		end,
+	}
+
+	function module:COMBAT_EVENT(event,timestamp,eventtype,...)
+		local bundles = eventtype_to_bundle[eventtype]
+		if bundles then
+			for _,bundle in ipairs(bundles) do
+				local filter = bundle_to_filter[bundle]
+				local flag = true
+				for attr,hash in pairs(filter) do
+					-- all conditions have to pass for the bundle to fire
+					if not attribute_handles[attr](hash,...) then
+						flag = false
+						break
+					end
+				end
+				if flag then
+					self:InvokeCommands(bundle,...)
+				end
 			end
-		else
-			tbl[info.eventtype][info[k]] = info.execute
 		end
+	end
+
+	local function to_hash(work)
+		if type(work) ~= "table" then
+			return {[work] = true}
+		else
+			-- work is an array
+			local t = {}
+			for k,v in pairs(work) do
+				t[v] = true
+			end
+			return t
+		end
+	end
+
+	-- filter structure = {
+	-- 	[attribute] = {
+	-- 		[value] = true,
+	--			...
+	--			[valueN] = true,
+	--		},
+	--    .
+	--    .
+	--    .
+	-- 	[valueN] = {
+	-- 		[value] = true,
+	--			...
+	--			[valueN] = true,
+	--		},
+	-- }
+
+	local function create_filter(info)
+		local filter = {}
+		for attr in pairs(attribute_handles) do
+			if info[attr] then
+				filter[attr] = to_hash(info[attr])
+			end
+		end
+		return filter
+	end
+
+	local REG_ALIASES = {
+		YELL = "CHAT_MSG_MONSTER_YELL",
+		EMOTE = "CHAT_MSG_RAID_BOSS_EMOTE",
+		WHISPER = "CHAT_MSG_RAID_BOSS_WHISPER",
+	}
+
+	function module:REG_EVENT(event,...)
+		--@debug@
+		debug("REG_EVENT",event,...)
+		--@end-debug@
+		-- Pass in command list and arguments
+		self:InvokeCommands(event_to_bundle[event],...)
 	end
 
 	function module:AddEventData()
@@ -797,27 +853,28 @@ do
 		-- Iterate over events table
 		for _,info in ipairs(CE.events) do
 			if info.type == "combatevent" then
-				-- Register combat log event
-				if not info.spellid and not info.spellid2 then
-					SIDEvents[info.eventtype] = SIDEvents[info.eventtype] or {}
-					SIDEvents[info.eventtype]["*"] = info.execute
+				local t = eventtype_to_bundle[info.eventtype]
+				if not t then
+					t = {}
+					eventtype_to_bundle[info.eventtype] = t
 				end
-				if info.spellid then add(SIDEvents,"spellid",info) end
-				if info.spellid2 then add(SIDEvents2,"spellid2",info) end
+				t[#t+1] = info.execute
+
+				bundle_to_filter[info.execute] = create_filter(info)
 			elseif info.type == "event" then
 				local event = REG_ALIASES[info.event] or info.event
 				-- Register regular event
 				-- Add execute list to the appropriate key
-				RegEvents[event] = info.execute
+				event_to_bundle[event] = info.execute
 			end
 		end
 	end
 end
 
 function module:WipeEvents()
-	wipe(RegEvents)
-	for k,v in pairs(SIDEvents) do SIDEvents[k] = nil end
-	for k,v in pairs(SIDEvents2) do SIDEvents2[k] = nil end
+	wipe(event_to_bundle)
+	wipe(eventtype_to_bundle)
+	wipe(bundle_to_filter)
 	self:UnregisterAllEvents()
 end
 
