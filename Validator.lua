@@ -173,6 +173,8 @@ local eventBaseKeys = {
 	eventtype = optstring,
 	spellid = opttablenumber,
 	spellid2 = opttablenumber,
+	srcnpcid = opttablenumber,
+	dstnpcid = opttablenumber,
 	spellname = optstringtable,
 	spellname2 = optstringtable,
 	execute = istable,
@@ -226,7 +228,7 @@ local function err(msg,errlvl,...)
 		end
 		work[#work+1] = key
 	end
-	error("DXE:ValidateOptions() "..concat(work)..": "..msg, errlvl + 1)
+	error("DXE:ValidateData() "..concat(work)..": "..msg, errlvl + 1)
 end
 
 local function validateIsArray(tbl,errlvl,...)
@@ -685,6 +687,20 @@ local function validateAnnounces(data,announces,errlvl,...)
 	end
 end
 
+local function validateNpcid(data,info,errlvl,k,...)
+	errlvl = errlvl + 1
+	if info[k] and type(info[k]) == "number" then
+		-- do nothing
+	elseif info[k] and type(info[k]) == "table" then
+		validateIsArray(info[k],errlvl,k,...)
+		for i,npcid in ipairs(info[k]) do
+			validateVal(npcid,isnumber,errlvl,i,k,...)
+		end
+	elseif info[k] then
+		err("invalid npcid(s)",errlvl,k,...)
+	end
+end
+
 local function validateSpellID(data,info,errlvl,k,...)
 	errlvl = errlvl + 1
 	if info[k] and type(info[k]) == "number" then
@@ -785,6 +801,8 @@ local function validateEvent(data,info,errlvl,...)
 			validateSpellID(data,info,errlvl,k,...)
 		elseif k == "spellname" or k == "spellname2" then
 			validateSpellName(data,info,errlvl,k,...)
+		elseif k == "srcnpcid" or k == "dstnpcid" then
+			validateNpcid(data,info,errlvl,k,...)
 		elseif k == "execute" then
 			validateCommandBundle(data,info.execute,errlvl,"execute",...)
 		end
