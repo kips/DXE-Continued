@@ -366,7 +366,7 @@ end
 
 do
 	local data = {
-		version = 31,
+		version = 32,
 		key = "deathwhisper",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -381,7 +381,7 @@ do
 			culttime = {7,60,loop = false, type = "series"},
 			insignificancetext = "",
 			dominatetext = format("%s: #5#!",SN[71289]),
-			dominatetime = {38.6,40.4,loop = false,type = "series"},
+			dominatetime = {31,40.4,loop = false,type = "series"},
 		},
 		onstart = {
 			{
