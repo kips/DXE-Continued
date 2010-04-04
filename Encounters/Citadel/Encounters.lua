@@ -1620,7 +1620,7 @@ end
 
 do
 	local data = {
-		version = 58,
+		version = 59,
 		key = "lichking",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -2102,7 +2102,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
-				spellid = 72350,
+				spellname = 72350,
 				execute = {
 					{
 						"quash","vilespiritcd",
@@ -2119,7 +2119,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
-				spellid = 73539, -- 10h, 25h
+				spellname = 73539,
 				execute = {
 					{
 						"scheduletimer",{"firetrap",0},
@@ -2132,12 +2132,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_SUCCESS",
-				spellid = {
-					70337, -- 10
-					73912, -- 25
-					73913, -- 10h
-					73914, -- 25h
-				},
+				spellname = 70337,
 				execute = {
 					{
 						"raidicon","necroplaguemark",
@@ -2158,16 +2153,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_DISPEL",
-				spellid2 = {
-					-- Note: there are two different ones for some reason
-					-- TODO: fix it when there are two bars. it could quash the wrong one
-					70337, -- 10
-					73913, -- 10h initial
-					73786, -- 10h
-					73785, -- 25
-					73914, -- 25h initial
-					73787, -- 25h
-				},
+				spellname2 = 70337,
 				execute = {
 					{
 						"quash","necroplaguedur",
@@ -2179,7 +2165,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
-				spellid = 70372, -- 10/25
+				spellname = 70372,
 				execute = {
 					{
 						"alert","shamblinghorrorwarn",
@@ -2190,7 +2176,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_SUMMON",
-				spellid = 70372, -- 10/25
+				spellname = 70372,
 				execute = {
 					{
 						"quash","shamblinghorrorwarn",
@@ -2202,12 +2188,8 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
-				spellid = {
-					72143, -- 10
-					72147, -- 10h
-					72146, -- 25
-					72148, -- 25h
-				},
+				spellname = 72143,
+				srcnpcid = 37698, -- Shambling Horror
 				execute = {
 					{
 						"alert","shamblinghorrorenragewarn",
@@ -2218,12 +2200,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
-				spellid = {
-					72762, -- 10/25
-					73708,
-					73709,
-					73710,
-				},
+				spellname = 72762,
 				execute = {
 					{
 						"scheduletimer",{"firedefile",0.2},
@@ -2236,12 +2213,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellid = {
-					72754, -- 10
-					73709, -- 10h
-					73708, -- 25
-					73710, -- 25h
-				},
+				spellname = 72754,
 				execute = {
 					{
 						"expect",{"#4#","==","&playerguid&"},
@@ -2253,16 +2225,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
-				spellid = {
-					68981, -- 10 first
-					72259, -- 10 second
-					74270, -- 25 first
-					74273, -- 25 second
-					74271,
-					74272,
-					74274,
-					74275,
-				},
+				spellname = 68981,
 				execute = {
 					{
 						"alert","remorsewarn",
@@ -2293,16 +2256,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellid = {
-					68981, -- 10 first
-					72259, -- 10 second
-					74270, -- 25
-					74273, -- 25 second
-					74271,
-					74272,
-					74274,
-					74275,
-				},
+				spellname = 68981,
 				execute = {
 					{
 						"quash","remorsewarn",
@@ -2314,7 +2268,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
-				spellid = 72262, -- 10/25
+				spellname = 72262,
 				execute = {
 					{
 						"alert","quakewarn",
@@ -2342,7 +2296,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_SUMMON",
-				spellid = 69037, -- 10/25
+				spellname = 69037,
 				execute = {
 					{
 						"alert","valkyrwarn",
@@ -2355,12 +2309,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_SUCCESS",
-				spellid = {
-					69409, -- 10
-					73797, -- 25
-					73798,
-					73799,
-				},
+				spellname = 69409,
 				execute = {
 					{
 						"quash","soulreapercd",
@@ -2374,7 +2323,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_SUCCESS",
-				spellid = 69200, -- 10/25
+				spellname = 69200,
 				execute = {
 					{
 						"raidicon","ragingspiritmark",
@@ -2395,12 +2344,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
-				spellid = {
-					70541, -- 10
-					73779, -- 25
-					73780, -- 10h
-					73781, -- 25h
-				},
+				spellname = 70541,
 				execute = {
 					{
 						"quash","infestcd",
@@ -2415,7 +2359,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
-				spellid = 70498, -- 10/25
+				spellname = 70498,
 				execute = {
 					{
 						"quash","vilespiritcd",
@@ -2428,12 +2372,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_SUCCESS",
-				spellid = {
-					68980, -- 10
-					74325, -- 25
-					74326, -- 10h?
-					74327, -- 25h?
-				},
+				spellname = 68980,
 				execute = {
 					{
 						"raidicon","harvestmark",
