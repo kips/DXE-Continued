@@ -3991,7 +3991,7 @@ end
 
 do
 	local data = {
-		version = 36,
+		version = 37,
 		key = "sindragosa",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -4012,18 +4012,18 @@ do
 			instabilitytext = "",
 			unchainedtime = 30,
 			frostbeacontext = "",
-			icygriptime = {33.8,67.2, loop = false, type = "series"},
+			icygriptime = 30.5,
 			tailsmashtime = 27,
 			bombcount = "1",
-			breathtime = 21.5,
+			breathtime = 5.5,
 		},
 		onstart = {
 			{
 				"alert","enragecd",
 				"alert","aircd",
-				"set",{breathtime = 5.5},
 				"alert","frostbreathcd",
-				"set",{breathtime = 21.5},
+				"alert","icygripcd",
+				"set",{breathtime = 21.5, icygriptime = 77.4},
 			},
 		},
 		alerts = {
@@ -4406,6 +4406,7 @@ do
 						"alert","unchainedcd",
 						"alert","tailsmashcd",
 						"alert","frostbreathcd",
+						"alert","icygripcd",
 						"set",{unchainedtime = 30, tailsmashtime = 27, breathtime = 21.5},
 						"alert","aircd",
 						"alert","airdur",
@@ -4415,10 +4416,11 @@ do
 						"expect",{"#1#","find",L.chat_citadel["^Now, feel my master's limitless power"]},
 						"quash","frostbreathcd",
 						"quash","aircd",
-						"set",{phase = "2", unchainedtime = 80, breathtime = 8},
+						"quash","icygripcd",
+						"set",{phase = "2", unchainedtime = 80, breathtime = 8, icygriptime = 33.7},
 						"alert","frostbreathcd",
 						"alert","icygripcd",
-						"set",{breathtime = 21.5},
+						"set",{breathtime = 21.5, icygriptime = 60},
 						"tracing",{36853,36980}, -- Sindragosa, Ice Tomb
 					},
 				},
