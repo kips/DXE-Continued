@@ -7,7 +7,7 @@ local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 do
 	-- TODO: Empowered Shock cooldown for 10, 25, and 10h
 	local data = {
-		version = 21,
+		version = 22,
 		key = "bloodprincecouncil",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -224,7 +224,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellid = 72999,
+				spellname = 72999,
 				execute = {
 					{
 						"expect",{"#4#","==","&playerguid&"},
@@ -237,7 +237,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED_DOSE",
-				spellid = 72999,
+				spellname = 72999,
 				execute = {
 					{
 						"expect",{"#4#","==","&playerguid&"},
@@ -251,7 +251,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_REMOVED",
-				spellid = 72999,
+				spellname = 72999,
 				execute = {
 					{
 						"expect",{"#4#","==","&playerguid&"},
@@ -264,10 +264,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
-				spellid = {
-					72037, -- 10/25 (Note the damage entries use a different spellid from the cast)
-					71944, -- 10 (Not sure if we really need this at all)
-				},
+				spellname = 72037,
 				execute = {
 					{
 						"scheduletimer",{"fireshock",0.2},
@@ -298,15 +295,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellid = {
-					70952, -- Valanar
-					70982, -- Taldaram
-					70981, -- Keleseth
-					70983,
-					71582,
-					70934,
-					71596,
-				},
+				spellname = 70952,
 				execute = {
 					{
 						"alert","invocationcd",
@@ -328,12 +317,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
-				spellid = {
-					73037, -- 25
-					73039, -- 25h
-					72039, -- 10
-					73038, -- 10h
-				},
+				spellname = 73037,
 				execute = {
 					{
 						"quash","empoweredshockcd",
