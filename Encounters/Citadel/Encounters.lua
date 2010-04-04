@@ -3991,7 +3991,7 @@ end
 
 do
 	local data = {
-		version = 35,
+		version = 36,
 		key = "sindragosa",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -4015,11 +4015,15 @@ do
 			icygriptime = {33.8,67.2, loop = false, type = "series"},
 			tailsmashtime = 27,
 			bombcount = "1",
+			breathtime = 21.5,
 		},
 		onstart = {
 			{
 				"alert","enragecd",
 				"alert","aircd",
+				"set",{breathtime = 5.5},
+				"alert","frostbreathcd",
+				"set",{breathtime = 21.5},
 			},
 		},
 		alerts = {
@@ -4157,7 +4161,6 @@ do
 				icon = ST[71053],
 				throttle = 3,
 			},
-			-- 6.4 until frost bomb is summoned
 			frostbreathwarn = {
 				varname = format(L.alert["%s Casting"],SN[71056]),
 				type = "centerpopup",
@@ -4166,6 +4169,15 @@ do
 				flashtime = 1.5,
 				color1 = "BROWN",
 				sound = "ALERT4",
+				icon = ST[71056],
+			},
+			frostbreathcd = {
+				varname = format(L.alert["%s Cooldown"],SN[71056]),
+				type = "dropdown",
+				text = format(L.alert["%s Cooldown"],SN[71056]),
+				time = "<breathtime>",
+				flashtime = 5,
+				color1 = "BLUE",
 				icon = ST[71056],
 			},
 			mysticbuffetcd = {
@@ -4389,19 +4401,24 @@ do
 						"quash","aircd",
 						"quash","unchainedcd",
 						"quash","tailsmashcd",
-						"set",{unchainedtime = 55, tailsmashtime = 61},
+						"quash","frostbreathcd",
+						"set",{unchainedtime = 55, tailsmashtime = 61, breathtime = 53},
 						"alert","unchainedcd",
 						"alert","tailsmashcd",
-						"set",{unchainedtime = 30, tailsmashtime = 27},
+						"alert","frostbreathcd",
+						"set",{unchainedtime = 30, tailsmashtime = 27, breathtime = 21.5},
 						"alert","aircd",
 						"alert","airdur",
 					},
 					-- Last Phase
 					{
 						"expect",{"#1#","find",L.chat_citadel["^Now, feel my master's limitless power"]},
-						"set",{phase = "2", unchainedtime = 80},
+						"quash","frostbreathcd",
 						"quash","aircd",
+						"set",{phase = "2", unchainedtime = 80, breathtime = 8},
+						"alert","frostbreathcd",
 						"alert","icygripcd",
+						"set",{breathtime = 21.5},
 						"tracing",{36853,36980}, -- Sindragosa, Ice Tomb
 					},
 				},
@@ -4657,7 +4674,9 @@ do
 				},
 				execute = {
 					{
+						"quash","frostbreathcd",
 						"alert","frostbreathwarn",
+						"alert","frostbreathcd",
 					},
 				},
 			},
