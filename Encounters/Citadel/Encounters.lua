@@ -1280,7 +1280,7 @@ end
 
 do
 	local data = {
-		version = 24,
+		version = 25,
 		key = "lanathel",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -1435,11 +1435,50 @@ do
 				color1 = "GREY",
 				icon = ST[73070],
 			},
+			bloodthirstself = {
+				varname = format(L.alert["%s on self"],SN[70877]),
+				type = "centerpopup",
+				text = format("%s: %s!",SN[70877],L.alert["YOU"]),
+				time = 10,
+				flashtime = 10,
+				color1 = "WHITE",
+				icon = ST[70877],
+			},
 		},
 		windows = {
 			proxwindow = true,
 		},
 		events = {
+			-- Frenzied Bloodthirst
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellid = {
+					70877, -- 10
+					71474, -- 25
+				},
+				execute = {
+					{
+						"expect",{"#4#","==","&playerguid&"},
+						"alert","bloodthirstself",
+					},
+				},
+			},
+			-- Frenzied Bloodthirst removal
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_REMOVED",
+				spellid = {
+					70877, -- 10
+					71474, -- 25
+				},
+				execute = {
+					{
+						"expect",{"#4#","==","&playerguid&"},
+						"quash","bloodthirstself",
+					},
+				},
+			},
 			-- Swarming Shadows early
 			{
 				type = "event",
