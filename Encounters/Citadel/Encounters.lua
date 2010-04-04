@@ -685,7 +685,7 @@ end
 
 do
 	local data = {
-		version = 13,
+		version = 14,
 		key = "festergut",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -879,9 +879,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
-				spellid = {
-					69165, -- 25
-				},
+				spellname = 69165,
 				execute = {
 					{
 						"alert","inhaleblightcd",
@@ -893,10 +891,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_SUCCESS",
-				spellid = {
-					71221, -- 25/25h
-					69278, -- 10/10h?
-				},
+				spellname = 71221,
 				execute = {
 					{
 						"quash","gassporecd",
@@ -910,7 +905,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellid = 69279, -- 10/10h/25/25h
+				spellname = 69279,
 				execute = {
 					{
 						"raidicon","gassporemark",
@@ -926,12 +921,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_SUCCESS",
-				spellid = { -- Note: Don't use 71307
-					71218, -- 25
-					69240, -- 10
-					73019, -- 10h
-					73020, -- 25h
-				},
+				spellname = 69240,
 				execute = {
 					{
 						"quash","vilegascd",
@@ -944,11 +934,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellid = {
-					71218, -- 25
-					69240, -- 10
-					73020, -- 25h
-				},
+				spellname = 71218,
 				execute = {
 					{
 						"raidicon","vilegasmark",
@@ -959,12 +945,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
-				spellid = {
-					71219, -- 25
-					69195,
-					73031,
-					73032, -- 25h
-				},
+				spellname = 71219,
 				execute = {
 					{
 						"alert","pungentblightcd",
@@ -976,11 +957,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellid = {
-					72551, -- 25
-					72219, -- 10
-					72553, -- 25h
-				},
+				spellname = 72551,
 				execute = {
 					{
 						"expect",{"#4#","==","&playerguid&"},
@@ -998,11 +975,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED_DOSE",
-				spellid = {
-					72551, -- 25
-					72219, -- 10
-					72553, -- 25h
-				},
+				spellname = 72551,
 				execute = {
 					{
 						"expect",{"#4#","==","&playerguid&"},
