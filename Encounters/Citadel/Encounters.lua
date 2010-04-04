@@ -1033,7 +1033,7 @@ do
 	end
 
 	local data = {
-		version = 12,
+		version = 13,
 		key = "gunshipbattle",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -1124,20 +1124,8 @@ do
 			-- Below Zero
 			{
 				type = "combatevent",
-				eventtype = "SPELL_CAST_SUCCESS",
-				spellid = 69705,
-				execute = {
-					{
-						"alert","belowzerowarn",
-						"alert","belowzerocd",
-					},
-				},
-			},
-			-- Below Zero 2
-			{
-				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
-				spellid = 69705,
+				spellname = 69705,
 				execute = {
 					{
 						"alert","belowzerowarn",
@@ -1149,7 +1137,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_REMOVED",
-				spellid = 69705,
+				spellname = 69705,
 				execute = {
 					{
 						"quash","belowzerowarn",
@@ -1171,12 +1159,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellid = {
-					69638, -- 10
-					72307, -- 10h
-					72306, -- 25
-					72308, -- 25h
-				},
+				spellname = 69638,
 				execute = {
 					{
 						"expect",{"&npcid|#4#&","==",faction_npc},
@@ -1189,12 +1172,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED_DOSE",
-				spellid = {
-					69638, -- 10
-					72307, -- 10h
-					72306, -- 25
-					72308, -- 25h
-				},
+				spellname = 69638,
 				execute = {
 					{
 						"expect",{"&npcid|#4#&","==",faction_npc},
