@@ -3493,7 +3493,7 @@ do
 	end
 
 	local data = {
-		version = 16,
+		version = 17,
 		key = "saurfang",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -3655,11 +3655,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_SUCCESS",
-				spellid = {
-					72443, -- 25h
-					72441, -- 25
-					72385, -- 10
-				},
+				spellname = 72443,
 				execute = {
 					{
 						"alert","boilingbloodwarn",
@@ -3686,9 +3682,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellid = {
-					72410, -- 25 and 25 hard
-				},
+				spellname = 72410,
 				execute = {
 					{
 						"alert","runeofbloodcd",
@@ -3709,7 +3703,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
-				spellid = 72293, -- 25 and 25 hard
+				spellname = 72293,
 				execute = {
 					{
 						"alert","markfallenwarn",
@@ -3720,7 +3714,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellid = 72293,
+				spellname = 72293,
 				execute = {
 					{
 						"raidicon","fallenmark",
@@ -3741,7 +3735,8 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellid = 72737,
+				spellname = 72737,
+				srcnpcid = 37813,
 				execute = {
 					{
 						"alert","frenzywarn",
