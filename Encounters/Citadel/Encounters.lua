@@ -1280,7 +1280,7 @@ end
 
 do
 	local data = {
-		version = 23,
+		version = 24,
 		key = "lanathel",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -1517,11 +1517,14 @@ do
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
 				spellid = {
-					71473,
-					71525,
+					71473, -- 25
+					71525, -- 25-2
 					70867, -- 10
-					71533, -- 25h
+					70879, -- 10-2
 					71532, -- 10h
+					71530, -- 10h-2
+					71533, -- 25h
+					71531, -- 25h-2
 				},
 				execute = {
 					{
