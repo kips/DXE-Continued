@@ -350,7 +350,7 @@ end
 
 do
 	local data = {
-		version = 32,
+		version = 33,
 		key = "deathwhisper",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -526,14 +526,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
-				spellid = {
-					72500, -- 25h Cult Adherent
-					72497, -- 25h Cult Fanatic
-					72498, -- 25 Cult Adherent
-					72495, -- 25 Cult Fanatic
-					72499, -- 10h Cult Adherent
-					72496, -- 10h Cult Fanatic
-				},
+				spellname = 72500,
 				execute = {
 					{
 						"alert","martyrdomwarn",
@@ -544,9 +537,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_SUMMON",
-				spellid = {
-					71426, -- 10,10h,25,25h
-				},
+				spellname = 71426,
 				execute = {
 					{
 						"alert","summonspiritwarn",
@@ -557,12 +548,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellid = {
-					71001, -- 10
-					72109, -- 10h
-					72108, -- 25
-					72110, -- 25h
-				},
+				spellname = 71001,
 				execute = {
 					{
 						"expect",{"#4#","==","&playerguid&"},
@@ -574,7 +560,8 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_REMOVED",
-				spellid = 70842,
+				spellname = 70842,
+				srcnpcid = 36855, -- Deathwhisper
 				execute = {
 					{
 						"alert","manabarrierwarn",
@@ -588,7 +575,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellid = 71204,
+				spellname = 71204,
 				execute = {
 					{
 						"expect",{"#4#","==","&playerguid&"},
@@ -606,7 +593,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED_DOSE",
-				spellid = 71204,
+				spellname = 71204,
 				execute = {
 					{
 						"expect",{"#4#","==","&playerguid&"},
@@ -624,7 +611,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellid = 71237, -- 10/25
+				spellname = 71237,
 				execute = {
 					{
 						"expect",{"#4#","==","&playerguid&"},
@@ -640,7 +627,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellid = 71289,
+				spellname = 71289,
 				execute = {
 					{
 						"raidicon","dominatemark",
@@ -666,12 +653,8 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
-				spellid = {
-					71420, -- 10
-					72501, -- 10h
-					72007, -- 25
-					72502, -- 25h
-				},
+				spellname = 71420,
+				srcnpcid = 36855, -- Deathwhisper
 				execute = {
 					{
 						"alert","frostboltwarn",
@@ -682,12 +665,8 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_INTERRUPT",
-				spellid2 = {
-					71420, -- 10
-					72501, -- 10h
-					72007, -- 25
-					72502, -- 25h
-				},
+				spellname2 = 71420,
+				dstnpcid = 36855, -- Deathwhisper
 				execute = {
 					{
 						"quash","frostboltwarn",
