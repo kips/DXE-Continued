@@ -1346,6 +1346,13 @@ local function InitializeOptions()
 							name = L.options["Alerts are split into three categories: cooldowns, durations, and warnings. Cooldown and duration alerts can fire a message before they end and when they popup. Warning alerts can only fire a message when they popup. Alerts suffixed self can only fire a popup message even if it is a duration"].."\n",
 							order = 2,
 						},
+						AnnounceToRaid = {
+							order = 2.5,
+							type = "toggle",
+							name = L.options["Announce to raid"],
+							desc = L.options["Announce warning messages through raid warning chat"],
+							width = "full",
+						},
 						ClrWarningText = {
 							order = 3,
 							type = "toggle",
@@ -1386,6 +1393,11 @@ local function InitializeOptions()
 								DurBeforeMessage = {type = "toggle", name = L.options["Durations before ending"], order = 5, width = "full"},
 								WarnPopupMessage = {type = "toggle", name = L.options["Warning popups"], order = 6, width = "full"},
 							}
+						},
+						output_desc = {
+							type = "description",
+							order = 7,
+							name = L.options["You can output warning messages many different ways and they will only be seen by you. If you don't want to see these then click |cffffd200'None'|r"],
 						},
 						Output = Alerts:GetSinkAce3OptionsDataTable(),
 					},
