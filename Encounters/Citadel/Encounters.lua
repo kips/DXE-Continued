@@ -3754,7 +3754,7 @@ end
 
 do
 	local data = {
-		version = 37,
+		version = 38,
 		key = "sindragosa",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -4107,7 +4107,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
-				spellid = 71077,
+				spellname = 71077,
 				execute = {
 					{
 						"alert","tailsmashcd",
@@ -4118,12 +4118,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellid = {
-					72529,
-					70127,
-					72528, -- 25
-					72530, -- 25h
-				},
+				spellname = 72529,
 				execute = {
 					{
 						"expect",{"&timeleft|mysticbuffetcd&","<","3"},
@@ -4138,12 +4133,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED_DOSE",
-				spellid = {
-					72529,
-					70127,
-					72528, -- 25
-					72530, -- 25h
-				},
+				spellname = 72529,
 				execute = {
 					{
 						"expect",{"&timeleft|mysticbuffetcd&","<","3"},
@@ -4192,9 +4182,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
-				spellid = {
-					69712, -- 10,25,25h
-				},
+				spellname = 69712,
 				execute = {
 					{
 						"alert","icetombwarn",
@@ -4205,7 +4193,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellid = 70157, -- 25,25h
+				spellname = 70157,
 				execute = {
 					{
 						-- fires 2 to 5 times within 0.1 seconds
@@ -4220,9 +4208,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellid = {
-					70126, -- 10,25,25h
-				},
+				spellname = 70126,
 				execute = {
 					{
 						"expect",{"<phase>","==","1"},
@@ -4267,9 +4253,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_REMOVED",
-				spellid = {
-					70126, -- 10,25,25h
-				},
+				spellname = 70126,
 				execute = {
 					{
 						"removeraidicon","#5#",
@@ -4280,9 +4264,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_SUCCESS",
-				spellid = {
-					70117, -- 10,25,25h
-				},
+				spellname = 70117,
 				execute = {
 					{
 						"expect",{"<phase>","==","2"},
@@ -4294,12 +4276,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
-				spellid = {
-					70123, -- 10
-					71048, -- 10h
-					71047, -- 25
-					71049, -- 25h
-				},
+				spellname = 70123,
 				execute = {
 					{
 						"alert","blisteringcoldwarn",
@@ -4310,9 +4287,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_SUCCESS",
-				spellid = {
-					69762, -- 10,25,25h
-				},
+				spellname = 69762,
 				execute = {
 					{
 						"alert","unchainedcd",
@@ -4323,9 +4298,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellid = {
-					69762, -- 10,25,25h
-				},
+				spellname = 69762,
 				execute = {
 					{
 						"expect",{"#4#","==","&playerguid&"},
@@ -4337,9 +4310,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellid = {
-					69766, -- 10,25,25h
-				},
+				spellname = 69766,
 				execute = {
 					{
 						"expect",{"#4#","==","&playerguid&"},
@@ -4352,9 +4323,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED_DOSE",
-				spellid = {
-					69766, -- 10,25,25h
-				},
+				spellname = 69766,
 				execute = {
 					{
 						"expect",{"#4#","==","&playerguid&"},
@@ -4368,9 +4337,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_REMOVED",
-				spellid = {
-					69766, -- 10,25,25h
-				},
+				spellname = 69766,
 				execute = {
 					{
 						"expect",{"#4#","==","&playerguid&"},
@@ -4382,9 +4349,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellid = {
-					70106, -- 10,25,25h
-				},
+				spellname = 70106,
 				execute = {
 					{
 						"expect",{"#4#","==","&playerguid&"},
@@ -4397,9 +4362,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED_DOSE",
-				spellid = {
-					70106, -- 10,25,25h
-				},
+				spellname = 70106,
 				execute = {
 					{
 						"expect",{"#4#","==","&playerguid&"},
@@ -4411,32 +4374,11 @@ do
 					},
 				},
 			},
-			--[[
-			-- Frost Bomb
-			{
-				type = "combatevent",
-				eventtype = "SPELL_SUMMON",
-				spellid = {
-					69845, -- 10
-					71053, -- 25
-				},
-				execute = {
-					{
-						"alert","frostbombwarn",
-					},
-				},
-			},
-			]]
 			-- Frost Breath
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
-				spellid = {
-					69649, -- 10
-					71056, -- 25
-					71057, -- 10h
-					71058, -- 25h
-				},
+				spellname = 69649,
 				execute = {
 					{
 						"quash","frostbreathcd",
