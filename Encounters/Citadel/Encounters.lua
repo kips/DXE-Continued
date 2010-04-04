@@ -1194,7 +1194,7 @@ end
 
 do
 	local data = {
-		version = 25,
+		version = 26,
 		key = "lanathel",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -1375,7 +1375,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellid = 70923,
+				spellname = 70923,
 				execute = {
 					{
 						"expect",{"#4#","~=","&playerguid&"},
@@ -1387,10 +1387,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellid = {
-					70877, -- 10
-					71474, -- 25
-				},
+				spellname = 70877,
 				execute = {
 					{
 						"expect",{"#4#","==","&playerguid&"},
@@ -1402,10 +1399,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_REMOVED",
-				spellid = {
-					70877, -- 10
-					71474, -- 25
-				},
+				spellname = 70877,
 				execute = {
 					{
 						"expect",{"#4#","==","&playerguid&"},
@@ -1438,7 +1432,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_REMOVED",
-				spellid = 71265,
+				spellname = 71265,
 				execute = {
 					{
 						"expect",{"#4#","~=","&playerguid&"},
@@ -1454,7 +1448,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_SUCCESS",
-				spellid = 71336, -- 10/25
+				spellname = 71336, -- 10/25
 				execute = {
 					{
 						"alert","pactcd",
@@ -1465,7 +1459,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellid = 71340, -- 10/10h/25/25h
+				spellname = 71340,
 				execute = {
 					{
 						"expect",{"#4#","==","&playerguid&"},
@@ -1477,7 +1471,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_REMOVED",
-				spellid = 71340,
+				spellname = 71340,
 				execute = {
 					{
 						"expect",{"#4#","==","&playerguid&"},
@@ -1489,16 +1483,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellid = {
-					71473, -- 25
-					71525, -- 25-2
-					70867, -- 10
-					70879, -- 10-2
-					71532, -- 10h
-					71530, -- 10h-2
-					71533, -- 25h
-					71531, -- 25h-2
-				},
+				spellname = 71473,
 				execute = {
 					{
 						"expect",{"#4#","==","&playerguid&"},
@@ -1510,7 +1495,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellid = 71772,
+				spellname = 71772,
 				execute = {
 					{
 						"quash","bloodboltcd",
