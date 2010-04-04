@@ -1558,7 +1558,7 @@ end
 
 do
 	local data = {
-		version = 57,
+		version = 58,
 		key = "lichking",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -1603,7 +1603,6 @@ do
 			viletime = {18.9,30.5, loop = false, type = "series"}, -- most of the time it's 20.5 initially
 			harvestsoultext = "",
 			ragingtext = "",
-			enragecount = 0,
 			traptext = "",
 			traptime = {16.1,15.5,loop = false, type = "series"},
 			ragingtime = 6,
@@ -1678,7 +1677,7 @@ do
 				varname = format(L.alert["%s Warning"],format("%s %s",L.npc_citadel["Shambling Horror"],SN[72143])),
 				type = "simple",
 				text = format("%s: %s",SN[72143],L.npc_citadel["Shambling Horror"]),
-				time = 6,
+				time = 5,
 				color1 = "PEACH",
 				icon = ST[72143],
 			},
@@ -2143,29 +2142,13 @@ do
 				eventtype = "SPELL_CAST_START",
 				spellid = {
 					72143, -- 10
+					72147, -- 10h
 					72146, -- 25
 					72148, -- 25h
 				},
 				execute = {
 					{
 						"alert","shamblinghorrorenragewarn",
-						"set",{enragecount = "INCR|1"},
-					},
-				},
-			},
-			-- Shambling Horror Enrage removal
-			{
-				type = "combatevent",
-				eventtype = "SPELL_AURA_REMOVED",
-				spellid = {
-					72143, -- 10
-					72146, -- 25
-				},
-				execute = {
-					{
-						"set",{enragecount = "DECR|1"},
-						"expect",{"<enragecount>","==","0"},
-						"quash","shamblinghorrorenragewarn",
 					},
 				},
 			},
