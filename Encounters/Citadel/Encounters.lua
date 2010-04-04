@@ -5,7 +5,6 @@ local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 ---------------------------------
 
 do
-	-- TODO: Empowered Shock cooldown for 10, 25, and 10h
 	local data = {
 		version = 22,
 		key = "bloodprincecouncil",
@@ -22,13 +21,6 @@ do
 		onactivate = {
 			combatstop = true,
 			tracerstart = true,
-			--[[
-			tracing = {
-				37970, -- Valanar
-				37972, -- Keleseth
-				37973, -- Taldaram
-			},
-			]]
 			unittracing = {
 				"boss3", -- Valanar
 				"boss2",
@@ -700,8 +692,8 @@ do
 			defeat = 36626,
 		},
 		userdata = {
-			inhaletime = {29, 33.5, loop = false, type = "series"}, -- placeholder
-			sporetime = {21,40,40,51, loop = false, type = "series"}, -- placeholder
+			inhaletime = {29, 33.5, loop = false, type = "series"},
+			sporetime = {21,40,40,51, loop = false, type = "series"},
 			sporeunits = {type = "container", wipein = 2},
 			pungenttime = {133, 138, loop = false, type = "series"},
 			gastrictext = "",
@@ -2351,7 +2343,6 @@ do
 				sound = "ALERT5",
 				icon = ST[69076],
 			},
-			-- duration is underministic 36.1, 37.3, 42.6, 34.4
 			bonestormdur = {
 				varname = format(L.alert["%s Duration"],SN[69076]),
 				type = "centerpopup",
