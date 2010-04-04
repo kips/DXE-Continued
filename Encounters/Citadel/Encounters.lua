@@ -3193,7 +3193,7 @@ end
 
 do
 	local data = {
-		version = 12,
+		version = 13,
 		key = "rotface",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -3355,11 +3355,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellid = {
-					69674, -- 10
-					71224, -- 25
-					73023, -- 25h
-				},
+				spellname = 69674,
 				execute = {
 					{
 						"raidicon","infectionmark",
@@ -3378,11 +3374,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_REMOVED",
-				spellid = {
-					69674, -- 10
-					71224, -- 25
-					73023, -- 25h
-				},
+				spellname = 69674,
 				execute = {
 					{
 						"removeraidicon","#5#",
@@ -3393,7 +3385,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
-				spellid = 69508,
+				spellname = 69508,
 				execute = {
 					{
 						"alert","slimespraycd",
@@ -3406,11 +3398,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_DAMAGE",
-				spellid = {
-					71213, -- 25
-					73190, -- 25h
-					69507, -- 10
-				},
+				spellname = 71213,
 				execute = {
 					{
 						"expect",{"#4#","==","&playerguid&"},
@@ -3422,11 +3410,9 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellid = {
-					71215, -- 25
-					69789, -- 10
-					71588, -- 25h
-					71208, -- 25h Sticky Ooze  use the same warning
+				spellname = {
+					71215, -- Ooze Flood
+					71208, -- Sticky Ooze
 				},
 				execute = {
 					{
@@ -3439,9 +3425,9 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED_DOSE",
-				spellid = {
-					71588, -- 25h
-					71208, -- 25h Sticky Ooze  use the same warning
+				spellname = {
+					71588, -- Ooze Flood
+					71208, -- Sticky Ooze
 				},
 				execute = {
 					{
@@ -3454,7 +3440,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
-				spellid = 69839, -- 25
+				spellname = 69839,
 				execute = {
 					{
 						"alert","unstableoozewarn",
@@ -3465,7 +3451,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED_DOSE",
-				spellid = 69558, -- 10/25
+				spellname = 69558,
 				execute = {
 					{
 						"alert","unstableoozestackwarn",
