@@ -2523,7 +2523,7 @@ end
 
 do
 	local data = {
-		version = 38,
+		version = 39,
 		key = "putricide",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -2869,10 +2869,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_SUCCESS",
-				spellid = {
-					70341, -- 10/25
-					70343, -- 10/25
-				},
+				spellname = 70341,
 				execute = {
 					{
 						"alert","puddlecd",
@@ -2883,12 +2880,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellid = {
-					72463, -- 25
-					72451, -- 10
-					72671, -- 10h
-					72672, -- 25h
-				},
+				spellname = 72463,
 				execute = {
 					{
 						"expect",{"#4#","==","&playerguid&"},
@@ -2910,11 +2902,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED_DOSE",
-				spellid = {
-					72463, -- 25
-					72451, -- 10
-					72672, -- 25h
-				},
+				spellname = 72463,
 				execute = {
 					{
 						"expect",{"#4#","==","&playerguid&"},
@@ -2936,12 +2924,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_SUCCESS",
-				spellid = {
-					72615, -- 25
-					72295, -- 10
-					74280, -- 10h
-					74281, -- 25h
-				},
+				spellname = 72615,
 				execute = {
 					{
 						"quash","malleablegoocd",
@@ -2954,7 +2937,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_SUCCESS",
-				spellid = 71255,
+				spellname = 71255,
 				execute = {
 					{
 						"quash","gasbombcd",
@@ -2967,7 +2950,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
-				spellid = 71617, -- 10/25
+				spellname = 71617,
 				execute = {
 					{
 						"quash","puddlecd",
@@ -2983,10 +2966,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
-				spellid ={
-					72843, -- 25h
-					72842, -- 10h
-				},
+				spellname = 72843,
 				execute = {
 					{
 						"quash","puddlecd",
@@ -3002,7 +2982,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellid = 71615,
+				spellname = 71615,
 				execute = {
 					{
 						"expect",{"#4#","==","&playerguid&"},
@@ -3014,9 +2994,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_REMOVED",
-				spellid = {
-					71615, -- Tear Gas
-				},
+				spellname = 71615,
 				execute = {
 					{
 						"expect",{"#4#","==","&playerguid&"},
@@ -3031,30 +3009,13 @@ do
 					},
 				},
 			},
-			--[[
-			-- Variable removal
-			{
-				type = "combatevent",
-				eventtype = "SPELL_AURA_REMOVED",
-				spellid = {
-					74118, -- Ooze Variable
-					74119, -- Gas Variable
-				},
-				execute = {
-					{
-					},
-				},
-			},
-			]]
 			-- Create Concoction/Guzzle Potions
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
-				spellid = {
-					72851, -- Create Concoction 10h
-					72852, -- Create Concoction 25h
-					73121, -- Guzzle Potions 10h
-					73122, -- Guzzle Potions 25h
+				spellname = {
+					72851, -- Create Concoction
+					73121, -- Guzzle Potions
 				},
 				execute = {
 					{
@@ -3086,12 +3047,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
-				spellid = {
-					70672, -- 10
-					72832, -- 10h
-					72455, -- 25
-					72833, -- 25h
-				},
+				spellname = 70672,
 				execute = {
 					{
 						"quash","oozeaggrocd",
@@ -3103,12 +3059,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellid = {
-					70672, -- 10
-					72455, -- 25
-					72832, -- 10h
-					72833, -- 25h
-				},
+				spellname = 70672,
 				execute = {
 					{
 						"raidicon","gaseousbloatmark",
@@ -3127,12 +3078,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_REMOVED",
-				spellid = {
-					72455, -- 25
-					70672, -- 10
-					72832, -- 10h
-					72833, -- 25h
-				},
+				spellname = 72455,
 				execute = {
 					{
 						"removeraidicon","#5#",
@@ -3143,12 +3089,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
-				spellid = {
-					72836, -- 25
-					70447, -- 10
-					72837, -- 10h
-					72838, -- 25h
-				},
+				spellname = 72836,
 				execute = {
 					{
 						"quash","oozeaggrocd",
@@ -3160,12 +3101,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellid = {
-					72836, -- 25
-					70447, -- 10
-					72837, -- 10h
-					72838, -- 25h
-				},
+				spellname = 72836,
 				execute = {
 					{
 						"raidicon","oozeadhesivemark",
@@ -3181,12 +3117,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_REMOVED",
-				spellid = {
-					72836, -- 25
-					70447, -- 10
-					72837, -- 10h
-					72838, -- 25h
-				},
+				spellname = 72836,
 				execute = {
 					{
 						"removeraidicon","#5#",
@@ -3197,12 +3128,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
-				spellid = {
-					71966,
-					70351,
-					71967, -- 10h
-					71968, -- 25h
-				},
+				spellname = 71966,
 				execute = {
 					{
 						"quash","unstableexperimentcd",
@@ -3216,11 +3142,9 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_DAMAGE",
-				spellid = {
-					72456, -- 25
-					72869, -- 25h Slime Puddle
-					70346, -- 10 Slime Puddle
-					72868, -- 10h Slime Puddle
+				spellname = {
+					72456, -- Mutated Slime
+					72869, -- Slime Puddle
 				},
 				execute = {
 					{
@@ -3233,10 +3157,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_SUCCESS",
-				spellid = {
-					72855, -- 10h
-					72856, -- 25h
-				},
+				spellname = 72855,
 				execute = {
 					{
 						"alert","unboundplaguecd",
@@ -3247,10 +3168,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellid = {
-					72855, -- 10h
-					72856, -- 25h
-				},
+				spellname = 72855,
 				execute = {
 					{
 						"raidicon","unboundplaguemark",
