@@ -32,6 +32,7 @@
 local addon = DXE
 local L = addon.L
 local NID = addon.NID
+local SN = addon.SN
 
 local GetTime = GetTime
 local wipe = table.wipe
@@ -775,6 +776,11 @@ do
 		end,
 	}
 
+	local transforms = {
+		spellname = function(spellid) return SN[spellid] end,
+		spellname2 = function(spellid) return SN[spellid] end,
+	}
+
 	function module:COMBAT_EVENT(event,timestamp,eventtype,...)
 		local bundles = eventtype_to_bundle[eventtype]
 		if bundles then
@@ -795,13 +801,15 @@ do
 		end
 	end
 
-	local function to_hash(work)
+	local function to_hash(work,trans)
 		if type(work) ~= "table" then
+			if trans then work = trans(work) end
 			return {[work] = true}
 		else
 			-- work is an array
 			local t = {}
 			for k,v in pairs(work) do
+				if trans then v = trans(v) end
 				t[v] = true
 			end
 			return t
@@ -828,7 +836,7 @@ do
 		local filter = {}
 		for attr in pairs(attribute_handles) do
 			if info[attr] then
-				filter[attr] = to_hash(info[attr])
+				filter[attr] = to_hash(info[attr],transforms[attr])
 			end
 		end
 		return filter

@@ -175,8 +175,8 @@ local eventBaseKeys = {
 	spellid2 = opttablenumber,
 	srcnpcid = opttablenumber,
 	dstnpcid = opttablenumber,
-	spellname = optstringtable,
-	spellname2 = optstringtable,
+	spellname = opttablenumber,
+	spellname2 = opttablenumber,
 	execute = istable,
 }
 
@@ -721,44 +721,6 @@ local function validateSpellID(data,info,errlvl,k,...)
 	end
 end
 
-local spellnames
-local function fillspellnames()
-	if not spellnames then
-		spellnames = {}
-		-- 100000 takes 0.1011s
-		-- 200000 takes 0.1021s
-		local upper = 200000
-		for i=1,upper do
-			local spellname = GetSpellInfo(i)
-			if spellname then
-				spellnames[spellname] = true
-			end
-		end
-		-- 3.3.3a 26837 distinct spell names
-	end
-end
-
-local function validateSpellName(data,info,errlvl,k,...)
-	errlvl = errlvl + 1
-	fillspellnames()
-	if info[k] and type(info[k]) == "string" then
-		local exists = spellnames[info[k]]
-		if not exists then
-			err("["..info[k].."]: unknown spell name",errlvl,k,...)
-		end
-	elseif info[k] and type(info[k]) == "table" then
-		validateIsArray(info[k],errlvl,k,...)
-		for i,spellname in ipairs(info[k]) do
-			local exists = spellnames[spellname]
-			if not spellname then
-				err("["..spellname.."]: unknown spell name",errlvl,i,k,...)
-			end
-		end
-	elseif info[k] then
-		err("invalid spell name(s)",errlvl,k,...)
-	end
-end
-
 local function validateUserData(data,info,errlvl,...)
 	errlvl = errlvl + 1
 	for var,value in pairs(info) do
@@ -800,7 +762,7 @@ local function validateEvent(data,info,errlvl,...)
 		elseif k == "spellid" or k == "spellid2" then
 			validateSpellID(data,info,errlvl,k,...)
 		elseif k == "spellname" or k == "spellname2" then
-			validateSpellName(data,info,errlvl,k,...)
+			validateSpellID(data,info,errlvl,k,...)
 		elseif k == "srcnpcid" or k == "dstnpcid" then
 			validateNpcid(data,info,errlvl,k,...)
 		elseif k == "execute" then
