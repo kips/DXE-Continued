@@ -2301,7 +2301,7 @@ end
 
 do
 	local data = {
-		version = 14,
+		version = 15,
 		key = "marrowgar",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -2427,9 +2427,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
-				spellid = {
-					69076, -- 25 hard
-				},
+				spellname = 69076,
 				execute = {
 					{
 						"alert","bonestormwarn",
@@ -2442,9 +2440,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellid = {
-					69076,
-				},
+				spellname = 69076,
 				execute = {
 					{
 						"quash","bonestormcd",
@@ -2457,9 +2453,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_REMOVED",
-				spellid = {
-					69076,
-				},
+				spellname = 69076,
 				execute = {
 					{
 						"quash","bonestormdur",
@@ -2470,12 +2464,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellid = {
-					70823, -- 25
-					70825, -- 25 hard
-					69146, -- 10
-					70824, -- 10 hard
-				},
+				spellname = 70823,
 				execute = {
 					{
 						"expect",{"#4#","==","&playerguid&"},
@@ -2487,12 +2476,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
-				spellid = {
-					70826, -- 25
-					72089, -- 25 hard
-					69057, -- 10
-					73144, -- 10 hard
-				},
+				spellname = 70826,
 				execute = {
 					{
 						"alert","graveyardwarn",
@@ -2504,10 +2488,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_SUMMON",
-				spellid = {
-					69062, -- 10, 25
-					72670, -- 10
-				},
+				spellname = 69062,
 				execute = {
 					{
 						"alert","bonedachievementdur",
@@ -2521,7 +2502,7 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_REMOVED",
-				spellid = 69065, -- different spellid from SPELL_SUMMON
+				spellname = 69065, -- different spellid from SPELL_SUMMON
 				execute = {
 					{
 						"expect",{"#4#","~=","&playerguid&"},
