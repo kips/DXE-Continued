@@ -1522,6 +1522,12 @@ local function InitializeOptions()
 							max = 3,
 							step = 0.05,
 						},
+						EnableOscillations = {
+							type = "toggle",
+							name = L.options["Enable Oscillations"],
+							desc = L.options["Enables the strobing effect"],
+							order = 350,
+						},
 						FlashOscillations = {
 							type = "range",
 							name = L.options["Oscillations"],
@@ -1530,6 +1536,7 @@ local function InitializeOptions()
 							min = 1,
 							max = 10,
 							step = 1,
+							disabled = function() return Alerts.db.profile.DisableScreenFlash or not Alerts.db.profile.EnableOscillations end,
 						},
 						blank = genblank(450),
 						ConstantClr = {

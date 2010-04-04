@@ -35,6 +35,7 @@ local defaults = {
 		-- Flash
 		FlashAlpha = 0.6,
 		FlashDuration = 0.8,
+		EnableOscillations = true,
 		FlashOscillations = 2,
 		FlashTexture = "Interface\\Tooltips\\UI-Tooltip-Background",
 		ConstantClr = false,
@@ -196,7 +197,7 @@ end
 ---------------------------------------------
 
 do
-	local FLASH_DURATION,PERIOD,AMP,MULT
+	local FLASH_DURATION,PERIOD,AMP,MULT,OSC
 
 	local flash = CreateFrame("Frame","DXEAlertsFlash",UIParent)
 	flash:SetFrameStrata("BACKGROUND")
@@ -209,9 +210,11 @@ do
 	local function OnUpdate(self,elapsed)
 		counter = counter + elapsed
 		if counter > FLASH_DURATION then self:Hide() end
-		local p = counter % PERIOD
-		if p > AMP then p = PERIOD - p end
-		self:SetAlpha(p * MULT)
+		if OSC then
+			local p = counter % PERIOD
+			if p > AMP then p = PERIOD - p end
+			self:SetAlpha(p * MULT)
+		end
 	end
 
 	flash:SetScript("OnUpdate",OnUpdate)
@@ -235,11 +238,12 @@ do
 			t:SetVertexColor(c.r,c.g,c.b,pfl.FlashAlpha)
 		end
 		counter = 0
+		OSC = pfl.EnableOscillations
 		FLASH_DURATION = pfl.FlashDuration
 		PERIOD = FLASH_DURATION / pfl.FlashOscillations
 		AMP = PERIOD / 2
 		MULT = 1 / AMP
-		flash:SetAlpha(0)
+		flash:SetAlpha(OSC and 0 or 1)
 		flash:Show()
 	end
 end
