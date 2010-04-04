@@ -1444,11 +1444,31 @@ do
 				color1 = "WHITE",
 				icon = ST[70877],
 			},
+			frenzywarn = {
+				varname = format(L.alert["%s Warning"],SN[70923]),
+				type = "simple",
+				text = format("%s: #5#",SN[70923]),
+				time = 3,
+				sound = "ALERT7",
+				icon = ST[70923],
+			},
 		},
 		windows = {
 			proxwindow = true,
 		},
 		events = {
+			-- Uncontrollable Frenzy
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellid = 70923,
+				execute = {
+					{
+						"expect",{"#4#","~=","&playerguid&"},
+						"alert","frenzywarn",
+					},
+				},
+			},
 			-- Frenzied Bloodthirst
 			{
 				type = "combatevent",
