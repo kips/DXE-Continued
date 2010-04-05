@@ -1652,6 +1652,7 @@ do
 				time = 3,
 				flashscreen = true,
 				sound = "ALERT3",
+				throttle = 4,
 				icon = ST[72762],
 			},
 			defilecd = {
@@ -1664,13 +1665,23 @@ do
 				icon = ST[72762],
 			},
 			remorsewarn = {
-				varname = format(L.alert["%s Warning"],SN[68981]),
+				varname = format(L.alert["%s Casting"],SN[68981]),
 				type = "centerpopup",
 				text = format(L.alert["%s Casting"],SN[68981]),
 				time = 2.5,
 				color1 = "INDIGO",
 				sound = "ALERT4",
 				icon = ST[68981],
+			},
+			remorseself = {
+				varname = format(L.alert["%s on self"],SN[68981]),
+				type = "simple",
+				text = format("%s: %s! %s!",SN[68981],L.alert["YOU"],L.alert["MOVE AWAY"]),
+				time = 3,
+				throttle = 4,
+				sound = "ALERT11",
+				icon = ST[68981],
+				flashscreen = true,
 			},
 			remorsedur = {
 				varname = format(L.alert["%s Duration"],SN[68981]),
@@ -2152,6 +2163,18 @@ do
 					{
 						"quash","remorsewarn",
 						"alert","remorsedur",
+					},
+				},
+			},
+			-- Remorseless Winter self
+			{
+				type = "combatevent",
+				eventtype = "SPELL_DAMAGE",
+				spellname = 73791,
+				execute = {
+					{
+						"expect",{"#4#","==","&playerguid&"},
+						"alert","remorseself",
 					},
 				},
 			},
