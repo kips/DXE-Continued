@@ -199,21 +199,21 @@ do
 		playerguid = function() return addon.PGUID end,
 		playername = function() return addon.PNAME end,
 		vehicleguid  = function() return UnitGUID("vehicle") or "" end,
-		difficulty = function() return tostring(addon:GetRaidDifficulty()) end,
+		difficulty = function() return addon:GetRaidDifficulty() end,
 		-- First health watcher
 		tft = tft,
-		tft_unitexists = function() return tostring(UnitExists(tft())) end,
-		tft_isplayer = function() return tostring(UnitIsUnit(tft(),"player")) end,
-		tft_unitname = function() return tostring(UnitName(tft())) end,
+		tft_unitexists = function() return UnitExists(tft()) end,
+		tft_isplayer = function() return UnitIsUnit(tft(),"player") end,
+		tft_unitname = function() return UnitName(tft()) end,
 		--- Functions with passable arguments
 		-- Get's an alert's timeleft
-		timeleft = function(id,delta) return tostring(Alerts:GetTimeleft(id) + (tonumber(delta) or 0)) end,
+		timeleft = function(id,delta) return Alerts:GetTimeleft(id) + (tonumber(delta) or 0) end,
 		npcid = function(guid) return NID[guid] or "" end,
-		playerdebuff = function(debuff) return tostring(not not UnitDebuff("player",debuff)) end,
-		playerbuff = function(buff) return tostring(not not UnitBuff("player",buff)) end,
-		debuffstacks = function(unit,debuff) local c = select(4,UnitDebuff(unit,debuff)) return tostring(c) end,
-		buffstacks = function(unit,buff) local c = select(4,UnitBuff(unit,buff)) return tostring(c) end,
-		hasicon = function(unit,icon) return tostring(RaidIcons:HasIcon(unit,icon)) end,
+		playerdebuff = function(debuff) return not not UnitDebuff("player",debuff) end,
+		playerbuff = function(buff) return not not UnitBuff("player",buff) end,
+		debuffstacks = function(unit,debuff) local c = select(4,UnitDebuff(unit,debuff)) return c end,
+		buffstacks = function(unit,buff) local c = select(4,UnitBuff(unit,buff)) return c end,
+		hasicon = function(unit,icon) return RaidIcons:HasIcon(unit,icon) end,
 		closest = function(container) return addon:FindClosestUnit(userdata[container]) end,
 	}
 
@@ -221,9 +221,9 @@ do
 	do
 		for i=2,4 do
 			local tft = function() return HW[i].tracer:First() and HW[i].tracer:First().."target" or "" end
-			local tft_unitexists = function() return tostring(UnitExists(tft())) end
-			local tft_isplayer = function() return tostring(UnitIsUnit(tft(),"player")) end
-			local tft_unitname = function() return tostring(UnitName(tft())) end
+			local tft_unitexists = function() return UnitExists(tft()) end
+			local tft_isplayer = function() return UnitIsUnit(tft(),"player") end
+			local tft_unitname = function() return UnitName(tft()) end
 			RepFuncs["tft"..i] = tft
 			RepFuncs["tft"..i.."_unitexists"] = tft_unitexists
 			RepFuncs["tft"..i.."_isplayer"] = tft_isplayer
@@ -261,16 +261,16 @@ do
 			func = RepFuncs[func]
 			if not func then return end
 			--@debug@
-			debug("replace_funcs",format("func: %s ret: %s",str,func(split("|",args))))
+			debug("replace_funcs",format("func: %s ret: %s",str,tostring(func(split("|",args)))))
 			--@end-debug@
-			return func(split("|",args))
+			return tostring(func(split("|",args)))
 		else
 			local func = RepFuncs[str]
 			if not func then return end
 			--@debug@
-			debug("replace_funcs",format("func: %s ret: %s",str,func()))
+			debug("replace_funcs",format("func: %s ret: %s",str,tostring(func())))
 			--@end-debug@
-			return func()
+			return tostring(func())
 		end
 	end
 
