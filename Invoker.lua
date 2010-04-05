@@ -353,15 +353,13 @@ do
 			-- ^					 ^
 			-- num triplets    num logical ops
 
-			local nres = 1
-			local x = (#info + 1) / 4
-			for i=1,x do
+			local nres = (#info + 1) / 4
+			for i=1,nres do
 				-- left index of triplet
 				local j = 4*i - 3
 				local v1,op,v2 = info[j],info[j+1],info[j+2]
 				local v = ops[op](ReplaceTokens(v1),ReplaceTokens(v2))
-				t[nres] = v
-				nres = nres + 1
+				t[i] = v
 			end
 			local ret = t[1]
 			for i=2,nres do

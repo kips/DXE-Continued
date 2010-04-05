@@ -411,17 +411,32 @@ function validateCommandLine(data,type,info,errlvl,...)
 	validateVal(info,oktype,errlvl,type,...)
 	if type == "expect" then
 		validateIsArray(info,errlvl,type,...)
-		if #info ~= 3 then
-			err("not an array of size 3",errlvl,type,...)
+		if (#info + 1) % 4 ~= 0 then
+			err("invalid expect array - got '"..#info.."' entries",errlvl,type,...)
 		end
-		for _,str in ipairs(info) do
-			validateVal(str,isstring,errlvl,type,...)
+		for i,str in ipairs(info) do
+			validateVal(str,isstring,errlvl,i,type,...)
 		end
-		if not conditions[info[2]] then
-			err("unknown condition",errlvl,type,...)
+		-- check logical operators
+		local nres = (#info + 1) / 4
+		for i=2,nres do
+			local ix = (i-1)*4
+			local log_op = info[ix]
+			if log_op ~= "AND" and log_op ~= "OR" then
+				err("unknown logical operator - got '"..log_op.."'",errlvl,ix,type,...)
+			end
 		end
-		validateReplaces(data,info[1],errlvl,type,...)
-		validateReplaces(data,info[3],errlvl,type,...)
+		-- check triplets
+		for i=1,nres do
+			-- left index of triplet
+			local j = 4*i - 3
+			local v1,op,v2 = info[j],info[j+1],info[j+2]
+			if not conditions[op] then
+				err("unknown condition - got '"..op.."'",errlvl,j+1,type,...)
+			end
+			validateReplaces(data,v1,errlvl,j,type,...)
+			validateReplaces(data,v2,errlvl,j+2,type,...)
+		end
 	elseif type == "set" then
 		for var,value in pairs(info) do
 			if not data.userdata or not data.userdata[var] then
