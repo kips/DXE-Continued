@@ -337,9 +337,49 @@ do
 	end
 	--@end-debug@
 
+	local t = {}
+	local function process(info)
+		if #info == 3 then
+			return ops[info[2]](ReplaceTokens(info[1]),ReplaceTokens(info[3]))
+		else
+			-- there are at least two triplets
+			--
+			-- left to right association
+			-- ex. (((a and b) or c) and d)
+			--
+			-- XXX A XXX A XXX A XXX
+			--
+			-- 3*x          + (x-1)           = 4x - 1 = total number
+			-- ^					 ^
+			-- num triplets    num logical ops
+
+			local nres = 1
+			local x = (#info + 1) / 4
+			for i=1,x do
+				-- left index of triplet
+				local j = 4*i - 3
+				local v1,op,v2 = info[j],info[j+1],info[j+2]
+				local v = ops[op](ReplaceTokens(v1),ReplaceTokens(v2))
+				t[nres] = v
+				nres = nres + 1
+			end
+			local ret = t[1]
+			for i=2,nres do
+				local ix = (i-1)*4
+				local log_op = info[ix]
+				if log_op == "AND" then
+					ret = ret and t[i]
+				elseif log_op == "OR" then
+					ret = ret or t[i]
+				end
+			end
+			return ret
+		end
+	end
+
 	-- @ADD TO HANDLERS
 	handlers.expect = function(info)
-		return ops[info[2]](ReplaceTokens(info[1]),ReplaceTokens(info[3]))
+		return process(info)
 	end
 end
 
