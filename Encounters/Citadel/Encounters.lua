@@ -1904,13 +1904,13 @@ do
 			}
 		},
 		arrows = {
-			defilearrow = {
-				varname = SN[72762],
-				unit = "&tft_unitname&",
+			ragingspiritarrow = {
+				varname = SN[69200],
+				unit = "#5#",
 				persist = 5,
-				action = "AWAY",
-				msg = L.alert["MOVE AWAY"],
-				spell = SN[72762],
+				action = "TOWARD",
+				msg = L.alert["KILL IT"],
+				spell = SN[69200],
 				fixed = true,
 			},
 			traparrow = {
@@ -2228,6 +2228,7 @@ do
 					{
 						"expect",{"#4#","~=","&playerguid&"},
 						"alert","ragingspiritwarn",
+						"arrow","ragingspiritarrow",
 					},
 				},
 			},
