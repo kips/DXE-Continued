@@ -1741,9 +1741,9 @@ do
 				icon = ST[69409],
 			},
 			soulreaperwarn = {
-				varname = format(L.alert["%s Warning"],SN[69409]),
+				varname = format(L.alert["%s Duration"],SN[69409]),
 				type = "centerpopup",
-				text = format(L.alert["%s Duration"],SN[69409]),
+				text = format("%s: &dstname_or_YOU&",SN[69409]),
 				time = 5,
 				color1 = "ORANGE",
 				sound = "ALERT7",
@@ -2236,9 +2236,9 @@ do
 				execute = {
 					{
 						"quash","soulreapercd",
-						"alert","soulreaperwarn",
 						"set",{soulreapertime = 30},
 						"alert","soulreapercd",
+						"alert","soulreaperwarn",
 					},
 				},
 			},
