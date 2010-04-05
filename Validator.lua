@@ -95,6 +95,7 @@ local alertBaseKeys = {
 	textformat = optstring,
 	values = opttable,
 	npcid = optnumberstring,
+	tag = optstring,
 }
 
 local alertTypeValues = {
@@ -557,7 +558,7 @@ local function validateAlert(data,info,errlvl,...)
 			elseif (k == "color1" or k == "color2") and not Colors[info[k]] then
 				err("unknown color '"..info[k].."'",errlvl,k,...)
 			-- check replaces
-			elseif k == "time" or k == "text" or k == "npcid" or k == "spellid" then
+			elseif k == "time" or k == "text" or k == "npcid" or k == "spellid" or k == "tag" then
 				validateReplaces(data,info[k],errlvl,k,...)
 			elseif k == "values" then
 				for spellid, total in pairs(info[k]) do

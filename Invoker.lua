@@ -471,6 +471,8 @@ do
 			end
 			-- Replace text
 			local text = ReplaceTokens(alertInfo.text)
+			-- Tag
+			local tag = ReplaceTokens(alertInfo.tag) or ""
 			-- Counters
 			if stgs.counter then
 				local c = Counters[info] or 0
@@ -490,13 +492,13 @@ do
 			if not time or time < 0 then return true end
 			-- Pass in appropriate arguments
 			if alertInfo.type == "dropdown" then
-				Alerts:Dropdown("invoker"..info,text,time,alertInfo.flashtime,stgs.sound,stgs.color1,stgs.color2,stgs.flashscreen,alertInfo.icon)
+				Alerts:Dropdown("invoker"..info..tag,text,time,alertInfo.flashtime,stgs.sound,stgs.color1,stgs.color2,stgs.flashscreen,alertInfo.icon)
 			elseif alertInfo.type == "centerpopup" then
-				Alerts:CenterPopup("invoker"..info,text,time,alertInfo.flashtime,stgs.sound,stgs.color1,stgs.color2,stgs.flashscreen,alertInfo.icon)
+				Alerts:CenterPopup("invoker"..info..tag,text,time,alertInfo.flashtime,stgs.sound,stgs.color1,stgs.color2,stgs.flashscreen,alertInfo.icon)
 			elseif alertInfo.type == "simple" then
 				Alerts:Simple(text,time,stgs.sound,stgs.color1,stgs.flashscreen,alertInfo.icon)
 			elseif alertInfo.type == "absorb" then
-				Alerts:Absorb("invoker"..info,text,alertInfo.textformat,time,alertInfo.flashtime,stgs.sound,stgs.color1,stgs.color2,stgs.flashscreen,alertInfo.icon,
+				Alerts:Absorb("invoker"..info..tag,text,alertInfo.textformat,time,alertInfo.flashtime,stgs.sound,stgs.color1,stgs.color2,stgs.flashscreen,alertInfo.icon,
 				              alertInfo.values[tuple['7']],ReplaceTokens(alertInfo.npcid))
 			end
 		end
@@ -504,7 +506,9 @@ do
 	end
 
 	handlers.quash = function(info)
-		Alerts:QuashByPattern("^invoker"..info)
+		local alertInfo = alerts[info]
+		local tag = ReplaceTokens(alertInfo.tag) or ""
+		Alerts:QuashByPattern("^invoker"..info..tag)
 		return true
 	end
 end
