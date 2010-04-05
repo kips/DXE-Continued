@@ -205,6 +205,8 @@ do
 		tft_unitexists = function() return not not UnitExists(tft()) end,
 		tft_isplayer = function() return not not UnitIsUnit(tft(),"player") end,
 		tft_unitname = function() return UnitName(tft()) end,
+		dstname_or_YOU = function() return addon.PGUID == tuple['4'] and L.alert["YOU"] or tuple['5'] end,
+		srcname_or_YOU = function() return addon.PGUID == tuple['1'] and L.alert["YOU"] or tuple['2'] end,
 		--- Functions with passable arguments
 		-- Get's an alert's timeleft
 		timeleft = function(id,delta) return Alerts:GetTimeleft(id) + (tonumber(delta) or 0) end,
