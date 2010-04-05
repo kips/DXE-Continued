@@ -3242,6 +3242,7 @@ do
 				flashtime = 12,
 				color1 = "TEAL",
 				icon = ST[69674],
+				tag = "#5#",
 			},
 			slimespraycastwarn = {
 				varname = format(L.alert["%s Casting"],SN[69508]),
@@ -3369,6 +3370,8 @@ do
 				execute = {
 					{
 						"removeraidicon","#5#",
+						"expect",{"#4#","~=","&playerguid&"},
+						"quash","infectiondur",
 					},
 				},
 			},
