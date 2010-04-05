@@ -94,6 +94,30 @@ end
 ]]
 
 --[[
+function addon:MUTATEDTEST()
+	self:SetActiveEncounter("rotface")
+	self:StartEncounter()
+	self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_APPLIED",nil,nil,nil,UnitGUID("player"),nil,nil,nil,GetSpellInfo(69674))
+	self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_APPLIED",nil,nil,nil,"","Entrop",nil,nil,GetSpellInfo(69674))
+	self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_APPLIED",nil,nil,nil,"","Keelem",nil,nil,GetSpellInfo(69674))
+	self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_APPLIED",nil,nil,nil,"","Ohnoes",nil,nil,GetSpellInfo(69674))
+
+	self:ScheduleTimer(function()
+		self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_REMOVED",nil,nil,nil,UnitGUID("player"),nil,nil,nil,GetSpellInfo(69674))
+	end,2)
+	self:ScheduleTimer(function()
+		self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_REMOVED",nil,nil,nil,"","Entrop",nil,nil,GetSpellInfo(69674))
+	end,4)
+	self:ScheduleTimer(function()
+		self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_REMOVED",nil,nil,nil,"","Keelem",nil,nil,GetSpellInfo(69674))
+	end,6)
+	self:ScheduleTimer(function()
+		self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_AURA_REMOVED",nil,nil,nil,"","Ohnoes",nil,nil,GetSpellInfo(69674))
+	end,8)
+end
+]]
+
+--[[
 function addon:LEECHINGSWARMTEST()
 	self.Invoker:COMBAT_EVENT(nil,nil,"SPELL_CAST_START",nil,nil,nil,nil,nil,nil,66118)
 end

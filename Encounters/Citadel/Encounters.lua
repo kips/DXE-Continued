@@ -3370,8 +3370,14 @@ do
 				execute = {
 					{
 						"removeraidicon","#5#",
+					},
+					{
 						"expect",{"#4#","~=","&playerguid&"},
 						"quash","infectiondur",
+					},
+					{
+						"expect",{"#4#","==","&playerguid&"},
+						"quash","infectionself",
 					},
 				},
 			},
