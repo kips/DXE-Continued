@@ -191,8 +191,8 @@ local function Pour(text,icon,color)
 	if pfl.ClrWarningText then text = ColorText(text) end
 	if not pfl.SinkIcon then icon = nil end
 	module:Pour(text,color.r,color.g,color.b,nil,nil,nil,nil,nil,icon)
-	if pfl.AnnounceToRaid and addon.GroupType == "RAID" then
-		SendChatMessage(text, "RAID_WARNING")
+	if pfl.AnnounceToRaid and addon:IsPromoted() and addon.GroupType == "RAID" then
+		SendChatMessage(text,"RAID_WARNING")
 	end
 end
 
