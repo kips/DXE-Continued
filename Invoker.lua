@@ -202,8 +202,8 @@ do
 		difficulty = function() return addon:GetRaidDifficulty() end,
 		-- First health watcher
 		tft = tft,
-		tft_unitexists = function() return UnitExists(tft()) end,
-		tft_isplayer = function() return UnitIsUnit(tft(),"player") end,
+		tft_unitexists = function() return not not UnitExists(tft()) end,
+		tft_isplayer = function() return not not UnitIsUnit(tft(),"player") end,
 		tft_unitname = function() return UnitName(tft()) end,
 		--- Functions with passable arguments
 		-- Get's an alert's timeleft
@@ -221,8 +221,8 @@ do
 	do
 		for i=2,4 do
 			local tft = function() return HW[i].tracer:First() and HW[i].tracer:First().."target" or "" end
-			local tft_unitexists = function() return UnitExists(tft()) end
-			local tft_isplayer = function() return UnitIsUnit(tft(),"player") end
+			local tft_unitexists = function() return not not UnitExists(tft()) end
+			local tft_isplayer = function() return not not UnitIsUnit(tft(),"player") end
 			local tft_unitname = function() return UnitName(tft()) end
 			RepFuncs["tft"..i] = tft
 			RepFuncs["tft"..i.."_unitexists"] = tft_unitexists

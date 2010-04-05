@@ -92,11 +92,11 @@ do
 		timers = {
 			shards = {
 				{
-					"expect",{"&tft_unitexists& &tft_isplayer&","==","1 1"},
+					"expect",{"&tft_unitexists& &tft_isplayer&","==","true true"},
 					"alert","shardswarnself",
 				},
 				{
-					"expect",{"&tft_unitexists& &tft_isplayer&","==","1 nil"},
+					"expect",{"&tft_unitexists& &tft_isplayer&","==","true false"},
 					"alert","shardswarnothers",
 				},
 			},

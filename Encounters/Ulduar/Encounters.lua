@@ -1030,20 +1030,20 @@ do
 					"raidicon","crashmark",
 				},
 				{
-					"expect",{"&tft_unitexists& &tft_isplayer&","==","1 1"},
+					"expect",{"&tft_unitexists& &tft_isplayer&","==","true true"},
 					"set",{shadowcrashmessage = format("%s: %s! %s!",L.alert["Crash"],L.alert["YOU"],L.alert["MOVE"])},
 					"alert","shadowcrashwarn",
 					"announce","crashsay",
 				},
 				{
-					"expect",{"&tft_unitexists& &tft_isplayer&","==","1 nil"},
+					"expect",{"&tft_unitexists& &tft_isplayer&","==","true false"},
 					"proximitycheck",{"&tft_unitname&",28},
 					"set",{shadowcrashmessage = format("%s: %s! %s!",L.alert["Crash"],"&tft_unitname&",L.alert["CAREFUL"])},
 					"alert","shadowcrashwarn",
 					"arrow","crasharrow",
 				},
 				{
-					"expect",{"&tft_unitexists&","==","nil"},
+					"expect",{"&tft_unitexists&","==","false"},
 					"set",{shadowcrashmessage = format("%s: %s!",L.alert["Crash"],UNKNOWN:upper())},
 					"alert","shadowcrashwarn",
 				},
@@ -1690,13 +1690,13 @@ do
 			-- tft3 = Stormcaller Brundir's Target
 			tendriltargets = {
 				{
-					"expect",{"&tft3_unitexists& &tft3_isplayer&","==","1 1"},
+					"expect",{"&tft3_unitexists& &tft3_isplayer&","==","true true"},
 					"expect",{"&tft3_unitname&","~=","<previoustarget>"},
 					"set",{previoustarget = "&tft3_unitname&"},
 					"alert","tendrilswarnself",
 				},
 				{
-					"expect",{"&tft3_unitexists& &tft3_isplayer&","==","1 nil"},
+					"expect",{"&tft3_unitexists& &tft3_isplayer&","==","true false"},
 					"expect",{"&tft3_unitname&","~=","<previoustarget>"},
 					"set",{previoustarget = "&tft3_unitname&"},
 					"alert","tendrilswarnothers",

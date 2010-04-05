@@ -190,14 +190,14 @@ do
 		timers = {
 			fireshock = {
 				{
-					"expect",{"&tft_unitexists& &tft_isplayer&","==","1 1"},
+					"expect",{"&tft_unitexists& &tft_isplayer&","==","true true"},
 					"set",{shocktext = format("%s: %s!",SN[72037],L.alert["YOU"])},
 					"raidicon","shockmark",
 					"alert","shockwarn",
 					"announce","shocksay",
 				},
 				{
-					"expect",{"&tft_unitexists& &tft_isplayer&","==","1 nil"},
+					"expect",{"&tft_unitexists& &tft_isplayer&","==","true false"},
 					"set",{shocktext = format("%s: &tft_unitname&!",SN[72037])},
 					"raidicon","shockmark",
 					"alert","shockwarn",
@@ -205,7 +205,7 @@ do
 					"arrow","shockarrow",
 				},
 				{
-					"expect",{"&tft_unitexists&","==","nil"},
+					"expect",{"&tft_unitexists&","==","false"},
 					"set",{shocktext = format(L.alert["%s Cast"],SN[72037])},
 					"alert","shockwarn",
 				},
@@ -1948,40 +1948,40 @@ do
 		timers = {
 			firedefile = {
 				{
-					"expect",{"&tft_unitexists& &tft_isplayer&","==","1 1"},
+					"expect",{"&tft_unitexists& &tft_isplayer&","==","true true"},
 					"set",{defiletext = format("%s: %s!",SN[72762],L.alert["YOU"])},
 					"raidicon","defilemark",
 					"alert","defileselfwarn",
 					"announce","defilesay",
 				},
 				{
-					"expect",{"&tft_unitexists& &tft_isplayer&","==","1 nil"},
+					"expect",{"&tft_unitexists& &tft_isplayer&","==","true false"},
 					"raidicon","defilemark",
 					"alert","defilewarn",
 				},
 				{
-					"expect",{"&tft_unitexists&","==","nil"},
+					"expect",{"&tft_unitexists&","==","false"},
 					"set",{defiletext = format(L.alert["%s Cast"],SN[72762])},
 					"alert","defileselfwarn",
 				},
 			},
 			firetrap = {
 				{
-					"expect",{"&tft_unitexists& &tft_isplayer&","==","1 1"},
+					"expect",{"&tft_unitexists& &tft_isplayer&","==","true true"},
 					"set",{traptext = format("%s: %s!",L.alert["Shadow Trap"],L.alert["YOU"])},
 					"raidicon","trapmark",
 					"alert","trapwarn",
 					"announce","trapsay",
 				},
 				{
-					"expect",{"&tft_unitexists& &tft_isplayer&","==","1 nil"},
+					"expect",{"&tft_unitexists& &tft_isplayer&","==","true false"},
 					"set",{traptext = format("%s: &tft_unitname&!",L.alert["Shadow Trap"])},
 					"raidicon","trapmark",
 					"arrow","traparrow",
 					"alert","trapwarn",
 				},
 				{
-					"expect",{"&tft_unitexists&","==","nil"},
+					"expect",{"&tft_unitexists&","==","false"},
 					"set",{traptext = format(L.alert["%s Casting"],L.alert["Shadow Trap"])},
 					"alert","trapwarn",
 				},
@@ -2850,21 +2850,21 @@ do
 			},
 			firemalleable = {
 				{
-					"expect",{"&tft_unitexists& &tft_isplayer&","==","1 1"},
+					"expect",{"&tft_unitexists& &tft_isplayer&","==","true true"},
 					"set",{malleabletext = format("%s: %s!",SN[72615],L.alert["YOU"])},
 					"raidicon","malleablemark",
 					"alert","malleablegoowarn",
 					"announce","malleablegoosay",
 				},
 				{
-					"expect",{"&tft_unitexists& &tft_isplayer&","==","1 nil"},
+					"expect",{"&tft_unitexists& &tft_isplayer&","==","true false"},
 					"set",{malleabletext = format("%s: &tft_unitname&!",SN[72615])},
 					"raidicon","malleablemark",
 					"arrow","malleablearrow",
 					"alert","malleablegoowarn",
 				},
 				{
-					"expect",{"&tft_unitexists&","==","nil"},
+					"expect",{"&tft_unitexists&","==","false"},
 					"set",{malleabletext = format(L.alert["%s Cast"],SN[72615])},
 					"alert","malleablegoowarn",
 				},
