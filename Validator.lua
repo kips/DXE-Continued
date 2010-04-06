@@ -25,6 +25,7 @@ local istable = {["table"] = true, _ = "table"}
 local istablenumber = {["table"] = true, ["number"] = true, _ = "table or number"}
 local isnumber = {["number"] = true, _ = "number"}
 local isnumberstring = {["number"] = true, ["string"] = true, _ = "number or string"}
+local isnumberstringtable = {["number"] = true, ["string"] = true, ["table"] = true, _ = "string, number or string"}
 local opttablenumber = {["table"] = true, ["number"] = true, ["nil"] = true, _ = "table or number or nil"}
 local optnumberstring = {["number"] = true, ["string"] = true, ["nil"] = true, _ = "number or string"}
 local opttable = {["table"] = true, ["nil"] = true, _= "table or nil"}
@@ -81,8 +82,28 @@ local baseLineKeys = {
 local alertBaseKeys = {
 	varname = isstring,
 	type = isstring,
-	text = isstring,
-	time = isnumberstring,
+	text = isstringtable,
+	text2 = optstringtable,
+	text3 = optstringtable,
+	text4 = optstringtable,
+	text5 = optstringtable,
+	text6 = optstringtable,
+	text7 = optstringtable,
+	text8 = optstringtable,
+	text9 = optstringtable,
+	time = isnumberstringtable,
+	time2 = optstringnumbertable,
+	time3 = optstringnumbertable,
+	time4 = optstringnumbertable,
+	time5 = optstringnumbertable,
+	time6 = optstringnumbertable,
+	time7 = optstringnumbertable,
+	time8 = optstringnumbertable,
+	time9 = optstringnumbertable,
+	time10n = optstringnumbertable,
+	time10h = optstringnumbertable,
+	time25n = optstringnumbertable,
+	time25h = optstringnumbertable,
 	throttle = optnumber,
 	flashtime = optnumber,
 	sound = optstring,
@@ -581,8 +602,21 @@ local function validateAlert(data,info,errlvl,...)
 			elseif (k == "color1" or k == "color2") and not Colors[info[k]] then
 				err("unknown color '"..info[k].."'",errlvl,k,...)
 			-- check replaces
-			elseif k == "time" or k == "text" or k == "npcid" or k == "spellid" or k == "tag" then
+			elseif k == "npcid" or k == "spellid" or k == "tag" then
 				validateReplaces(data,info[k],errlvl,k,...)
+			elseif k:match("^text[2-9]?$") or k:match("^time[2-9]?$") or
+					 k == "time10n" or k == "time10h" or k == "time25n" or k == "time25h" then
+				local v = info[k]
+				if type(v) == "string" then
+					validateReplaces(data,info[k],errlvl,k,...)
+				elseif type(v) == "table" then
+					if v.type ~= "series" then
+						err("invalid userdata table variable - expected 'series'",errlvl,k,...)
+					end
+					if #v == 0 then
+						err("series requires at least one value in its array",errlvl,k,...)
+					end
+				end
 			elseif k == "values" then
 				for spellid, total in pairs(info[k]) do
 					if type(spellid) ~= "number" then
