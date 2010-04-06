@@ -741,8 +741,7 @@ local function validateUserData(data,info,errlvl,...)
 	errlvl = errlvl + 1
 	for var,value in pairs(info) do
 		if _G.type(value) == "string" then
-			validateReplaceFuncs(data,value,errlvl,...)
-			validateReplaceNums(data,value,errlvl,...)
+			validateReplaces(data,value,errlvl,...)
 		elseif _G.type(value) == "table" then
 			if value.type ~= "series" and value.type ~= "container" then
 				err("invalid userdata table variable expected 'container' or 'series'",errlvl,"type",var,...)
