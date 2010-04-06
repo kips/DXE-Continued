@@ -462,9 +462,9 @@ function validateCommandLine(data,type,info,errlvl,...)
 	elseif type == "set" then
 		for var,value in pairs(info) do
 			local orig_var
-			if var:match("__index$") then
+			if var:match("_index$") then
 				orig_var = var
-				var = var:match("^(.*)__index$")
+				var = var:match("^(.*)_index$")
 			end
 			if not data.userdata or not data.userdata[var] then
 				err("setting a non-existent userdata variable '"..(orig_var or var).."'",errlvl,type,...)
@@ -493,11 +493,21 @@ function validateCommandLine(data,type,info,errlvl,...)
 			if not info.time and not info.text then
 				err("missing a time or text index for '"..var.."'",errlvl,type,...)
 			end
-			if info.time and info.time < 2 or info.time > 9 then
-				err("time is out of scope - expected [2,9]",errlvl,"time",type,...)
+			if info.time then
+				if info.time < 2 or info.time > 9 then
+					err("time is out of scope - expected [2,9]",errlvl,"time",type,...)
+				end
+				if not data.alerts[var]["time"..info.time] then
+					err("attempting to fire an alert with a non-existent time index - got '"..info.time.."'",errlvl,type,...)
+				end
 			end
-			if info.text and info.text < 2 or info.text > 9 then
-				err("text is out of scope - expected [2,9]",errlvl,"time",type,...)
+			if info.text then
+				if info.text < 2 or info.text > 9 then
+					err("text is out of scope - expected [2,9]",errlvl,"time",type,...)
+				end
+				if not data.alerts[var]["text"..info.text] then
+					err("attempting to fire an alert with a non-existent text index - got '"..info.text.."'",errlvl,type,...)
+				end
 			end
 		end
 	elseif type == "quash" then
@@ -632,7 +642,7 @@ local function validateAlert(data,info,errlvl,...)
 					validateReplaces(data,info[k],errlvl,k,...)
 				elseif type(v) == "table" then
 					if v.type ~= "series" then
-						err("invalid userdata table variable - expected 'series'",errlvl,k,...)
+						err("invalid userdata table variable - expected 'type = series'",errlvl,k,...)
 					end
 					if #v == 0 then
 						err("series requires at least one value in its array",errlvl,k,...)
