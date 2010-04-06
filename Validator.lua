@@ -453,6 +453,9 @@ function validateCommandLine(data,type,info,errlvl,...)
 				if value.type ~= "series" and value.type ~= "container" then
 					err("invalid userdata table variable expected 'container' or 'series'",errlvl,type,...)
 				end
+				if value.type == "series" and #value == 0 then
+					err("series requires at least one value in its array",errlvl,var,type,...)
+				end
 			end
 		end
 	elseif type == "alert" or type == "quash" then
@@ -755,6 +758,8 @@ local function validateUserData(data,info,errlvl,...)
 				if value.wipein then
 					validateVal(value.wipein,isnumber,errlvl,"wipein",var,...)
 				end
+			elseif value.type == "series" and #value == 0 then
+				err("series requires at least one value in its array",errlvl,var,...)
 			end
 		end
 	end
