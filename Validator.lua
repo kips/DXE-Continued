@@ -9,6 +9,7 @@ local ipairs,pairs = ipairs,pairs
 local gmatch,match = string.gmatch,string.match
 local assert,type,select = assert,type,select
 local select,concat,wipe = select,table.concat,wipe
+local Gtype = type
 
 local Colors = addon.Media.Colors
 local conditions = addon.Invoker:GetConditions()
@@ -468,9 +469,9 @@ function validateCommandLine(data,type,info,errlvl,...)
 			if not data.userdata or not data.userdata[var] then
 				err("setting a non-existent userdata variable '"..(orig_var or var).."'",errlvl,type,...)
 			end
-			if _G.type(value) == "string" then
+			if Gtype(value) == "string" then
 				validateReplaces(data,value,errlvl,var,type,...)
-			elseif _G.type(value) == "table" then
+			elseif Gtype(value) == "table" then
 				if value.type ~= "series" and value.type ~= "container" then
 					err("invalid userdata table variable expected 'container' or 'series'",errlvl,type,...)
 				end
@@ -480,11 +481,11 @@ function validateCommandLine(data,type,info,errlvl,...)
 			end
 		end
 	elseif type == "alert" then
-		if _G.type(info) == "string" then
+		if Gtype(info) == "string" then
 			if not data.alerts or not data.alerts[info] then
 				err("firing/quashing a non-existent alert '"..info.."'",errlvl,type,...)
 			end
-		elseif _G.type(info) == "table" then
+		elseif Gtype(info) == "table" then
 			local var = info[1]
 			if not data.alerts or not data.alerts[var] then
 				err("firing/quashing a non-existent alert '"..var.."'",errlvl,1,type,...)
@@ -511,7 +512,7 @@ function validateCommandLine(data,type,info,errlvl,...)
 		local timer,time = info[1],info[2]
 		validateVal(timer,isstring,errlvl,type,...)
 		validateVal(time,isnumberstring,errlvl,type,...)
-		if _G.type(time) == "string" then
+		if Gtype(time) == "string" then
 			validateReplaces(data,time,errlvl,type,...)
 		elseif time < 0 then
 			err("scheduling a timer < 0 '"..info[1].."'",errlvl,type,...)
@@ -565,14 +566,14 @@ function validateCommandLine(data,type,info,errlvl,...)
 		validateVal(var,isstring,errlvl,1,type,...)
 		validateVal(token,isstring,errlvl,2,type,...)
 		local ud = data.userdata
-		if not (ud and ud[var] and _G.type(ud[var]) == "table" and ud[var].type == "container") then
+		if not (ud and ud[var] and Gtype(ud[var]) == "table" and ud[var].type == "container") then
 			err("wiping an invalid userdata variable '"..var.."'",errlvl,1,type,...)
 		end
 		validateReplaces(data,token,errlvl,2,type,...)
 	elseif type == "wipe" then
 		validateVal(info,isstring,errlvl,type,...)
 		local ud = data.userdata
-		if not (ud and ud[info] and _G.type(ud[info]) == "table" and ud[info].type == "container") then
+		if not (ud and ud[info] and Gtype(ud[info]) == "table" and ud[info].type == "container") then
 			err("wiping an invalid userdata variable '"..info.."'",errlvl,type,...)
 		end
 	end
@@ -802,9 +803,9 @@ end
 local function validateUserData(data,info,errlvl,...)
 	errlvl = errlvl + 1
 	for var,value in pairs(info) do
-		if _G.type(value) == "string" then
+		if Gtype(value) == "string" then
 			validateReplaces(data,value,errlvl,...)
-		elseif _G.type(value) == "table" then
+		elseif Gtype(value) == "table" then
 			if value.type ~= "series" and value.type ~= "container" then
 				err("invalid userdata table variable expected 'container' or 'series'",errlvl,"type",var,...)
 			end
