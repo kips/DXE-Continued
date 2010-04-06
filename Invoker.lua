@@ -190,6 +190,18 @@ end
 
 local ReplaceTokens
 
+local function next_series_value(series,key)
+	local ix,n = key.."_index",#series
+	local i = userdata[ix]
+	if i > n and not series.loop then
+		i = n
+	else
+		i = ((i-1)%n)+1 -- Handles looping
+		userdata[ix] = userdata[ix] + 1
+	end
+	return series[i]
+end
+
 do
 	local function tft()
 		return HW[1].tracer:First() and HW[1].tracer:First().."target" or ""
@@ -244,15 +256,7 @@ do
 	local function replace_vars(str)
 		local val = userdata[str]
 		if type(val) == "table" then
-			local ix,n = str.."__index",#val
-			local i = userdata[ix]
-			if i > n and not val.loop then
-				i = n
-			else
-				i = ((i-1)%n)+1 -- Handles looping
-				userdata[ix] = userdata[ix] + 1
-			end
-			val = val[i]
+			val = next_series_value(val,str)
 		end
 		return val
 	end
@@ -390,6 +394,18 @@ end
 do
 	local wipeins = {} -- var -> handles
 
+	local time_keys = {
+		"time10n",
+		"time10h",
+		"time25n",
+		"time25h",
+	}
+
+	for i=2,9 do
+		time_keys[#time_keys+1] = "time"..i
+		time_keys[#time_keys+1] = "text"..i
+	end
+
 	function module:ResetUserData()
 		wipe(userdata)
 		for k,handle in pairs(wipeins) do
@@ -401,7 +417,7 @@ do
 		for k,v in pairs(CE.userdata) do
 			if type(v) == "table" then
 				-- Indexing for series
-				userdata[k.."__index"] = 1
+				userdata[k.."_index"] = 1
 				if v.type == "series" then
 					userdata[k] = v
 				elseif v.type == "container" then
@@ -409,6 +425,21 @@ do
 				end
 			else
 				userdata[k] = v
+			end
+		end
+		-- Copy alert time/text series into userdata
+		-- time[2-9], text[2-9], time10n, time10h, time25n, time25h
+		for var,info in pairs(CE.alerts) do
+			for _,key in ipairs(time_keys) do
+				-- add userdata variable for this alert key
+				local v = info[key]
+				if type(v) == "table" then
+					-- prepend '_' for safety
+					-- ex. "_boltwarntime2"
+					local ud_key = "_"..var..key
+					userdata[ud_key] = v
+					userdata[ud_key.."_index"] = 1
+				end
 			end
 		end
 	end
@@ -491,54 +522,104 @@ do
 		wipe(Counters)
 	end
 
+	local diff_to_key = {
+		[1] = "time10n",
+		[2] = "time25n",
+		[3] = "time10h",
+		[4] = "time25h",
+	}
+
+	local function resolve_time(time,var,key)
+		if type(time) == "table" then
+			return next_series_value(time,"_"..var..key)
+		elseif type(time) == "string" then
+			return tonumber(ReplaceTokens(time))
+		else
+			return time
+		end
+	end
+
 	-- @ADD TO HANDLERS
 	handlers.alert = function(info)
-		local stgs = pfl.Encounters[key][info]
+		local var = type(info) == "table" and info[1] or info
+		local stgs = pfl.Encounters[key][var]
 		if stgs.enabled then
-			local alertInfo = alerts[info]
+			local alertInfo = alerts[var]
+			local text,time
+			-- Check to use specified text
+			if info.text then
+				local key = "text"..info.text
+				local new_text = alertInfo[key]
+				if type(new_text) == "table" then
+					text = next_series_value(new_text,"_"..var..key)
+				else
+					text = ReplaceTokens(new_text)
+				end
+			end
+			-- Replace text if it is still nil
+			if not text then text = ReplaceTokens(alertInfo.text) end
+
+			-- Time precedence
+			-- 1. specified
+			-- 2. difficulty
+			-- 3. default
+
+			-- Check to use specified time
+			if info.time then
+				local key = "time"..info.time
+				local new_time = alertInfo[key]
+				time = resolve_time(new_time,var,key)
+			end
+
+			-- Check for difficulty time
+			if not time then
+				local diff = addon:GetRaidDifficulty()
+				local key = diff_to_key[diff]
+				local new_time = alertInfo[key]
+				time = new_time and resolve_time(new_time,var,key)
+			end
+
+			-- Replace time if it still nil
+			if not time then
+				time = resolve_time(alertInfo.time)
+			end
+
 			-- Throttling
 			if alertInfo.throttle then
 				-- Initialize to 0 if non-existant
-				Throttles[info] = Throttles[info] or 0
+				Throttles[var] = Throttles[var] or 0
 				-- Check throttle
 				local t = GetTime()
-				if Throttles[info] + alertInfo.throttle < t then
-					Throttles[info] = t
+				if Throttles[var] + alertInfo.throttle < t then
+					Throttles[var] = t
 				else
 					-- Failed throttle, exit out
 					return true
 				end
 			end
-			-- Replace text
-			local text = ReplaceTokens(alertInfo.text)
 			-- Tag
 			local tag = ReplaceTokens(alertInfo.tag) or ""
 			-- Counters
 			if stgs.counter then
-				local c = Counters[info] or 0
+				local c = Counters[var] or 0
 				c = c + 1
 				text = text.." "..c
-				Counters[info] = c
-			end
-			-- Replace time
-			local time = alertInfo.time
-			if type(time) == "string" then
-				time = tonumber(ReplaceTokens(time))
+				Counters[var] = c
 			end
 			--@debug@
-			debug("Alerts","id: %s text: %s time: %s flashtime: %s sound: %s color1: %s color2: %s",info,text,time,alertInfo.flashtime,stgs.sound,stgs.color1,stgs.color2)
+			debug("Alerts","id: %s text: %s time: %s flashtime: %s sound: %s color1: %s color2: %s",var,text,time,alertInfo.flashtime,stgs.sound,stgs.color1,stgs.color2)
 			--@end-debug@
 			-- Sanity check
 			if not time or time < 0 then return true end
 			-- Pass in appropriate arguments
 			if alertInfo.type == "dropdown" then
-				Alerts:Dropdown("invoker"..info..tag,text,time,alertInfo.flashtime,stgs.sound,stgs.color1,stgs.color2,stgs.flashscreen,alertInfo.icon)
+				Alerts:Dropdown("invoker"..var..tag,text,time,alertInfo.flashtime,stgs.sound,stgs.color1,stgs.color2,stgs.flashscreen,alertInfo.icon)
 			elseif alertInfo.type == "centerpopup" then
-				Alerts:CenterPopup("invoker"..info..tag,text,time,alertInfo.flashtime,stgs.sound,stgs.color1,stgs.color2,stgs.flashscreen,alertInfo.icon)
+				Alerts:CenterPopup("invoker"..var..tag,text,time,alertInfo.flashtime,stgs.sound,stgs.color1,stgs.color2,stgs.flashscreen,alertInfo.icon)
 			elseif alertInfo.type == "simple" then
 				Alerts:Simple(text,time,stgs.sound,stgs.color1,stgs.flashscreen,alertInfo.icon)
 			elseif alertInfo.type == "absorb" then
-				Alerts:Absorb("invoker"..info..tag,text,alertInfo.textformat,time,alertInfo.flashtime,stgs.sound,stgs.color1,stgs.color2,stgs.flashscreen,alertInfo.icon,
+				Alerts:Absorb("invoker"..var..tag,text,alertInfo.textformat,time,alertInfo.flashtime,stgs.sound,stgs.color1,stgs.color2,stgs.flashscreen,alertInfo.icon,
 				              alertInfo.values[tuple['7']],ReplaceTokens(alertInfo.npcid))
 			end
 		end
