@@ -60,7 +60,7 @@ local baseLineKeys = {
 	expect = istable,
 	quash = isstring,
 	set = istable,
-	alert = isstring,
+	alert = isstringtable,
 	scheduletimer = istable,
 	canceltimer = isstring,
 	resettimer = isboolean,
@@ -479,7 +479,27 @@ function validateCommandLine(data,type,info,errlvl,...)
 				end
 			end
 		end
-	elseif type == "alert" or type == "quash" then
+	elseif type == "alert" then
+		if _G.type(info) == "string" then
+			if not data.alerts or not data.alerts[info] then
+				err("firing/quashing a non-existent alert '"..info.."'",errlvl,type,...)
+			end
+		elseif _G.type(info) == "table" then
+			local var = info[1]
+			if not data.alerts or not data.alerts[var] then
+				err("firing/quashing a non-existent alert '"..var.."'",errlvl,1,type,...)
+			end
+			if not info.time and not info.text then
+				err("missing a time or text index for '"..var.."'",errlvl,type,...)
+			end
+			if info.time and info.time < 2 or info.time > 9 then
+				err("time is out of scope - expected [2,9]",errlvl,"time",type,...)
+			end
+			if info.text and info.text < 2 or info.text > 9 then
+				err("text is out of scope - expected [2,9]",errlvl,"time",type,...)
+			end
+		end
+	elseif type == "quash" then
 		if not data.alerts or not data.alerts[info] then
 			err("firing/quashing a non-existent alert '"..info.."'",errlvl,type,...)
 		end
