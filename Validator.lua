@@ -439,8 +439,13 @@ function validateCommandLine(data,type,info,errlvl,...)
 		end
 	elseif type == "set" then
 		for var,value in pairs(info) do
+			local orig_var
+			if var:match("__index$") then
+				orig_var = var
+				var = var:match("^(.*)__index$")
+			end
 			if not data.userdata or not data.userdata[var] then
-				err("setting a non-existent userdata variable '"..var.."'",errlvl,type,...)
+				err("setting a non-existent userdata variable '"..(orig_var or var).."'",errlvl,type,...)
 			end
 			if _G.type(value) == "string" then
 				validateReplaces(data,value,errlvl,var,type,...)
