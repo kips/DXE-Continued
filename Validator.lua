@@ -635,7 +635,8 @@ local function validateAlert(data,info,errlvl,...)
 			-- check replaces
 			elseif k == "npcid" or k == "spellid" or k == "tag" then
 				validateReplaces(data,info[k],errlvl,k,...)
-			elseif k:match("^text[2-9]?$") or k:match("^time[2-9]?$") or
+			elseif k == "text" or k == "time" or
+					 k:match("^text[2-9]?$") or k:match("^time[2-9]?$") or
 					 k == "time10n" or k == "time10h" or k == "time25n" or k == "time25h" then
 				local v = info[k]
 				if type(v) == "string" then
