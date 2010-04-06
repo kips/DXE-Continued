@@ -1587,6 +1587,7 @@ do
 				flashtime = 10,
 				color1 = "MAGENTA",
 				icon = ST[70337],
+				counter = true,
 			},
 			necroplaguedur = {
 				varname = format(L.alert["%s Duration"],SN[70337]),
