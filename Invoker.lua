@@ -394,7 +394,9 @@ end
 do
 	local wipeins = {} -- var -> handles
 
-	local time_keys = {
+	local alert_keys = {
+		"text",
+		"time",
 		"time10n",
 		"time10h",
 		"time25n",
@@ -402,8 +404,8 @@ do
 	}
 
 	for i=2,9 do
-		time_keys[#time_keys+1] = "time"..i
-		time_keys[#time_keys+1] = "text"..i
+		alert_keys[#alert_keys+1] = "text"..i
+		alert_keys[#alert_keys+1] = "time"..i
 	end
 
 	function module:ResetUserData()
@@ -430,7 +432,7 @@ do
 		-- Copy alert time/text series into userdata
 		-- time[2-9], text[2-9], time10n, time10h, time25n, time25h
 		for var,info in pairs(CE.alerts) do
-			for _,key in ipairs(time_keys) do
+			for _,key in ipairs(alert_keys) do
 				-- add userdata variable for this alert key
 				local v = info[key]
 				if type(v) == "table" then
@@ -539,6 +541,14 @@ do
 		end
 	end
 
+	local function resolve_text(text,var,key)
+		if type(text) == "table" then
+			return next_series_value(text,"_"..var..key)
+		else
+			return ReplaceTokens(text)
+		end
+	end
+
 	-- @ADD TO HANDLERS
 	handlers.alert = function(info)
 		local var = type(info) == "table" and info[1] or info
@@ -550,14 +560,10 @@ do
 			if info.text then
 				local key = "text"..info.text
 				local new_text = alertInfo[key]
-				if type(new_text) == "table" then
-					text = next_series_value(new_text,"_"..var..key)
-				else
-					text = ReplaceTokens(new_text)
-				end
+				text = resolve_text(new_text,var,key)
 			end
 			-- Replace text if it is still nil
-			if not text then text = ReplaceTokens(alertInfo.text) end
+			if not text then text = resolve_text(alertInfo.text,var,"text") end
 
 			-- Time precedence
 			-- 1. specified
@@ -581,7 +587,7 @@ do
 
 			-- Replace time if it still nil
 			if not time then
-				time = resolve_time(alertInfo.time)
+				time = resolve_time(alertInfo.time,var,"time")
 			end
 
 			-- Throttling
