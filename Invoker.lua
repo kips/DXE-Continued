@@ -93,8 +93,6 @@ local eventtype_to_bundle = {}
 local combatbundle_to_filter = {}
 local eventbundle_to_filter = {}
 
-
-
 --@debug@
 local debug
 
@@ -130,21 +128,21 @@ end
 ---------------------------------------------
 -- EVENT TUPLES
 ---------------------------------------------
+
 local tuple = {}
 
 local function SetTuple(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11)
-	-- TODO: add or "nil" to each line before Cataclysm; it would break compatability if added now
-	tuple['1']  = a1
-	tuple['2']  = a2
-	tuple['3']  = a3
-	tuple['4']  = a4
-	tuple['5']  = a5
-	tuple['6']  = a6
-	tuple['7']  = a7
-	tuple['8']  = a8
-	tuple['9']  = a9
-	tuple['10'] = a10
-	tuple['11'] = a11
+	tuple['1']  = a1  or "nil"
+	tuple['2']  = a2  or "nil"
+	tuple['3']  = a3  or "nil"
+	tuple['4']  = a4  or "nil"
+	tuple['5']  = a5  or "nil"
+	tuple['6']  = a6  or "nil"
+	tuple['7']  = a7  or "nil"
+	tuple['8']  = a8  or "nil"
+	tuple['9']  = a9  or "nil"
+	tuple['10'] = a10 or "nil"
+	tuple['11'] = a11 or "nil"
 end
 
 ---------------------------------------------
