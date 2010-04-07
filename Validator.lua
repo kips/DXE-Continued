@@ -276,6 +276,19 @@ local function validateVal(v, oktypes, errlvl, ...)
 	end
 end
 
+local function validateIsArrayOfType(tbl,oktypes,errlvl,...)
+	errlvl = errlvl + 1
+	if #tbl < 1 then
+		err("table should be an array - got an empty table",errlvl,...)
+	end
+	for k,v in pairs(tbl) do
+		if type(k) ~= "number" then
+			err("all keys should be numbers - invalid array",errlvl,...)
+		end
+		validateVal(tbl,oktypes,errlvl,k,...)
+	end
+end
+
 local function checkParams(func,params,num,errlvl,...)
 	errlvl = errlvl + 1
 	if select('#',string.split("|",params)) ~= num then
@@ -395,10 +408,7 @@ local function validateTracing(tbl,errlvl,...)
 		validateVal(v,isnumber,errlvl,"tracing",...)
 	end
 	if tbl.powers then
-		validateIsArray(tbl.powers,errlvl,"powers","tracing",...)
-		for k,v in ipairs(tbl.powers) do
-			validateVal(v,isboolean,errlvl,k,"powers","tracing",...)
-		end
+		validateIsArrayOfType(tbl.powers,isboolean,errlvl,"powers","tracing",...)
 	end
 end
 
@@ -434,12 +444,9 @@ function validateCommandLine(data,type,info,errlvl,...)
 	end
 	validateVal(info,oktype,errlvl,type,...)
 	if type == "expect" then
-		validateIsArray(info,errlvl,type,...)
+		validateIsArrayOfType(info,isstring,errlvl,type,...)
 		if (#info + 1) % 4 ~= 0 then
 			err("invalid expect array - got '"..#info.."' entries",errlvl,type,...)
-		end
-		for i,str in ipairs(info) do
-			validateVal(str,isstring,errlvl,i,type,...)
 		end
 		-- check logical operators
 		local nres = (#info + 1) / 4
@@ -784,10 +791,7 @@ local function validateNpcid(data,info,errlvl,k,...)
 	if info[k] and type(info[k]) == "number" then
 		-- do nothing
 	elseif info[k] and type(info[k]) == "table" then
-		validateIsArray(info[k],errlvl,k,...)
-		for i,npcid in ipairs(info[k]) do
-			validateVal(npcid,isnumber,errlvl,i,k,...)
-		end
+		validateIsArrayOfType(info[k],isnumber,errlvl,k,...)
 	elseif info[k] then
 		err("invalid npcid(s)",errlvl,k,...)
 	end
@@ -842,31 +846,30 @@ local function validateEvent(data,info,errlvl,...)
 	end
 	for k, oktypes in pairs(eventBaseKeys) do
 		validateVal(info[k],oktypes,errlvl,k,...)
-		if k == "type" then
-			if info.type == "event" and not info.event then
-				err("missing event key",errlvl,k,...)
-			end
-			if info.type == "combatevent" and not info.eventtype then
-				err("missing eventtype key",errlvl,k,...)
-			end
-			if info.eventtype and not eventtypes[info.eventtype] then
-				err("invalid eventtype value - got '"..info.eventtype.."'",errlvl,"eventtype",...)
-			end
-		elseif k == "spellid" or k == "spellid2" then
-			validateSpellID(data,info,errlvl,k,...)
-		elseif k == "spellname" or k == "spellname2" then
-			validateSpellID(data,info,errlvl,k,...)
-		elseif k == "srcnpcid" or k == "dstnpcid" then
-			validateNpcid(data,info,errlvl,k,...)
-		elseif k == "msg" then
-			if type(info[k]) == "table" then
-				validateIsArray(info[k],errlvl,k,...)
-				for i,str in ipairs(info[k]) do
-					validateVal(str,isstring,errlvl,i,k,...)
+		if info[k] then
+			if k == "type" then
+				if info.type == "event" and not info.event then
+					err("missing event key",errlvl,k,...)
 				end
+				if info.type == "combatevent" and not info.eventtype then
+					err("missing eventtype key",errlvl,k,...)
+				end
+				if info.eventtype and not eventtypes[info.eventtype] then
+					err("invalid eventtype value - got '"..info.eventtype.."'",errlvl,"eventtype",...)
+				end
+			elseif k == "spellid" or k == "spellid2" then
+				validateSpellID(data,info,errlvl,k,...)
+			elseif k == "spellname" or k == "spellname2" then
+				validateSpellID(data,info,errlvl,k,...)
+			elseif k == "srcnpcid" or k == "dstnpcid" then
+				validateNpcid(data,info,errlvl,k,...)
+			elseif k == "msg" then
+				if type(info[k]) == "table" then
+					validateIsArrayOfType(info[k],isstring,errlvl,k,...)
+				end
+			elseif k == "execute" then
+				validateCommandBundle(data,info.execute,errlvl,"execute",...)
 			end
-		elseif k == "execute" then
-			validateCommandBundle(data,info.execute,errlvl,"execute",...)
 		end
 	end
 end
