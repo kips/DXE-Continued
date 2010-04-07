@@ -39,6 +39,7 @@ local wipe = table.wipe
 local type,next,select = type,next,select
 local ipairs,pairs,unpack = ipairs,pairs,unpack
 local tostring,tonumber = tostring,tonumber
+local band,bor = bit.band,bit.bor
 local match,gmatch,gsub,find,split = string.match,string.gmatch,string.gsub,string.find,string.split
 local UnitGUID, UnitName, UnitExists, UnitIsUnit = UnitGUID, UnitName, UnitExists, UnitIsUnit
 local UnitBuff,UnitDebuff = UnitBuff,UnitDebuff
@@ -900,9 +901,9 @@ do
 			if not skip then
 				local filter = bundle_to_filter[bundle]
 				local flag = true
-				for attr,hash in pairs(filter) do
+				for attr,data in pairs(filter) do
 					-- all conditions have to pass for the bundle to fire
-					if not attr_handles[attr](hash,...) then
+					if not attr_handles[attr](data,...) then
 						flag = false
 						break
 					end
@@ -913,6 +914,9 @@ do
 			end
 		end
 	end
+
+	local TYPE_PLAYER = COMBATLOG_OBJECT_TYPE_PLAYER
+	local TYPE_NPC = COMBATLOG_OBJECT_TYPE_NPC
 
 	local combat_attr_handles = {
 		spellid = function(hash,...)
@@ -939,6 +943,35 @@ do
 			return hash[NID[select(4,...)]]
 		end,
 
+		srcisplayertype = function(bool,...)
+			local _,_,srcflags = ...
+			return (band(srcflags,TYPE_PLAYER) == TYPE_PLAYER) == bool
+		end,
+
+		srcisnpctype = function(bool,...)
+			local _,_,srcflags = ...
+			return (band(srcflags,TYPE_NPC) == TYPE_PLAYER) == bool
+		end,
+
+		srcisplayerunit = function(bool,...)
+			local srcguid = ...
+			return (srcguid == addon.PGUID) == bool
+		end,
+
+		dstisplayertype = function(bool,...)
+			local dstflags = select(6,...)
+			return (band(dstflags,TYPE_PLAYER) == TYPE_PLAYER) == bool
+		end,
+
+		dstisnpctype = function(bool,...)
+			local dstflags = select(6,...)
+			return (band(dstflags,TYPE_NPC) == TYPE_PLAYER) == bool
+		end,
+
+		dstisplayerunit = function(bool,...)
+			local dstguid = select(4,...)
+			return (dstguid == addon.PGUID) == bool
+		end,
 	}
 
 	local combat_transforms = {
@@ -1021,7 +1054,11 @@ do
 		local filter = {}
 		for attr in pairs(handles) do
 			if info[attr] then
-				filter[attr] = to_hash(info[attr],transforms[attr])
+				if type(info[attr]) == "boolean" then
+					filter[attr] = info[attr]
+				else
+					filter[attr] = to_hash(info[attr],transforms[attr])
+				end
 			end
 		end
 		return filter
@@ -1052,7 +1089,6 @@ do
 				eventbundle_to_filter[info.execute] = create_filter(info,reg_attr_handles,reg_transforms)
 			end
 			if info.throttle then throttles[info.execute] = info.throttle end
-
 		end
 	end
 
