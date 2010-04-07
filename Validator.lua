@@ -201,6 +201,7 @@ local eventBaseKeys = {
 	spellname = opttablenumber,
 	spellname2 = opttablenumber,
 	msg = optstringtable,
+	throttle = optnumber,
 	execute = istable,
 }
 

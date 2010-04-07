@@ -93,6 +93,8 @@ local eventtype_to_bundle = {}
 local combatbundle_to_filter = {}
 local eventbundle_to_filter = {}
 
+
+
 --@debug@
 local debug
 
@@ -128,7 +130,6 @@ end
 ---------------------------------------------
 -- EVENT TUPLES
 ---------------------------------------------
-
 local tuple = {}
 
 local function SetTuple(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11)
@@ -517,12 +518,12 @@ end
 ---------------------------------------------
 
 do
-	local Throttles = {}
-	local Counters = {}
+	local throttles = {}
+	local counters = {}
 
 	function module:ResetAlertData()
-		wipe(Throttles)
-		wipe(Counters)
+		wipe(throttles)
+		wipe(counters)
 	end
 
 	local diff_to_key = {
@@ -594,11 +595,11 @@ do
 			-- Throttling
 			if alertInfo.throttle then
 				-- Initialize to 0 if non-existant
-				Throttles[var] = Throttles[var] or 0
+				throttles[var] = throttles[var] or 0
 				-- Check throttle
 				local t = GetTime()
-				if Throttles[var] + alertInfo.throttle < t then
-					Throttles[var] = t
+				if throttles[var] + alertInfo.throttle < t then
+					throttles[var] = t
 				else
 					-- Failed throttle, exit out
 					return true
@@ -606,12 +607,12 @@ do
 			end
 			-- Tag
 			local tag = ReplaceTokens(alertInfo.tag) or ""
-			-- Counters
+			-- counters
 			if stgs.counter then
-				local c = Counters[var] or 0
+				local c = counters[var] or 0
 				c = c + 1
 				text = text.." "..c
-				Counters[var] = c
+				counters[var] = c
 			end
 			--@debug@
 			debug("Alerts","id: %s text: %s time: %s flashtime: %s sound: %s color1: %s color2: %s",var,text,time,alertInfo.flashtime,stgs.sound,stgs.color1,stgs.color2)
@@ -882,20 +883,35 @@ end
 ---------------------------------------------
 
 do
+	local throttles = {}  -- bundle -> throttle time
+	local times = {}      -- bundle -> last time
+
 	local function main_event_handler(bundles,bundle_to_filter,attr_handles,...)
 		if not bundles then return end
 		for _,bundle in ipairs(bundles) do
-			local filter = bundle_to_filter[bundle]
-			local flag = true
-			for attr,hash in pairs(filter) do
-				-- all conditions have to pass for the bundle to fire
-				if not attr_handles[attr](hash,...) then
-					flag = false
-					break
+			local skip = false
+			if throttles[bundle] then
+				times[bundle] = times[bundle] or 0
+				local t = GetTime()
+				if times[bundle] + throttles[bundle] < t then
+					times[bundle] = t
+				else
+					skip = true
 				end
 			end
-			if flag then
-				module:InvokeCommands(bundle,...)
+			if not skip then
+				local filter = bundle_to_filter[bundle]
+				local flag = true
+				for attr,hash in pairs(filter) do
+					-- all conditions have to pass for the bundle to fire
+					if not attr_handles[attr](hash,...) then
+						flag = false
+						break
+					end
+				end
+				if flag then
+					module:InvokeCommands(bundle,...)
+				end
 			end
 		end
 	end
@@ -989,7 +1005,7 @@ do
 	--    .
 	--    .
 	--    .
-	-- 	[valueN] = {
+	-- 	[attributeN] = {
 	-- 		[value] = true,
 	--			...
 	--			[valueN] = true,
@@ -1031,17 +1047,22 @@ do
 
 				eventbundle_to_filter[info.execute] = create_filter(info,reg_attr_handles,reg_transforms)
 			end
+			if info.throttle then throttles[info.execute] = info.throttle end
+
 		end
+	end
+
+	function module:WipeEvents()
+		wipe(event_to_bundle)
+		wipe(eventtype_to_bundle)
+		wipe(combatbundle_to_filter)
+		wipe(eventbundle_to_filter)
+		wipe(throttles)
+		wipe(times)
+		self:UnregisterAllEvents()
 	end
 end
 
-function module:WipeEvents()
-	wipe(event_to_bundle)
-	wipe(eventtype_to_bundle)
-	wipe(combatbundle_to_filter)
-	wipe(eventbundle_to_filter)
-	self:UnregisterAllEvents()
-end
 
 ---------------------------------------------
 -- TRACER ACQUIRES
