@@ -3072,7 +3072,12 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_START",
-				spellname = 70672,
+				spellid = {
+					70672, -- 10
+					72455, -- 25
+					72832, -- 10h
+					72833, -- 25h
+				},
 				execute = {
 					{
 						"quash","oozeaggrocd",
@@ -3084,7 +3089,12 @@ do
 			{
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
-				spellname = 70672,
+				spellid = {
+					70672, -- 10
+					72455, -- 25
+					72832, -- 10h
+					72833, -- 25h
+				},
 				execute = {
 					{
 						"raidicon","gaseousbloatmark",
