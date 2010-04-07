@@ -965,9 +965,15 @@ do
 				end
 			end
 		end,
+
 		spellname = function(hash,...)
 			local _,spell = ...
 			return hash[spell]
+		end,
+
+		npcname = function(hash,...)
+			local _,npcname = ...
+			return hash[npcname]
 		end,
 	}
 

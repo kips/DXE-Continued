@@ -201,6 +201,7 @@ local eventBaseKeys = {
 	spellname = opttablenumber,
 	spellname2 = opttablenumber,
 	msg = optstringtable,
+	npcname = optstringtable,
 	throttle = optnumber,
 	execute = istable,
 }
@@ -863,7 +864,7 @@ local function validateEvent(data,info,errlvl,...)
 				validateSpellID(data,info,errlvl,k,...)
 			elseif k == "srcnpcid" or k == "dstnpcid" then
 				validateNpcid(data,info,errlvl,k,...)
-			elseif k == "msg" then
+			elseif k == "msg" or k == "npcname" then
 				if type(info[k]) == "table" then
 					validateIsArrayOfType(info[k],isstring,errlvl,k,...)
 				end
