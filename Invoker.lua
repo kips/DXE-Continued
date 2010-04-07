@@ -90,7 +90,8 @@ local RaidIcons = addon.RaidIcons
 -- command bundles executed upon events
 local event_to_bundle = {}
 local eventtype_to_bundle = {}
-local bundle_to_filter = {}
+local combatbundle_to_filter = {}
+local eventbundle_to_filter = {}
 
 --@debug@
 local debug
@@ -881,7 +882,25 @@ end
 ---------------------------------------------
 
 do
-	local attribute_handles = {
+	local function main_event_handler(bundles,bundle_to_filter,attr_handles,...)
+		if not bundles then return end
+		for _,bundle in ipairs(bundles) do
+			local filter = bundle_to_filter[bundle]
+			local flag = true
+			for attr,hash in pairs(filter) do
+				-- all conditions have to pass for the bundle to fire
+				if not attr_handles[attr](hash,...) then
+					flag = false
+					break
+				end
+			end
+			if flag then
+				module:InvokeCommands(bundle,...)
+			end
+		end
+	end
+
+	local combat_attr_handles = {
 		spellid = function(hash,...)
 			return hash[select(7,...)]
 		end,
@@ -905,31 +924,45 @@ do
 		dstnpcid = function(hash,...)
 			return hash[NID[select(4,...)]]
 		end,
+
 	}
 
-	local transforms = {
+	local combat_transforms = {
 		spellname = function(spellid) return SN[spellid] end,
 		spellname2 = function(spellid) return SN[spellid] end,
 	}
 
 	function module:COMBAT_EVENT(event,timestamp,eventtype,...)
-		local bundles = eventtype_to_bundle[eventtype]
-		if bundles then
-			for _,bundle in ipairs(bundles) do
-				local filter = bundle_to_filter[bundle]
-				local flag = true
-				for attr,hash in pairs(filter) do
-					-- all conditions have to pass for the bundle to fire
-					if not attribute_handles[attr](hash,...) then
-						flag = false
-						break
-					end
-				end
-				if flag then
-					self:InvokeCommands(bundle,...)
+		main_event_handler(eventtype_to_bundle[eventtype],combatbundle_to_filter,combat_attr_handles,...)
+	end
+
+	local REG_ALIASES = {
+		YELL = "CHAT_MSG_MONSTER_YELL",
+		EMOTE = "CHAT_MSG_RAID_BOSS_EMOTE",
+		WHISPER = "CHAT_MSG_RAID_BOSS_WHISPER",
+	}
+
+	local reg_attr_handles = {
+		msg = function(hash,...)
+			local msg = ...
+			for str in pairs(hash) do
+				if find(msg,str) then
+					return true
 				end
 			end
-		end
+		end,
+		spellname = function(hash,...)
+			local _,spell = ...
+			return hash[spell]
+		end,
+	}
+
+	local reg_transforms = {
+		spellname = function(spellid) return SN[spellid] end,
+	}
+
+	function module:REG_EVENT(event,...)
+		main_event_handler(event_to_bundle[event],eventbundle_to_filter,event_attr_handles,...)
 	end
 
 	local function to_hash(work,trans)
@@ -963,28 +996,15 @@ do
 	--		},
 	-- }
 
-	local function create_filter(info)
+
+	local function create_filter(info,handles,transforms)
 		local filter = {}
-		for attr in pairs(attribute_handles) do
+		for attr in pairs(handles) do
 			if info[attr] then
 				filter[attr] = to_hash(info[attr],transforms[attr])
 			end
 		end
 		return filter
-	end
-
-	local REG_ALIASES = {
-		YELL = "CHAT_MSG_MONSTER_YELL",
-		EMOTE = "CHAT_MSG_RAID_BOSS_EMOTE",
-		WHISPER = "CHAT_MSG_RAID_BOSS_WHISPER",
-	}
-
-	function module:REG_EVENT(event,...)
-		--@debug@
-		debug("REG_EVENT",event,...)
-		--@end-debug@
-		-- Pass in command list and arguments
-		self:InvokeCommands(event_to_bundle[event],...)
 	end
 
 	function module:AddEventData()
@@ -999,12 +1019,17 @@ do
 				end
 				t[#t+1] = info.execute
 
-				bundle_to_filter[info.execute] = create_filter(info)
+				combatbundle_to_filter[info.execute] = create_filter(info,combat_attr_handles,combat_transforms)
 			elseif info.type == "event" then
 				local event = REG_ALIASES[info.event] or info.event
-				-- Register regular event
-				-- Add execute list to the appropriate key
-				event_to_bundle[event] = info.execute
+				local t = event_to_bundle[event]
+				if not t then
+					t = {}
+					event_to_bundle[event] = t
+				end
+				t[#t+1] = info.execute
+
+				eventbundle_to_filter[info.execute] = create_filter(info,reg_attr_handles,reg_transforms)
 			end
 		end
 	end
@@ -1013,7 +1038,8 @@ end
 function module:WipeEvents()
 	wipe(event_to_bundle)
 	wipe(eventtype_to_bundle)
-	wipe(bundle_to_filter)
+	wipe(combatbundle_to_filter)
+	wipe(eventbundle_to_filter)
 	self:UnregisterAllEvents()
 end
 

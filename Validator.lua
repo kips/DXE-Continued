@@ -200,6 +200,7 @@ local eventBaseKeys = {
 	dstnpcid = opttablenumber,
 	spellname = opttablenumber,
 	spellname2 = opttablenumber,
+	msg = optstringtable,
 	execute = istable,
 }
 
@@ -856,6 +857,13 @@ local function validateEvent(data,info,errlvl,...)
 			validateSpellID(data,info,errlvl,k,...)
 		elseif k == "srcnpcid" or k == "dstnpcid" then
 			validateNpcid(data,info,errlvl,k,...)
+		elseif k == "msg" then
+			if type(info[k]) == "table" then
+				validateIsArray(info[k],errlvl,k,...)
+				for i,str in ipairs(info[k]) do
+					validateVal(str,isstring,errlvl,i,k,...)
+				end
+			end
 		elseif k == "execute" then
 			validateCommandBundle(data,info.execute,errlvl,"execute",...)
 		end
