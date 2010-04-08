@@ -78,6 +78,7 @@ local baseLineKeys = {
 	defeat = isboolean,
 	wipe = isstring,
 	insert = istable,
+	settimeleft = istable,
 }
 
 local alertBaseKeys = {
@@ -292,7 +293,7 @@ local function validateIsArrayOfType(tbl,oktypes,errlvl,...)
 		if type(k) ~= "number" then
 			err("all keys should be numbers - invalid array",errlvl,...)
 		end
-		validateVal(tbl,oktypes,errlvl,k,...)
+		validateVal(v,oktypes,errlvl,k,...)
 	end
 end
 
@@ -496,15 +497,33 @@ function validateCommandLine(data,type,info,errlvl,...)
 				end
 			end
 		end
+	elseif type == "settimeleft" then
+		validateIsArray(info,errlvl,type,...)
+		if #info ~= 2 then
+			err("array is not size 2",errlvl,type,...)
+		end
+		local var,time = info[1],info[2]
+		validateVal(var,isstring,errlvl,type,...)
+		validateVal(time,isnumberstring,errlvl,type,...)
+		if not data.alerts or not data.alerts[var] then
+			err("setting timeleft on a non-existent alert '"..var.."'",errlvl,type,...)
+		end
+		if Gtype(time) == "string" then
+			validateReplaces(data,time,errlvl,type,2,...)
+		elseif Gtype(time) == "number" then
+			if time < 0 then
+				err("setting timeleft with a number < 0",errlvl,2,type,...)
+			end
+		end
 	elseif type == "alert" then
 		if Gtype(info) == "string" then
 			if not data.alerts or not data.alerts[info] then
-				err("firing/quashing a non-existent alert '"..info.."'",errlvl,type,...)
+				err("firing non-existent alert '"..info.."'",errlvl,type,...)
 			end
 		elseif Gtype(info) == "table" then
 			local var = info[1]
 			if not data.alerts or not data.alerts[var] then
-				err("firing/quashing a non-existent alert '"..var.."'",errlvl,1,type,...)
+				err("firinga non-existent alert '"..var.."'",errlvl,1,type,...)
 			end
 			if not info.time and not info.text then
 				err("missing a time or text index for '"..var.."'",errlvl,type,...)
@@ -528,7 +547,7 @@ function validateCommandLine(data,type,info,errlvl,...)
 		end
 	elseif type == "quash" then
 		if not data.alerts or not data.alerts[info] then
-			err("firing/quashing a non-existent alert '"..info.."'",errlvl,type,...)
+			err("quashing a non-existent alert '"..info.."'",errlvl,type,...)
 		end
 	elseif type == "scheduletimer" then
 		validateIsArray(info,errlvl,"scheduletimer",...)

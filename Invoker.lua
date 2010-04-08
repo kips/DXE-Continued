@@ -550,6 +550,11 @@ do
 		end
 	end
 
+	local function getid(var)
+		local tag = ReplaceTokens(alerts[var].tag) or ""
+		return "invoker"..var..tag
+	end
+
 	-- @ADD TO HANDLERS
 	handlers.alert = function(info)
 		local var = type(info) == "table" and info[1] or info
@@ -618,15 +623,16 @@ do
 			--@end-debug@
 			-- Sanity check
 			if not time or time < 0 then return true end
+			local id = getid(var)
 			-- Pass in appropriate arguments
 			if alertInfo.type == "dropdown" then
-				Alerts:Dropdown("invoker"..var..tag,text,time,alertInfo.flashtime,stgs.sound,stgs.color1,stgs.color2,stgs.flashscreen,alertInfo.icon)
+				Alerts:Dropdown(id,text,time,alertInfo.flashtime,stgs.sound,stgs.color1,stgs.color2,stgs.flashscreen,alertInfo.icon)
 			elseif alertInfo.type == "centerpopup" then
-				Alerts:CenterPopup("invoker"..var..tag,text,time,alertInfo.flashtime,stgs.sound,stgs.color1,stgs.color2,stgs.flashscreen,alertInfo.icon)
+				Alerts:CenterPopup(id,text,time,alertInfo.flashtime,stgs.sound,stgs.color1,stgs.color2,stgs.flashscreen,alertInfo.icon)
 			elseif alertInfo.type == "simple" then
 				Alerts:Simple(text,time,stgs.sound,stgs.color1,stgs.flashscreen,alertInfo.icon)
 			elseif alertInfo.type == "absorb" then
-				Alerts:Absorb("invoker"..var..tag,text,alertInfo.textformat,time,alertInfo.flashtime,stgs.sound,stgs.color1,stgs.color2,stgs.flashscreen,alertInfo.icon,
+				Alerts:Absorb(id,text,alertInfo.textformat,time,alertInfo.flashtime,stgs.sound,stgs.color1,stgs.color2,stgs.flashscreen,alertInfo.icon,
 				              alertInfo.values[tuple['7']],ReplaceTokens(alertInfo.npcid))
 			end
 		end
@@ -634,9 +640,18 @@ do
 	end
 
 	handlers.quash = function(info)
-		local alertInfo = alerts[info]
-		local tag = ReplaceTokens(alertInfo.tag) or ""
-		Alerts:QuashByPattern("^invoker"..info..tag)
+		Alerts:QuashByPattern(getid(info))
+		return true
+	end
+
+	handlers.settimeleft = function(info)
+		local var,time = info[1],info[2]
+		local id = getid(var)
+		if type(time) == "string" then
+			time = tonumber(ReplaceTokens(time))
+		end
+		if not time or time < 0 then return true end
+		Alerts:SetTimeleft(id,time)
 		return true
 	end
 end

@@ -703,6 +703,14 @@ function module:QuashByPattern(pattern)
 	end
 end
 
+function module:SetTimeleft(id,time)
+	for bar in pairs(Active) do
+		if bar.data.id and find(bar.data.id,id) then
+			bar.data.endTime = GetTime() + time
+		end
+	end
+end
+
 function module:GetTimeleft(id)
 	for bar in pairs(Active) do
 		if bar.data.id and bar.data.id:find(id) then
