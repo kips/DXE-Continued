@@ -27,6 +27,12 @@
 		defeat            = [BOOLEAN]
 		insert            = {"<userdata>", value},
 		wipe              = "<userdata>"
+		batchalert        = {<alert>,...,<alert_n>}
+		batchquash        = {<alert>,...,<alert_n>}
+		quashall          = [BOOLEAN]
+		schedulealert     = {"<alert>",<token or number>}
+		repeatalert       = {"<alert>",<token or number>}
+		cancelalert       = "<alert>"
 ]]
 
 local addon = DXE

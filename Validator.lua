@@ -556,7 +556,7 @@ function validateCommandLine(data,type,info,errlvl,...)
 			err("quashing/cancelalert a non-existent alert '"..info.."'",errlvl,type,...)
 		end
 	elseif type == "batchalert" or type == "batchquash" then
-		validateIsArray(info,errlvl,type,...)
+		validateIsArrayOfType(info,isstring,errlvl,type,...)
 		for i,var in ipairs(info) do
 			if not data.alerts or not data.alerts[var] then
 				err("batchalert/batchquash a non-existent alert - got '"..var.."'",errlvl,i,type,...)
