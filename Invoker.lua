@@ -1029,7 +1029,7 @@ do
 
 		srcisnpctype = function(bool,...)
 			local _,_,srcflags = ...
-			return (band(srcflags,TYPE_NPC) == TYPE_PLAYER) == bool
+			return (band(srcflags,TYPE_NPC) == TYPE_NPC) == bool
 		end,
 
 		srcisplayerunit = function(bool,...)
@@ -1044,7 +1044,7 @@ do
 
 		dstisnpctype = function(bool,...)
 			local dstflags = select(6,...)
-			return (band(dstflags,TYPE_NPC) == TYPE_PLAYER) == bool
+			return (band(dstflags,TYPE_NPC) == TYPE_NPC) == bool
 		end,
 
 		dstisplayerunit = function(bool,...)
