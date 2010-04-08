@@ -655,7 +655,7 @@ do
 	end
 
 	handlers.batchalert = function(info)
-		for _,var in ipairs(info) do handlers.alert(var) end
+		for _,info in ipairs(info) do handlers.alert(info) end
 		return true
 	end
 
@@ -750,11 +750,11 @@ do
 		return true
 	end
 
-	function module:FireAlert(var)
-		if alert_timers[var].args then
-			SetTuple(unpack(alert_timers[var].args))
+	function module:FireAlert(info)
+		if alert_timers[info].args then
+			SetTuple(unpack(alert_timers[info].args))
 		end
-		handlers.alert(var)
+		handlers.alert(info)
 	end
 
 	-- @ADD TO HANDLERS

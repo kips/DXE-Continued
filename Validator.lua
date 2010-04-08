@@ -455,9 +455,11 @@ local function validateUnitTracing(tbl,errlvl,...)
 	end
 end
 
-local validateCommandLine, validateCommandList, validateCommandBundle, validateExpect
+local validateCommandLine, validateCommandList, validateCommandBundle
+local validateExpectInfo, validateAlertInfo
 
-function validateExpect(data,info,errlvl,...)
+function validateExpectInfo(data,info,errlvl,...)
+	errlvl = errlvl + 1
 	validateIsArrayOfType(info,isstring,errlvl,...)
 	if (#info + 1) % 4 ~= 0 then
 		err("invalid expect array - got '"..#info.."' entries",errlvl,...)
@@ -484,6 +486,39 @@ function validateExpect(data,info,errlvl,...)
 	end
 end
 
+function validateAlertInfo(data,info,errlvl,...)
+	errlvl = errlvl + 1
+	if type(info) == "string" then
+		if not data.alerts or not data.alerts[info] then
+			err("firing non-existent alert '"..info.."'",errlvl,...)
+		end
+	elseif type(info) == "table" then
+		local var = info[1]
+		if not data.alerts or not data.alerts[var] then
+			err("firing a non-existent alert '"..var.."'",errlvl,1,...)
+		end
+		if not info.time and not info.text then
+			err("missing a time or text index for '"..var.."'",errlvl,...)
+		end
+		if info.time then
+			if info.time < 2 or info.time > 9 then
+				err("time is out of scope - expected [2,9]",errlvl,"time",...)
+			end
+			if not data.alerts[var]["time"..info.time] then
+				err("attempting to fire an alert with a non-existent time index - got '"..info.time.."'",errlvl,...)
+			end
+		end
+		if info.text then
+			if info.text < 2 or info.text > 9 then
+				err("text is out of scope - expected [2,9]",errlvl,"time",...)
+			end
+			if not data.alerts[var]["text"..info.text] then
+				err("attempting to fire an alert with a non-existent text index - got '"..info.text.."'",errlvl,...)
+			end
+		end
+	end
+end
+
 function validateCommandLine(data,type,info,errlvl,...)
 	errlvl = errlvl + 1
 	local oktype = baseLineKeys[type]
@@ -492,7 +527,7 @@ function validateCommandLine(data,type,info,errlvl,...)
 	end
 	validateVal(info,oktype,errlvl,type,...)
 	if type == "expect" then
-		validateExpect(data,info,errlvl,type,...)
+		validateExpectInfo(data,info,errlvl,type,...)
 	elseif type == "set" then
 		for var,value in pairs(info) do
 			local orig_var
@@ -514,7 +549,23 @@ function validateCommandLine(data,type,info,errlvl,...)
 				end
 			end
 		end
-	elseif type == "settimeleft" or type == "schedulealert" or type == "repeatalert" then
+	elseif type == "schedulealert" or type == "repeatalert" then
+		validateIsArray(info,errlvl,type,...)
+		if #info ~= 2 then
+			err("array is not size 2",errlvl,type,...)
+		end
+		local alertinfo,time = info[1],info[2]
+		validateVal(alertinfo,isstringtable,errlvl,type,...)
+		validateVal(time,isnumberstring,errlvl,type,...)
+		validateAlertInfo(data,alertinfo,errlvl,type,...)
+		if Gtype(time) == "string" then
+			validateReplaces(data,time,errlvl,type,2,...)
+		elseif Gtype(time) == "number" then
+			if time < 0 then
+				err("repeat/schedulealert with a number < 0",errlvl,2,type,...)
+			end
+		end
+	elseif type == "settimeleft" then
 		validateIsArray(info,errlvl,type,...)
 		if #info ~= 2 then
 			err("array is not size 2",errlvl,type,...)
@@ -523,54 +574,31 @@ function validateCommandLine(data,type,info,errlvl,...)
 		validateVal(var,isstring,errlvl,type,...)
 		validateVal(time,isnumberstring,errlvl,type,...)
 		if not data.alerts or not data.alerts[var] then
-			err("setttimeleft/schedulealert a non-existent alert '"..var.."'",errlvl,type,...)
+			err("setttimelefta non-existent alert '"..var.."'",errlvl,type,...)
 		end
 		if Gtype(time) == "string" then
 			validateReplaces(data,time,errlvl,type,2,...)
 		elseif Gtype(time) == "number" then
 			if time < 0 then
-				err("settimeleft/schedulealert with a number < 0",errlvl,2,type,...)
+				err("settimeleft with a number < 0",errlvl,2,type,...)
 			end
 		end
 	elseif type == "alert" then
-		if Gtype(info) == "string" then
-			if not data.alerts or not data.alerts[info] then
-				err("firing non-existent alert '"..info.."'",errlvl,type,...)
-			end
-		elseif Gtype(info) == "table" then
-			local var = info[1]
-			if not data.alerts or not data.alerts[var] then
-				err("firinga non-existent alert '"..var.."'",errlvl,1,type,...)
-			end
-			if not info.time and not info.text then
-				err("missing a time or text index for '"..var.."'",errlvl,type,...)
-			end
-			if info.time then
-				if info.time < 2 or info.time > 9 then
-					err("time is out of scope - expected [2,9]",errlvl,"time",type,...)
-				end
-				if not data.alerts[var]["time"..info.time] then
-					err("attempting to fire an alert with a non-existent time index - got '"..info.time.."'",errlvl,type,...)
-				end
-			end
-			if info.text then
-				if info.text < 2 or info.text > 9 then
-					err("text is out of scope - expected [2,9]",errlvl,"time",type,...)
-				end
-				if not data.alerts[var]["text"..info.text] then
-					err("attempting to fire an alert with a non-existent text index - got '"..info.text.."'",errlvl,type,...)
-				end
-			end
-		end
+		validateAlertInfo(data,info,errlvl,"alert",...)
 	elseif type == "quash" or type == "cancelalert" then
 		if not data.alerts or not data.alerts[info] then
 			err("quashing/cancelalert a non-existent alert '"..info.."'",errlvl,type,...)
 		end
-	elseif type == "batchalert" or type == "batchquash" then
+	elseif type == "batchalert" then
+		validateIsArrayOfType(info,isstringtable,errlvl,type,...)
+		for i,alertinfo in ipairs(info) do
+			validateAlertInfo(data,alertinfo,errlvl,type,...)
+		end
+	elseif type == "batchquash" then
 		validateIsArrayOfType(info,isstring,errlvl,type,...)
 		for i,var in ipairs(info) do
 			if not data.alerts or not data.alerts[var] then
-				err("batchalert/batchquash a non-existent alert - got '"..var.."'",errlvl,i,type,...)
+				err("batchquash a non-existent alert '"..info.."'",errlvl,i,type,...)
 			end
 		end
 	elseif type == "scheduletimer" then
@@ -713,7 +741,7 @@ local function validateAlert(data,info,errlvl,...)
 					err("invalid behavior - got '"..info[k].."'",errlvl,k,...)
 				end
 			elseif k == "expect" then
-				validateExpect(data,info[k],errlvl,k,...)
+				validateExpectInfo(data,info[k],errlvl,k,...)
 			elseif k == "values" then
 				for spellid, total in pairs(info[k]) do
 					if type(spellid) ~= "number" then
