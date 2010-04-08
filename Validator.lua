@@ -121,6 +121,7 @@ local alertBaseKeys = {
 	icon = optstring,
 	counter = optboolean,
 	behavior = optstring,
+	expect = opttable,
 	-- absorb bar
 	textformat = optstring,
 	values = opttable,
@@ -454,7 +455,34 @@ local function validateUnitTracing(tbl,errlvl,...)
 	end
 end
 
-local validateCommandLine, validateCommandList, validateCommandBundle
+local validateCommandLine, validateCommandList, validateCommandBundle, validateExpect
+
+function validateExpect(data,info,errlvl,...)
+	validateIsArrayOfType(info,isstring,errlvl,...)
+	if (#info + 1) % 4 ~= 0 then
+		err("invalid expect array - got '"..#info.."' entries",errlvl,...)
+	end
+	-- check logical operators
+	local nres = (#info + 1) / 4
+	for i=2,nres do
+		local ix = (i-1)*4
+		local log_op = info[ix]
+		if log_op ~= "AND" and log_op ~= "OR" then
+			err("unknown logical operator - got '"..log_op.."'",errlvl,ix,...)
+		end
+	end
+	-- check triplets
+	for i=1,nres do
+		-- left index of triplet
+		local j = 4*i - 3
+		local v1,op,v2 = info[j],info[j+1],info[j+2]
+		if not conditions[op] then
+			err("unknown condition - got '"..op.."'",errlvl,j+1,...)
+		end
+		validateReplaces(data,v1,errlvl,j,...)
+		validateReplaces(data,v2,errlvl,j+2,...)
+	end
+end
 
 function validateCommandLine(data,type,info,errlvl,...)
 	errlvl = errlvl + 1
@@ -464,30 +492,7 @@ function validateCommandLine(data,type,info,errlvl,...)
 	end
 	validateVal(info,oktype,errlvl,type,...)
 	if type == "expect" then
-		validateIsArrayOfType(info,isstring,errlvl,type,...)
-		if (#info + 1) % 4 ~= 0 then
-			err("invalid expect array - got '"..#info.."' entries",errlvl,type,...)
-		end
-		-- check logical operators
-		local nres = (#info + 1) / 4
-		for i=2,nres do
-			local ix = (i-1)*4
-			local log_op = info[ix]
-			if log_op ~= "AND" and log_op ~= "OR" then
-				err("unknown logical operator - got '"..log_op.."'",errlvl,ix,type,...)
-			end
-		end
-		-- check triplets
-		for i=1,nres do
-			-- left index of triplet
-			local j = 4*i - 3
-			local v1,op,v2 = info[j],info[j+1],info[j+2]
-			if not conditions[op] then
-				err("unknown condition - got '"..op.."'",errlvl,j+1,type,...)
-			end
-			validateReplaces(data,v1,errlvl,j,type,...)
-			validateReplaces(data,v2,errlvl,j+2,type,...)
-		end
+		validateExpect(data,info,errlvl,type,...)
 	elseif type == "set" then
 		for var,value in pairs(info) do
 			local orig_var
@@ -707,6 +712,8 @@ local function validateAlert(data,info,errlvl,...)
 				if not alertBehaviors[info[k]] then
 					err("invalid behavior - got '"..info[k].."'",errlvl,k,...)
 				end
+			elseif k == "expect" then
+				validateExpect(data,info[k],errlvl,k,...)
 			elseif k == "values" then
 				for spellid, total in pairs(info[k]) do
 					if type(spellid) ~= "number" then

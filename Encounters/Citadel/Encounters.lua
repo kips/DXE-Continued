@@ -1626,7 +1626,6 @@ do
 				color1 = "BROWN",
 				sound = "ALERT1",
 				icon = ST[70372],
-				behavior = "overwrite",
 			},
 			shamblinghorrorenragewarn = {
 				varname = format(L.alert["%s Warning"],format("%s %s",L.npc_citadel["Shambling Horror"],SN[72143])),

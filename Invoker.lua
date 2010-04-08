@@ -568,6 +568,12 @@ do
 		if stgs.enabled then
 			local id = getid(var)
 			local alertInfo = alerts[var]
+
+			if alertInfo.expect and not handlers.expect(alertInfo.expect) then
+				-- failed expect condition
+				return true
+			end
+
 			local behavior = alertInfo.behavior
 			if behavior == "overwrite" then
 				Alerts:QuashByPattern(id)
