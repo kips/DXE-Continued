@@ -351,7 +351,8 @@ do
 	--@end-debug@
 
 	local t = {}
-	local function process(info)
+	-- @ADD TO HANDLERS
+	handlers.expect = function(info)
 		if #info == 3 then
 			return ops[info[2]](ReplaceTokens(info[1]),ReplaceTokens(info[3]))
 		else
@@ -386,11 +387,6 @@ do
 			end
 			return ret
 		end
-	end
-
-	-- @ADD TO HANDLERS
-	handlers.expect = function(info)
-		return process(info)
 	end
 end
 
