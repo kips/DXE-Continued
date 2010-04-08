@@ -120,11 +120,17 @@ local alertBaseKeys = {
 	flashscreen = optboolean,
 	icon = optstring,
 	counter = optboolean,
+	behavior = optstring,
 	-- absorb bar
 	textformat = optstring,
 	values = opttable,
 	npcid = optnumberstring,
 	tag = optstring,
+}
+
+local alertBehaviors = {
+	singleton = true,
+	overwrite = true,
 }
 
 local alertTypeValues = {
@@ -696,6 +702,10 @@ local function validateAlert(data,info,errlvl,...)
 					if #v == 0 then
 						err("series requires at least one value in its array",errlvl,k,...)
 					end
+				end
+			elseif k == "behavior" then
+				if not alertBehaviors[info[k]] then
+					err("invalid behavior - got '"..info[k].."'",errlvl,k,...)
 				end
 			elseif k == "values" then
 				for spellid, total in pairs(info[k]) do

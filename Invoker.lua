@@ -227,8 +227,8 @@ do
 		srcname_or_YOU = function() return addon.PGUID == tuple['1'] and L.alert["YOU"] or tuple['2'] end,
 		dstname_or_YOU = function() return addon.PGUID == tuple['4'] and L.alert["YOU"] or tuple['5'] end,
 		--- Functions with passable arguments
-		-- Get's an alert's timeleft
-		timeleft = function(id,delta) return Alerts:GetTimeleft(id) + (tonumber(delta) or 0) end,
+		-- Get's an alert's timeleft. Note: Add support if timeleft is ever used on a tagged alert
+		timeleft = function(id,delta) return Alerts:GetTimeleft("invoker"..id) + (tonumber(delta) or 0) end,
 		npcid = function(guid) return NID[guid] or "" end,
 		playerdebuff = function(debuff) return not not UnitDebuff("player",debuff) end,
 		playerbuff = function(buff) return not not UnitBuff("player",buff) end,
@@ -566,7 +566,15 @@ do
 		local var = type(info) == "table" and info[1] or info
 		local stgs = pfl.Encounters[key][var]
 		if stgs.enabled then
+			local id = getid(var)
 			local alertInfo = alerts[var]
+			local behavior = alertInfo.behavior
+			if behavior == "overwrite" then
+				Alerts:QuashByPattern(id)
+			elseif behavior == "singleton" then
+				if Alerts:IsActive(id) then return true end
+			end
+
 			local text,time
 			-- Check to use specified text
 			if info.text then
@@ -629,7 +637,6 @@ do
 			--@end-debug@
 			-- Sanity check
 			if not time or time < 0 then return true end
-			local id = getid(var)
 			-- Pass in appropriate arguments
 			if alertInfo.type == "dropdown" then
 				Alerts:Dropdown(id,text,time,alertInfo.flashtime,stgs.sound,stgs.color1,stgs.color2,stgs.flashscreen,alertInfo.icon)

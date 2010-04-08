@@ -511,6 +511,10 @@ function prototype:SetID(id)
 	self.data.id = id
 end
 
+function prototype:GetID(id)
+	return self.data.id
+end
+
 function prototype:SetTimeleft(timeleft)
 	self.data.timeleft = timeleft
 end
@@ -697,7 +701,7 @@ end
 
 function module:QuashByPattern(pattern)
 	for bar in pairs(Active) do
-		if bar.data.id and find(bar.data.id,pattern) then
+		if bar:GetID() and find(bar:GetID(),pattern) then
 			bar:Destroy()
 		end
 	end
@@ -705,7 +709,7 @@ end
 
 function module:SetTimeleft(id,time)
 	for bar in pairs(Active) do
-		if bar.data.id and find(bar.data.id,id) then
+		if bar:GetID() == id then
 			bar.data.endTime = GetTime() + time
 		end
 	end
@@ -713,11 +717,19 @@ end
 
 function module:GetTimeleft(id)
 	for bar in pairs(Active) do
-		if bar.data.id and bar.data.id:find(id) then
+		if bar:GetID() == id then
 			return bar.data.timeleft
 		end
 	end
 	return -1
+end
+
+function module:IsActive(id)
+	for bar in pairs(Active) do
+		if bar:GetID() == id then
+			return true
+		end
+	end
 end
 
 function module:Dropdown(id, text, totalTime, flashTime, sound, c1, c2, flashscreen, icon)
