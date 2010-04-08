@@ -639,8 +639,23 @@ do
 		return true
 	end
 
+	handlers.batchalert = function(info)
+		for _,var in ipairs(info) do handlers.alert(var) end
+		return true
+	end
+
 	handlers.quash = function(info)
 		Alerts:QuashByPattern(getid(info))
+		return true
+	end
+
+	handlers.batchquash = function(info)
+		for _,var in ipairs(info) do handlers.quash(var) end
+		return true
+	end
+
+	handlers.quashall = function(info)
+		Alerts:QuashByPattern("^invoker")
 		return true
 	end
 

@@ -82,6 +82,9 @@ local baseLineKeys = {
 	schedulealert = istable,
 	repeatalert = istable,
 	cancelalert = isstring,
+	batchalert = istable,
+	batchquash = istable,
+	quashall = isboolean,
 }
 
 local alertBaseKeys = {
@@ -551,6 +554,13 @@ function validateCommandLine(data,type,info,errlvl,...)
 	elseif type == "quash" or type == "cancelalert" then
 		if not data.alerts or not data.alerts[info] then
 			err("quashing/cancelalert a non-existent alert '"..info.."'",errlvl,type,...)
+		end
+	elseif type == "batchalert" or type == "batchquash" then
+		validateIsArray(info,errlvl,type,...)
+		for i,var in ipairs(info) do
+			if not data.alerts or not data.alerts[var] then
+				err("batchalert/batchquash a non-existent alert - got '"..var.."'",errlvl,i,type,...)
+			end
 		end
 	elseif type == "scheduletimer" then
 		validateIsArray(info,errlvl,"scheduletimer",...)
