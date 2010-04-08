@@ -566,15 +566,15 @@ do
 		local var = type(info) == "table" and info[1] or info
 		local stgs = pfl.Encounters[key][var]
 		if stgs.enabled then
-			local id = getid(var)
-			local alertInfo = alerts[var]
+			local defn = alerts[var]
 
-			if alertInfo.expect and not handlers.expect(alertInfo.expect) then
+			if defn.expect and not handlers.expect(defn.expect) then
 				-- failed expect condition
 				return true
 			end
 
-			local behavior = alertInfo.behavior
+			local id = getid(var)
+			local behavior = defn.behavior
 			if behavior == "overwrite" then
 				Alerts:QuashByPattern(id)
 			elseif behavior == "singleton" then
@@ -585,11 +585,11 @@ do
 			-- Check to use specified text
 			if info.text then
 				local key = "text"..info.text
-				local new_text = alertInfo[key]
+				local new_text = defn[key]
 				text = resolve_text(new_text,var,key)
 			end
 			-- Replace text if it is still nil
-			if not text then text = resolve_text(alertInfo.text,var,"text") end
+			if not text then text = resolve_text(defn.text,var,"text") end
 
 			-- Time precedence
 			-- 1. specified
@@ -599,7 +599,7 @@ do
 			-- Check to use specified time
 			if info.time then
 				local key = "time"..info.time
-				local new_time = alertInfo[key]
+				local new_time = defn[key]
 				time = resolve_time(new_time,var,key)
 			end
 
@@ -607,22 +607,22 @@ do
 			if not time then
 				local diff = addon:GetRaidDifficulty()
 				local key = diff_to_key[diff]
-				local new_time = alertInfo[key]
+				local new_time = defn[key]
 				time = new_time and resolve_time(new_time,var,key)
 			end
 
 			-- Replace time if it still nil
 			if not time then
-				time = resolve_time(alertInfo.time,var,"time")
+				time = resolve_time(defn.time,var,"time")
 			end
 
 			-- Throttling
-			if alertInfo.throttle then
+			if defn.throttle then
 				-- Initialize to 0 if non-existant
 				throttles[var] = throttles[var] or 0
 				-- Check throttle
 				local t = GetTime()
-				if throttles[var] + alertInfo.throttle < t then
+				if throttles[var] + defn.throttle < t then
 					throttles[var] = t
 				else
 					-- Failed throttle, exit out
@@ -630,7 +630,7 @@ do
 				end
 			end
 			-- Tag
-			local tag = ReplaceTokens(alertInfo.tag) or ""
+			local tag = ReplaceTokens(defn.tag) or ""
 			-- counters
 			if stgs.counter then
 				local c = counters[var] or 0
@@ -639,20 +639,20 @@ do
 				counters[var] = c
 			end
 			--@debug@
-			debug("Alerts","id: %s text: %s time: %s flashtime: %s sound: %s color1: %s color2: %s",var,text,time,alertInfo.flashtime,stgs.sound,stgs.color1,stgs.color2)
+			debug("Alerts","id: %s text: %s time: %s flashtime: %s sound: %s color1: %s color2: %s",var,text,time,defn.flashtime,stgs.sound,stgs.color1,stgs.color2)
 			--@end-debug@
 			-- Sanity check
 			if not time or time < 0 then return true end
 			-- Pass in appropriate arguments
-			if alertInfo.type == "dropdown" then
-				Alerts:Dropdown(id,text,time,alertInfo.flashtime,stgs.sound,stgs.color1,stgs.color2,stgs.flashscreen,alertInfo.icon)
-			elseif alertInfo.type == "centerpopup" then
-				Alerts:CenterPopup(id,text,time,alertInfo.flashtime,stgs.sound,stgs.color1,stgs.color2,stgs.flashscreen,alertInfo.icon)
-			elseif alertInfo.type == "simple" then
-				Alerts:Simple(text,time,stgs.sound,stgs.color1,stgs.flashscreen,alertInfo.icon)
-			elseif alertInfo.type == "absorb" then
-				Alerts:Absorb(id,text,alertInfo.textformat,time,alertInfo.flashtime,stgs.sound,stgs.color1,stgs.color2,stgs.flashscreen,alertInfo.icon,
-				              alertInfo.values[tuple['7']],ReplaceTokens(alertInfo.npcid))
+			if defn.type == "dropdown" then
+				Alerts:Dropdown(id,text,time,defn.flashtime,stgs.sound,stgs.color1,stgs.color2,stgs.flashscreen,defn.icon)
+			elseif defn.type == "centerpopup" then
+				Alerts:CenterPopup(id,text,time,defn.flashtime,stgs.sound,stgs.color1,stgs.color2,stgs.flashscreen,defn.icon)
+			elseif defn.type == "simple" then
+				Alerts:Simple(text,time,stgs.sound,stgs.color1,stgs.flashscreen,defn.icon)
+			elseif defn.type == "absorb" then
+				Alerts:Absorb(id,text,defn.textformat,time,defn.flashtime,stgs.sound,stgs.color1,stgs.color2,stgs.flashscreen,defn.icon,
+				              defn.values[tuple['7']],ReplaceTokens(defn.npcid))
 			end
 		end
 		return true
@@ -834,11 +834,11 @@ do
 	handlers.arrow = function(info)
 		local stgs = pfl.Encounters[key][info]
 		if stgs.enabled then 
-			local arrowInfo = arrows[info]
-			local unit = ReplaceTokens(arrowInfo.unit)
+			local defn = arrows[info]
+			local unit = ReplaceTokens(defn.unit)
 			if UnitExists(unit) then 
-				Arrows:AddTarget(unit,arrowInfo.persist,arrowInfo.action,arrowInfo.msg,arrowInfo.spell,stgs.sound,arrowInfo.fixed,
-												 arrowInfo.xpos,arrowInfo.ypos)
+				Arrows:AddTarget(unit,defn.persist,defn.action,defn.msg,defn.spell,stgs.sound,defn.fixed,
+								     defn.xpos,defn.ypos)
 			end
 		end
 		return true
@@ -883,19 +883,19 @@ do
 	handlers.raidicon = function(info)
 		local stgs = pfl.Encounters[key][info]
 		if addon:IsPromoted() and stgs.enabled then
-			local raidInfo = raidicons[info]
-			local unit = ReplaceTokens(raidInfo.unit)
+			local defn = raidicons[info]
+			local unit = ReplaceTokens(defn.unit)
 			if UnitExists(unit) then 
-				if raidInfo.type == "FRIENDLY" then
-					RaidIcons:MarkFriendly(unit,raidInfo.icon,raidInfo.persist) 
-				elseif raidInfo.type == "MULTIFRIENDLY" then
-					RaidIcons:MultiMarkFriendly(info,unit,raidInfo.icon,raidInfo.persist,raidInfo.reset,raidInfo.total)
+				if defn.type == "FRIENDLY" then
+					RaidIcons:MarkFriendly(unit,defn.icon,defn.persist)
+				elseif defn.type == "MULTIFRIENDLY" then
+					RaidIcons:MultiMarkFriendly(info,unit,defn.icon,defn.persist,defn.reset,defn.total)
 				end
 			elseif is_guid(unit) then
-				if raidInfo.type == "ENEMY" then
-					RaidIcons:MarkEnemy(unit,raidInfo.icon,raidInfo.persist,raidInfo.remove)
-				elseif raidInfo.type == "MULTIENEMY" then
-					RaidIcons:MultiMarkEnemy(info,unit,raidInfo.icon,raidInfo.persist,raidInfo.remove,raidInfo.reset,raidInfo.total)
+				if defn.type == "ENEMY" then
+					RaidIcons:MarkEnemy(unit,defn.icon,defn.persist,defn.remove)
+				elseif defn.type == "MULTIENEMY" then
+					RaidIcons:MultiMarkEnemy(info,unit,defn.icon,defn.persist,defn.remove,defn.reset,defn.total)
 				end
 			end
 		end
@@ -923,10 +923,10 @@ do
 	handlers.announce = function(info)
 		local stgs = pfl.Encounters[key][info]
 		if stgs.enabled then
-			local announceInfo = announces[info]
-			if announceInfo.type == "SAY" then
-				local msg = ReplaceTokens(announceInfo.msg)
-				SendChatMessage(announceInfo.msg,"SAY")
+			local defn = announces[info]
+			if defn.type == "SAY" then
+				local msg = ReplaceTokens(defn.msg)
+				SendChatMessage(defn.msg,"SAY")
 			end
 		end
 		return true
