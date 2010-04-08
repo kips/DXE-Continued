@@ -79,6 +79,9 @@ local baseLineKeys = {
 	wipe = isstring,
 	insert = istable,
 	settimeleft = istable,
+	schedulealert = istable,
+	repeatalert = istable,
+	cancelalert = isstring,
 }
 
 local alertBaseKeys = {
@@ -497,7 +500,7 @@ function validateCommandLine(data,type,info,errlvl,...)
 				end
 			end
 		end
-	elseif type == "settimeleft" then
+	elseif type == "settimeleft" or type == "schedulealert" or type == "repeatalert" then
 		validateIsArray(info,errlvl,type,...)
 		if #info ~= 2 then
 			err("array is not size 2",errlvl,type,...)
@@ -506,13 +509,13 @@ function validateCommandLine(data,type,info,errlvl,...)
 		validateVal(var,isstring,errlvl,type,...)
 		validateVal(time,isnumberstring,errlvl,type,...)
 		if not data.alerts or not data.alerts[var] then
-			err("setting timeleft on a non-existent alert '"..var.."'",errlvl,type,...)
+			err("setttimeleft/schedulealert a non-existent alert '"..var.."'",errlvl,type,...)
 		end
 		if Gtype(time) == "string" then
 			validateReplaces(data,time,errlvl,type,2,...)
 		elseif Gtype(time) == "number" then
 			if time < 0 then
-				err("setting timeleft with a number < 0",errlvl,2,type,...)
+				err("settimeleft/schedulealert with a number < 0",errlvl,2,type,...)
 			end
 		end
 	elseif type == "alert" then
@@ -545,9 +548,9 @@ function validateCommandLine(data,type,info,errlvl,...)
 				end
 			end
 		end
-	elseif type == "quash" then
+	elseif type == "quash" or type == "cancelalert" then
 		if not data.alerts or not data.alerts[info] then
-			err("quashing a non-existent alert '"..info.."'",errlvl,type,...)
+			err("quashing/cancelalert a non-existent alert '"..info.."'",errlvl,type,...)
 		end
 	elseif type == "scheduletimer" then
 		validateIsArray(info,errlvl,"scheduletimer",...)

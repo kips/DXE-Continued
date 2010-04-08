@@ -661,51 +661,87 @@ end
 ---------------------------------------------
 
 do
-	local Timers = {}
+	local reg_timers = {}
+	local alert_timers = {}
 
 	function module:RemoveAllTimers()
-		for name in pairs(Timers) do handlers.canceltimer(name) end
+		for name in pairs(reg_timers) do handlers.canceltimer(name) end
+		for var in pairs(alert_timers) do handlers.cancelalert(var) end
 		-- Just to be safe
 		self:CancelAllTimers()
 	end
 
-	function module:FireTimer(name)
-		-- Don't wipe Timers[name], it could be rescheduled
-		self:InvokeCommands(CE.timers[name],unpack(Timers[name].args))
-	end
+	local function schedule(info,timers,firefunc,cancelfunc,schedulefunc,store_args)
+		local id,time = info[1],info[2]
+		handlers[cancelfunc](id)
+		timers[id] = new()
 
-	-- @ADD TO HANDLERS
-	handlers.scheduletimer = function(info)
-		local name,time = info[1],info[2]
-		-- Rescheduled Timers are overwritten
-		handlers.canceltimer(name)
-		Timers[name] = new()
-
-		-- time is a token
 		if type(time) == "string" then
 			time = tonumber(ReplaceTokens(time))
 		end
 
-		-- sanity check
 		if not time or time < 0 then return true end
 
-		Timers[name].handle = module:ScheduleTimer("FireTimer",time,name)
-		local args = new()
-		-- Only need the first 7 (up to spellID)
-		args[1],args[2],args[3],args[4],args[5],args[6],args[7] = 
-		tuple[1],tuple[2],tuple[3],tuple[4],tuple[5],tuple[6],tuple[7]
+		timers[id].handle = module[schedulefunc](module,firefunc,time,id)
+		if store_args then
+			local args = new()
+			-- Only need the first 7 (up to spellID)
+			args[1],args[2],args[3],args[4],args[5],args[6],args[7] =
+			tuple[1],tuple[2],tuple[3],tuple[4],tuple[5],tuple[6],tuple[7]
 
-		Timers[name].args = args
+			timers[id].args = args
+		end
+	end
+
+	local function cancel(info,timers)
+		if timers[info] then
+			module:CancelTimer(timers[info].handle,true)
+			if timers[info].args then
+				timers[info].args = del(timers[info].args)
+			end
+			timers[info] = del(timers[info])
+		end
+	end
+
+	function module:FireTimer(name)
+		-- Don't wipe reg_timers[name], it could be rescheduled
+		self:InvokeCommands(CE.timers[name],unpack(reg_timers[name].args))
+	end
+
+	-- @ADD TO HANDLERS
+	handlers.scheduletimer = function(info)
+		schedule(info,reg_timers,"FireTimer","canceltimer","ScheduleTimer",true)
 		return true
 	end
 
 	-- @ADD TO HANDLERS
 	handlers.canceltimer = function(info)
-		if Timers[info] then
-			module:CancelTimer(Timers[info].handle,true)
-			Timers[info].args = del(Timers[info].args)
-			Timers[info] = del(Timers[info])
+		cancel(info,reg_timers)
+		return true
+	end
+
+	function module:FireAlert(var)
+		if alert_timers[var].args then
+			SetTuple(unpack(alert_timers[var].args))
 		end
+		handlers.alert(var)
+	end
+
+	-- @ADD TO HANDLERS
+	handlers.schedulealert = function(info)
+		schedule(info,alert_timers,"FireAlert","cancelalert","ScheduleTimer",true)
+		return true
+	end
+
+	-- @ADD TO HANDLERS
+	handlers.repeatalert = function(info)
+		schedule(info,alert_timers,"FireAlert","cancelalert","ScheduleRepeatingTimer",false)
+		return true
+	end
+
+	-- @ADD TO HANDLERS
+	handlers.cancelalert = function(info)
+		cancel(info,alert_timers)
 		return true
 	end
 end
