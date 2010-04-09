@@ -557,9 +557,28 @@ do
 		return "invoker"..var..tag
 	end
 
+	local shortcuts = {
+		srcself = function() return addon.PGUID == tuple['1'] end,
+		srcother = function() return addon.PGUID ~= tuple['1'] end,
+		dstself = function() return addon.PGUID == tuple['4'] end,
+		dstother = function() return addon.PGUID ~= tuple['4'] end,
+	}
+
 	-- @ADD TO HANDLERS
 	handlers.alert = function(info)
-		local var = type(info) == "table" and info[1] or info
+		local istbl = type(info) == "table"
+		if istbl then
+			for k,cond in pairs(shortcuts) do
+				if info[k] and cond() then
+					handlers.alert(info[k])
+				end
+			end
+		end
+		local var
+		if istbl then var = info[1]
+		else var = info end
+
+		if not var then return true end
 		local stgs = pfl.Encounters[key][var]
 		if stgs.enabled then
 			local defn = alerts[var]

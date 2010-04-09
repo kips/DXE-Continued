@@ -486,34 +486,51 @@ function validateExpectInfo(data,info,errlvl,...)
 	end
 end
 
+local alertShortcuts = {
+	"srcself",
+	"srcother",
+	"dstself",
+	"dstother",
+}
+
 function validateAlertInfo(data,info,errlvl,...)
 	errlvl = errlvl + 1
+	validateVal(info,isstringtable,errlvl,...)
 	if type(info) == "string" then
 		if not data.alerts or not data.alerts[info] then
 			err("firing non-existent alert '"..info.."'",errlvl,...)
 		end
 	elseif type(info) == "table" then
+		local flag
+		for _,shortcut in ipairs(alertShortcuts) do
+			if info[shortcut] then
+				validateAlertInfo(data,info[shortcut],errlvl,shortcut,...)
+				flag = true
+			end
+		end
 		local var = info[1]
-		if not data.alerts or not data.alerts[var] then
-			err("firing a non-existent alert '"..var.."'",errlvl,1,...)
-		end
-		if not info.time and not info.text then
-			err("missing a time or text index for '"..var.."'",errlvl,...)
-		end
-		if info.time then
-			if info.time < 2 or info.time > 9 then
-				err("time is out of scope - expected [2,9]",errlvl,"time",...)
+		if not var and not flag then
+			err("alert info is invalid - supply a alert var or shortcut",errlvl,1,...)
+		elseif var then
+			validateVal(var,isstring,errlvl,1,...)
+			if not data.alerts or not data.alerts[var] then
+				err("firing a non-existent alert '"..var.."'",errlvl,1,...)
 			end
-			if not data.alerts[var]["time"..info.time] then
-				err("attempting to fire an alert with a non-existent time index - got '"..info.time.."'",errlvl,...)
+			if info.time then
+				if info.time < 2 or info.time > 9 then
+					err("time is out of scope - expected [2,9]",errlvl,"time",...)
+				end
+				if not data.alerts[var]["time"..info.time] then
+					err("attempting to fire an alert with a non-existent time index - got '"..info.time.."'",errlvl,...)
+				end
 			end
-		end
-		if info.text then
-			if info.text < 2 or info.text > 9 then
-				err("text is out of scope - expected [2,9]",errlvl,"time",...)
-			end
-			if not data.alerts[var]["text"..info.text] then
-				err("attempting to fire an alert with a non-existent text index - got '"..info.text.."'",errlvl,...)
+			if info.text then
+				if info.text < 2 or info.text > 9 then
+					err("text is out of scope - expected [2,9]",errlvl,"time",...)
+				end
+				if not data.alerts[var]["text"..info.text] then
+					err("attempting to fire an alert with a non-existent text index - got '"..info.text.."'",errlvl,...)
+				end
 			end
 		end
 	end
@@ -555,7 +572,6 @@ function validateCommandLine(data,type,info,errlvl,...)
 			err("array is not size 2",errlvl,type,...)
 		end
 		local alertinfo,time = info[1],info[2]
-		validateVal(alertinfo,isstringtable,errlvl,type,...)
 		validateVal(time,isnumberstring,errlvl,type,...)
 		validateAlertInfo(data,alertinfo,errlvl,type,...)
 		if Gtype(time) == "string" then
