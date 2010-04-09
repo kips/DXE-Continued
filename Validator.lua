@@ -68,12 +68,12 @@ local baseLineKeys = {
 	tracing = istable,
 	proximitycheck = istable,
 	outproximitycheck = istable,
-	raidicon = isstring,
+	raidicon = isstringtable,
 	removeraidicon = isstring,
-	arrow = isstring,
+	arrow = isstringtable,
 	removearrow = isstring,
 	removeallarrows = isboolean,
-	announce = isstring,
+	announce = isstringtable,
 	invoke = istable,
 	defeat = isboolean,
 	wipe = isstring,
@@ -456,10 +456,11 @@ local function validateUnitTracing(tbl,errlvl,...)
 end
 
 local validateCommandLine, validateCommandList, validateCommandBundle
-local validateExpectInfo, validateAlertInfo
+local validateExpectInfo
 
 function validateExpectInfo(data,info,errlvl,...)
 	errlvl = errlvl + 1
+	validateVal(info,istable,errlvl,...)
 	validateIsArrayOfType(info,isstring,errlvl,...)
 	if (#info + 1) % 4 ~= 0 then
 		err("invalid expect array - got '"..#info.."' entries",errlvl,...)
@@ -486,51 +487,66 @@ function validateExpectInfo(data,info,errlvl,...)
 	end
 end
 
-local alertShortcuts = {
+local shortcuts = {
 	"srcself",
 	"srcother",
 	"dstself",
 	"dstother",
 }
 
-function validateAlertInfo(data,info,errlvl,...)
+local tablevalidations = {
+	alerts = function(data,info,var,errlvl,...)
+		errlvl = errlvl + 1
+		if info.time then
+			if info.time < 2 or info.time > 9 then
+				err("time is out of scope - expected [2,9]",errlvl,"time",...)
+			end
+			if not data.alerts[var]["time"..info.time] then
+				err("attempting to fire an alert with a non-existent time index - got '"..info.time.."'",errlvl,...)
+			end
+		end
+		if info.text then
+			if info.text < 2 or info.text > 9 then
+				err("text is out of scope - expected [2,9]",errlvl,"time",...)
+			end
+			if not data.alerts[var]["text"..info.text] then
+				err("attempting to fire an alert with a non-existent text index - got '"..info.text.."'",errlvl,...)
+			end
+		end
+	end,
+	raidicons = function(...) end,
+	arrows = function(...) end,
+	announce = function(...) end,
+}
+
+local function validateFireInfo(data,info,command,defnkey,errlvl,...)
 	errlvl = errlvl + 1
 	validateVal(info,isstringtable,errlvl,...)
 	if type(info) == "string" then
-		if not data.alerts or not data.alerts[info] then
-			err("firing non-existent alert '"..info.."'",errlvl,...)
+		if not data[defnkey] or not data[defnkey][info] then
+			err("firing non-existent "..command.." '"..info.."'",errlvl,...)
 		end
 	elseif type(info) == "table" then
 		local flag
-		for _,shortcut in ipairs(alertShortcuts) do
+		for _,shortcut in ipairs(shortcuts) do
 			if info[shortcut] then
-				validateAlertInfo(data,info[shortcut],errlvl,shortcut,...)
+				validateFireInfo(data,info[shortcut],command,defnkey,errlvl,shortcut,...)
 				flag = true
 			end
 		end
+		if info.expect then
+			validateExpectInfo(data,info.expect,errlvl,"expect",...)
+		end
 		local var = info[1]
 		if not var and not flag then
-			err("alert info is invalid - supply a alert var or shortcut",errlvl,1,...)
+			err(command.."info is invalid - supply an "..command.." var or shortcut",errlvl,1,...)
 		elseif var then
 			validateVal(var,isstring,errlvl,1,...)
-			if not data.alerts or not data.alerts[var] then
-				err("firing a non-existent alert '"..var.."'",errlvl,1,...)
+			if not data[defnkey] or not data[defnkey][var] then
+				err("firing non-existent "..command.." '"..var.."'",errlvl,1,...)
 			end
-			if info.time then
-				if info.time < 2 or info.time > 9 then
-					err("time is out of scope - expected [2,9]",errlvl,"time",...)
-				end
-				if not data.alerts[var]["time"..info.time] then
-					err("attempting to fire an alert with a non-existent time index - got '"..info.time.."'",errlvl,...)
-				end
-			end
-			if info.text then
-				if info.text < 2 or info.text > 9 then
-					err("text is out of scope - expected [2,9]",errlvl,"time",...)
-				end
-				if not data.alerts[var]["text"..info.text] then
-					err("attempting to fire an alert with a non-existent text index - got '"..info.text.."'",errlvl,...)
-				end
+			if tablevalidations[defnkey] then
+				tablevalidations[defnkey](data,info,var,errlvl,...)
 			end
 		end
 	end
@@ -573,7 +589,7 @@ function validateCommandLine(data,type,info,errlvl,...)
 		end
 		local alertinfo,time = info[1],info[2]
 		validateVal(time,isnumberstring,errlvl,type,...)
-		validateAlertInfo(data,alertinfo,errlvl,type,...)
+		validateFireInfo(data,alertinfo,"alert","alerts",errlvl,type,...)
 		if Gtype(time) == "string" then
 			validateReplaces(data,time,errlvl,type,2,...)
 		elseif Gtype(time) == "number" then
@@ -599,8 +615,8 @@ function validateCommandLine(data,type,info,errlvl,...)
 				err("settimeleft with a number < 0",errlvl,2,type,...)
 			end
 		end
-	elseif type == "alert" then
-		validateAlertInfo(data,info,errlvl,"alert",...)
+	elseif type == "alert" or type == "announce" or type == "raidicon" or type == "arrow" then
+		validateFireInfo(data,info,type,type.."s",errlvl,type,...)
 	elseif type == "quash" or type == "cancelalert" then
 		if not data.alerts or not data.alerts[info] then
 			err("quashing/cancelalert a non-existent alert '"..info.."'",errlvl,type,...)
@@ -608,7 +624,7 @@ function validateCommandLine(data,type,info,errlvl,...)
 	elseif type == "batchalert" then
 		validateIsArrayOfType(info,isstringtable,errlvl,type,...)
 		for i,alertinfo in ipairs(info) do
-			validateAlertInfo(data,alertinfo,errlvl,type,...)
+			validateFireInfo(data,alertinfo,"alert","alerts",errlvl,type,...)
 		end
 	elseif type == "batchquash" then
 		validateIsArrayOfType(info,isstring,errlvl,type,...)
@@ -656,16 +672,8 @@ function validateCommandLine(data,type,info,errlvl,...)
 		if not ProximityFuncs[range] then
 			err("invalid range - got '"..range.."'",errlvl,type,...)
 		end
-	elseif type == "arrow" then
-		if not data.arrows or not data.arrows[info] then
-			err("starting/removing a non-existent arrow '"..info.."'",errlvl,type,...)
-		end
 	elseif type == "removearrow" then
 		validateReplaces(data,info,errlvl,type,...)
-	elseif type == "raidicon" then
-		if not data.raidicons or not data.raidicons[info] then
-			err("starting a non-existent raid icon '"..info.."'",errlvl,type,...)
-		end
 	elseif type == "removeraidicon" then
 		validateReplaces(data,info,errlvl,type,...)
 	elseif type == "invoke" then

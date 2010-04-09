@@ -299,6 +299,38 @@ do
 end
 
 ---------------------------------------------
+-- PREFILTER
+-- for: alert, announce, arrow, raidicon
+---------------------------------------------
+
+local shortcuts = {
+	srcself = function() return addon.PGUID == tuple['1'] end,
+	srcother = function() return addon.PGUID ~= tuple['1'] end,
+	dstself = function() return addon.PGUID == tuple['4'] end,
+	dstother = function() return addon.PGUID ~= tuple['4'] end,
+}
+
+-- returns <var> or false
+-- if false, then break execution in the command handler
+local function prefilter(info,command)
+	-- var is info
+	if type(info) ~= "table" then return info end
+	-- inlined expect
+	local expect = info.expect
+	if expect and not handlers.expect(expect) then
+		return false
+	end
+	for k,cond in pairs(shortcuts) do
+		if info[k] and cond() then
+			handlers[command](info[k])
+		end
+	end
+	-- var is the first index
+	-- if nil, then break execution in the command handler
+	return info[1]
+end
+
+---------------------------------------------
 -- CONDITIONS
 -- Credits to PitBull4's debug for this idea
 ---------------------------------------------
@@ -557,28 +589,11 @@ do
 		return "invoker"..var..tag
 	end
 
-	local shortcuts = {
-		srcself = function() return addon.PGUID == tuple['1'] end,
-		srcother = function() return addon.PGUID ~= tuple['1'] end,
-		dstself = function() return addon.PGUID == tuple['4'] end,
-		dstother = function() return addon.PGUID ~= tuple['4'] end,
-	}
-
 	-- @ADD TO HANDLERS
 	handlers.alert = function(info)
-		local istbl = type(info) == "table"
-		if istbl then
-			for k,cond in pairs(shortcuts) do
-				if info[k] and cond() then
-					handlers.alert(info[k])
-				end
-			end
-		end
-		local var
-		if istbl then var = info[1]
-		else var = info end
-
+		local var = prefilter(info,"alert")
 		if not var then return true end
+
 		local stgs = pfl.Encounters[key][var]
 		if stgs.enabled then
 			local defn = alerts[var]
@@ -848,9 +863,12 @@ end
 do
 	-- @ADD TO HANDLERS
 	handlers.arrow = function(info)
-		local stgs = pfl.Encounters[key][info]
+		local var = prefilter(info,"arrow")
+		if not var then return true end
+
+		local stgs = pfl.Encounters[key][var]
 		if stgs.enabled then 
-			local defn = arrows[info]
+			local defn = arrows[var]
 			local unit = ReplaceTokens(defn.unit)
 			if UnitExists(unit) then 
 				Arrows:AddTarget(unit,defn.persist,defn.action,defn.msg,defn.spell,stgs.sound,defn.fixed,
@@ -897,21 +915,24 @@ do
 
 	-- @ADD TO HANDLERS
 	handlers.raidicon = function(info)
-		local stgs = pfl.Encounters[key][info]
+		local var = prefilter(info,"raidicon")
+		if not var then return true end
+
+		local stgs = pfl.Encounters[key][var]
 		if addon:IsPromoted() and stgs.enabled then
-			local defn = raidicons[info]
+			local defn = raidicons[var]
 			local unit = ReplaceTokens(defn.unit)
 			if UnitExists(unit) then 
 				if defn.type == "FRIENDLY" then
 					RaidIcons:MarkFriendly(unit,defn.icon,defn.persist)
 				elseif defn.type == "MULTIFRIENDLY" then
-					RaidIcons:MultiMarkFriendly(info,unit,defn.icon,defn.persist,defn.reset,defn.total)
+					RaidIcons:MultiMarkFriendly(var,unit,defn.icon,defn.persist,defn.reset,defn.total)
 				end
 			elseif is_guid(unit) then
 				if defn.type == "ENEMY" then
 					RaidIcons:MarkEnemy(unit,defn.icon,defn.persist,defn.remove)
 				elseif defn.type == "MULTIENEMY" then
-					RaidIcons:MultiMarkEnemy(info,unit,defn.icon,defn.persist,defn.remove,defn.reset,defn.total)
+					RaidIcons:MultiMarkEnemy(var,unit,defn.icon,defn.persist,defn.remove,defn.reset,defn.total)
 				end
 			end
 		end
@@ -937,9 +958,12 @@ do
 
 	-- @ADD TO HANDLERS
 	handlers.announce = function(info)
-		local stgs = pfl.Encounters[key][info]
+		local var = prefilter(info,"announce")
+		if not var then return true end
+
+		local stgs = pfl.Encounters[key][var]
 		if stgs.enabled then
-			local defn = announces[info]
+			local defn = announces[var]
 			if defn.type == "SAY" then
 				local msg = ReplaceTokens(defn.msg)
 				SendChatMessage(defn.msg,"SAY")
