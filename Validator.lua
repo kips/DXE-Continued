@@ -697,7 +697,7 @@ function validateCommandList(data,list,errlvl,...)
 	for k=1,#list,2 do
 		validateVal(list[k],isstring,errlvl,k,...)
 		validateVal(list[k+1],isstringtableboolean,errlvl,k+1,...)
-		validateCommandLine(data,list[k],list[k+1],errlvl,k,...)
+		validateCommandLine(data,list[k],list[k+1],errlvl,(k+1)/2,...)
 	end
 end
 
