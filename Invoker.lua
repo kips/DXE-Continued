@@ -583,6 +583,20 @@ do
 		if stgs.enabled then
 			local defn = alerts[var]
 
+			-- Throttling
+			if defn.throttle then
+				-- Initialize to 0 if non-existant
+				throttles[var] = throttles[var] or 0
+				-- Check throttle
+				local t = GetTime()
+				if throttles[var] + defn.throttle < t then
+					throttles[var] = t
+				else
+					-- Failed throttle, exit out
+					return true
+				end
+			end
+
 			if defn.expect and not handlers.expect(defn.expect) then
 				-- failed expect condition
 				return true
@@ -631,19 +645,6 @@ do
 				time = resolve_time(defn.time,var,"time")
 			end
 
-			-- Throttling
-			if defn.throttle then
-				-- Initialize to 0 if non-existant
-				throttles[var] = throttles[var] or 0
-				-- Check throttle
-				local t = GetTime()
-				if throttles[var] + defn.throttle < t then
-					throttles[var] = t
-				else
-					-- Failed throttle, exit out
-					return true
-				end
-			end
 			-- Tag
 			local tag = ReplaceTokens(defn.tag) or ""
 			-- counters
