@@ -598,7 +598,7 @@ function validateCommandLine(data,type,info,errlvl,...)
 		validateIsArrayOfType(info,isstring,errlvl,type,...)
 		for i,var in ipairs(info) do
 			if not data.alerts or not data.alerts[var] then
-				err("batchquash a non-existent alert '"..info.."'",errlvl,i,type,...)
+				err("batchquash a non-existent alert '"..var.."'",errlvl,i,type,...)
 			end
 		end
 	elseif type == "scheduletimer" then
