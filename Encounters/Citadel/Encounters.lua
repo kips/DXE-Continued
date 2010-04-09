@@ -1511,7 +1511,7 @@ end
 
 do
 	local data = {
-		version = 59,
+		version = 60,
 		key = "lichking",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -2091,7 +2091,6 @@ do
 				spellname = 70372,
 				execute = {
 					{
-						"quash","shamblinghorrorwarn",
 						"alert","shamblinghorrorcd",
 					},
 				},
@@ -2221,6 +2220,7 @@ do
 				type = "combatevent",
 				eventtype = "SPELL_SUMMON",
 				spellname = 69037,
+				srcnpcid = 36597,
 				execute = {
 					{
 						"alert","valkyrwarn",
