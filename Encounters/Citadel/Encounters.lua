@@ -1538,7 +1538,7 @@ do
 			{
 				"expect",{"<phase>","==","0"},
 				"alert","enragecd",
-				"alert","infestcd",
+				"alert",{"infestcd",time = 2},
 				"alert","necroplaguecd",
 				"expect",{"&difficulty&",">=","3"},
 				"alert","trapcd",
@@ -1547,17 +1547,6 @@ do
 		userdata = {
 			phase = "0",
 			nextphase = {"T1","2","T2","3",loop = false, type = "series"},
-			defiletext = "",
-			defiletime = 37,
-			infesttime = 6,
-			soulreapertime = 41,
-			valkyrtime = {20,47,loop = false, type = "series"},
-			harvesttime = {12.5,75,loop = false, type = "series"},
-			viletime = {18.9,30.5, loop = false, type = "series"}, -- most of the time it's 20.5 initially
-			harvestsoultext = "",
-			ragingtext = "",
-			traptext = "",
-			traptime = {16.1,15.5,loop = false, type = "series"},
 			ragingtime = 6,
 		},
 		alerts = {
@@ -1578,6 +1567,7 @@ do
 				flashtime = 10,
 				color1 = "RED",
 				icon = ST[12317],
+				behavior = "overwrite",
 			},
 			necroplaguecd = {
 				varname = format(L.alert["%s Cooldown"],SN[70337]),
@@ -1588,6 +1578,7 @@ do
 				color1 = "MAGENTA",
 				icon = ST[70337],
 				counter = true,
+				behavior = "overwrite",
 			},
 			necroplaguedur = {
 				varname = format(L.alert["%s Duration"],SN[70337]),
@@ -1626,6 +1617,7 @@ do
 				color1 = "BROWN",
 				sound = "ALERT1",
 				icon = ST[70372],
+				behavior = "overwrite",
 			},
 			shamblinghorrorenragewarn = {
 				varname = format(L.alert["%s Warning"],format("%s %s",L.npc_citadel["Shambling Horror"],SN[72143])),
@@ -1649,7 +1641,8 @@ do
 			defileselfwarn = {
 				varname = format(L.alert["%s on self"],format(L.alert["%s Casting"],SN[72762])),
 				type = "centerpopup",
-				text = "<defiletext>",
+				text = format("%s: %s!",SN[72762],L.alert["YOU"]),
+				text2 = format(L.alert["%s Cast"],SN[72762]),
 				time = 2,
 				flashtime = 2,
 				color1 = "PURPLE",
@@ -1671,7 +1664,8 @@ do
 				varname = format(L.alert["%s Cooldown"],SN[72762]),
 				type = "dropdown",
 				text = format(L.alert["%s Cooldown"],SN[72762]),
-				time = "<defiletime>",
+				time = 32,
+				time2 = 37,
 				flashtime = 10,
 				color1 = "PURPLE",
 				icon = ST[72762],
@@ -1726,7 +1720,7 @@ do
 				varname = format(L.alert["%s Cooldown"],SN[69037]),
 				type = "dropdown",
 				text = format(L.alert["%s Cooldown"],SN[69037]),
-				time = "<valkyrtime>",
+				time = {20,47,loop = false, type = "series"},
 				flashtime = 10,
 				color1 = "BROWN",
 				icon = ST[71843],
@@ -1736,10 +1730,12 @@ do
 				varname = format(L.alert["%s Cooldown"],SN[69409]),
 				type = "dropdown",
 				text = format(L.alert["%s Cooldown"],SN[69409]),
-				time = "<soulreapertime>",
+				time = 30,
+				time2 = 41,
 				flashtime = 10,
 				color1 = "ORANGE",
 				icon = ST[69409],
+				behavior = "overwrite",
 			},
 			soulreaperwarn = {
 				varname = format(L.alert["%s Duration"],SN[69409]),
@@ -1774,19 +1770,24 @@ do
 				type = "dropdown",
 				text = format(L.alert["%s Cooldown"],SN[69200]),
 				time = "<ragingtime>",
+				time2 = 6,
 				flashtime = 5,
 				sound = "ALERT6",
 				color1 = "YELLOW",
 				icon = ST[69200],
+				behavior = "overwrite",
 			},
 			infestcd = {
 				varname = format(L.alert["%s Cooldown"],SN[70541]),
 				type = "dropdown",
 				text = format(L.alert["%s Cooldown"],SN[70541]),
-				time = "<infesttime>",
+				time = 22,
+				time2 = 6,
+				time3 = 13,
 				flashtime = 10,
 				color1 = "YELLOW",
 				icon = ST[70541],
+				behavior = "overwrite",
 			},
 			infestwarn = {
 				varname = format(L.alert["%s Warning"],SN[70541]),
@@ -1810,14 +1811,15 @@ do
 				varname = format(L.alert["%s Cooldown"],SN[70498]),
 				type = "dropdown",
 				text = format(L.alert["%s Cooldown"],SN[70498]),
-				time = "<viletime>",
+				time = {18.9,30.5, loop = false, type = "series"}, -- most of the time it's 20.5 initially
 				color1 = "PINK",
+				behavior = "overwrite",
 				icon = ST[70498],
 			},
 			harvestsoulwarn = {
 				varname = format(L.alert["%s Warning"],SN[68980]),
 				type = "centerpopup",
-				text = "<harvestsoultext>",
+				text = format("%s: &dstname_or_YOU&!",SN[68980]),
 				color1 = "BLACK",
 				time = 6,
 				sound = "ALERT10",
@@ -1827,7 +1829,7 @@ do
 				varname = format(L.alert["%s Cooldown"],SN[68980]),
 				type = "dropdown",
 				text = format(L.alert["%s Cooldown"],SN[68980]),
-				time = "<harvesttime>",
+				time = {12.5,75,loop = false, type = "series"},
 				flashtime = 10,
 				color1 = "BROWN",
 				sound = "ALERT1",
@@ -1836,7 +1838,9 @@ do
 			trapwarn = {
 				varname = format(L.alert["%s Casting"],L.alert["Shadow Trap"]),
 				type = "simple",
-				text = "<traptext>",
+				text = format("%s: %s!",L.alert["Shadow Trap"],L.alert["YOU"]),
+				text2 = format("%s: &tft_unitname&!",L.alert["Shadow Trap"]),
+				text3 = format(L.alert["%s Casting"],L.alert["Shadow Trap"]),
 				time = 3,
 				color1 = "BLACK",
 				sound = "ALERT8",
@@ -1847,11 +1851,12 @@ do
 				varname = format(L.alert["%s Cooldown"],L.alert["Shadow Trap"]),
 				type = "dropdown",
 				text = format(L.alert["%s Cooldown"],L.alert["Shadow Trap"]),
-				time = "<traptime>",
+				time = {16.1,15.5,loop = false, type = "series"},
 				flashtime = 7,
 				color1 = "INDIGO",
 				sound = "ALERT3",
 				icon = ST[73539],
+				behavior = "overwrite",
 			},
 			massrescd = {
 				varname = format(L.alert["%s Timer"],SN[72429]),
@@ -1949,42 +1954,45 @@ do
 		timers = {
 			firedefile = {
 				{
-					"expect",{"&tft_unitexists& &tft_isplayer&","==","true true"},
-					"set",{defiletext = format("%s: %s!",SN[72762],L.alert["YOU"])},
+					"expect",{"&tft_unitexists&","==","true"},
 					"raidicon","defilemark",
-					"alert","defileselfwarn",
-					"announce","defilesay",
-				},
-				{
-					"expect",{"&tft_unitexists& &tft_isplayer&","==","true false"},
-					"raidicon","defilemark",
-					"alert","defilewarn",
+					"invoke",{
+						{
+							"expect",{"&tft_isplayer&","==","true"},
+							"alert","defileselfwarn",
+							"announce","defilesay",
+						},
+						{
+							"expect",{"&tft_isplayer&","==","false"},
+							"alert","defilewarn",
+						},
+					},
 				},
 				{
 					"expect",{"&tft_unitexists&","==","false"},
-					"set",{defiletext = format(L.alert["%s Cast"],SN[72762])},
-					"alert","defileselfwarn",
+					"alert",{"defileselfwarn",text = 2},
 				},
 			},
 			firetrap = {
 				{
-					"expect",{"&tft_unitexists& &tft_isplayer&","==","true true"},
-					"set",{traptext = format("%s: %s!",L.alert["Shadow Trap"],L.alert["YOU"])},
+					"expect",{"&tft_unitexists&","==","true"},
 					"raidicon","trapmark",
-					"alert","trapwarn",
-					"announce","trapsay",
-				},
-				{
-					"expect",{"&tft_unitexists& &tft_isplayer&","==","true false"},
-					"set",{traptext = format("%s: &tft_unitname&!",L.alert["Shadow Trap"])},
-					"raidicon","trapmark",
-					"arrow","traparrow",
-					"alert","trapwarn",
+					"invoke",{
+						{
+							"expect",{"&tft_isplayer&","==","true"},
+							"alert","trapwarn",
+							"announce","trapsay",
+						},
+						{
+							"expect",{"&tft_isplayer&","==","false"},
+							"alert",{"trapwarn",text = 2},
+							"arrow","traparrow",
+						},
+					},
 				},
 				{
 					"expect",{"&tft_unitexists&","==","false"},
-					"set",{traptext = format(L.alert["%s Casting"],L.alert["Shadow Trap"])},
-					"alert","trapwarn",
+					"alert",{"trapwarn",text = 3},
 				},
 			},
 		},
@@ -1993,19 +2001,12 @@ do
 			{
 				type = "event",
 				event = "YELL",
+				msg = L.chat_citadel["^I'll keep you alive to witness the end, Fordring"],
 				execute = {
 					{
-						"expect",{"#1#","find",L.chat_citadel["^I'll keep you alive to witness the end, Fordring"]},
 						"set",{phase = "1"},
-						-- just in case
-						"quash","enragecd",
-						"quash","infestcd",
-						"quash","necroplaguecd",
-						"alert","enragecd",
-						"alert","infestcd",
-						"alert","necroplaguecd",
+						"batchalert",{"enragecd","infestcd","necroplaguecd"},
 						"expect",{"&difficulty&",">=","3"},
-						"quash","trapcd",
 						"alert","trapcd",
 					},
 				},
@@ -2017,12 +2018,7 @@ do
 				spellname = 72350,
 				execute = {
 					{
-						"quash","vilespiritcd",
-						"quash","harvestsoulcd",
-						"quash","infestcd",
-						"quash","defilecd",
-						"quash","soulreapercd",
-						"quash","enragecd",
+						"quashall",true,
 						"alert","massrescd",
 					},
 				},
@@ -2035,7 +2031,6 @@ do
 				execute = {
 					{
 						"scheduletimer",{"firetrap",0},
-						"quash","trapcd",
 						"alert","trapcd",
 					},
 				},
@@ -2049,15 +2044,11 @@ do
 					{
 						"raidicon","necroplaguemark",
 						"alert","necroplaguecd",
+						"alert",{dstself = "necroplagueself",dstother = "necroplaguedur"},
 					},
 					{
 						"expect",{"#4#","==","&playerguid&"},
-						"alert","necroplagueself",
 						"announce","necroplaguesay",
-					},
-					{
-						"expect",{"#4#","~=","&playerguid&"},
-						"alert","necroplaguedur",
 					},
 				},
 			},
@@ -2068,8 +2059,7 @@ do
 				spellname2 = 70337,
 				execute = {
 					{
-						"quash","necroplaguedur",
-						"quash","necroplagueself",
+						"batchquash",{"necroplaguedur","necroplagueself"},
 					},
 				},
 			},
@@ -2114,9 +2104,8 @@ do
 				spellname = 72762,
 				execute = {
 					{
-						"scheduletimer",{"firedefile",0.2},
-						"set",{defiletime = 32},
 						"alert","defilecd",
+						"scheduletimer",{"firedefile",0.2},
 					},
 				},
 			},
@@ -2125,9 +2114,9 @@ do
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
 				spellname = 72754,
+				dstisplayerunit = true,
 				execute = {
 					{
-						"expect",{"#4#","==","&playerguid&"},
 						"alert","defileself",
 					},
 				},
@@ -2141,17 +2130,8 @@ do
 					{
 						"alert","remorsewarn",
 						"set",{phase = "<nextphase>"},
-						"quash","necroplaguecd",
-						"quash","defilecd",
-						"quash","valkyrcd",
-						"quash","infestcd",
-						"quash","soulreapercd",
-						"quash","shamblinghorrorcd",
-						"quash","trapcd",
-					},
-					{
-						"set",{ragingtime = 6},
-						"alert","ragingspiritcd",
+						"batchquash",{"necroplaguecd","defilecd","valkyrcd","infestcd","soulreapercd","shamblinghorrorcd","trapcd"},
+						"alert",{"ragingspiritcd",time = 2},
 					},
 					{
 						"expect",{"<phase>","==","T1"},
@@ -2180,9 +2160,9 @@ do
 				type = "combatevent",
 				eventtype = "SPELL_DAMAGE",
 				spellname = 73791,
+				dstisplayerunit = true,
 				execute = {
 					{
-						"expect",{"#4#","==","&playerguid&"},
 						"alert","remorseself",
 					},
 				},
@@ -2196,21 +2176,18 @@ do
 					{
 						"alert","quakewarn",
 						"set",{phase = "<nextphase>"},
-						"set",{defiletime = 37},
-						"alert","defilecd",
+						"alert",{"defilecd",time = 2},
 						"quash","ragingspiritcd",
 					},
 					{
 						"expect",{"<phase>","==","2"},
-						"set",{infesttime = 13},
-						"alert","infestcd",
 						"alert","valkyrcd",
-						"alert","soulreapercd",
+						"alert",{"soulreapercd",time = 2},
+						"alert",{"infestcd",time = 3},
 					},
 					{
 						"expect",{"<phase>","==","3"},
 						"alert","harvestsoulcd",
-						"set",{soulreapertime = 30},
 						"alert","soulreapercd",
 					},
 				},
@@ -2236,8 +2213,6 @@ do
 				spellname = 69409,
 				execute = {
 					{
-						"quash","soulreapercd",
-						"set",{soulreapertime = 30},
 						"alert","soulreapercd",
 						"alert","soulreaperwarn",
 					},
@@ -2251,16 +2226,10 @@ do
 				execute = {
 					{
 						"raidicon","ragingspiritmark",
-						"quash","ragingspiritcd",
-						"alert","ragingspiritcd",
-					},
-					{
-						"expect",{"#4#","==","&playerguid&"},
-						"alert","ragingspiritself",
+						"alert",{"ragingspiritcd",dstself = "ragingspiritself",dstother = "ragingspiritwarn"},
 					},
 					{
 						"expect",{"#4#","~=","&playerguid&"},
-						"alert","ragingspiritwarn",
 						"arrow","ragingspiritarrow",
 					},
 				},
@@ -2272,9 +2241,7 @@ do
 				spellname = 70541,
 				execute = {
 					{
-						"quash","infestcd",
 						"alert","infestwarn",
-						"set",{infesttime = 22},
 						"alert","infestcd",
 					}
 				},
@@ -2287,7 +2254,6 @@ do
 				spellname = 70498,
 				execute = {
 					{
-						"quash","vilespiritcd",
 						"alert","vilespiritwarn",
 						"alert","vilespiritcd",
 					}
@@ -2302,15 +2268,6 @@ do
 					{
 						"raidicon","harvestmark",
 						"alert","harvestsoulcd",
-					},
-					{
-						"expect",{"#4#","==","&playerguid&"},
-						"set",{harvestsoultext = format("%s: %s!",SN[68980],L.alert["YOU"])},
-						"alert","harvestsoulwarn",
-					},
-					{
-						"expect",{"#4#","~=","&playerguid&"},
-						"set",{harvestsoultext = format("%s: #5#!",SN[68980])},
 						"alert","harvestsoulwarn",
 					},
 				},
