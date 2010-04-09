@@ -1116,7 +1116,7 @@ do
 	}
 
 	function module:REG_EVENT(event,...)
-		main_event_handler(event_to_bundle[event],eventbundle_to_filter,event_attr_handles,...)
+		main_event_handler(event_to_bundle[event],eventbundle_to_filter,reg_attr_handles,...)
 	end
 
 	local function to_hash(work,trans)
