@@ -3749,7 +3749,7 @@ end
 
 do
 	local data = {
-		version = 38,
+		version = 39,
 		key = "sindragosa",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -3893,7 +3893,7 @@ do
 			aircd = {
 				varname = format(L.alert["%s Cooldown"],L.alert["Air Phase"]),
 				type = "dropdown",
-				text = format("Next %s",L.alert["Air Phase"]),
+				text = format(L.alert["Next %s"],L.alert["Air Phase"]),
 				time = "<airtime>",
 				flashtime = 10,
 				color1 = "YELLOW",
