@@ -1511,7 +1511,7 @@ end
 
 do
 	local data = {
-		version = 60,
+		version = 61,
 		key = "lichking",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -1547,7 +1547,6 @@ do
 		userdata = {
 			phase = "0",
 			nextphase = {"T1","2","T2","3",loop = false, type = "series"},
-			ragingtime = 6,
 		},
 		alerts = {
 			zerotoonecd = {
@@ -1769,8 +1768,9 @@ do
 				varname = format(L.alert["%s Cooldown"],SN[69200]),
 				type = "dropdown",
 				text = format(L.alert["%s Cooldown"],SN[69200]),
-				time = "<ragingtime>",
-				time2 = 6,
+				time = 22, -- after T1
+				time2 = 18, -- after P1|P2
+				time3 = 6, -- after T2
 				flashtime = 5,
 				sound = "ALERT6",
 				color1 = "YELLOW",
@@ -2131,15 +2131,7 @@ do
 						"alert","remorsewarn",
 						"set",{phase = "<nextphase>"},
 						"batchquash",{"necroplaguecd","defilecd","valkyrcd","infestcd","soulreapercd","shamblinghorrorcd","trapcd"},
-						"alert",{"ragingspiritcd",time = 2},
-					},
-					{
-						"expect",{"<phase>","==","T1"},
-						"set",{ragingtime = 22},
-					},
-					{
-						"expect",{"<phase>","==","T2"},
-						"set",{ragingtime = 18},
+						"alert",{"ragingspiritcd",time = 3},
 					},
 				},
 			},
@@ -2226,7 +2218,9 @@ do
 				execute = {
 					{
 						"raidicon","ragingspiritmark",
-						"alert",{"ragingspiritcd",dstself = "ragingspiritself",dstother = "ragingspiritwarn"},
+						"alert",{dstself = "ragingspiritself",dstother = "ragingspiritwarn"},
+						"alert",{"ragingspiritcd",expect = {"<phase>","==","T1"}},
+						"alert",{"ragingspiritcd",time = 2,expect = {"<phase>","==","T2"}},
 					},
 					{
 						"expect",{"#4#","~=","&playerguid&"},
