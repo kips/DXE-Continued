@@ -1511,7 +1511,7 @@ end
 
 do
 	local data = {
-		version = 61,
+		version = 62,
 		key = "lichking",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -1667,6 +1667,7 @@ do
 				time2 = 37,
 				flashtime = 10,
 				color1 = "PURPLE",
+				throttle = 2,
 				icon = ST[72762],
 			},
 			remorsewarn = {
@@ -2030,7 +2031,7 @@ do
 				spellname = 73539,
 				execute = {
 					{
-						"scheduletimer",{"firetrap",0},
+						"scheduletimer",{"firetrap",0.05},
 						"alert","trapcd",
 					},
 				},
