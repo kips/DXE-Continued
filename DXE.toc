@@ -2,7 +2,7 @@
 ## Title: DXE
 ## Notes: Deus Vox Encounters
 ## Author: Kollektiv, Fariel
-## OptionalDeps: LibSharedMedia-3.0, LibSink-2.0
+## OptionalDeps: LibSharedMedia-3.0, LibSink-2.0, LibShefkiTimer-1.0
 ## LoadOnDemand: 1
 ## Dependencies: DXE_Loader
 ## SavedVariables: DXEDB
