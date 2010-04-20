@@ -1511,7 +1511,7 @@ end
 
 do
 	local data = {
-		version = 62,
+		version = 63,
 		key = "lichking",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -1629,7 +1629,7 @@ do
 			defilewarn = {
 				varname = format(L.alert["%s on others"],format(L.alert["%s Casting"],SN[72762])),
 				type = "centerpopup",
-				text = format("%s: &tft_unitname&!",SN[72762]),
+				text = format("%s: &upvalue&!",SN[72762]),
 				time = 2,
 				flashtime = 2,
 				color1 = "PURPLE",
@@ -1840,7 +1840,7 @@ do
 				varname = format(L.alert["%s Casting"],L.alert["Shadow Trap"]),
 				type = "simple",
 				text = format("%s: %s!",L.alert["Shadow Trap"],L.alert["YOU"]),
-				text2 = format("%s: &tft_unitname&!",L.alert["Shadow Trap"]),
+				text2 = format("%s: &upvalue&!",L.alert["Shadow Trap"]),
 				text3 = format(L.alert["%s Casting"],L.alert["Shadow Trap"]),
 				time = 3,
 				color1 = "BLACK",
@@ -1891,14 +1891,14 @@ do
 				varname = SN[72762],
 				type = "FRIENDLY",
 				persist = 5,
-				unit = "&tft_unitname&",
+				unit = "&upvalue&",
 				icon = 1,
 			},
 			trapmark = {
 				varname = L.alert["Shadow Trap"],
 				type = "FRIENDLY",
 				persist = 6,
-				unit = "&tft_unitname&",
+				unit = "&upvalue&",
 				icon = 1,
 			},
 			ragingspiritmark = {
@@ -1952,51 +1952,6 @@ do
 				fixed = true,
 			},
 		},
-		timers = {
-			firedefile = {
-				{
-					"expect",{"&tft_unitexists&","==","true"},
-					"raidicon","defilemark",
-					"invoke",{
-						{
-							"expect",{"&tft_isplayer&","==","true"},
-							"alert","defileselfwarn",
-							"announce","defilesay",
-						},
-						{
-							"expect",{"&tft_isplayer&","==","false"},
-							"alert","defilewarn",
-						},
-					},
-				},
-				{
-					"expect",{"&tft_unitexists&","==","false"},
-					"alert",{"defileselfwarn",text = 2},
-				},
-			},
-			firetrap = {
-				{
-					"expect",{"&tft_unitexists&","==","true"},
-					"raidicon","trapmark",
-					"invoke",{
-						{
-							"expect",{"&tft_isplayer&","==","true"},
-							"alert","trapwarn",
-							"announce","trapsay",
-						},
-						{
-							"expect",{"&tft_isplayer&","==","false"},
-							"alert",{"trapwarn",text = 2},
-							"arrow","traparrow",
-						},
-					},
-				},
-				{
-					"expect",{"&tft_unitexists&","==","false"},
-					"alert",{"trapwarn",text = 3},
-				},
-			},
-		},
 		events = {
 			-- Yell
 			{
@@ -2031,7 +1986,17 @@ do
 				spellname = 73539,
 				execute = {
 					{
-						"scheduletimer",{"firetrap",0.05},
+						"target",{
+							npcid = 36597, -- Lich King
+							announce = "trapsay",
+							raidicon = "trapmark",
+							arrow = "traparrow",
+							alerts = {
+								self = "trapwarn",
+								other = {"trapwarn",text = 2},
+								unknown = {"trapwarn",text = 3},
+							},
+						},
 						"alert","trapcd",
 					},
 				},
@@ -2106,7 +2071,16 @@ do
 				execute = {
 					{
 						"alert","defilecd",
-						"scheduletimer",{"firedefile",0.2},
+						"target",{
+							npcid = 36597, -- Lich King
+							announce = "defilesay",
+							raidicon = "defilemark",
+							alerts = {
+								self = "defileselfwarn",
+								other = "defilewarn",
+								unknown = {"defileselfwarn",text = 2},
+							},
+						},
 					},
 				},
 			},

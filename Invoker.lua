@@ -977,7 +977,8 @@ end
 
 do
 	-- "target",{
-	--		npcid = <npcid>,
+	--		unit = <unit>			  -- OPTIONAL
+	--		npcid = <npcid>,		  -- OPTIONAL
 	-- 	raidicon = <raidicon>, -- fired when a target exists
 	--		announce = <announce>, -- fired when target is self -- condition: target exists
 	--		arrow = <arrow>, 		  -- fired when target is self -- condition: target exists
