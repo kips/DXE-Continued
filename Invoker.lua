@@ -39,6 +39,8 @@ local addon = DXE
 local L = addon.L
 local NID = addon.NID
 local SN = addon.SN
+local unit_to_unittarget = addon.Roster.unit_to_unittarget
+local targetof = addon.targetof
 
 local GetTime = GetTime
 local wipe = table.wipe
@@ -118,6 +120,16 @@ local debugDefaults = {
 	insert = false,
 	wipe = false,
 	wipe_container = false,
+	["target.bossunit"] = false,
+	["target.OBJECT_TARGET"] = false,
+	["target.OBJECT_FOCUS"] = false,
+	["target.StartPolling"] = false,
+	["target.TeardownTarget"] = false,
+	["target.failsafe"] = false,
+	["target.scan"] = false,
+	["target.try"] = false,
+	["target.UNIT_TARGET"] = false,
+	["target.fire"] = false,
 }
 
 --@end-debug@
@@ -193,6 +205,7 @@ function module:OnStop()
 	Alerts:QuashByPattern("^invoker")
 	Arrows:RemoveAll()
 	RaidIcons:RemoveAll()
+	self:TeardownTarget()
 	self:RemoveAllTimers()
 	self:ResetAlertData()
 end
@@ -215,6 +228,8 @@ local function next_series_value(series,key)
 	return series[i]
 end
 
+local upvalue = ""
+
 do
 	local function tft()
 		return HW[1].tracer:First() and HW[1].tracer:First().."target" or ""
@@ -232,6 +247,7 @@ do
 		tft_unitname = function() return UnitName(tft()) end,
 		srcname_or_YOU = function() return addon.PGUID == tuple['1'] and L.alert["YOU"] or tuple['2'] end,
 		dstname_or_YOU = function() return addon.PGUID == tuple['4'] and L.alert["YOU"] or tuple['5'] end,
+		upvalue = function() return upvalue end,
 		--- Functions with passable arguments
 		-- Get's an alert's timeleft. Note: Add support if timeleft is ever used on a tagged alert
 		timeleft = function(id,delta) return Alerts:GetTimeleft("invoker"..id) + (tonumber(delta) or 0) end,
@@ -950,6 +966,203 @@ do
 		local unit = ReplaceTokens(info)
 		if UnitExists(unit) then 
 			RaidIcons:RemoveIcon(unit) 
+		end
+		return true
+	end
+end
+
+---------------------------------------------
+-- TARGET
+---------------------------------------------
+
+do
+	-- "target",{
+	--		npcid = <npcid>,
+	-- 	raidicon = <raidicon>, -- fired when a target exists
+	--		announce = <announce>, -- fired when target is self -- condition: target exists
+	--		arrow = <arrow>, 		  -- fired when target is self -- condition: target exists
+	--		alerts = {
+	--			self = <alert>,     -- fired when target is self -- condition: target exists
+	--			other = <alert>,    -- fired when target is not self -- condition: target exists
+	--			unknown = <alert>,  -- fired when target doesn't exist
+	--		},
+	-- }
+
+	-- If a rogue is targeted by Defile and then vanishes then Lich King will recast
+	-- it on a different person
+
+	-- Scenario 1
+	-- 1. npc triggers SPELL_CAST_START or SPELL_CAST_SUCCESS and srcFlags indicate that the npc is target or focus
+	-- 2. Register for UNIT_TARGET and schedule a fail-safe for 0.3s later. The following could happen:
+	-- 	a. UNIT_TARGET is triggered for the boss within 0.3s so fire everything and teardown.
+	--				OR
+	--		b. UNIT_TARGET is not triggered within 0.3s because the npc did not change targets or focus/target was
+	--			lost on the npc (unlikely to happen). If the npc is still a valid unit then fire everything for its 
+	--			target. Otherwise, scan	raidNtarget for the npc and fire everything for raidNtargettarget.
+
+	-- Scenario 2
+	-- 1. npc triggers SPELL_CAST_START or SPELL_CAST_SUCCESS and the npc is not a valid unit
+	-- 2. Store npc's current target's guid. If there is no current target then fire info.alerts.unknown if it exists and stop execution.
+	-- 3. Schedule a repeating timer every 0.05s	for a target change. Schedule a fail-safe for 0.3s later.
+	-- 4. When a target changed is detected then fire everything.
+
+	-- tuple['3'] is srcflag
+	-- Only call from a SPELL_CAST_START or SPELL_CAST_SUCCESS
+	-- TODO: boss units
+
+	local FAILSAFE_TIME = 0.3
+	local TRY_REPEAT_TIME = 0.05
+	local MAX_TRIES = 6
+	local OBJECT_TARGET = COMBATLOG_OBJECT_TARGET
+	local OBJECT_FOCUS  = COMBATLOG_OBJECT_FOCUS
+	local ut_unit			-- Assigned focus/target for UNIT_TARGET
+	local info				-- Cached info
+	local last_guid		-- GUID to check against for a target switch
+	local tries				-- How many times a poll has been done to check for a target swich
+	local try_handle		-- Handle for polling
+	local cancel_handle	-- Handle for failsafe
+
+	local boss_units = {"boss1","boss2","boss3","boss4"}
+
+	local function fire(unit)
+		--@debug@
+		debug("target.fire","unit: %s UnitName: %s",unit,UnitName(unit or ""))
+		--@end-debug@
+		if UnitExists(unit) then
+			if info.raidicon then
+				handlers.raidicon(info.raidicon)
+			end
+			if UnitIsUnit(unit,"player") then
+				if info.announce then
+					handlers.announce(info.announce)
+				end
+				if info.alerts and info.alerts.self then
+					handlers.alert(info.alerts.self)
+				end
+			else
+				if info.alerts and info.alerts.other then
+					upvalue = UnitName(unit)
+					handlers.alert(info.alerts.other)
+				end
+				if info.arrow then
+					handlers.arrow(info.arrow)
+				end
+			end
+		else
+			if info.alerts and info.alerts.unknown then
+				handlers.alert(info.alerts.unknown)
+			end
+		end
+	end
+
+	function module:UNIT_TARGET(_,unit)
+		if unit == ut_unit then
+			local npcid = NID[UnitGUID(unit)]
+			--@debug@
+			debug("target.UNIT_TARGET","unit: %s npcid: %s",unit,npcid)
+			--@end-debug@
+			if info.npcid == npcid then
+				fire(targetof[unit])
+				self:TeardownTarget()
+			end
+		end
+	end
+
+	local function scan(npcid)
+		--@debug@
+		debug("target.scan","Invoked")
+		--@end-debug@
+		for _,unit in pairs(unit_to_unittarget) do
+				if	 UnitExists(unit)
+				and NID[UnitGUID(unit)] == npcid
+				and UnitExists(targetof[unit]) then
+				return targetof[unit]
+			end
+		end
+	end
+
+	local function try()
+		tries = tries + 1
+		local unit = scan(info.npcid)
+		local cancel
+
+		--@debug@
+		debug("target.try","tries: %s UnitName: %s",tries,cancel,UnitName(unit or ""))
+		--@end-debug@
+
+		-- target changed
+		if unit and UnitGUID(unit) ~= last_guid then
+			fire(unit)
+			cancel = true
+		end
+
+		if cancel then
+			module:TeardownTarget()
+		elseif tries == MAX_TRIES then
+			-- failsafe fire
+			fire("")
+			module:TeardownTarget()
+		end
+	end
+
+	local function failsafe()
+		--@debug@
+		debug("target.failsafe","Invoked")
+		--@end-debug@
+		fire(targetof[ut_unit])
+		cancel_handle = nil
+		module:TeardownTarget()
+	end
+
+	function module:TeardownTarget()
+		if try_handle then
+			self:CancelTimer(try_handle)
+			try_handle = nil
+		end
+		if cancel_handle then
+			self:CancelTimer(cancel_handle)
+			cancel_handle = nil
+		end
+		self:UnregisterEvent("UNIT_TARGET")
+		--@debug@
+		debug("target.TeardownTarget","Invoked")
+		--@end-debug@
+	end
+
+	-- @ADD TO HANDLERS
+	handlers.target = function(_info)
+		info = _info
+		module:TeardownTarget()
+		if info.unit then
+			module:RegisterEvent("UNIT_TARGET")
+			ut_unit = info.unit
+			cancel_handle = module:ScheduleTimer(failsafe,FAILSAFE_TIME)
+			--@debug@
+			debug("target.bossunit","UnitName: %s",UnitName(targetof[info.unit]))
+			--@end-debug@
+		elseif band(tuple['3'],OBJECT_TARGET) == OBJECT_TARGET then
+			module:RegisterEvent("UNIT_TARGET")
+			ut_unit = "target"
+			cancel_handle = module:ScheduleTimer(failsafe,FAILSAFE_TIME)
+			--@debug@
+			debug("target.OBJECT_TARGET","UnitName: %s",UnitName("targettarget"))
+			--@end-debug@
+		elseif band(tuple['3'],OBJECT_FOCUS) == OBJECT_FOCUS then
+			module:RegisterEvent("UNIT_TARGET")
+			ut_unit = "focus"
+			cancel_handle = module:ScheduleTimer(failsafe,FAILSAFE_TIME)
+			--@debug@
+			debug("target.OBJECT_FOCUS","UnitName: %s",UnitName("focustarget"))
+			--@end-debug@
+		else
+			local unit = scan(info.npcid)
+			if unit then last_guid = UnitGUID(unit)
+			else last_guid = nil end
+			try_handle = module:ScheduleRepeatingTimer(try,TRY_REPEAT_TIME)
+			tries = 0
+			--@debug@
+			debug("target.StartPolling","UnitName: %s last_guid: %s",UnitName(unit or ""),last_guid)
+			--@end-debug@
 		end
 		return true
 	end

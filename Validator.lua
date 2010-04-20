@@ -85,6 +85,7 @@ local baseLineKeys = {
 	batchalert = istable,
 	batchquash = istable,
 	quashall = isboolean,
+	target = istable,
 }
 
 local alertBaseKeys = {
@@ -224,6 +225,21 @@ local eventBaseKeys = {
 	npcname = optstringtable,
 	throttle = optnumber,
 	execute = istable,
+}
+
+local targetBaseKeys = {
+	npcid = optnumber,
+	unit = optstring,
+	raidicon = optstringtable,
+	announce = optstringtable,
+	arrow = optstringtable,
+	alerts = opttable,
+}
+
+local targetAlertsKeys = {
+	self = optstringtable,
+	other = optstringtable,
+	unknown = optstringtable,
 }
 
 local eventtypes = {
@@ -696,6 +712,38 @@ function validateCommandLine(data,type,info,errlvl,...)
 		local ud = data.userdata
 		if not (ud and ud[info] and Gtype(ud[info]) == "table" and ud[info].type == "container") then
 			err("wiping an invalid userdata variable '"..info.."'",errlvl,type,...)
+		end
+	elseif type == "target" then
+		validateVal(info,istable,errlvl,type,...)
+		for k in pairs(info) do
+			if not targetBaseKeys[k] then
+				err("unknown key '"..k.."'",errlvl,k,type,...)
+			end
+		end
+		if not info.unit and not info.npcid then
+			err("missing unit/npcid key",errlvl,type,...)
+		end
+		for k,oktypes in pairs(targetBaseKeys) do
+			validateVal(info[k],oktypes,errlvl,k,type,...)
+			if info[k] then
+				if k == "raidicon" or k == "arrow" or k == "announce" then
+					validateFireInfo(data,info[k],k,k.."s",errlvl,k,type,...)
+				elseif k == "alerts" then
+					local fireinfos = info[k]
+					validateVal(fireinfos,istable,errlvl,k,type,...)
+					for cond in pairs(fireinfos) do
+						if not targetAlertsKeys[cond] then
+							err("unknown key '"..cond.."'",errlvl,cond,k,type,...)
+						end
+					end
+					for cond,oktypes2 in pairs(targetAlertsKeys) do
+						validateVal(fireinfos[cond],oktypes2,errlvl,cond,k,type,...)
+						if fireinfos[cond] then
+							validateFireInfo(data,info[k][cond],"alert","alerts",errlvl,cond,k,type,...)
+						end
+					end
+				end
+			end
 		end
 	end
 end
