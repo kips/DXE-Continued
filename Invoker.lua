@@ -90,12 +90,7 @@ end
 -- INITIALIZATION
 ---------------------------------------------
 
---@debug@
 local module = addon:NewModule("Invoker","AceEvent-3.0","LibShefkiTimer-1.0")
---@end-debug@
---[===[@non-debug@
-local module = addon:NewModule("Invoker","AceEvent-3.0","AceTimer-3.0")
---@end-non-debug@]===]
 
 addon.Invoker = module
 local HW = addon.HW

@@ -16,6 +16,7 @@ Libs\AceComm-3.0\AceComm-3.0.xml
 Libs\AceSerializer-3.0\AceSerializer-3.0.xml
 Libs\LibSharedMedia-3.0\lib.xml
 Libs\LibSink-2.0\lib.xml
+Libs\LibShefkiTimer-1.0\LibShefkiTimer-1.0.xml
 #@end-no-lib-strip@
 
 # Locales

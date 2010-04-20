@@ -36,6 +36,7 @@ externals:
     Libs/LibSink-2.0:
         url: svn://svn.wowace.com/wow/libsink-2-0/mainline/trunk/LibSink-2.0
         tag: latest
+    Libs/LibShefkiTimer-1.0: git://git.wowace.com/wow/libshefkitimer-1-0/mainline.git
 
     Options/Libs/AceGUI-3.0:
         url: svn://svn.wowace.com/wow/ace3/mainline/trunk/AceGUI-3.0
