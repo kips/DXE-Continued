@@ -974,12 +974,12 @@ do
 	-- "target",{
 	--		unit = <unit>			  -- OPTIONAL
 	--		npcid = <npcid>,		  -- OPTIONAL
-	-- 	raidicon = <raidicon>, -- fired when a target exists
-	--		announce = <announce>, -- fired when target is self -- condition: target exists
-	--		arrow = <arrow>, 		  -- fired when target is self -- condition: target exists
+	-- 	raidicon = <raidicon>, -- fired when target exists
+	--		announce = <announce>, -- fired when target is self 	  	-- condition: target exists
+	--		arrow = <arrow>, 		  -- fired when target is not self 	-- condition: target exists
 	--		alerts = {
-	--			self = <alert>,     -- fired when target is self -- condition: target exists
-	--			other = <alert>,    -- fired when target is not self -- condition: target exists
+	--			self = <alert>,     -- fired when target is self 		-- condition: target exists
+	--			other = <alert>,    -- fired when target is not self 	-- condition: target exists
 	--			unknown = <alert>,  -- fired when target doesn't exist
 	--		},
 	-- }
@@ -989,7 +989,7 @@ do
 
 	-- Scenario 1
 	-- 1. npc triggers SPELL_CAST_START or SPELL_CAST_SUCCESS and srcFlags indicate that the npc is target or focus
-	-- 2. Register for UNIT_TARGET and schedule a fail-safe for 0.3s later. The following could happen:
+	-- 2. Register for UNIT_TARGET. The following could happen:
 	-- 	a. UNIT_TARGET is triggered for the boss within 0.3s so fire everything and teardown.
 	--				OR
 	--		b. UNIT_TARGET is not triggered within 0.3s because the npc did not change targets or focus/target was
@@ -1002,9 +1002,8 @@ do
 	-- 3. Schedule a repeating timer every 0.05s	for a target change. Schedule a fail-safe for 0.3s later.
 	-- 4. When a target changed is detected then fire everything.
 
-	-- tuple['3'] is srcflag
+	-- tuple['3'] is srcFlags
 	-- Only call from a SPELL_CAST_START or SPELL_CAST_SUCCESS
-	-- TODO: boss units
 
 	local FAILSAFE_TIME = 0.3
 	local TRY_REPEAT_TIME = 0.05
@@ -1017,8 +1016,6 @@ do
 	local tries				-- How many times a poll has been done to check for a target swich
 	local try_handle		-- Handle for polling
 	local cancel_handle	-- Handle for failsafe
-
-	local boss_units = {"boss1","boss2","boss3","boss4"}
 
 	local function fire(unit)
 		--@debug@
