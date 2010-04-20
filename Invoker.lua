@@ -1095,8 +1095,8 @@ do
 		if cancel then
 			module:TeardownTarget()
 		elseif tries == MAX_TRIES then
-			-- failsafe fire
-			fire("")
+			-- failsafe fire on current target
+			fire(unit or "")
 			module:TeardownTarget()
 		end
 	end
