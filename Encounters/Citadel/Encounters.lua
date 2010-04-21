@@ -2474,7 +2474,7 @@ end
 
 do
 	local data = {
-		version = 39,
+		version = 40,
 		key = "putricide",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -2934,9 +2934,9 @@ do
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
 				spellname = 71615,
+				throttle = 3,
 				execute = {
 					{
-						"expect",{"#4#","==","&playerguid&"},
 						"alert","teargasdur",
 					},
 				},
@@ -2946,9 +2946,10 @@ do
 				type = "combatevent",
 				eventtype = "SPELL_AURA_REMOVED",
 				spellname = 71615,
+				throttle = 3,
+				dstisplayertype = true,
 				execute = {
 					{
-						"expect",{"#4#","==","&playerguid&"},
 						"set",{malleabletime = 6, experimenttime = 20, gasbombtime = 16, puddletime = "<puddletimeaftertransition>"},
 						"alert","malleablegoocd",
 						"alert","gasbombcd",
