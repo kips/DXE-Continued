@@ -155,9 +155,20 @@ local function OnShow(self)
 	addon:RefreshVersionList()
 end
 
+local function OnEvent(self, event, ...)
+	if event == "ADDON_LOADED" then
+		local addon = ...
+		if window and window:IsVisible() and addon:match("^DXE_") then
+			RefreshDropdown()
+		end
+	end
+end
+
 local function CreateWindow()
 	window = addon:CreateWindow(L["Version Check"],220,295)
 	window:SetScript("OnShow",OnShow)
+	window:SetScript("OnEvent",OnEvent)
+	window:RegisterEvent("ADDON_LOADED")
 	window:SetContentInset(7)
 	--@debug@
 	window:AddTitleButton("Interface\\Addons\\DXE\\Textures\\Window\\Sync.tga",
