@@ -1,5 +1,5 @@
 If you're using this addon out of the repo you need to make links with whatever
-link system your OS provides (ln -s, mlink, ...) from the repo to your WoW install.
+link system your OS provides (ln -s, mklink, ...) from the repo to your WoW install.
 
 The links you need to make will be as follows assuming that the repo is in the
 AddOns folder:
