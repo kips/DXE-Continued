@@ -1260,10 +1260,10 @@ end
 ---------------------------------------------
 
 function addon:ToggleConfig()
-	--[===[@non-debug@
-	if select(6,GetAddOnInfo("DXE_Options")) == "MISSING" then self:Print((L["Missing %s"]):format("DXE_Options")) return end
-	if not IsAddOnLoaded("DXE_Options") then self.Loader:Load("DXE_Options") end
-	--@end-non-debug@]===]
+	if not addon.Options then
+		if select(6,GetAddOnInfo("DXE_Options")) == "MISSING" then self:Print((L["Missing %s"]):format("DXE_Options")) return end
+		if not IsAddOnLoaded("DXE_Options") then self.Loader:Load("DXE_Options") end
+	end
 	addon.Options:ToggleConfig()
 end
 

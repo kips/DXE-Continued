@@ -36,7 +36,7 @@ Window.lua
 Windows.xml
 
 #@debug@
-Options\Options.lua
+#Options\Options.lua
 Debug.lua
 Validator.lua
 Tests.lua
