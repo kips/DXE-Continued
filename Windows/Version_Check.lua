@@ -8,7 +8,7 @@ local RVS = addon.RVS
 
 local window
 local dropdown, heading, scrollframe
-local list,headers = {},{}
+local list,sorted_list,reverse_list,headers = {},{},{},{}
 local value = "addon"
 local sortIndex = 1
 
@@ -86,9 +86,16 @@ end
 
 local function RefreshDropdown()
 	wipe(list)
+	wipe(sorted_list)
+	local n = 1
 	for key,data in addon:IterateEDB() do
-		list[key] = data.name
+		local name = data.name
+		sorted_list[n] = name
+		n = n + 1
+		list[key] = name
+		reverse_list[name] = key
 	end
+	sort(sorted_list)
 end
 
 local function CreateRow(parent)
@@ -212,9 +219,9 @@ local function CreateWindow()
 
 		local function dropdown_initialize(self)
 			local info = UIDropDownMenu_CreateInfo()
-			for key,name in pairs(list) do
+			for n,name in ipairs(sorted_list) do
 				info.text = name
-				info.value = key
+				info.value = reverse_list[name]
 				info.func = OnClick
 				UIDropDownMenu_AddButton(info)
 				info = UIDropDownMenu_CreateInfo()
