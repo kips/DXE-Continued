@@ -1080,7 +1080,7 @@ do
 		local cancel
 
 		--@debug@
-		debug("target.try","tries: %s UnitName: %s",tries,cancel,UnitName(unit or ""))
+		debug("target.try","tries: %s UnitName: %s",tries,UnitName(unit or ""))
 		--@end-debug@
 
 		-- target changed
