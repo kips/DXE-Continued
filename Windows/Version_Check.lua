@@ -8,7 +8,7 @@ local RVS = addon.RVS
 
 local window
 local dropdown, heading, scrollframe
-local list,sorted_list,reverse_list,headers = {},{},{},{}
+local list,work,encounter_names,headers = {},{},{},{}
 local value = "addon"
 local sortIndex = 1
 
@@ -81,21 +81,7 @@ local function SortColumn(column)
 end
 
 local function SetHeaderText(name,version)
-	heading:SetText(format("%s: |cffffffff%s|r",name,version))
-end
-
-local function RefreshDropdown()
-	wipe(list)
-	wipe(sorted_list)
-	local n = 1
-	for key,data in addon:IterateEDB() do
-		local name = data.name
-		sorted_list[n] = name
-		n = n + 1
-		list[key] = name
-		reverse_list[name] = key
-	end
-	sort(sorted_list)
+	heading.label:SetFormattedText("%s: |cffffffff%s|r",name,version)
 end
 
 local function CreateRow(parent)
@@ -151,15 +137,55 @@ local function OnRefreshVersionList(self)
 end
 
 local function OnShow(self)
-	RefreshDropdown()
+	local v = addon:GetActiveEncounter()
+	if v ~= "default" then
+		-- When showing switch to the active encounter even if we already have
+		-- a dropdown value
+		UIDropDownMenu_SetSelectedValue(dropdown,v)
+		UIDropDownMenu_SetText(dropdown,EDB[v].name)
+	elseif not dropdown.selectedValue then
+		-- if there was no value and no active encounter, grab the first one we can find
+		v = next(EDB)
+		if v == "default" then
+			v = next(EDB,v)
+		end
+		if v then
+			UIDropDownMenu_SetSelectedValue(dropdown,v)
+			UIDropDownMenu_SetText(dropdown,EDB[v].name)
+		end
+	else
+		v = nil
+	end
+	if v and value ~= "addon" then
+		value = v
+		local data = EDB[v]
+		SetHeaderText(data.name,data.version)
+	end
+	addon:RequestVersions(value)
 	addon:RefreshVersionList()
 end
 
 local function OnEvent(self, event, ...)
 	if event == "ADDON_LOADED" then
-		local addon = ...
-		if window and window:IsVisible() and addon:match("^DXE_") then
-			RefreshDropdown()
+		local loaded = ...
+		if window and window:IsVisible() and loaded:match("^DXE_") then
+			if not dropdown.selectedValue then
+				local v = addon:GetActiveEncounter()
+				if v ~= "default" then
+					UIDropDownMenu_SetSelectedValue(dropdown,v)
+					UIDropDownMenu_SetText(dropdown,EDB[v].name)
+				else
+					local _
+					v = next(EDB)
+					if v == "default" then
+						v = next(EDB,v)
+					end
+					if v then
+						UIDropDownMenu_SetSelectedValue(dropdown,v)
+						UIDropDownMenu_SetText(dropdown,EDB[v].name)
+					end
+				end
+			end
 		end
 	end
 end
@@ -190,9 +216,10 @@ local function CreateWindow()
 			value = "addon"
 			addon:RequestVersions("addon")
 		elseif button == "RightButton" then
-			if not dropdown.value then return end
-			SetHeaderText(list[dropdown.value],EDB[dropdown.value].version)
-			value = dropdown.value
+			if not dropdown.selectedValue then return end
+			value = dropdown.selectedValue 
+			local data = EDB[value]
+			SetHeaderText(data.name,data.version)
 			addon:RequestVersions(value)
 		end
 		addon:RefreshVersionList() 
@@ -200,7 +227,6 @@ local function CreateWindow()
 	addon:AddTooltipText(addonbutton,L["Usage"],L["|cffffff00Left Click|r to display AddOn versions. Repeated clicks will refresh them"]
 	.."\n"..L["|cffffff00Right Click|r to display the selected versions. Repeated clicks will refresh them"])
 
-	RefreshDropdown()
 	do
 		local parent = CreateFrame("Frame",nil,content)
 		parent:SetHeight(44)
@@ -220,29 +246,71 @@ local function CreateWindow()
 		text:SetPoint("LEFT", left, "LEFT", 25, 2)
 
 		local function OnClick(self)
-			dropdown.value = self.value
 			UIDropDownMenu_SetSelectedValue(dropdown,self.value)
+			-- No need to set the dropdown menu text since SetSelectedValue can do
+			-- it for us here, since the 2nd level menu with the proper value is
+			-- guaranteed to exist here.
 			value = self.value
-			SetHeaderText(list[value],EDB[value].version)
+			local data = EDB[value]
+			SetHeaderText(data.name,data.version)
 			addon:RefreshVersionList()
 			addon:RequestVersions(value)
+			CloseDropDownMenus()
 		end
 
-		local function dropdown_initialize(self)
-			local info = UIDropDownMenu_CreateInfo()
-			for n,name in ipairs(sorted_list) do
-				info.text = name
-				info.value = reverse_list[name]
-				info.func = OnClick
-				UIDropDownMenu_AddButton(info)
-				info = UIDropDownMenu_CreateInfo()
+		local function dropdown_initialize(self, level)
+			local info
+
+			wipe(work)
+			wipe(list)
+
+			level = level or 1
+
+			if level == 1 then
+				for key,data in addon:IterateEDB() do
+					work[data.category or data.zone] = true
+				end
+				for cat in pairs(work) do
+					list[#list+1] = cat
+				end
+
+				sort(list)
+
+				for _,cat in ipairs(list) do
+					info = UIDropDownMenu_CreateInfo()
+					info.text = cat
+					info.value = cat
+					info.hasArrow = true
+					info.notCheckable = true
+					info.owner = self
+					UIDropDownMenu_AddButton(info,1)
+				end
+			elseif level == 2 then
+				local cat = UIDROPDOWNMENU_MENU_VALUE
+
+				for key,data in addon:IterateEDB() do
+					if (data.category or data.zone) == cat then
+						list[#list+1] = data.name
+						work[data.name] = key
+					end
+				end
+
+				sort(list)
+
+				for _,name in ipairs(list) do
+					info = UIDropDownMenu_CreateInfo()
+					info.hasArrow = false
+					info.text = name
+					info.owner = self
+					info.value = work[name]
+					info.func = OnClick
+					UIDropDownMenu_AddButton(info,2)
+				end
 			end
 		end
 		UIDropDownMenu_Initialize(dropdown, dropdown_initialize)
+		OnShow(window)
 	end
-	local value = next(list)
-	UIDropDownMenu_SetSelectedValue(dropdown,value)
-	dropdown.value = next(list)
 
 	heading = CreateFrame("Frame",nil,content)
 	heading:SetWidth(content:GetWidth())
@@ -252,7 +320,7 @@ local function CreateWindow()
 	label:SetFont(GameFontNormalSmall:GetFont())
 	label:SetPoint("CENTER")
 	label:SetTextColor(1,1,0)
-	function heading:SetText(text) label:SetText(text) end
+	heading.label = label
 	SetHeaderText(L["AddOn"],addon.version)
 
 	local left = heading:CreateTexture(nil, "BACKGROUND")
@@ -305,7 +373,6 @@ local function CreateWindow()
 end
 	
 function addon:VersionCheck()
-	self:RequestVersions(value)
 	if window then
 		window:Show()
 	else
