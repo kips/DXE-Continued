@@ -13,6 +13,7 @@ local CORE_ADDON = "DXE"
 local Z_MODS = {} -- Zone modules
 local Z_MODS_LIST = {}
 local B_MODS = {} -- Boot modules
+local saved_command
 
 module.Z_MODS_LIST = Z_MODS_LIST
 
@@ -47,6 +48,10 @@ function module:ADDON_LOADED(name)
 		addon.Loader = module
 		for name in pairs(B_MODS) do self:Load(name) end
 		B_MODS = nil
+		if saved_command then
+			DXE_SLASH_HANDLER(saved_command)
+			saved_command = nil
+		end
 	elseif Z_MODS_LIST[name] then
 		self:CleanZoneModules(name)
 		addon.callbacks:Fire("OnLoadZoneModule")
@@ -131,7 +136,12 @@ function module:SetupBroker()
 end
 
 SLASH_DXE1 = "/dxe"
-DXE_SLASH_HANDLER = function(msg) if not addon then module:Load(CORE_ADDON) end end
+function DXE_SLASH_HANDLER(msg)
+	if not addon then
+		saved_command = msg
+		module:Load(CORE_ADDON)
+	end
+end
 SlashCmdList.DXE = function(msg) DXE_SLASH_HANDLER(msg) end
 
 module:SetScript("OnEvent",function(self,event,...) self[event](self,...) end)
