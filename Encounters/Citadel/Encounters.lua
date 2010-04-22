@@ -1511,7 +1511,7 @@ end
 
 do
 	local data = {
-		version = 63,
+		version = 64,
 		key = "lichking",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -1944,7 +1944,7 @@ do
 			},
 			traparrow = {
 				varname = L.alert["Shadow Trap"],
-				unit = "&tft_unitname&",
+				unit = "&upvalue&",
 				persist = 5,
 				action = "AWAY",
 				msg = L.alert["MOVE AWAY"],
