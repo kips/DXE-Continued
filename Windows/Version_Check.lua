@@ -73,7 +73,7 @@ local function sort_asc(a,b)
 		local a2,b2 = a[2],b[2]
 		if a2 == NONE then a2 = 99999 end
 		if b2 == NONE then b2 = 99999 end
-		if a2 == b2 then return a[1] < b[2]
+		if a2 == b2 then return a[1] < b[1]
 		else return a2 < b2 end
 	else
 		return a[sort_index] < b[sort_index]
@@ -85,7 +85,7 @@ local function sort_desc(a,b)
 		local a2,b2 = a[2],b[2]
 		if a2 == NONE then a2 = -99999 end
 		if b2 == NONE then b2 = -99999 end
-		if a2 == b2 then return a[1] < b[2]
+		if a2 == b2 then return a[1] < b[1]
 		else return a2 > b2 end
 	else
 		return a[sort_index] > b[sort_index]
