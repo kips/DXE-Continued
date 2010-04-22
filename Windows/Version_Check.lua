@@ -67,16 +67,26 @@ local function UpdateScroll()
 end
 
 -- stable sort if sort_index == 2
-local function SortAsc(a,b)
-	if sort_index == 2 and a[2] == b[2] then
-		return a[1] < b[1]
+-- place NONEs at the end of the list
+local function sort_asc(a,b)
+	if sort_index == 2 then
+		local a2,b2 = a[2],b[2]
+		if a2 == NONE then a2 = 99999 end
+		if b2 == NONE then b2 = 99999 end
+		if a2 == b2 then return a[1] < b[2]
+		else return a2 < b2 end
 	else
 		return a[sort_index] < b[sort_index]
 	end
 end
-local function SortDesc(a,b)
-	if sort_index == 2 and a[2] == b[2] then
-		return a[1] < b[1]
+
+local function sort_desc(a,b)
+	if sort_index == 2 then
+		local a2,b2 = a[2],b[2]
+		if a2 == NONE then a2 = -99999 end
+		if b2 == NONE then b2 = -99999 end
+		if a2 == b2 then return a[1] < b[2]
+		else return a2 > b2 end
 	else
 		return a[sort_index] > b[sort_index]
 	end
@@ -86,9 +96,9 @@ local function SortColumn(column)
 	local header = headers[column]
 	sort_index = column
 	if not header.sortDir then
-		table.sort(RVS, SortAsc)
+		table.sort(RVS, sort_asc)
 	else
-		table.sort(RVS, SortDesc)
+		table.sort(RVS, sort_desc)
 	end
 	UpdateScroll()
 end
