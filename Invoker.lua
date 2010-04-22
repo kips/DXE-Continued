@@ -1022,6 +1022,7 @@ do
 		debug("target.fire","unit: %s UnitName: %s",unit,UnitName(unit or ""))
 		--@end-debug@
 		if UnitExists(unit) then
+			upvalue = UnitName(unit)
 			if info.raidicon then
 				handlers.raidicon(info.raidicon)
 			end
@@ -1034,7 +1035,6 @@ do
 				end
 			else
 				if info.alerts and info.alerts.other then
-					upvalue = UnitName(unit)
 					handlers.alert(info.alerts.other)
 				end
 				if info.arrow then
