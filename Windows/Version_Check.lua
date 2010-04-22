@@ -10,7 +10,7 @@ local window
 local dropdown, heading, scrollframe
 local list,work,encounter_names,headers = {},{},{},{}
 local value = "addon"
-local sortIndex = 1
+local sort_index = 2
 
 local backdrop = {
 	bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
@@ -66,12 +66,25 @@ local function UpdateScroll()
 	end
 end
 
-local function SortAsc(a,b) return a[sortIndex] < b[sortIndex] end
-local function SortDesc(a,b) return a[sortIndex] > b[sortIndex] end
+-- stable sort if sort_index == 2
+local function SortAsc(a,b)
+	if sort_index == 2 and a[2] == b[2] then
+		return a[1] < b[1]
+	else
+		return a[sort_index] < b[sort_index]
+	end
+end
+local function SortDesc(a,b)
+	if sort_index == 2 and a[2] == b[2] then
+		return a[1] < b[1]
+	else
+		return a[sort_index] > b[sort_index]
+	end
+end
 
 local function SortColumn(column)
 	local header = headers[column]
-	sortIndex = column
+	sort_index = column
 	if not header.sortDir then
 		table.sort(RVS, SortAsc)
 	else
@@ -132,7 +145,7 @@ local function OnRefreshVersionList(self)
 			end
 		end
 
-		SortColumn(sortIndex)
+		SortColumn(sort_index)
 	end
 end
 
