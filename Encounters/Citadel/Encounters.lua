@@ -1813,6 +1813,7 @@ do
 				type = "dropdown",
 				text = format(L.alert["%s Cooldown"],SN[70498]),
 				time = {18.9,30.5, loop = false, type = "series"}, -- most of the time it's 20.5 initially
+				time2 = 30.5,
 				color1 = "PINK",
 				behavior = "overwrite",
 				icon = ST[70498],
@@ -1821,6 +1822,7 @@ do
 				varname = format(L.alert["%s Warning"],SN[68980]),
 				type = "centerpopup",
 				text = format("%s: &dstname_or_YOU&!",SN[68980]),
+				text2 = format(L.alert["%s Warning"],SN[74297]),
 				color1 = "BLACK",
 				time = 6,
 				sound = "ALERT10",
@@ -1830,11 +1832,22 @@ do
 				varname = format(L.alert["%s Cooldown"],SN[68980]),
 				type = "dropdown",
 				text = format(L.alert["%s Cooldown"],SN[68980]),
+				text2 = format(L.alert["%s Cooldown"],SN[74297]),
 				time = {12.5,75,loop = false, type = "series"},
+				time2 = {12.5,59,loop = false, type = "series"},
 				flashtime = 10,
 				color1 = "BROWN",
 				sound = "ALERT1",
 				icon = ST[68980],
+			},
+			restoresoulwarn = {
+				varname = format(L.alert["%s Casting"],SN[73650]),
+				type = "dropdown",
+				text = format(L.alert["%s Casting"],SN[73650]),
+				color1 = "GOLD",
+				time = 40,
+				flashtime = 20,
+				icon = ST[73650],
 			},
 			trapwarn = {
 				varname = format(L.alert["%s Casting"],L.alert["Shadow Trap"]),
@@ -2155,8 +2168,15 @@ do
 					},
 					{
 						"expect",{"<phase>","==","3"},
-						"alert","harvestsoulcd",
-						"alert","soulreapercd",
+						"invoke",{
+							{
+								"expect",{"&difficulty&","<=","2"},
+								"alert","soulreapercd",
+								"alert","vilespiritcd",
+								"alert","harvestsoulcd",
+							},
+						},
+						"alert",{"harvestsoulcd", time = 2, text = 2, expect = {"&difficulty&",">=","3"}},
 					},
 				},
 			},
@@ -2225,7 +2245,8 @@ do
 				execute = {
 					{
 						"alert","vilespiritwarn",
-						"alert","vilespiritcd",
+						"alert",{"vilespiritcd", expect = {"&difficulty&","<=","2"}},
+						"alert",{"vilespiritcd", time = 2, expect = {"&difficulty&",">=","3"}},
 					}
 				},
 			},
@@ -2241,7 +2262,46 @@ do
 						"alert","harvestsoulwarn",
 					},
 				},
-			}
+			},
+			-- Harvest Souls
+			{
+				type = "combatevent",
+				eventtype = "SPELL_CAST_SUCCESS",
+				spellname = 74297,
+				execute = {
+					{
+						"alert",{"harvestsoulwarn", text = 2},
+						"batchquash",{"defilecd","soulreapercd","vilespiritcd"},
+					},
+				},
+			},
+			-- Restore Soul
+			{
+				type = "combatevent",
+				eventtype = "SPELL_CAST_START",
+				spellname = 73650,
+				execute = {
+					{
+						"alert","restoresoulwarn",
+					},
+				},
+			},
+			-- Restore Soul appliation
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellname = 73650,
+				throttle = 3,
+				execute = {
+					{
+						"alert",{"harvestsoulcd", text = 2, time = 2},
+						"alert",{"vilespiritcd", time = 2},
+						-- add defile cd 5s?
+						-- add soul reaper cd too fast?
+						-- add vile spirit cd 10.5s in 2 logs
+					},
+				},
+			},
 		},
 	}
 
