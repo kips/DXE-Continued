@@ -1511,7 +1511,7 @@ end
 
 do
 	local data = {
-		version = 64,
+		version = 65,
 		key = "lichking",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -1962,6 +1962,7 @@ do
 					{
 						"set",{phase = "1"},
 						"batchalert",{"enragecd","infestcd","necroplaguecd"},
+						"resettimer",true,
 						"expect",{"&difficulty&",">=","3"},
 						"alert","trapcd",
 					},
