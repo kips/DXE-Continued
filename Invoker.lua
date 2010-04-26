@@ -769,7 +769,7 @@ do
 			local args = new()
 			-- Only need the first 7 (up to spellID)
 			args[1],args[2],args[3],args[4],args[5],args[6],args[7] =
-			tuple[1],tuple[2],tuple[3],tuple[4],tuple[5],tuple[6],tuple[7]
+			tuple['1'],tuple['2'],tuple['3'],tuple['4'],tuple['5'],tuple['6'],tuple['7']
 
 			timers[id].args = args
 		end
