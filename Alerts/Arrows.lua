@@ -33,7 +33,7 @@ do
 	local GetPlayerFacing = GetPlayerFacing
 	local UnitIsVisible = UnitIsVisible
 	local PI,PI2 = math.pi,math.pi*2
-	local floor,atan = math.floor,math.atan
+	local floor,atan2 = math.floor,math.atan2
 
 	local ARROW_FILE = "Interface\\Addons\\DXE\\Textures\\Arrow"
 	local NUM_CELLS = 108
@@ -86,11 +86,9 @@ do
 		self.transFunc = TransitionFunc
 	end
 
-	local e = 10e-5
 	function prototype:SetAngle(dx,dy)
 		-- Calculate
-		if dy == 0 then dy = e end -- Prevents division by 0
-		local angle_axis = dy < 0 and PI + atan(dx/dy) or atan(dx/dy)
+		local angle_axis = dy < 0 and PI + atan2(dx,dy) or atan2(dx,dy)
 		local angle = (PI-(GetPlayerFacing()-angle_axis)) % PI2
 		if self.action == "AWAY" then angle = (PI + angle) % PI2 end
 
