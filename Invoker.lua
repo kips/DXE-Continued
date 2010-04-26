@@ -1257,27 +1257,33 @@ do
 
 	local combat_attr_handles = {
 		spellid = function(hash,...)
-			return hash[select(7,...)]
+			local spellid = select(7,...)
+			return hash[spellid]
 		end,
 
 		spellid2 = function(hash,...)
-			return hash[select(10,...)]
+			local spellid2 = select(10,...)
+			return hash[spellid2]
 		end,
 
 		spellname = function(hash,...)
-			return hash[select(8,...)]
+			local spellname = select(8,...)
+			return hash[spellname]
 		end,
 
 		spellname2 = function(hash,...)
-			return hash[select(11,...)]
+			local spellname2 = select(11,...)
+			return hash[spellname2]
 		end,
 
 		srcnpcid = function(hash,...)
-			return hash[NID[...]]
+			local srcflags = ...
+			return hash[NID[srcflags]]
 		end,
 
 		dstnpcid = function(hash,...)
-			return hash[NID[select(4,...)]]
+			local dstflags = select(4,...)
+			return hash[NID[dsflags]]
 		end,
 
 		srcisplayertype = function(bool,...)
