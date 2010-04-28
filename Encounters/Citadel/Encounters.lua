@@ -1511,7 +1511,7 @@ end
 
 do
 	local data = {
-		version = 65,
+		version = 66,
 		key = "lichking",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -1834,7 +1834,7 @@ do
 				text = format(L.alert["%s Cooldown"],SN[68980]),
 				text2 = format(L.alert["%s Cooldown"],SN[74297]),
 				time = {12.5,75,loop = false, type = "series"},
-				time2 = {12.5,59,loop = false, type = "series"},
+				time2 = {12.5,55,loop = false, type = "series"},
 				flashtime = 10,
 				color1 = "BROWN",
 				sound = "ALERT1",
@@ -2295,10 +2295,6 @@ do
 				execute = {
 					{
 						"alert",{"harvestsoulcd", text = 2, time = 2},
-						"alert",{"vilespiritcd", time = 2},
-						-- add defile cd 5s?
-						-- add soul reaper cd too fast?
-						-- add vile spirit cd 10.5s in 2 logs
 					},
 				},
 			},
