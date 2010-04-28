@@ -88,7 +88,7 @@ do
 
 	function prototype:SetAngle(dx,dy)
 		-- Calculate
-		local angle_axis = dy < 0 and PI + atan2(dx,dy) or atan2(dx,dy)
+		local angle_axis = atan2(dx,dy)
 		local angle = (PI-(GetPlayerFacing()-angle_axis)) % PI2
 		if self.action == "AWAY" then angle = (PI + angle) % PI2 end
 
