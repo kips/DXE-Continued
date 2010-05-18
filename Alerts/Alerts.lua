@@ -193,6 +193,8 @@ function Pour(text,icon,color)
 	if not pfl.SinkIcon then icon = nil end
 	module:Pour(text,color.r,color.g,color.b,nil,nil,nil,nil,nil,icon)
 	if pfl.AnnounceToRaid and addon:IsPromoted() and addon.GroupType == "RAID" then
+		-- substitute
+		orig_text = gsub(orig_text,L.alert["YOU"],addon.PNAME)
 		-- color coded text disconnects the user!!!
 		SendChatMessage(orig_text,"RAID_WARNING")
 	end
