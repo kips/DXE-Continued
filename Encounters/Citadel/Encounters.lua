@@ -1718,7 +1718,14 @@ do
 				time = 4,
 				sound = "ALERT6",
 				icon = ST[71843],
-				throttle = 5,
+				throttle = 4.5,
+			},
+			valkyrcarrywarn = {
+				varname = format(L.alert["%s Warning"],SN[74445]),
+				type = "simple",
+				text = format("%s: &vehiclenames&",L.npc_citadel["Val'kyr"]),
+				time = 5,
+				icon = ST[74445]
 			},
 			valkyrcd = {
 				varname = format(L.alert["%s Cooldown"],SN[69037]),
@@ -1728,7 +1735,7 @@ do
 				flashtime = 10,
 				color1 = "BROWN",
 				icon = ST[71843],
-				throttle = 5,
+				throttle = 4.5,
 			},
 			soulreapercd = {
 				varname = format(L.alert["%s Cooldown"],SN[69409]),
@@ -2198,6 +2205,19 @@ do
 						"alert","valkyrwarn",
 						"alert","valkyrcd",
 						"raidicon","valkyrmark",
+					},
+				},
+			},
+			-- Summon Val'kyr 2
+			{
+				type = "combatevent",
+				eventtype = "SPELL_SUMMON",
+				spellname = 69037,
+				srcnpcid = 36597,
+				throttle = 4.5,
+				execute = {
+					{
+						"schedulealert",{"valkyrcarrywarn",4.5},
 					},
 				},
 			},

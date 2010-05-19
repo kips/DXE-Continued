@@ -118,6 +118,7 @@ local _G,select,tostring,type,tonumber = _G,select,tostring,type,tonumber
 local GetTime,GetNumRaidMembers,GetNumPartyMembers,GetRaidRosterInfo = GetTime,GetNumRaidMembers,GetNumPartyMembers,GetRaidRosterInfo
 local UnitName,UnitGUID,UnitIsEnemy,UnitClass,UnitAffectingCombat,UnitHealth,UnitHealthMax,UnitIsFriend,UnitIsDead,UnitIsConnected = 
 		UnitName,UnitGUID,UnitIsEnemy,UnitClass,UnitAffectingCombat,UnitHealth,UnitHealthMax,UnitIsFriend,UnitIsDead,UnitIsConnected
+local UnitInVehicle = UnitInVehicle
 local rawget,unpack = rawget,unpack
 
 local db,gbl,pfl
@@ -731,11 +732,11 @@ function addon:IsPromoted()
 	return IsRaidLeader() or IsRaidOfficer()
 end
 
-function addon:NamesInVehicle()
+function addon:VehicleNames()
 	local names = {}
 	for name in pairs(Roster.name_to_unit) do
 		if UnitInVehicle(name) then
-			names[#t+1] = name
+			names[#names+1] = name
 		end
 	end
 	return names

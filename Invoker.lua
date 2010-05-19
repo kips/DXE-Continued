@@ -233,7 +233,7 @@ do
 		playerguid = function() return addon.PGUID end,
 		playername = function() return addon.PNAME end,
 		vehicleguid  = function() return UnitGUID("vehicle") or "" end,
-		vehiclenames = function() concat(addon:NamesInVehicle(),", ") end,
+		vehiclenames = function() return concat(addon:VehicleNames(),", ") end,
 		difficulty = function() return addon:GetRaidDifficulty() end,
 		-- First health watcher
 		tft = tft,
