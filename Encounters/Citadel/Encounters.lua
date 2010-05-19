@@ -3243,7 +3243,7 @@ end
 
 do
 	local data = {
-		version = 13,
+		version = 14,
 		key = "rotface",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -3277,6 +3277,7 @@ do
 				type = "dropdown",
 				text = L.alert["Enrage"],
 				time = 420,
+				time10h = 600,
 				flashtime = 10,
 				color1 = "RED",
 				icon = ST[12317],
