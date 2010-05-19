@@ -178,12 +178,25 @@ local function MMSS(time)
 	return ("%d:%02d"):format(min,sec)
 end
 
-local function colortext_helper(prefix,word)
-	return prefix..CN[word]
-end
+local ColorText
 
-local function ColorText(text)
-	return (gsub(text,"(.+: )([^!.]+)",colortext_helper))
+do
+	local function colorlist(word,comma)
+		return CN[word]..comma
+	end
+
+	local function helper(prefix,word)
+		-- comma separated
+		if find(word,"^[^ ,]+,") then
+			return prefix..gsub(word,"([^ ,]+)(,?)",colorlist)
+		else
+			return prefix..CN[word]
+		end
+	end
+
+	function ColorText(text)
+		return (gsub(text,"^(.+: )([^!.]+)",helper))
+	end
 end
 
 function Pour(text,icon,color)
