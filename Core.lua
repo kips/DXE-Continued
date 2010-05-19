@@ -57,7 +57,12 @@ local defaults = {
 			NeutralColor = {0,0,1,1},
 			LostColor = {0.66,0.66,0.66,1},
 		},
-		Misc = {['*'] = false},
+		Misc = {
+			BlockBossEmoteMessages = false,
+			BlockRaidWarningMessages = false,
+			BlockBossEmoteFrame = false,
+			BlockRaidWarningFrame = false,
+		},
 		Windows = {
 			TitleBarColor = {0,0,0.82,1},
 		},
