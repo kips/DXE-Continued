@@ -43,7 +43,7 @@ local unit_to_unittarget = addon.Roster.unit_to_unittarget
 local targetof = addon.targetof
 
 local GetTime = GetTime
-local wipe = table.wipe
+local wipe,concat = table.wipe,table.concat
 local type,next,select = type,next,select
 local ipairs,pairs,unpack = ipairs,pairs,unpack
 local tostring,tonumber = tostring,tonumber
@@ -52,7 +52,6 @@ local match,gmatch,gsub,find,split = string.match,string.gmatch,string.gsub,stri
 local UnitGUID, UnitName, UnitExists, UnitIsUnit = UnitGUID, UnitName, UnitExists, UnitIsUnit
 local UnitBuff,UnitDebuff = UnitBuff,UnitDebuff
 
-local name_to_unit = addon.Roster.name_to_unit
 local pfl,key,CE,alerts,raidicons,arrows,announces
 
 local function RefreshProfile(db) pfl = db.profile end
@@ -234,6 +233,7 @@ do
 		playerguid = function() return addon.PGUID end,
 		playername = function() return addon.PNAME end,
 		vehicleguid  = function() return UnitGUID("vehicle") or "" end,
+		vehiclenames = function() concat(addon:NamesInVehicle(),", ") end,
 		difficulty = function() return addon:GetRaidDifficulty() end,
 		-- First health watcher
 		tft = tft,

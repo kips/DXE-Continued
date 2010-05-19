@@ -731,6 +731,16 @@ function addon:IsPromoted()
 	return IsRaidLeader() or IsRaidOfficer()
 end
 
+function addon:NamesInVehicle()
+	local names = {}
+	for name in pairs(Roster.name_to_unit) do
+		if UnitInVehicle(name) then
+			names[#t+1] = name
+		end
+	end
+	return names
+end
+
 ---------------------------------------------
 -- TRIGGERING
 ---------------------------------------------
