@@ -84,6 +84,7 @@ local find = string.find
 local ANIMATION_TIME = 0.3
 local FADE_TIME = 2
 local INSET = 2
+local ANNOUNCE_FORMAT = "*** %s ***"
 
 local db,pfl
 
@@ -209,7 +210,7 @@ function Pour(text,icon,color)
 		-- substitute
 		orig_text = gsub(orig_text,L.alert["YOU"],addon.PNAME)
 		-- color coded text disconnects the user!!!
-		SendChatMessage(orig_text,"RAID_WARNING")
+		SendChatMessage(format(ANNOUNCE_FORMAT,orig_text),"RAID_WARNING")
 	end
 end
 
