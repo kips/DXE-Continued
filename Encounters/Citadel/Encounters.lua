@@ -3553,7 +3553,7 @@ do
 	end
 
 	local data = {
-		version = 17,
+		version = 18,
 		key = "saurfang",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -3567,7 +3567,6 @@ do
 		userdata = {
 			bloodtext = "",
 			markfallentext = "",
-			runebloodtime = {22,20,loop = false, type = "series"},
 			enragetime = 480,
 			started = 0,
 		},
@@ -3652,7 +3651,7 @@ do
 				varname = format(L.alert["%s Cooldown"],SN[72410]),
 				type = "dropdown",
 				text = format(L.alert["%s Cooldown"],SN[72410]),
-				time = "<runebloodtime>",
+				time = 20,
 				flashtime = 5,
 				color1 = "MAGENTA",
 				sound = "ALERT7",
