@@ -908,6 +908,15 @@ do
 		end
 	end
 
+	local helpers = {
+		function() return UnitExists("target") and UnitName("target") or "<<"..L["None"]..">>" end,
+	}
+
+	local function replace(text)
+		text = gsub(text,"%%t",helpers[1]())
+		return text
+	end
+
 	local function parse(msg,slash)
 		if type(msg) ~= "string" then addon:Print(format(FORMAT_ERROR,slash)) return end
 		local time,text = msg:match(MSG_PTN)
@@ -918,7 +927,7 @@ do
 			if m then secs = (tonumber(m)*60) + tonumber(s)
 			else addon:Print(TIME_ERROR) return end
 		end
-		return true,secs,text
+		return true,secs,replace(text)
 	end
 
 	local function LocalBarHandler(msg)
