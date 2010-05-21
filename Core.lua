@@ -496,6 +496,7 @@ do
 	end
 
 	function addon:TriggerDefeat()
+		self.callbacks:Fire("TriggerDefeat",CE)
 		self:StopEncounter()
 		PlaySoundFile(SM:Fetch("sound",pfl.Sounds.VICTORY))
 		if pfl.Proximity.AutoHide then self:HideProximity() end
