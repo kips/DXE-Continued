@@ -136,6 +136,7 @@ local db,gbl,pfl
 local AceTimer = LibStub("AceTimer-3.0")
 local L = LibStub("AceLocale-3.0"):GetLocale("DXE")
 local SM = LibStub("LibSharedMedia-3.0")
+local LDS = LibStub("LibDualSpec-1.0",true)
 
 -- Localized spell names
 local SN = setmetatable({},{
@@ -201,6 +202,7 @@ local CN = setmetatable({}, {__index =
 do
 	local embeds = { 
 		L = L,
+		LDS = LDS,
 		SN = SN,
 		NID = NID,
 		CN = CN,
@@ -966,6 +968,7 @@ function addon:OnInitialize()
 
 	-- Database
 	self.db = LibStub("AceDB-3.0"):New("DXEDB",self.defaults)
+	if LDS then LDS:EnhanceDatabase(self.db,"DXE") end
 	db = self.db
 	gbl,pfl = db.global,db.profile
 

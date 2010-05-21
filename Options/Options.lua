@@ -2138,6 +2138,7 @@ function module:OnInitialize()
 	self:FillEncounters()
 
 	opts_args.profile = LibStub("AceDBOptions-3.0"):GetOptionsTable(db)
+	if addon.LDS then addon.LDS:EnhanceOptions(opts_args.profile,db) end
 	opts_args.profile.order = -10
 
 	AC:RegisterOptionsTable("DXE", opts)

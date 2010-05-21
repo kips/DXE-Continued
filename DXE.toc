@@ -2,7 +2,7 @@
 ## Title: DXE
 ## Notes: Deus Vox Encounters
 ## Author: Kollektiv, Fariel
-## OptionalDeps: LibSharedMedia-3.0, LibSink-2.0, LibShefkiTimer-1.0
+## OptionalDeps: LibSharedMedia-3.0, LibSink-2.0, LibDualSpec-1.0, LibShefkiTimer-1.0
 ## LoadOnDemand: 1
 ## Dependencies: DXE_Loader
 ## SavedVariables: DXEDB
@@ -16,6 +16,7 @@ Libs\AceComm-3.0\AceComm-3.0.xml
 Libs\AceSerializer-3.0\AceSerializer-3.0.xml
 Libs\LibSharedMedia-3.0\lib.xml
 Libs\LibSink-2.0\lib.xml
+Libs\LibDualSpec-1.0\LibDualSpec-1.0.lua
 Libs\LibShefkiTimer-1.0\LibShefkiTimer-1.0.xml
 #@end-no-lib-strip@
 
