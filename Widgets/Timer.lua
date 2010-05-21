@@ -16,6 +16,7 @@ function Timer:New(parent)
 	left:SetWidth(60)
 	left:SetHeight(20)
 	left:SetJustifyH("RIGHT")
+	addon:RegisterTimerFontString(left,20)
 	timer.left = left
 
 	local right = timer:CreateFontString(nil,"OVERLAY")
@@ -24,6 +25,7 @@ function Timer:New(parent)
 	right:SetWidth(20)
 	right:SetHeight(12)
 	right:SetJustifyH("LEFT")
+	addon:RegisterTimerFontString(right,12)
 	timer.right = right
 
 	left:SetText("0:00")

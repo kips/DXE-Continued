@@ -128,8 +128,16 @@ local function InitializeOptions()
 				Font = {
 					order = 200,
 					type = "select",
-					name = L.options["Font"],
+					name = L.options["Main Font"],
 					desc = L.options["Font used throughout the addon"],
+					values = SM:HashTable("font"),
+					dialogControl = "LSM30_Font",
+				},
+				TimerFont = {
+					order = 250,
+					type = "select",
+					name = L.options["Timer Font"],
+					desc = L.options["Font used for timers"],
 					values = SM:HashTable("font"),
 					dialogControl = "LSM30_Font",
 				},

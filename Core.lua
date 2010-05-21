@@ -36,6 +36,7 @@ local defaults = {
 		Globals = {
 			BarTexture = "Blizzard",
 			Font = "Franklin Gothic Medium",
+			TimerFont = "Bastardus Sans",
 			Border = "Blizzard Tooltip",
 			BorderColor = {0.33,0.33,0.33,1},
 			BackgroundColor = {0,0,0,0.8},

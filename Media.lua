@@ -120,6 +120,22 @@ do
 
 	function addon:NotifyFontChanged(fontFile)
 		local font = SM:Fetch("font",fontFile)
+		for _,fontstring in ipairs(reg) do
+			local _,size,flags = fontstring:GetFont()
+			fontstring:SetFont(font,size,flags)
+		end
+	end
+end
+
+do
+	local reg = {}
+	function addon:RegisterTimerFontString(fontstring,size,flags)
+		reg[#reg+1] = fontstring
+		fontstring:SetFont(SM:Fetch("font",pfl.Globals.TimerFont),size,flags)
+	end
+
+	function addon:NotifyTimerFontChanged(fontFile)
+		local font = SM:Fetch("font",fontFile)
 		for _,fontstring in ipairs(reg) do 
 			local _,size,flags = fontstring:GetFont()
 			fontstring:SetFont(font,size,flags)
