@@ -2217,7 +2217,7 @@ do
 				throttle = 4.5,
 				execute = {
 					{
-						"schedulealert",{"valkyrcarrywarn",4.5},
+						"schedulealert",{"valkyrcarrywarn",6.25},
 					},
 				},
 			},
