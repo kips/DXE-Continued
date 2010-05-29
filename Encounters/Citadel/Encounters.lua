@@ -6,7 +6,7 @@ local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 
 do
 	local data = {
-		version = 22,
+		version = 23,
 		key = "bloodprincecouncil",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -154,6 +154,9 @@ do
 				msg = L.alert["MOVE AWAY"],
 				spell = SN[72037],
 				fixed = true,
+				range1 = 11,
+				range2 = 16,
+				range3 = 22,
 			},
 		},
 		windows = {
@@ -1511,7 +1514,7 @@ end
 
 do
 	local data = {
-		version = 66,
+		version = 67,
 		key = "lichking",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -1963,6 +1966,9 @@ do
 				msg = L.alert["MOVE AWAY"],
 				spell = L.alert["Shadow Trap"],
 				fixed = true,
+				range1 = 5,
+				range2 = 7,
+				range3 = 10,
 			},
 		},
 		events = {
@@ -2531,7 +2537,7 @@ end
 
 do
 	local data = {
-		version = 40,
+		version = 41,
 		key = "putricide",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -2812,6 +2818,9 @@ do
 				msg = L.alert["MOVE AWAY"],
 				spell = SN[72615],
 				fixed = true,
+				range1 = 7,
+				range2 = 10,
+				range3 = 14,
 			},
 		},
 		announces = {

@@ -153,6 +153,9 @@ local arrowBaseKeys = {
 	fixed = optboolean,
 	xpos = optnumber,
 	ypos = optnumber,
+	range1 = optnumber,
+	range2 = optnumber,
+	range3 = optnumber,
 }
 
 local arrowTypeValues = {

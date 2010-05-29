@@ -889,7 +889,7 @@ do
 			local unit = ReplaceTokens(defn.unit)
 			if UnitExists(unit) then 
 				Arrows:AddTarget(unit,defn.persist,defn.action,defn.msg,defn.spell,stgs.sound,defn.fixed,
-								     defn.xpos,defn.ypos)
+								     defn.xpos,defn.ypos,defn.range1,defn.range2,defn.range3)
 			end
 		end
 		return true

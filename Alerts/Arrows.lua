@@ -52,13 +52,13 @@ do
 		{r = 1, g = 0,    b = 0}, -- Red
 	}
 
-	local function GetColor(d,action)
+	local function GetColor(d,action,range1,range2,range3)
 		if action == "TOWARD" then
 			-- Faster than if-else chain
-			local i = (d <= 10 and 1 or (d <= 20 and 2 or (d <= 30 and 3 or 4)))
+			local i = (d <= range1 and 1 or (d <= range2 and 2 or (d <= range3 and 3 or 4)))
 			return colors[i]
 		elseif action == "AWAY" then
-			local i = (d <= 10 and 4 or (d <= 20 and 3 or (d <= 30 and 2 or 1)))
+			local i = (d <= range1 and 4 or (d <= range2 and 3 or (d <= range3 and 2 or 1)))
 			return colors[i]
 		end
 	end
@@ -78,7 +78,7 @@ do
 	end
 
 	function prototype:SetColor(d)
-		local color = GetColor(d,self.action)
+		local color = GetColor(d,self.action,self.range1,self.range2,self.range3)
 		if self.color == color then return end
 		-- Transition
 		self.tcolor = color
@@ -128,7 +128,7 @@ do
 	end
 
 	-- @param action a string == "TOWARD" or "AWAY"
-	function prototype:SetTarget(unit,persist,action,msg,spell,sound,fixed,xpos,ypos)
+	function prototype:SetTarget(unit,persist,action,msg,spell,sound,fixed,xpos,ypos,range1,range2,range3)
 		-- Factor in mute all toggle from Alerts
 		if sound and not addon.Alerts.db.profile.DisableSounds then PlaySoundFile(Sounds:GetFile(sound)) end
 		UIFrameFadeRemoveFrame(self)
@@ -137,13 +137,19 @@ do
 		self.elapsed = 0
 		self.persist = persist
 		self.fmt = spell.." <|cffffff78%.0f|r> "..CN[unit]
+		if not range1 then range1 = 10 end
+		self.range1 = range1
+		if not range2 then range2 = range1*2 end
+		self.range2 = range2
+		if not range3 then range3 = range1*3 end
+		self.range3 = range3
 
 		if fixed then self:SetFixed(xpos,ypos) end
 		local d,dx,dy = addon:GetDistanceToUnit(unit,self.fx,self.fy)
 		if not d then return end
 		self:SetAngle(dx,dy)
 
-		local color = GetColor(d,action)
+		local color = GetColor(d,action,range1,range2,range3)
 		self.color = color
 		self.t:SetVertexColor(color.r,color.g,color.b)
 		units[unit] = true
@@ -272,7 +278,7 @@ end
 -- API
 ---------------------------------------
 
-function module:AddTarget(unit,persist,action,msg,spell,sound,fixed,xpos,ypos)
+function module:AddTarget(unit,persist,action,msg,spell,sound,fixed,xpos,ypos,range1,range2,range3)
 	if not pfl.Enable then return end
 	--@debug@
 	assert(type(unit) == "string")
@@ -287,7 +293,7 @@ function module:AddTarget(unit,persist,action,msg,spell,sound,fixed,xpos,ypos)
 
 		for i,arrow in ipairs(frames) do
 			if not arrow.unit then
-				arrow:SetTarget(unit,persist,action,msg,spell,sound,fixed,xpos,ypos)
+				arrow:SetTarget(unit,persist,action,msg,spell,sound,fixed,xpos,ypos,range1,range2,range3)
 				break
 			end
 		end
