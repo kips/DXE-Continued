@@ -311,6 +311,19 @@ local function InitializeOptions()
 						max = 500,
 						step = 1,
 					},
+					BarSpacing = {
+						order = 320,
+						type = "range",
+						name = L.options["Bar Spacing"],
+						desc = L.options["How far apart health bars are"],
+						set = function(info, v)
+							db.profile.Pane.BarSpacing = v
+							addon:LayoutHealthWatchers()
+						end,
+						min = 0,
+						max = 50,
+						step = 0.1,
+					},
 					font_header = {
 						type = "header",
 						name = L.options["Font"],

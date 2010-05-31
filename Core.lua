@@ -57,6 +57,7 @@ local defaults = {
 			HealthFontSize = 12,
 			NeutralColor = {0,0,1,1},
 			LostColor = {0.66,0.66,0.66,1},
+			BarSpacing = 0,
 		},
 		Misc = {
 			BlockBossEmoteMessages = false,
@@ -1734,12 +1735,14 @@ function addon:LayoutHealthWatchers()
 	local point, point2
 	local relpoint, relpoint2
 	local growth = pfl.Pane.BarGrowth
+	local mult = 1 -- set to -1 when growing down
 	if growth == "AUTOMATIC" then
 		local midY = (GetScreenHeight()/2)*UIParent:GetEffectiveScale()
 		local x,y = Pane:GetCenter()
 		local s = Pane:GetEffectiveScale()
 		x,y = x*s,y*s
 		if y > midY then
+			mult = -1
 			point,relpoint = "TOPLEFT","BOTTOMLEFT"
 			point2,relpoint2 = "TOPRIGHT","BOTTOMRIGHT"
 		else
@@ -1750,14 +1753,15 @@ function addon:LayoutHealthWatchers()
 		point,relpoint = "BOTTOMLEFT","TOPLEFT"
 		point2,relpoint2 = "BOTTOMRIGHT","TOPRIGHT"
 	elseif growth == "DOWN" then
+		mult = -1
 		point,relpoint = "TOPLEFT","BOTTOMLEFT"
 		point2,relpoint2 = "TOPRIGHT","BOTTOMRIGHT"
 	end
 	for i,hw in ipairs(self.HW) do
 		if hw:IsShown() then
 			hw:ClearAllPoints()
-			hw:SetPoint(point,anchor,relpoint)
-			hw:SetPoint(point2,anchor,relpoint2)
+			hw:SetPoint(point,anchor,relpoint,0,mult*pfl.Pane.BarSpacing)
+			hw:SetPoint(point2,anchor,relpoint2,0,mult*pfl.Pane.BarSpacing)
 			anchor = hw
 		end
 	end
