@@ -288,6 +288,11 @@ function module:AddTarget(unit,persist,action,msg,spell,sound,fixed,xpos,ypos,ra
 	assert(type(spell) == "string")
 	--@end-debug@
 	if UnitExists(unit) and UnitIsVisible(unit) then
+		-- Can't move to yourself or away from yourself, so bail on arrows that do that.
+		if ((not xpos and not ypos and action == "TOWARD") or (not fixed and action == "AWAY")) and UnitIsUnit(unit,"player") then
+			return
+		end
+
 		-- Distinction test
 		for k in pairs(units) do if UnitIsUnit(k,unit) then return end end
 

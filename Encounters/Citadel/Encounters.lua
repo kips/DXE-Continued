@@ -6,7 +6,7 @@ local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 
 do
 	local data = {
-		version = 23,
+		version = 24,
 		key = "bloodprincecouncil",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -198,6 +198,7 @@ do
 					"raidicon","shockmark",
 					"alert","shockwarn",
 					"announce","shocksay",
+					"arrow","shockarrow",
 				},
 				{
 					"expect",{"&tft_unitexists& &tft_isplayer&","==","true false"},
@@ -2537,7 +2538,7 @@ end
 
 do
 	local data = {
-		version = 41,
+		version = 42,
 		key = "putricide",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -2848,6 +2849,7 @@ do
 					"raidicon","malleablemark",
 					"alert","malleablegoowarn",
 					"announce","malleablegoosay",
+					"arrow","malleablearrow",
 				},
 				{
 					"expect",{"&tft_unitexists& &tft_isplayer&","==","true false"},

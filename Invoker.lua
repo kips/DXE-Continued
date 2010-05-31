@@ -976,7 +976,7 @@ do
 	--		npcid = <npcid>,		  -- OPTIONAL
 	-- 	raidicon = <raidicon>, -- fired when target exists
 	--		announce = <announce>, -- fired when target is self 	  	-- condition: target exists
-	--		arrow = <arrow>, 		  -- fired when target is not self 	-- condition: target exists
+	--		arrow = <arrow>, 		  -- fired when target exists 
 	--		alerts = {
 	--			self = <alert>,     -- fired when target is self 		-- condition: target exists
 	--			other = <alert>,    -- fired when target is not self 	-- condition: target exists
@@ -1026,6 +1026,9 @@ do
 			if info.raidicon then
 				handlers.raidicon(info.raidicon)
 			end
+			if info.arrow then
+				handlers.arrow(info.arrow)
+			end
 			if UnitIsUnit(unit,"player") then
 				if info.announce then
 					handlers.announce(info.announce)
@@ -1036,9 +1039,6 @@ do
 			else
 				if info.alerts and info.alerts.other then
 					handlers.alert(info.alerts.other)
-				end
-				if info.arrow then
-					handlers.arrow(info.arrow)
 				end
 			end
 		else
