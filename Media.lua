@@ -11,11 +11,7 @@ addon.Media = Media
 local pfl
 local function RefreshProfile(db) 
 	pfl = db.profile 
-	addon:NotifyBarTextureChanged(pfl.Globals.BarTexture)
-	addon:NotifyFontChanged(pfl.Globals.Font)
-	addon:NotifyBorderChanged(pfl.Globals.Border)
-	addon:NotifyBorderColorChanged(unpack(pfl.Globals.BorderColor))
-	addon:NotifyBackgroundColorChanged(unpack(pfl.Globals.BackgroundColor))
+	addon:NotifyAllMedia()
 end
 addon:AddToRefreshProfile(RefreshProfile)
 
@@ -108,8 +104,19 @@ end
 -------------------------
 -- GLOBALS
 -------------------------
-local bgBackdrop = {bgFile = "Interface\\Tooltips\\UI-Tooltip-Background", insets = {left = 2, right = 2, top = 2, bottom = 2}}
-local borderBackdrop = {edgeSize = 8, insets = {left = 2, right = 2, top = 2, bottom = 2}}
+local bgBackdrop = {bgFile = "Interface\\Tooltips\\UI-Tooltip-Background", insets = {}}
+local borderBackdrop = {}
+
+function addon:NotifyAllMedia()
+	addon:NotifyBarTextureChanged()
+	addon:NotifyFontChanged()
+	addon:NotifyBorderChanged()
+	addon:NotifyBorderColorChanged()
+	addon:NotifyBorderEdgeSizeChanged()
+	addon:NotifyBackgroundColorChanged()
+	addon:NotifyBackgroundInsetChanged()
+	addon:NotifyBackgroundTextureChanged()
+end
 
 do
 	local reg = {}
@@ -119,7 +126,7 @@ do
 	end
 
 	function addon:NotifyFontChanged(fontFile)
-		local font = SM:Fetch("font",fontFile)
+		local font = SM:Fetch("font",pfl.Globals.Font)
 		for _,fontstring in ipairs(reg) do
 			local _,size,flags = fontstring:GetFont()
 			fontstring:SetFont(font,size,flags)
@@ -152,7 +159,7 @@ do
 	end
 
 	function addon:NotifyBarTextureChanged(name)
-		local texture = SM:Fetch("statusbar",name)
+		local texture = SM:Fetch("statusbar",pfl.Globals.BarTexture)
 		for _,statusbar in ipairs(reg) do statusbar:SetStatusBarTexture(texture) end
 	end
 end
@@ -162,20 +169,32 @@ do
 	function addon:RegisterBorder(frame)
 		reg[#reg+1] = frame
 		local r,g,b,a = unpack(pfl.Globals.BorderColor)
+		borderBackdrop.edgeFile = SM:Fetch("border",pfl.Globals.Border)
+		borderBackdrop.edgeSize = pfl.Globals.BorderEdgeSize
 		frame:SetBackdrop(borderBackdrop)
 		frame:SetBackdropBorderColor(r,g,b,a)
 	end
 
-	function addon:NotifyBorderChanged(edgeFile)
-		borderBackdrop.edgeFile = SM:Fetch("border",edgeFile)
-		local r,g,b,a = unpack(pfl.Globals.BorderColor)
+	function addon:NotifyBorderChanged()
+		borderBackdrop.edgeFile = SM:Fetch("border",pfl.Globals.Border)
 		for _,frame in ipairs(reg) do 
 			frame:SetBackdrop(borderBackdrop)
-			frame:SetBackdropBorderColor(r,g,b,a)
 		end
+		-- setting backdrop resets color
+		addon:NotifyBorderColorChanged()
 	end
 
-	function addon:NotifyBorderColorChanged(r,g,b,a)
+	function addon:NotifyBorderEdgeSizeChanged()
+		borderBackdrop.edgeSize = pfl.Globals.BorderEdgeSize
+		for _,frame in ipairs(reg) do 
+			frame:SetBackdrop(borderBackdrop)
+		end
+		-- setting backdrop resets color
+		addon:NotifyBorderColorChanged()
+	end
+
+	function addon:NotifyBorderColorChanged()
+		local r,g,b,a = unpack(pfl.Globals.BorderColor)
 		for _,frame in ipairs(reg) do 
 			frame:SetBackdropBorderColor(r,g,b,a)
 		end
@@ -184,9 +203,16 @@ end
 
 do
 	local reg = {}
+
 	function addon:RegisterBackground(widget)
 		reg[#reg+1] = widget
 		local r,g,b,a = unpack(pfl.Globals.BackgroundColor)
+		bgBackdrop.bgFile = SM:Fetch("background",pfl.Globals.BackgroundTexture)
+		local inset = pfl.Globals.BackgroundInset
+		bgBackdrop.insets.left = inset
+		bgBackdrop.insets.right = inset
+		bgBackdrop.insets.top = inset
+		bgBackdrop.insets.bottom = inset
 		if widget:IsObjectType("Frame") then
 			widget:SetBackdrop(bgBackdrop)
 			widget:SetBackdropColor(r,g,b,a)
@@ -196,7 +222,37 @@ do
 		end
 	end
 
-	function addon:NotifyBackgroundColorChanged(r,g,b,a)
+
+	function addon:NotifyBackgroundTextureChanged()
+		bgBackdrop.bgFile = SM:Fetch("background",pfl.Globals.BackgroundTexture)
+		for _,widget in ipairs(reg) do
+			if widget:IsObjectType("Frame") then
+				widget:SetBackdrop(bgBackdrop)
+			elseif widget:IsObjectType("Texture") then
+				widget:SetTexture(bgBackdrop.bgFile)
+			end
+		end
+		-- setting backdrop resets color
+		self:NotifyBackgroundColorChanged()
+	end
+
+	function addon:NotifyBackgroundInsetChanged()
+		local inset = pfl.Globals.BackgroundInset
+		bgBackdrop.insets.left = inset
+		bgBackdrop.insets.right = inset
+		bgBackdrop.insets.top = inset
+		bgBackdrop.insets.bottom = inset
+		for _,widget in ipairs(reg) do
+			if widget:IsObjectType("Frame") then
+				widget:SetBackdrop(bgBackdrop)
+			--elseif widget:IsObjectType("Texture") then
+			end
+		end
+		-- setting backdrop resets color
+		self:NotifyBackgroundColorChanged()
+	end
+
+	function addon:NotifyBackgroundColorChanged()
 		local r,g,b,a = unpack(pfl.Globals.BackgroundColor)
 		for _,widget in ipairs(reg) do 
 			if widget:IsObjectType("Frame") then

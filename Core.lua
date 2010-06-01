@@ -39,7 +39,10 @@ local defaults = {
 			TimerFont = "Bastardus Sans",
 			Border = "Blizzard Tooltip",
 			BorderColor = {0.33,0.33,0.33,1},
+			BorderEdgeSize = 8,
 			BackgroundColor = {0,0,0,0.8},
+			BackgroundInset = 2,
+			BackgroundTexture = "Blizzard Tooltip"
 		},
 		Pane = {
 			Show = true,
@@ -1033,9 +1036,7 @@ end
 
 function addon:OnEnable()
 	-- Patch to refresh Pane texture
-	self:NotifyBarTextureChanged(pfl.Globals.BarTexture)
-	self:NotifyFontChanged(pfl.Globals.Font)
-	self:NotifyBorderChanged(pfl.Globals.Border)
+	self:NotifyAllMedia()
 
 	forceBlockDisable = false
 	self:SetPlayerConstants()
