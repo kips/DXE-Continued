@@ -41,27 +41,40 @@ local defaults = {
 		FlashTexture = "Interface\\Tooltips\\UI-Tooltip-Background",
 		ConstantClr = false,
 		GlobalColor = {1,0,0},
+		-- Text
+		CenterTextWidth = 200,
+		WarningTextWidth = 200,
+		TopTextWidth = 180,
+		TextXOffset = 5,
+		TextYOffset = 0,
+		TextAlpha = 1,
 		-- Bar
 		BarTextJustification = "CENTER",
 		BarFontSize = 10,
 		BarFillDirection = "FILL",
 		BarFontColor = {1,1,1,1},
 		BarHeight = 30,
+		BarSpacing = 0,
 		-- Timer
 		TimerFontColor = {1,1,1,1},
 		TimerXOffset = -5,
-		MinuteFontSize = 20,
-		DecimalFontSize = 12,
+		TimerYOffset = 0,
+		TimerAlpha = 1,
+		TimerSecondsFontSize = 20,
+		TimerDecimalFontSize = 12,
 		DecimalYOffset = 2,
 		-- Icon
-		IconPosition = "LEFT",
-		IconOffset = 0,
+		IconXOffset = 0,
+		IconYOffset = 0,
+		IconSize = 30,
+		ShowLeftIcon = true,
+		ShowRightIcon = false,
 		-- Toggles
 		DisableDropdowns = false,
 		DisableScreenFlash = false,
 		DisableSounds = false,
-		HideIcons = false,
-		ShowBorder = true,
+		ShowBarBorder = true,
+		ShowIconBorder = true,
 		-- Custom Bars
 		CustomLocalClr = "TAN",
 		CustomRaidClr = "TAN",
@@ -314,8 +327,10 @@ function prototype:Destroy()
 	BarPool[self] = true
 	wipe(self.data)
 	self.timer:Show()
-	self.icon:Hide()
-	self.icon.t:SetTexture("")
+	self.lefticon:Hide()
+	self.lefticon.t:SetTexture("")
+	self.righticon:Hide()
+	self.righticon.t:SetTexture("")
 	self.bmsg = nil
 end
 
@@ -334,7 +349,7 @@ do
 		end
 		for i,bar in ipairs(stack) do
 			bar:ClearAllPoints()
-			bar:SetPoint(point,anchor,relpoint,0,mult*(i-1)*pfl.BarHeight)
+			bar:SetPoint(point,anchor,relpoint,0,mult*(i-1)*(pfl.BarHeight + pfl.BarSpacing))
 		end
 	end
 end
@@ -344,6 +359,7 @@ function prototype:AnchorToTop()
 	self:SetAlpha(pfl.TopAlpha)
 	self:SetScale(pfl.TopScale)
 	self:SetWidth(pfl.TopBarWidth)
+	self.text:SetWidth(pfl.TopTextWidth)
 	self:RemoveFromStacks()
 	TopAlertStack[#TopAlertStack+1] = self
 	self:LayoutAlertStack(TopAlertStack, TopStackAnchor, pfl.TopGrowth)
@@ -355,6 +371,7 @@ function prototype:AnchorToCenter()
 	self:SetAlpha(pfl.CenterAlpha)
 	self:SetScale(pfl.CenterScale)
 	self:SetWidth(pfl.CenterBarWidth)
+	self.text:SetWidth(pfl.CenterTextWidth)
 	self:RemoveFromStacks()
 	CenterAlertStack[#CenterAlertStack+1] = self
 	self:LayoutAlertStack(CenterAlertStack, CenterStackAnchor, pfl.CenterGrowth)
@@ -366,6 +383,7 @@ function prototype:AnchorToWarning()
 	self:SetAlpha(pfl.WarningAlpha)
 	self:SetScale(pfl.WarningScale)
 	self:SetWidth(pfl.WarningBarWidth)
+	self.text:SetWidth(pfl.WarningTextWidth)
 	self:RemoveFromStacks()
 	WarningAlertStack[#WarningAlertStack+1] = self
 	self:LayoutAlertStack(WarningAlertStack, WarningStackAnchor, pfl.WarningGrowth)
@@ -550,82 +568,117 @@ function prototype:SetText(text)
 end
 
 function prototype:SetIcon(texture)
-	if not texture then self.icon:Hide() return end
+	if not texture then
+		self.lefticon:Hide()
+		self.righticon:Hide()
+		return
+	end
+
 	self.data.icon = texture
-	if pfl.HideIcons then return end
-	self.icon:Show()
-	self.icon.t:SetTexture(texture)
+
+	if pfl.ShowLeftIcon then
+		self.lefticon:Show()
+		self.lefticon.t:SetTexture(texture)
+	end
+
+	if pfl.ShowRightIcon then
+		self.righticon:Show()
+		self.righticon.t:SetTexture(texture)
+	end
 end
 
 function prototype:FireBeforeMsg() self.bmsg = true end
 
 local function SkinBar(bar)
-	if pfl.HideIcons then bar.icon:Hide() 
-	else bar:SetIcon(bar.data.icon) end
+	if not pfl.ShowLeftIcon then bar.lefticon:Hide() end
+	if not pfl.ShowRightIcon then bar.righticon:Hide() end
+	bar:SetIcon(bar.data.icon)
 
 	bar.statusbar:ClearAllPoints()
-	bar.icon.t:ClearAllPoints()
+	bar.lefticon.t:ClearAllPoints()
+	bar.righticon.t:ClearAllPoints()
 	bar.bg:ClearAllPoints()
-	if pfl.ShowBorder then
+
+	if pfl.ShowBarBorder then
 		bar.border:Show()
-		bar.icon.border:Show()
-		bar.statusbar:SetPoint("TOPLEFT",INSET,-INSET)
-		bar.statusbar:SetPoint("BOTTOMRIGHT",-INSET,INSET)
-		bar.icon.t:SetPoint("TOPLEFT",bar.icon,"TOPLEFT",INSET,-INSET)
-		bar.icon.t:SetPoint("BOTTOMRIGHT",bar.icon,"BOTTOMRIGHT",-INSET,INSET)
 		bar.bg:SetPoint("TOPLEFT",INSET,-INSET)
 		bar.bg:SetPoint("BOTTOMRIGHT",-INSET,INSET)
+		bar.statusbar:SetPoint("TOPLEFT",INSET,-INSET)
+		bar.statusbar:SetPoint("BOTTOMRIGHT",-INSET,INSET)
 	else
 		bar.border:Hide()
-		bar.icon.border:Hide()
 		bar.statusbar:SetPoint("TOPLEFT")
 		bar.statusbar:SetPoint("BOTTOMRIGHT")
-		bar.icon.t:SetPoint("TOPLEFT",bar.icon,"TOPLEFT")
-		bar.icon.t:SetPoint("BOTTOMRIGHT",bar.icon,"BOTTOMRIGHT")
 		bar.bg:SetPoint("TOPLEFT")
 		bar.bg:SetPoint("BOTTOMRIGHT")
 	end
 
+	if pfl.ShowIconBorder then
+		bar.lefticon.border:Show()
+		bar.lefticon.t:SetPoint("TOPLEFT",bar.lefticon,"TOPLEFT",INSET,-INSET)
+		bar.lefticon.t:SetPoint("BOTTOMRIGHT",bar.lefticon,"BOTTOMRIGHT",-INSET,INSET)
+
+		bar.righticon.border:Show()
+		bar.righticon.t:SetPoint("TOPLEFT",bar.righticon,"TOPLEFT",INSET,-INSET)
+		bar.righticon.t:SetPoint("BOTTOMRIGHT",bar.righticon,"BOTTOMRIGHT",-INSET,INSET)
+	else
+		bar.righticon.border:Hide()
+		bar.righticon.t:SetPoint("TOPLEFT",bar.righticon,"TOPLEFT")
+		bar.righticon.t:SetPoint("BOTTOMRIGHT",bar.righticon,"BOTTOMRIGHT")
+
+		bar.lefticon.border:Hide()
+		bar.lefticon.t:SetPoint("TOPLEFT",bar.lefticon,"TOPLEFT")
+		bar.lefticon.t:SetPoint("BOTTOMRIGHT",bar.lefticon,"BOTTOMRIGHT")
+	end
+
 	bar:SetHeight(pfl.BarHeight)
 
-	local fontsize = 
-	bar.timer.left:SetFont("Interface\\Addons\\DXE\\Fonts\\BS.ttf",(0.4375*pfl.BarHeight)+6.875)
-	bar.timer.right:SetFont("Interface\\Addons\\DXE\\Fonts\\BS.ttf",(0.25*pfl.BarHeight)+4.5)
+	bar.timer.left:SetFont("Interface\\Addons\\DXE\\Fonts\\BS.ttf",pfl.TimerSecondsFontSize)
+	bar.timer.right:SetFont("Interface\\Addons\\DXE\\Fonts\\BS.ttf",pfl.TimerDecimalFontSize)
 
 	bar.timer.right:ClearAllPoints()
 	bar.timer.right:SetPoint("BOTTOMLEFT",bar.timer.left,"BOTTOMRIGHT",0,pfl.DecimalYOffset)
 
 	bar.timer:ClearAllPoints()
-	bar.timer:SetPoint("RIGHT",bar,"RIGHT",pfl.TimerXOffset,0)
+	bar.timer:SetPoint("RIGHT",bar,"RIGHT",pfl.TimerXOffset,pfl.TimerYOffset)
 	bar.timer.right:SetVertexColor(unpack(pfl.TimerFontColor))
 	bar.timer.left:SetVertexColor(unpack(pfl.TimerFontColor))
+	bar.timer:SetAlpha(pfl.TimerAlpha)
 
-	bar.icon:ClearAllPoints()
-	if pfl.IconPosition == "LEFT" then
-		bar.icon:SetPoint("RIGHT",bar,"LEFT",-pfl.IconOffset,0)
-	elseif pfl.IconPosition == "RIGHT" then
-		bar.icon:SetPoint("LEFT",bar,"RIGHT",pfl.IconOffset,0)
-	end
-	bar.icon:SetWidth(pfl.BarHeight)
-	bar.icon:SetHeight(pfl.BarHeight)
+	bar.lefticon:ClearAllPoints()
+	bar.lefticon:SetPoint("RIGHT",bar,"LEFT",-pfl.IconXOffset,pfl.IconYOffset)
+
+	bar.righticon:ClearAllPoints()
+	bar.righticon:SetPoint("LEFT",bar,"RIGHT",pfl.IconXOffset,pfl.IconYOffset)
+
+	bar.lefticon:SetWidth(pfl.IconSize)
+	bar.lefticon:SetHeight(pfl.IconSize)
+	bar.righticon:SetWidth(pfl.IconSize)
+	bar.righticon:SetHeight(pfl.IconSize)
 
 	bar.text:SetFont(bar.text:GetFont(),pfl.BarFontSize)
+	bar.text:SetHeight(pfl.BarFontSize * 1.2)
 	bar.text:SetVertexColor(unpack(pfl.BarFontColor))
 	bar.text:SetJustifyH(pfl.BarTextJustification)
+	bar.text:SetPoint("LEFT",bar,"LEFT",pfl.TextXOffset,pfl.TextYOffset)
+	bar.text:SetAlpha(pfl.TextAlpha)
 
 	local data = bar.data
 	if data.anchor == "TOP" then
 		bar:SetScale(pfl.TopScale)
 		bar:SetAlpha(pfl.TopAlpha)
 		bar:SetWidth(pfl.TopBarWidth)
+		bar.text:SetWidth(pfl.TopTextWidth)
 	elseif data.anchor == "CENTER" then
 		bar:SetScale(pfl.CenterScale)
 		bar:SetAlpha(pfl.CenterAlpha)
 		bar:SetWidth(pfl.CenterBarWidth)
+		bar.text:SetWidth(pfl.CenterTextWidth)
 	elseif data.anchor == "WARNING" then
 		bar:SetScale(pfl.WarningScale)
 		bar:SetAlpha(pfl.WarningAlpha)
 		bar:SetWidth(pfl.WarningBarWidth)
+		bar.text:SetWidth(pfl.WarningTextWidth)
 	end
 end
 
@@ -668,23 +721,28 @@ local function CreateBar()
 	self.timer = timer
 
 	local text = statusbar:CreateFontString(nil,"ARTWORK")
-	text:SetPoint("LEFT",self,"LEFT",5,0)
-	-- Adjust if we ever have a timer > 1 hour
-	text:SetPoint("RIGHT",self.timer,"LEFT",7,0)
 	text:SetShadowOffset(1,-1)
+	text:SetNonSpaceWrap(true)
 	addon:RegisterFontString(text,10)
 	self.text = text
 
-	local icon = CreateFrame("Frame",nil,self)
-	self.icon = icon
+	local lefticon = CreateFrame("Frame",nil,self)
+	self.lefticon = lefticon
+	lefticon.t = lefticon:CreateTexture(nil,"BACKGROUND")
+	lefticon.t:SetTexCoord(0.07,0.93,0.07,0.93)
 
-	icon.t = icon:CreateTexture(nil,"BACKGROUND")
-	icon.t:SetTexCoord(0.07,0.93,0.07,0.93)
+	lefticon.border = CreateFrame("Frame",nil,lefticon)
+	lefticon.border:SetAllPoints(true)
+	addon:RegisterBorder(lefticon.border)
 
-	icon.border = CreateFrame("Frame",nil,icon)
-	icon.border:SetAllPoints(true)
-	addon:RegisterBorder(icon.border)
+	local righticon = CreateFrame("Frame",nil,self)
+	self.righticon = righticon
+	righticon.t = righticon:CreateTexture(nil,"BACKGROUND")
+	righticon.t:SetTexCoord(0.07,0.93,0.07,0.93)
 
+	righticon.border = CreateFrame("Frame",nil,righticon)
+	righticon.border:SetAllPoints(true)
+	addon:RegisterBorder(righticon.border)
 
 	AceTimer:Embed(self)
 	for k,v in pairs(prototype) do self[k] = v end
@@ -963,9 +1021,9 @@ end
 ---------------------------------------------
 
 function module:BarTest()
-	self:CenterPopup("alerttestdur", "Decimate Duration", 10, 5, "DXE ALERT1", "DCYAN", nil, nil, addon.ST[28374])
-	self:Dropdown("alerttestcd", "Opening Cooldown", 20, 5, "DXE ALERT2", "BLUE", "ORANGE", nil, addon.ST[64813])
-	self:Simple("Just Kill It!",3,"DXE ALERT3","RED", nil, addon.ST[53351])
+	self:CenterPopup("alerttestdur", "Centerpopup Centerpopup Centerpopup Centerpopup Centerpopup Centerpopup Centerpopup Centerpopup ", 10, 5, "DXE ALERT1", "DCYAN", nil, nil, addon.ST[28374])
+	self:Dropdown("alerttestcd", "Dropdown Dropdown Dropdown Dropdown Dropdown Dropdown Dropdown Dropdown Dropdown Dropdown Dropdown Dropdown ", 20, 5, "DXE ALERT2", "BLUE", "ORANGE", nil, addon.ST[64813])
+	self:Simple("Warning Warning Warning Warning Warning Warning Warning Warning Warning Warning Warning Warning Warning Warning Warning Warning Warning Warning Warning Warning Warning ",3,"DXE ALERT3","RED", nil, addon.ST[53351])
 end
 
 local lookup
