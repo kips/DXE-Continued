@@ -4,28 +4,26 @@ local floor = math.floor
 local Timer,prototype = {},{}
 DXE.Timer = Timer
 
-function Timer:New(parent)
+function Timer:New(parent,leftsize,rightsize)
 	local timer = CreateFrame("Frame",nil,parent)
 	for k,v in pairs(prototype) do timer[k] = v end
 
 	timer:SetWidth(80); timer:SetHeight(20)
 
 	local left = timer:CreateFontString(nil,"OVERLAY")
-	left:SetFont("Interface\\Addons\\DXE\\Fonts\\BS.ttf",20)
 	left:SetPoint("LEFT",timer,"LEFT")
 	left:SetWidth(60)
 	left:SetHeight(20)
 	left:SetJustifyH("RIGHT")
-	addon:RegisterTimerFontString(left,20)
+	addon:RegisterTimerFontString(left,leftsize or 20)
 	timer.left = left
 
 	local right = timer:CreateFontString(nil,"OVERLAY")
-	right:SetFont("Interface\\Addons\\DXE\\Fonts\\BS.ttf",12)
 	right:SetPoint("BOTTOMLEFT",left,"BOTTOMRIGHT",0,2)
 	right:SetWidth(20)
 	right:SetHeight(12)
 	right:SetJustifyH("LEFT")
-	addon:RegisterTimerFontString(right,12)
+	addon:RegisterTimerFontString(right,rightsize or 12)
 	timer.right = right
 
 	left:SetText("0:00")

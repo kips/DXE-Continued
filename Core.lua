@@ -1399,10 +1399,8 @@ function addon:CreatePane()
 	Pane.fadeTable = {timeToFade = 0.5, finishedArg1 = Pane}
   	self.Pane = Pane
 	
-	Pane.timer = addon.Timer:New(Pane)
+	Pane.timer = addon.Timer:New(Pane,19,11)
 	Pane.timer:SetPoint("BOTTOMLEFT",5,2)
-	Pane.timer.left:SetFont("Interface\\Addons\\DXE\\Fonts\\BS.ttf",19)
-	Pane.timer.right:SetFont("Interface\\Addons\\DXE\\Fonts\\BS.ttf",11)
 
 	local PaneTextures = "Interface\\AddOns\\DXE\\Textures\\Pane\\"
 
