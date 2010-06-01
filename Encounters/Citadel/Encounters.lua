@@ -2337,7 +2337,7 @@ end
 
 do
 	local data = {
-		version = 15,
+		version = 16,
 		key = "marrowgar",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -2527,8 +2527,8 @@ do
 				execute = {
 					{
 						"alert","bonedachievementdur",
-						"expect",{"#1#","~=","&playerguid&"},
 						"raidicon","impalemark",
+						"expect",{"#1#","~=","&playerguid&"},
 						"arrow","impalearrow",
 					},
 				},
