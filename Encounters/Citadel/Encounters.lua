@@ -2558,7 +2558,7 @@ end
 
 do
 	local data = {
-		version = 42,
+		version = 43,
 		key = "putricide",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -2773,9 +2773,9 @@ do
 			},
 			unboundplagueself = {
 				varname = format(L.alert["%s on self"],SN[72855]),
-				type = "simple",
+				type = "centerpopup",
 				text = format("%s: %s!",SN[72855],L.alert["YOU"]),
-				time = 5,
+				time = 10,
 				color1 = "WHITE",
 				icon = ST[72855],
 				flashscreen = true,
@@ -3227,6 +3227,18 @@ do
 						"expect",{"#4#","==","&playerguid&"},
 						"alert","unboundplagueself",
 						"announce","plaguesay",
+					},
+				},
+			},
+			-- Unbound Plague application removal
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_REMOVED",
+				spellname = 72855,
+				dstisplayerunit = true,
+				execute = {
+					{
+						"quash","unboundplagueself",
 					},
 				},
 			},
