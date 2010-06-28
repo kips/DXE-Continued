@@ -104,6 +104,9 @@ MapDims= {
 		[6] = {w = 348.05218433541, h = 232.05964286208}, -- Royal Quarters
 		[7] = {w = 272.80314344785, h = 181.89449398676}, -- The Frozen Throne
 	},
+	TheRubySanctum = {
+		[1] = {w = 752.083, h = 502.09}, -- The Ruby Sanctumn
+	},
 	--@debug@
 	Ironforge = {
 		[0] = {w = 790.574581, h = 527.049720},
