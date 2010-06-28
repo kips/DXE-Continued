@@ -1295,3 +1295,38 @@ do
 
 	DXE:RegisterEncounter(data)
 end
+
+---------------------------------
+-- HALION
+---------------------------------
+
+do
+	local data = {
+		version = 1,
+		key = "halion",
+		zone = L.zone["The Ruby Sanctum"],
+		category = L.zone["Northrend"],
+		name = L.npc_northrend["Halion"],
+		triggers = {
+			scan = {
+				39863, -- Halion
+			},
+		},
+		onactivate = {
+			tracing = {39863},
+			tracerstart = true,
+			combatstop = true,
+			defeat = 39863,
+		},
+		onstart = {
+			{
+			}
+		},
+		alerts = {
+		},
+		events = {
+		},
+	}
+
+	DXE:RegisterEncounter(data)
+end
