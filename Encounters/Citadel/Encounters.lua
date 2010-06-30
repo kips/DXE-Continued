@@ -125,6 +125,7 @@ do
 				time = 3,
 				sound = "ALERT6",
 				color1 = "GOLD",
+				throttle = 5,
 				icon = ST[72080],
 			},
 			kineticbombcd = {
@@ -134,6 +135,7 @@ do
 				time = 17.7,
 				flashtime = 10,
 				color1 = "YELLOW",
+				throttle = 5,
 				icon = ST[72080],
 			},
 		},
