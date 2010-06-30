@@ -1302,7 +1302,7 @@ end
 
 do
 	local data = {
-		version = 1,
+		version = 2,
 		key = "halion",
 		zone = L.zone["The Ruby Sanctum"],
 		category = L.zone["Northrend"],
@@ -1310,21 +1310,150 @@ do
 		triggers = {
 			scan = {
 				39863, -- Halion
+				40142, -- Twilight Halion
 			},
 		},
 		onactivate = {
-			tracing = {39863},
 			tracerstart = true,
 			combatstop = true,
+			unittracing = { "boss1", "boss2" },
 			defeat = 39863,
 		},
-		onstart = {
-			{
+		alerts = {
+			fierydur = {
+				varname = format(L.alert["%s Duration"],SN[74562]),
+				type = "centerpopup",
+				text = format("%s: #5#",SN[74562]),
+				time = 30,
+				flashtime = 30,
+				color1 = "RED",
+				icon = ST[74562],
+			},
+			fieryself = {
+				varname = format(L.alert["%s on self"],SN[74562]),
+				type = "centerpopup",
+				text = format("%s: %s!",SN[74562],L.alert["YOU"]).."!",
+				time = 30,
+				flashtime = 30,
+				color1 = "RED",
+				sound = "ALERT1",
+				icon = ST[74562],
+				flashscreen = true,
+			},
+			souldur = {
+				varname = format(L.alert["%s Duration"],SN[74792]),
+				type = "centerpopup",
+				text = format("%s: #5#",SN[74562]),
+				time = 30,
+				flashtime = 30,
+				color1 = "PURPLE",
+				icon = ST[74792],
+			},
+			soulself = {
+				varname = format(L.alert["%s on self"],SN[74792]),
+				type = "centerpopup",
+				text = format("%s: %s!",SN[74562],L.alert["YOU"]).."!",
+				time = 30,
+				flashtime = 30,
+				color1 = "PURPLE",
+				sound = "ALERT2",
+				icon = ST[74792],
+				flashscreen = true,
+			},
+			cutterdur = {
+				varname = SN[77844],
+				type = "centerpopup",
+				text = SN[77844],
+				time = 10,
+				flashtime = 10,
+				color1 = "PINK",
+			},
+			cuttercd = {
+				varname = format(L.alert["%s Cooldown"],SN[77844]),
+				type = "centerpopup",
+				text = format("%s Cooldown",SN[77844]),
+				time = 30,
+				flashtime = 30,
+				color1 = "PINK",
+				sound = "ALERT3",
+				flashscreen = true,
 			}
 		},
-		alerts = {
+		raidicons = {
+			fierymark = {
+				varname = SN[74562],
+				type = "FRIENDLY",
+				persist = 30,
+				unit = "#5#",
+				icon = 1,
+			},
+			soulmark = {
+				varname = SN[74792],
+				type = "FRIENDLY",
+				persist = 30,
+				unit = "#5#",
+				icon = 2,
+			},
 		},
 		events = {
+			-- Fiery Combustion
+			{
+				type = "combatevent",
+				eventtype = "SPELL_CAST_SUCCESS",
+				spellname = 74562,
+				execute = {
+					{
+						"raidicon","fierymark",
+						"alert",{dstself = "fieryself","fierydur"},
+					},
+				},
+			},
+			-- Fiery Combustion removed
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_REMOVED",
+				spellname = 74562,
+				execute = {
+					{
+						"batchquash",{"fierydur","fieryself"},
+					},
+				}
+			},
+			-- Soul Consumption 
+			{
+				type = "combatevent",
+				eventtype = "SPELL_CAST_SUCCESS",
+				spellname = 74792,
+				execute = {
+					{
+						"raidicon","soulmark",
+						"alert",{dstself = "soulself","souldur"},
+					},
+				},
+			},
+			-- Soul Consumption removed
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_REMOVED",
+				spellname = 74792,
+				execute = {
+					{
+						"batchquash",{"souldur","soulself"},
+					},
+				}
+			},
+			-- Twilight Cutter
+			{
+				type = "event",
+				event = "EMOTE",
+				execute = {
+					{
+						"expect",{"#1#","find",L.chat_northrend["^The orbiting spheres pulse with"]},
+						"schedulealert",{"cutterdur",3},
+						"schedulealert",{"cuttercd",3},
+					},
+				},
+			},
 		},
 	}
 
