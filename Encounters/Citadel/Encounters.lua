@@ -6,7 +6,7 @@ local L,SN,ST = DXE.L,DXE.SN,DXE.ST
 
 do
 	local data = {
-		version = 24,
+		version = 25,
 		key = "bloodprincecouncil",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -133,6 +133,7 @@ do
 				type = "dropdown",
 				text = format(L.alert["%s Cooldown"],SN[72080]),
 				time = 17.7,
+				time10n = 26.8,
 				flashtime = 10,
 				color1 = "YELLOW",
 				throttle = 5,
