@@ -1264,6 +1264,28 @@ do
 					},
 				}
 			},
+			-- Phase2 start
+			{
+				type = "event",
+				event = "YELL",
+				execute = {
+					{
+						"expect",{"#1#","find",L.chat_northrend["^You will find only suffering"]},
+						"alert","cuttercd",
+						"quash","meteorcd",
+					},
+				}
+			},
+			-- Phase3 start
+			{
+				type = "event",
+				event = "YELL",
+				execute = {
+					{
+						"expect",{"#1#","find",L.chat_northrend["^I am the light and the darkness!"]},
+					},
+				}
+			},
 			-- Twilight Cutter
 			{
 				type = "event",
@@ -1302,7 +1324,7 @@ end
 
 do
 	local data = {
-		version = 2,
+		version = 3,
 		key = "halion",
 		zone = L.zone["The Ruby Sanctum"],
 		category = L.zone["Northrend"],
@@ -1317,7 +1339,12 @@ do
 			tracerstart = true,
 			combatstop = true,
 			unittracing = { "boss1", "boss2" },
-			defeat = 39863,
+			defeat = L.chat_northrend["^Relish this victory, mortals, for it will"],
+		},
+		onstart = {
+			{
+				"alert","meteorcd",
+			},
 		},
 		alerts = {
 			fierydur = {
@@ -1367,17 +1394,38 @@ do
 				time = 10,
 				flashtime = 10,
 				color1 = "PINK",
+				icon = ST[77844],
 			},
 			cuttercd = {
 				varname = format(L.alert["%s Cooldown"],SN[77844]),
 				type = "centerpopup",
-				text = format("%s Cooldown",SN[77844]),
-				time = 30,
-				flashtime = 30,
+				text = format(L.alert["%s Cooldown"],SN[77844]),
+				time = 30, -- time from cutter to cutter
+				time2 = 33, -- time from boss emotes
+				flashtime = 10,
 				color1 = "PINK",
 				sound = "ALERT3",
 				flashscreen = true,
-			}
+				icon = ST[77844],
+			},
+			meteorwarn = {
+				varname = format(L.alert["%s Warning"],SN[75878]),
+				type = "centerpopup",
+				text = format(L.alert["%s Soon"],SN[75878]).."!",
+				time = 5,
+				flashtime = 5,
+				color1 = "ORANGE",
+				sound = "ALERT4",
+				icon = ST[75878],
+			},
+			meteorcd = {
+				varname = format(L.alert["%s Cooldown"],SN[75878]),
+				type = "centerpopup",
+				text = format(L.alert["%s Cooldown"],SN[75878]),
+				time = { 20,40, loop=false, type="series"}, -- phase 1, need more data for p3
+				color1 = "ORANGE",
+				icon = ST[75878],
+			},
 		},
 		raidicons = {
 			fierymark = {
@@ -1393,6 +1441,15 @@ do
 				persist = 30,
 				unit = "#5#",
 				icon = 2,
+			},
+		},
+		timers = {
+			firecutter = {
+				{
+					"quash","cuttercd",
+					"alert","cuttercd",
+					"scheduletimer",{"firecutter",30},
+				},
 			},
 		},
 		events = {
@@ -1449,9 +1506,23 @@ do
 				execute = {
 					{
 						"expect",{"#1#","find",L.chat_northrend["^The orbiting spheres pulse with"]},
-						"schedulealert",{"cutterdur",3},
-						"schedulealert",{"cuttercd",3},
+						"schedulealert",{"cutterdur", 3},
+						"quash","cuttercd",
+						"canceltimer","firecutter",
+						"alert",{"cuttercd",time = 2},
+						"scheduletimer",{"firecutter",33},
 					},
+				},
+			},
+			-- Meteor Strike
+			{
+				type = "event",
+				event = "YELL",
+				execute = {
+					{
+						"expect",{"#1#","find",L.chat_northrend["^The heavens burn!"]},
+						"alert","meteorwarn",
+					}
 				},
 			},
 		},
