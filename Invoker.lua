@@ -469,33 +469,36 @@ do
 
 		-- Copy alert time/text series into userdata
 		-- time[2-9], text[2-9], time10n, time10h, time25n, time25h
-		for var,info in pairs(CE.alerts) do
-			for _,key in ipairs(alert_keys) do
-				-- add userdata variable for this alert key
-				local v = info[key]
-				if type(v) == "table" then
-					-- prepend '_' for safety
-					-- ex. "_boltwarntime2"
-					local ud_key = "_"..var..key
-					userdata[ud_key] = v
-					userdata[ud_key.."_index"] = 1
+		if CE.alerts then
+			for var,info in pairs(CE.alerts) do
+				for _,key in ipairs(alert_keys) do
+					-- add userdata variable for this alert key
+					local v = info[key]
+					if type(v) == "table" then
+						-- prepend '_' for safety
+						-- ex. "_boltwarntime2"
+						local ud_key = "_"..var..key
+						userdata[ud_key] = v
+						userdata[ud_key.."_index"] = 1
+					end
 				end
 			end
 		end
 
-		if not CE.userdata then return end
-		-- Copy defaults into userdata
-		for k,v in pairs(CE.userdata) do
-			if type(v) == "table" then
-				-- Indexing for series
-				userdata[k.."_index"] = 1
-				if v.type == "series" then
+		if CE.userdata then
+			-- Copy defaults into userdata
+			for k,v in pairs(CE.userdata) do
+				if type(v) == "table" then
+					-- Indexing for series
+					userdata[k.."_index"] = 1
+					if v.type == "series" then
+						userdata[k] = v
+					elseif v.type == "container" then
+						userdata[k] = {}
+					end
+				else
 					userdata[k] = v
-				elseif v.type == "container" then
-					userdata[k] = {}
 				end
-			else
-				userdata[k] = v
 			end
 		end
 	end
