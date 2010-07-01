@@ -463,7 +463,7 @@ end
 
 do
 	local data = {
-		version = 4,
+		version = 5,
 		key = "halion",
 		zone = L.zone["The Ruby Sanctum"],
 		category = L.zone["Northrend"],
@@ -613,6 +613,18 @@ do
 				icon = 2,
 			},
 		},
+		announces = {
+			fierysay = {
+				varname = format(L.alert["Say %s on self"],SN[74562]),
+				type = "SAY",
+				msg = format(L.alert["%s on Me"],SN[74562]).."!",
+			},
+			soulsay = {
+				varname = format(L.alert["Say %s on self"],SN[74792]),
+				type = "SAY",
+				msg = format(L.alert["%s on Me"],SN[74792]).."!",
+			}
+		},
 		timers = {
 			firecutter = {
 				{
@@ -697,6 +709,7 @@ do
 					{
 						"raidicon","fierymark",
 						"alert",{dstself = "fieryself",dstother = "fierydur"},
+						"announce",{dstself = "fierysay"},
 					},
 				},
 			},
@@ -720,6 +733,7 @@ do
 					{
 						"raidicon","soulmark",
 						"alert",{dstself = "soulself",dstother = "souldur"},
+						"announce",{dstself = "soulsay"},
 					},
 				},
 			},
