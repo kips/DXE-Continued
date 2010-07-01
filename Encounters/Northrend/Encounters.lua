@@ -463,7 +463,7 @@ end
 
 do
 	local data = {
-		version = 3,
+		version = 4,
 		key = "halion",
 		zone = L.zone["The Ruby Sanctum"],
 		category = L.zone["Northrend"],
@@ -527,7 +527,7 @@ do
 				flashscreen = true,
 			},
 			cutterdur = {
-				varname = SN[77844],
+				varname = format(L.alert["%s Duration"],SN[77844]),
 				type = "centerpopup",
 				text = SN[77844],
 				time = 10,
@@ -537,7 +537,7 @@ do
 			},
 			cuttercd = {
 				varname = format(L.alert["%s Cooldown"],SN[77844]),
-				type = "centerpopup",
+				type = "dropdown",
 				text = format(L.alert["%s Cooldown"],SN[77844]),
 				time = 30, -- time from cutter to cutter
 				time2 = 33, -- time from boss emotes
@@ -546,6 +546,7 @@ do
 				sound = "ALERT3",
 				flashscreen = true,
 				icon = ST[77844],
+				behavior = "overwrite",
 			},
 			meteorwarn = {
 				varname = format(L.alert["%s Warning"],SN[75878]),
@@ -559,11 +560,41 @@ do
 			},
 			meteorcd = {
 				varname = format(L.alert["%s Cooldown"],SN[75878]),
-				type = "centerpopup",
+				type = "dropdown",
 				text = format(L.alert["%s Cooldown"],SN[75878]),
 				time = { 20,40, loop=false, type="series"}, -- phase 1, need more data for p3
 				color1 = "ORANGE",
 				icon = ST[75878],
+			},
+			combustionself = {
+				varname = format(L["%s on self"],SN[75884]),
+				type = "simple",
+				text = format("%s: %s! %s!",SN[75884],L.alert["YOU"],L.alert["MOVE AWAY"]),
+				time = 3,
+				throttle = 4,
+				flashscreen = true,
+				sound = "ALERT5",
+				icon = ST[75884],
+			},
+			consumptionself = {
+				varname = format(L["%s on self"],SN[75876]),
+				type = "simple",
+				text = format("%s: %s! %s!",SN[75876],L.alert["YOU"],L.alert["MOVE AWAY"]),
+				time = 3,
+				throttle = 4,
+				flashscreen = true,
+				sound = "ALERT5",
+				icon = ST[75876],
+			},
+			meteorself = {
+				varname = format(L["%s on self"],SN[75952]),
+				type = "simple",
+				text = format("%s: %s! %s!",SN[75952],L.alert["YOU"],L.alert["MOVE AWAY"]),
+				time = 3,
+				throttle = 4,
+				flashscreen = true,
+				sound = "ALERT5",
+				icon = ST[75952],
 			},
 		},
 		raidicons = {
@@ -585,13 +616,78 @@ do
 		timers = {
 			firecutter = {
 				{
-					"quash","cuttercd",
 					"alert","cuttercd",
 					"scheduletimer",{"firecutter",30},
 				},
 			},
 		},
 		events = {
+			-- Combustion self
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellname = 75884,
+				dstisplayerunit = true,
+				execute = {
+					{
+						"expect",{"#2#","==","nil"},
+						"alert","combustionself",
+					},
+				},
+			},
+			-- Combustion self applications
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED_DOSE",
+				spellname = 75884,
+				dstisplayerunit = true,
+				execute = {
+					{
+						"expect",{"#2#","==","nil"},
+						"alert","combustionself",
+					},
+				},
+			},
+			-- Consumption self
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellname = 75876,
+				dstisplayerunit = true,
+				execute = {
+					{
+						"expect",{"#2#","==","nil"},
+						"alert","consumptionself",
+					},
+				},
+			},
+			-- Consumption self applications
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED_DOSE",
+				spellname = 75876,
+				dstisplayerunit = true,
+				execute = {
+					{
+						"expect",{"#2#","==","nil"},
+						"alert","consumptionself",
+					},
+				},
+			},
+
+			-- Meteor Strike self
+			{
+				type = "combatevent",
+				eventtype = "SPELL_DAMAGE",
+				spellname = 75952,
+				dstisplayerunit = true,
+				execute = {
+					{
+						"expect",{"#2#","==","nil"},
+						"alert","meteorself",
+					},
+				},
+			},
 			-- Fiery Combustion
 			{
 				type = "combatevent",
@@ -600,7 +696,7 @@ do
 				execute = {
 					{
 						"raidicon","fierymark",
-						"alert",{dstself = "fieryself","fierydur"},
+						"alert",{dstself = "fieryself",dstother = "fierydur"},
 					},
 				},
 			},
@@ -623,7 +719,7 @@ do
 				execute = {
 					{
 						"raidicon","soulmark",
-						"alert",{dstself = "soulself","souldur"},
+						"alert",{dstself = "soulself",dstother = "souldur"},
 					},
 				},
 			},
