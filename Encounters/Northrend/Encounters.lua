@@ -463,7 +463,7 @@ end
 
 do
 	local data = {
-		version = 8,
+		version = 9,
 		key = "halion",
 		zone = L.zone["The Ruby Sanctum"],
 		category = L.zone["Northrend"],
@@ -576,7 +576,9 @@ do
 				varname = format(L.alert["%s Cooldown"],SN[75878]),
 				type = "dropdown",
 				text = format(L.alert["%s Cooldown"],SN[75878]),
-				time = { 20,40, loop=false, type="series"}, -- phase 1, need more data for p3
+				time = { 20,40, loop=false, type="series"}, -- phase 1
+				time2 = 30, -- phase 3 restart time
+				flashtime = 10,
 				color1 = "ORANGE",
 				icon = ST[75878],
 			},
@@ -791,6 +793,7 @@ do
 					{
 						"expect",{"#1#","find",L.chat_northrend["^I am the light and the darkness!"]},
 						"set",{phase = 3},
+						"alert",{"meteorcd",time=2},
 					},
 				}
 			},
