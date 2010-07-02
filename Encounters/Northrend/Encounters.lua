@@ -463,7 +463,7 @@ end
 
 do
 	local data = {
-		version = 5,
+		version = 6,
 		key = "halion",
 		zone = L.zone["The Ruby Sanctum"],
 		category = L.zone["Northrend"],
@@ -479,6 +479,9 @@ do
 			combatstop = true,
 			unittracing = { "boss1", "boss2" },
 			defeat = L.chat_northrend["^Relish this victory, mortals, for it will"],
+		},
+		userdata = {
+			phase = 1,
 		},
 		onstart = {
 			{
@@ -530,17 +533,28 @@ do
 				varname = format(L.alert["%s Duration"],SN[77844]),
 				type = "centerpopup",
 				text = SN[77844],
-				time = 10,
-				flashtime = 10,
+				time = 11,
+				flashtime = 11,
 				color1 = "PINK",
 				icon = ST[77844],
+				behavior = "overwrite",
+			},
+			cutterwarn = {
+				varname = format(L.alert["%s Casting"],SN[77844]),
+				type = "centerpopup",
+				text = format(L.alert["%s Casting"],SN[77844]),
+				time = 4.5,
+				flashtime = 4.5,
+				color1 = "PINK",
+				icon = ST[77844],
+				behavior = "overwrite",
 			},
 			cuttercd = {
 				varname = format(L.alert["%s Cooldown"],SN[77844]),
 				type = "dropdown",
 				text = format(L.alert["%s Cooldown"],SN[77844]),
 				time = 30, -- time from cutter to cutter
-				time2 = 33, -- time from boss emotes
+				time2 = 35, -- initial
 				flashtime = 10,
 				color1 = "PINK",
 				sound = "ALERT3",
@@ -626,10 +640,18 @@ do
 			}
 		},
 		timers = {
-			firecutter = {
+			firecuttercd = {
 				{
 					"alert","cuttercd",
-					"scheduletimer",{"firecutter",30},
+					--"alert","cutterwarn",
+					--"scheduletimer",{"firecutterdur",3},
+					"scheduletimer",{"firecuttercd",30},
+				},
+			},
+			firecutterdur = {
+				{
+					"quash","cutterwarn",
+					"alert","cutterdur",
 				},
 			},
 		},
@@ -748,25 +770,27 @@ do
 					},
 				}
 			},
-			-- Phase2 start
+			-- Phase 2 start
 			{
 				type = "event",
 				event = "YELL",
 				execute = {
 					{
 						"expect",{"#1#","find",L.chat_northrend["^You will find only suffering"]},
-						"alert","cuttercd",
+						"alert",{"cuttercd", time = 2},
 						"quash","meteorcd",
+						"set",{phase = 2},
 					},
 				}
 			},
-			-- Phase3 start
+			-- Phase 3 start
 			{
 				type = "event",
 				event = "YELL",
 				execute = {
 					{
 						"expect",{"#1#","find",L.chat_northrend["^I am the light and the darkness!"]},
+						"set",{phase = 3},
 					},
 				}
 			},
@@ -777,11 +801,10 @@ do
 				execute = {
 					{
 						"expect",{"#1#","find",L.chat_northrend["^The orbiting spheres pulse with"]},
-						"schedulealert",{"cutterdur", 3},
-						"quash","cuttercd",
-						"canceltimer","firecutter",
-						"alert",{"cuttercd",time = 2},
-						"scheduletimer",{"firecutter",33},
+						"alert","cuttercd",
+						"alert","cutterwarn",
+						"scheduletimer",{"firecutterdur",4.5},
+						"scheduletimer",{"firecuttercd",30},
 					},
 				},
 			},
