@@ -463,7 +463,7 @@ end
 
 do
 	local data = {
-		version = 7,
+		version = 8,
 		key = "halion",
 		zone = L.zone["The Ruby Sanctum"],
 		category = L.zone["Northrend"],
@@ -548,6 +548,7 @@ do
 				color1 = "PINK",
 				icon = ST[77844],
 				sound = "ALERT12",
+				flashscreen = true,
 				behavior = "overwrite",
 			},
 			cuttercd = {
@@ -558,8 +559,6 @@ do
 				time2 = 35, -- initial
 				flashtime = 10,
 				color1 = "PINK",
-				sound = "ALERT3",
-				flashscreen = true,
 				icon = ST[77844],
 				behavior = "overwrite",
 			},
