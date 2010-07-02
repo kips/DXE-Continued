@@ -463,7 +463,7 @@ end
 
 do
 	local data = {
-		version = 9,
+		version = 10,
 		key = "halion",
 		zone = L.zone["The Ruby Sanctum"],
 		category = L.zone["Northrend"],
@@ -819,6 +819,7 @@ do
 					{
 						"expect",{"#1#","find",L.chat_northrend["^The heavens burn!"]},
 						"alert","meteorwarn",
+						"alert","meteorcd",
 					}
 				},
 			},
