@@ -105,7 +105,7 @@ MapDims= {
 		[7] = {w = 272.80314344785, h = 181.89449398676}, -- The Frozen Throne
 	},
 	TheRubySanctum = {
-		[1] = {w = 752.083, h = 502.09}, -- The Ruby Sanctumn
+		[0] = {w = 752.083, h = 502.09}, -- The Ruby Sanctumn
 	},
 	--@debug@
 	Ironforge = {
