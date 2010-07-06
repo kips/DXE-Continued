@@ -1081,6 +1081,13 @@ local function InitializeOptions()
 							name = L.options["Timer font sizes are determined by bar height"].."\n",
 							order = 1,
 						},
+						TimerFontColor = {
+							order = 50,
+							type = "color",
+							name = L.options["Font Color"],
+							desc = L.options["Set a font color used on bar timers"],
+							width = "full",
+						},
 						TimerXOffset = {
 							order = 100,
 							type = "range",
@@ -1117,6 +1124,13 @@ local function InitializeOptions()
 							max = 1,
 							step = 0.05,
 						},
+						ScaleTimerWithBarHeight = {
+							order = 307,
+							type = "toggle",
+							width = "full",
+							name = L.options["Scale with bar height"],
+							desc = L.options["Automatically resizes timer font sizes when the bar height is adjusted"],
+						},
 						TimerSecondsFontSize = {
 							order = 310,
 							type = "range",
@@ -1125,6 +1139,7 @@ local function InitializeOptions()
 							min = 8,
 							max = 30,
 							step = 1,
+							disabled = function() return Alerts.db.profile.ScaleTimerWithBarHeight end,
 						},
 						TimerDecimalFontSize = {
 							order = 320,
@@ -1134,12 +1149,7 @@ local function InitializeOptions()
 							min = 8,
 							max = 16,
 							step = 1,
-						},
-						TimerFontColor = {
-							order = 400,
-							type = "color",
-							name = L.options["Font Color"],
-							desc = L.options["Set a font color used on bar timers"],
+							disabled = function() return Alerts.db.profile.ScaleTimerWithBarHeight end,
 						},
 					},
 				},
@@ -1195,6 +1205,13 @@ local function InitializeOptions()
 					max = 200,
 					step = 0.1,
 				},
+				SetIconToBarHeight = {
+					order = 450,
+					type = "toggle",
+					width = "full",
+					name = L.options["Scale with bar height"],
+					desc = L.options["Automatically resizes the icon when the bar height is adjusted"],
+				},
 				IconSize = {
 					order = 500,
 					type = "range",
@@ -1203,6 +1220,7 @@ local function InitializeOptions()
 					min = 10,
 					max = 100,
 					step = 1,
+					disabled = function() return Alerts.db.profile.SetIconToBarHeight end,
 				},
 			},
 		}

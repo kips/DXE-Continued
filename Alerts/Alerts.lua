@@ -62,11 +62,13 @@ local defaults = {
 		TimerAlpha = 1,
 		TimerSecondsFontSize = 20,
 		TimerDecimalFontSize = 12,
+		ScaleTimerWithBarHeight = true,
 		DecimalYOffset = 2,
 		-- Icon
 		IconXOffset = 0,
 		IconYOffset = 0,
 		IconSize = 30,
+		SetIconToBarHeight = true,
 		ShowLeftIcon = true,
 		ShowRightIcon = false,
 		-- Toggles
@@ -633,8 +635,13 @@ local function SkinBar(bar)
 
 	bar:SetHeight(pfl.BarHeight)
 
-	bar.timer.left:SetFont("Interface\\Addons\\DXE\\Fonts\\BS.ttf",pfl.TimerSecondsFontSize)
-	bar.timer.right:SetFont("Interface\\Addons\\DXE\\Fonts\\BS.ttf",pfl.TimerDecimalFontSize)
+	if pfl.ScaleTimerWithBarHeight then
+		bar.timer.left:SetFont((bar.timer.left:GetFont()),(0.4375*pfl.BarHeight)+6.875)
+		bar.timer.right:SetFont((bar.timer.right:GetFont()),(0.25*pfl.BarHeight)+4.5)
+	else
+		bar.timer.left:SetFont((bar.timer.left:GetFont()),pfl.TimerSecondsFontSize)
+		bar.timer.right:SetFont((bar.timer.right:GetFont()),pfl.TimerDecimalFontSize)
+	end
 
 	bar.timer.right:ClearAllPoints()
 	bar.timer.right:SetPoint("BOTTOMLEFT",bar.timer.left,"BOTTOMRIGHT",0,pfl.DecimalYOffset)
@@ -651,10 +658,17 @@ local function SkinBar(bar)
 	bar.righticon:ClearAllPoints()
 	bar.righticon:SetPoint("LEFT",bar,"RIGHT",pfl.IconXOffset,pfl.IconYOffset)
 
-	bar.lefticon:SetWidth(pfl.IconSize)
-	bar.lefticon:SetHeight(pfl.IconSize)
-	bar.righticon:SetWidth(pfl.IconSize)
-	bar.righticon:SetHeight(pfl.IconSize)
+	if pfl.SetIconToBarHeight then
+		bar.lefticon:SetWidth(pfl.BarHeight)
+		bar.lefticon:SetHeight(pfl.BarHeight)
+		bar.righticon:SetWidth(pfl.BarHeight)
+		bar.righticon:SetHeight(pfl.BarHeight)
+	else
+		bar.lefticon:SetWidth(pfl.IconSize)
+		bar.lefticon:SetHeight(pfl.IconSize)
+		bar.righticon:SetWidth(pfl.IconSize)
+		bar.righticon:SetHeight(pfl.IconSize)
+	end
 
 	bar.text:SetFont(bar.text:GetFont(),pfl.BarFontSize)
 	bar.text:SetHeight(pfl.BarFontSize * 1.2)
