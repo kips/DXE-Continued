@@ -463,7 +463,7 @@ end
 
 do
 	local data = {
-		version = 10,
+		version = 11,
 		key = "halion",
 		zone = L.zone["The Ruby Sanctum"],
 		category = L.zone["Northrend"],
@@ -724,10 +724,22 @@ do
 					},
 				},
 			},
+			--[[ TODO: Use for cooldown
 			-- Fiery Combustion
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_SUCCESS",
+				spellname = 74562,
+				execute = {
+					{
+					},
+				},
+			},
+			]]
+			-- Fiery Combustion application
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
 				spellname = 74562,
 				execute = {
 					{
@@ -748,10 +760,22 @@ do
 					},
 				}
 			},
+			--[[ TODO Use for cooldown
 			-- Soul Consumption
 			{
 				type = "combatevent",
 				eventtype = "SPELL_CAST_SUCCESS",
+				spellname = 74792,
+				execute = {
+					{
+					},
+				},
+			},
+			]]
+			-- Soul Consumption application
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
 				spellname = 74792,
 				execute = {
 					{
