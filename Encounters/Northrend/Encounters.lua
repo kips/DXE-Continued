@@ -463,7 +463,7 @@ end
 
 do
 	local data = {
-		version = 11,
+		version = 12,
 		key = "halion",
 		zone = L.zone["The Ruby Sanctum"],
 		category = L.zone["Northrend"],
@@ -486,6 +486,7 @@ do
 		onstart = {
 			{
 				"alert","meteorcd",
+				"alert","debuffcd",
 			},
 		},
 		alerts = {
@@ -612,6 +613,20 @@ do
 				sound = "ALERT5",
 				icon = ST[75952],
 			},
+			debuffcd = {
+				varname =  format(L.alert["%s Cooldown"],format(L.alert["%s and %s"],SN[74562],SN[74792])),
+				type = "dropdown",
+				text = format(L.alert["%s Cooldown"],SN[74562]),
+				text2 = format(L.alert["%s Cooldown"],SN[74792]),
+				text3 = format(L.alert["%s Cooldown"],format(L.alert["%s and %s"],SN[74562],SN[74792])),
+				icon = ST[28084], -- Negative icon from Thaddius
+				time = { 15,25, loop=false, type="series"},
+				time10h = { 15,20, loop=false, type="series"},
+				time25h = { 15,20, loop=false, type="series"},
+				flashtime = 10,
+				color1 = "YELLOW",
+				behavior = "overwrite",
+			},
 		},
 		raidicons = {
 			fierymark = {
@@ -654,6 +669,28 @@ do
 				{
 					"quash","cutterwarn",
 					"alert","cutterdur",
+				},
+			},
+			firedebuffcd = {
+				{
+					"expect",{"&difficulty&","<=","2"},
+					"scheduletimer",{"firedebuffcd",25},
+				},
+				{
+					"expect",{"&difficulty&",">=","3"},
+					"scheduletimer",{"firedebuffcd",20},
+				},
+				{
+					"expect",{"<phase>","==","1"},
+					"alert","debuffcd",
+				},
+				{
+					"expect",{"<phase>","==","2"},
+					"alert",{"debuffcd",text=2},
+				},
+				{
+					"expect",{"<phase>","==","3"},
+					"alert",{"debuffcd",text=3},
 				},
 			},
 		},
@@ -724,7 +761,6 @@ do
 					},
 				},
 			},
-			--[[ TODO: Use for cooldown
 			-- Fiery Combustion
 			{
 				type = "combatevent",
@@ -732,10 +768,10 @@ do
 				spellname = 74562,
 				execute = {
 					{
+						"scheduletimer",{"firedebuffcd",0},
 					},
 				},
 			},
-			]]
 			-- Fiery Combustion application
 			{
 				type = "combatevent",
@@ -760,7 +796,6 @@ do
 					},
 				}
 			},
-			--[[ TODO Use for cooldown
 			-- Soul Consumption
 			{
 				type = "combatevent",
@@ -768,10 +803,10 @@ do
 				spellname = 74792,
 				execute = {
 					{
+						"scheduletimer",{"firedebuffcd",0},
 					},
 				},
 			},
-			]]
 			-- Soul Consumption application
 			{
 				type = "combatevent",
