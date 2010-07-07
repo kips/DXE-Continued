@@ -463,7 +463,7 @@ end
 
 do
 	local data = {
-		version = 13,
+		version = 14,
 		key = "halion",
 		zone = L.zone["The Ruby Sanctum"],
 		category = L.zone["Northrend"],
@@ -839,7 +839,7 @@ do
 					{
 						"expect",{"#1#","find",L.chat_northrend["^You will find only suffering"]},
 						"alert",{"cuttercd", time = 2},
-						"quash","meteorcd",
+						"batchquash",{"meteorcd","debuffcd"},
 						"set",{phase = 2},
 					},
 				}
