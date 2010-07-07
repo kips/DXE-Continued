@@ -463,7 +463,7 @@ end
 
 do
 	local data = {
-		version = 12,
+		version = 13,
 		key = "halion",
 		zone = L.zone["The Ruby Sanctum"],
 		category = L.zone["Northrend"],
@@ -513,7 +513,7 @@ do
 			souldur = {
 				varname = format(L.alert["%s Duration"],SN[74792]),
 				type = "centerpopup",
-				text = format("%s: #5#",SN[74562]),
+				text = format("%s: #5#",SN[74792]),
 				time = 30,
 				flashtime = 30,
 				color1 = "PURPLE",
@@ -522,7 +522,7 @@ do
 			soulself = {
 				varname = format(L.alert["%s on self"],SN[74792]),
 				type = "centerpopup",
-				text = format("%s: %s!",SN[74562],L.alert["YOU"]).."!",
+				text = format("%s: %s!",SN[74792],L.alert["YOU"]).."!",
 				time = 30,
 				flashtime = 30,
 				color1 = "PURPLE",
