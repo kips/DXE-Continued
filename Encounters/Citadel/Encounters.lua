@@ -1519,7 +1519,7 @@ end
 
 do
 	local data = {
-		version = 67,
+		version = 68,
 		key = "lichking",
 		zone = L.zone["Icecrown Citadel"],
 		category = L.zone["Citadel"],
@@ -2218,7 +2218,7 @@ do
 				eventtype = "SPELL_SUMMON",
 				spellname = 69037,
 				srcnpcid = 36597,
-				throttle = 4.5,
+				throttle = 6,
 				execute = {
 					{
 						"schedulealert",{"valkyrcarrywarn",6.25},
