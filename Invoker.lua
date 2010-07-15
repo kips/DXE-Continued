@@ -1282,13 +1282,13 @@ do
 		end,
 
 		srcnpcid = function(hash,...)
-			local srcflags = ...
-			return hash[NID[srcflags]]
+			local srcguid = ...
+			return hash[NID[srcguid]]
 		end,
 
 		dstnpcid = function(hash,...)
-			local dstflags = select(4,...)
-			return hash[NID[dstflags]]
+			local dstguid = select(4,...)
+			return hash[NID[dstguid]]
 		end,
 
 		srcisplayertype = function(bool,...)
