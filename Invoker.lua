@@ -1288,7 +1288,7 @@ do
 
 		dstnpcid = function(hash,...)
 			local dstflags = select(4,...)
-			return hash[NID[dsflags]]
+			return hash[NID[dstflags]]
 		end,
 
 		srcisplayertype = function(bool,...)
