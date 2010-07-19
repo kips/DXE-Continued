@@ -414,7 +414,6 @@ do
 			defeat = 33113,
 		},
 		userdata = {},
-		onstart = {},
 		alerts = {
 			overloaddur = {
 				varname = format(L.alert["%s Duration"],SN[62475]),

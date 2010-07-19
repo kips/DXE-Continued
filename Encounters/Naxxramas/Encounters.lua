@@ -251,7 +251,6 @@ do
 			},
 		},
 		userdata = {},
-		onstart = {},
 		alerts = {
 			voidzonecd = {
 				varname = format(L.alert["%s Cooldown"],SN[28863]),
