@@ -584,7 +584,7 @@ do
 				icon = ST[75878],
 			},
 			combustionself = {
-				varname = format(L["%s on self"],SN[75884]),
+				varname = format(L.alert["%s on self"],SN[75884]),
 				type = "simple",
 				text = format("%s: %s! %s!",SN[75884],L.alert["YOU"],L.alert["MOVE AWAY"]),
 				time = 3,
@@ -594,7 +594,7 @@ do
 				icon = ST[75884],
 			},
 			consumptionself = {
-				varname = format(L["%s on self"],SN[75876]),
+				varname = format(L.alert["%s on self"],SN[75876]),
 				type = "simple",
 				text = format("%s: %s! %s!",SN[75876],L.alert["YOU"],L.alert["MOVE AWAY"]),
 				time = 3,
@@ -604,7 +604,7 @@ do
 				icon = ST[75876],
 			},
 			meteorself = {
-				varname = format(L["%s on self"],SN[75952]),
+				varname = format(L.alert["%s on self"],SN[75952]),
 				type = "simple",
 				text = format("%s: %s! %s!",SN[75952],L.alert["YOU"],L.alert["MOVE AWAY"]),
 				time = 3,
