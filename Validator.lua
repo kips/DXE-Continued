@@ -456,7 +456,7 @@ local function init_command_bundle_cond()
 							istable,
 							array_part = {min = 1, max = 4},
 							hash_schema = {
-								powers = {opttable, array = {min = 1, max = 1, each = isboolean}},
+								powers = {opttable, array = {min = 1, max = 4, each = isboolean}},
 							},
 						},
 						proximitycheck = {
@@ -681,6 +681,7 @@ function validate:data(struct)
 	assert_table(struct)
 	data = struct
 	self:value(struct,master_schema,struct.key)
+	data = nil
 end
 
 ---------------------------------------------
@@ -1286,14 +1287,14 @@ else
 			for key in pairs(keys) do
 				if DXE.EDB[key] then
 					validate:data(DXE.EDB[key])
-					print(format("%q is valid",data.key))
+					print(format("%s valid",DXE.EDB[key].key))
 				else
 					unknown[#unknown+1] = key
 				end
 			end
 
 			if #unknown > 0 then
-				print(format("encounter keys '%s' don't exist",table.concat(unknown,", ")))
+				print(format("encounter key(s) '%s' don't exist",table.concat(unknown,", ")))
 			end
 		end
 	end
