@@ -559,8 +559,14 @@ function util.table_needed(key,...)
 end
 
 function util.to_set_list(t)
-	sort(t)
-	return format("{%s, or %s}",concat(t,", ",1,#t-1),t[#t])
+	if #t == 0 then
+		return "non-existent - a table needs to be defined"
+	elseif #t == 1 then
+		return format("%q",t[1])
+	else
+		sort(t)
+		return format("{%s, or %s}",concat(t,", ",1,#t-1),t[#t])
+	end
 end
 
 function util.pretty(v)
@@ -568,12 +574,14 @@ function util.pretty(v)
 end
 
 function util.keys(hash)
+	assert_table(hash)
 	local t = {}
 	for k in pairs(hash) do t[#t+1] = util.pretty(k) end
 	return util.to_set_list(t)
 end
 
 function util.values(array)
+	assert_table(hash)
 	local t = {}
 	for _,v in pairs(array) do t[#t+1] = util.pretty(v) end
 	return util.to_set_list(t)
@@ -825,7 +833,7 @@ do
 		for k,v in util.spairs(v) do
 			size = size + 1
 		end
-		if size == 0 then err("invalid hash part",...) end
+		if size == 0 then err("invalid hash part - size is 0",...) end
 
 		process_rule(v,rule,size,"hash",...)
 	end
@@ -844,7 +852,7 @@ do
 		if ok then ok = #v == 0 end
 		if ok then ok = size > 0 end
 		if not ok then
-			err("invalid hash",...)
+			err("invalid hash - has no elements or numeric indices",...)
 		end
 
 		process_rule(v,rule,size,"hash",...)
@@ -852,7 +860,7 @@ do
 
 	function helpers:array_part(v,rule,...)
 		assert_table(v)
-		if #v == 0 then err("invalid array part",...) end
+		if #v == 0 then err("invalid array part - size is 0",...) end
 		process_rule(v,rule,#v,"array",...)
 	end
 
@@ -866,7 +874,7 @@ do
 			end
 		end
 		if ok then ok = #v > 0 end
-		if not ok then err("invalid array",...) end
+		if not ok then err("invalid array - has no elements or non-numeric indices",...) end
 
 		process_rule(v,rule,#v,"array",...)
 	end
