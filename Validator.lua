@@ -1,1137 +1,1304 @@
----------------------------------------------
 -- Validates Encounter Data
--- Based off AceConfig's validation
+
+-- Command line usage:
+--		lua Validator.lua          - validates all encounters
+--		lua Validator.lua <key>... - validates one or more encounters
+
+---------------------------------------------
+-- TYPE CONDITIONS
+---------------------------------------------
+local _C = {}
+
+local function condition_helper(optional,...)
+	local cond,desc = {},{}
+	if optional then cond["nil"] = true end
+	for _,kind in pairs({...}) do
+		cond[kind] = true
+		desc[#desc+1] = kind
+	end
+	cond._ = table.concat(desc,", ")
+	_C[cond] = true
+	return cond
+end
+
+local function required_condition(...) return condition_helper(false,...) end
+local function optional_condition(...) return condition_helper(true,...) end
+
+local istable = required_condition("table")
+local isnumber = required_condition("number")
+local isstring = required_condition("string")
+local isboolean = required_condition("boolean")
+local isstringtable = required_condition("string","table")
+local istablenumber = required_condition("table","number")
+local isstringnumber = required_condition("string","number")
+local isstringtablenumber = required_condition("string","table","number")
+local isstringtableboolean = required_condition("string","table","boolean")
+
+local opttable = optional_condition("table")
+local optnumber = optional_condition("number")
+local optstring = optional_condition("string")
+local optboolean = optional_condition("boolean")
+local opttablenumber = optional_condition("table","number")
+local optstringtable = optional_condition("string","table")
+local optnumberstring = optional_condition("number","string")
+local optstringtablenumber = optional_condition("string","table","number")
+
+---------------------------------------------
+-- EXTERNAL
+-- IMPORTANT: Maintain when core changes
+---------------------------------------------
+local data
+
+local PROXIMITYRANGES = {10,11,18,28}
+
+local OPS = {
+	["=="] = true,
+	["~="] = true,
+	["find"] = true,
+	[">"] = true,
+	[">="] = true,
+	["<"] = true,
+	["<="] = true,
+}
+
+do
+	local t = {}
+	for k,v in pairs(OPS) do t[#t+1] = k end
+	for _,v in ipairs(t) do OPS["not_"..v] = true end
+end
+
+local SHORTCUTS = {"srcself","srcother","dstself","dstother"}
+
+-- 'true' means condition shortcut table is added to fire_conds table
+local FIRETYPES = {
+	alert = true,
+	arrow = true,
+	raidicon = true,
+	announce = true,
+	timer = false,
+}
+
+local EVENTS = {
+	"UNIT_SPELLCAST_SUCCEEDED",
+	"CHAT_MSG_MONSTER_EMOTE",
+	"CHAT_MSG_RAID_BOSS_EMOTE","EMOTE",
+	"CHAT_MSG_MONSTER_YELL","YELL",
+	"CHAT_MSG_RAID_BOSS_WHISPER","WHISPER",
+}
+
+local EVENTTYPES = {
+	"DAMAGE_SHIELD",
+	"DAMAGE_SHIELD_MISSED",
+	"DAMAGE_SPLIT",
+	"PARTY_KILL",
+	"RANGE_DAMAGE",
+	"RANGE_MISSED",
+	"SPELL_AURA_APPLIED",
+	"SPELL_AURA_APPLIED_DOSE",
+	"SPELL_AURA_REFRESH",
+	"SPELL_AURA_REMOVED",
+	"SPELL_AURA_REMOVED_DOSE",
+	"SPELL_CAST_FAILED",
+	"SPELL_CAST_START",
+	"SPELL_CAST_SUCCESS",
+	"SPELL_CREATE",
+	"SPELL_DAMAGE",
+	"SPELL_ENERGIZE",
+	"SPELL_EXTRA_ATTACKS",
+	"SPELL_HEAL",
+	"SPELL_INTERRUPT",
+	"SPELL_MISSED",
+	"SPELL_PERIODIC_DAMAGE",
+	"SPELL_PERIODIC_ENERGIZE",
+	"SPELL_PERIODIC_HEAL",
+	"SPELL_PERIODIC_MISSED",
+	"SPELL_RESURRECT",
+	"SPELL_SUMMON",
+	"SWING_DAMAGE",
+	"SWING_MISSED",
+	"SPELL_DISPEL",
+	"UNIT_DIED",
+}
+
+local SOUNDS = {}
+for i=1,12 do SOUNDS[#SOUNDS+1] = "ALERT"..i end
+SOUNDS[#SOUNDS+1] = "VICTORY"
+
+local COLORS = {
+	"BLACK","BLUE","BROWN",
+	"CYAN","DCYAN","GOLD",
+	"GREEN","GREY","INDIGO",
+	"MAGENTA","MIDGREY","ORANGE",
+	"PEACH","PINK","PURPLE",
+	"RED","TAN","TEAL",
+	"TURQUOISE","VIOLET","WHITE",
+	"YELLOW",
+}
+
+---------------------------------------------
+-- SCHEMA
 ---------------------------------------------
 
-local addon = DXE
+local master_schema = {
+	istable,
+	hash = true,
+	schema = {
+		version = {optnumber, range = {min = 1}},
+		key = isstring,
+		zone = optstring,
+		name = isstring,
+		title = optstring,
+		category = optstring,
+		triggers = {
+			opttable,
+			schema = {
+				scan = {
+					optstringtablenumber,
+					if_number = {range = {min = 1}},
+					if_table = {array = {min = 1, each = isnumber}},
+				},
+				yell = {
+					optstringtable,
+					if_table = {array = {min = 1, each = isstring}},
+				},
+			},
+		},
+		onactivate = {
+			opttable,
+			schema = {
+				tracerstart = optboolean,
+				tracerstop = optboolean,
+				combatstart = optboolean,
+				combatstop = optboolean,
+				tracing = {
+					opttable,
+					array_part = {min = 1, max = 4},
+					hash_schema = {
+						powers = {opttable, array = {min = 1, max = 4, each = isboolean}},
+					},
+				},
+				sortedtracing = {opttable, array = {min = 1, each = isnumber}},
+				unittracing = {
+					opttable,
+					array = {
+						min = 1,
+						max = 4,
+						each = {isstring, inclusion = {"boss1","boss2","boss3","boss4"}},
+					}
+				},
+				defeat =	{
+					optstringtablenumber,
+					if_table = {array = {min = 1, each = isnumberstring}},
+				},
+			},
+		},
+
+		onstart = {opttable, command_bundle = true},
+		onacquired = {opttable, each = {istable, command_bundle = true}, each_key = isnumber},
+
+		userdata = {
+			opttable,
+			each = {
+				isstringtablenumber,
+				if_table = {series_or_container_table = true},
+				if_string = {replaces = true},
+			},
+		},
+
+		windows = {
+			opttable,
+			schema = {
+				proxwindow = optboolean,
+				proxoverride = optboolean,
+				proxrange =	{optnumber, range = {min = 1}},
+			},
+		},
+
+		timers =	{
+			opttable,
+			hash = {
+				each = {istable, command_bundle = true}
+			},
+		},
+
+		alerts = {
+			opttable,
+			hash = {
+				each = {
+					istable,
+					hash = true,
+					schema = {
+						varname = isstring,
+						type = {isstring, inclusion = {"centerpopup","dropdown","simple","absorb"}},
+						text = {isstringtable, if_table = {series_table = true}, if_string = {replaces = true}},
+						text2 = {optstringtable, if_table = {series_table = true}, if_string = {replaces = true}},
+						text3 = {optstringtable, if_table = {series_table = true}, if_string = {replaces = true}},
+						text4 = {optstringtable, if_table = {series_table = true}, if_string = {replaces = true}},
+						text5 = {optstringtable, if_table = {series_table = true}, if_string = {replaces = true}},
+						text6 = {optstringtable, if_table = {series_table = true}, if_string = {replaces = true}},
+						text7 = {optstringtable, if_table = {series_table = true}, if_string = {replaces = true}},
+						text8 = {optstringtable, if_table = {series_table = true}, if_string = {replaces = true}},
+						text9 = {optstringtable, if_table = {series_table = true}, if_string = {replaces = true}},
+						time = {isstringtablenumber, if_table = {series_table = true}, if_string = {replaces = true}},
+						time2 = {optstringtablenumber, if_table = {series_table = true}, if_string = {replaces = true}},
+						time3 = {optstringtablenumber, if_table = {series_table = true}, if_string = {replaces = true}},
+						time4 = {optstringtablenumber, if_table = {series_table = true}, if_string = {replaces = true}},
+						time5 = {optstringtablenumber, if_table = {series_table = true}, if_string = {replaces = true}},
+						time6 = {optstringtablenumber, if_table = {series_table = true}, if_string = {replaces = true}},
+						time7 = {optstringtablenumber, if_table = {series_table = true}, if_string = {replaces = true}},
+						time8 = {optstringtablenumber, if_table = {series_table = true}, if_string = {replaces = true}},
+						time9 = {optstringtablenumber, if_table = {series_table = true}, if_string = {replaces = true}},
+						time10n = {optstringtablenumber, if_table = {series_table = true}, if_string = {replaces = true}},
+						time10h = {optstringtablenumber, if_table = {series_table = true}, if_string = {replaces = true}},
+						time25n = {optstringtablenumber, if_table = {series_table = true}, if_string = {replaces = true}},
+						time25h = {optstringtablenumber, if_table = {series_table = true}, if_string = {replaces = true}},
+						throttle = optnumber,
+						flashtime = optnumber,
+						sound = {optstring, sound = true},
+						color1 =	{optstring, color = true},
+						color2 = {optstring, color = true},
+						flashscreen = optboolean,
+						icon = optstring,
+						counter = optboolean,
+						behavior = {optstring, inclusion = {"singleton","overwrite"}},
+						expect =	{opttable, expect = true},
+						tag =	{optstring, replaces = true},
+						-- absorb bar
+						textformat = optstring,
+						values =	{opttable, each = isnumber, each_key = isnumber},
+						npcid = {optnumberstring, if_string = {replaces = true}},
+					},
+				},
+			},
+		},
+
+		arrows = {
+			opttable,
+			hash = {
+				each = {
+					istable,
+					schema = {
+						varname = isstring,
+						msg =	isstring,
+						persist = isnumber,
+						unit = {isstring, replaces = true},
+						action =	{isstring, inclusion = {"AWAY","TOWARD"}},
+						spell = isstring,
+						sound = {optstring, sound = true},
+						fixed = optboolean,
+						xpos = optnumber,
+						ypos = optnumber,
+						range1 = optnumber,
+						range2 = optnumber,
+						range3 = optnumber,
+					},
+				},
+			},
+		},
+
+		raidicons = {
+			opttable,
+				hash = {
+				each = {
+					istable,
+					schema = {
+						varname = isstring,
+						type = {isstring, inclusion = {"FRIENDLY","MULTIFRIENDLY","ENEMY","MULTIENEMY"}},
+						persist = isnumber,
+						unit = {isstring, replaces = true},
+						icon = isnumber,
+						reset = optnumber,
+						total = optnumber,
+						remove =	optboolean,
+					},
+				},
+			},
+		},
+
+		announces = {
+			opttable,
+			hash = {
+				each = {
+					istable,
+					schema = {
+						varname = isstring,
+						type = {isstring, inclusion = {"SAY"}},
+						msg =	{isstring, replaces = true},
+					},
+				},
+			},
+		},
+		events = {
+			opttable,
+			array = {
+				each = {
+					istable,
+					schema = {
+						type = {isstring, inclusion = {"event","combatevent"}},
+						event = {optstring, inclusion = EVENTS},
+						eventtype =	{optstring, inclusion = EVENTTYPES},
+						spellid = {opttablenumber, if_table = {each = isnumber}},
+						spellid2 = {opttablenumber, if_table = {each = isnumber}},
+						srcnpcid = {opttablenumber, if_table = {each = isnumber}},
+						dstnpcid = {opttablenumber, if_table = {each = isnumber}},
+						srcisplayertype = optboolean,
+						srcisnpctype =	optboolean,
+						srcisplayerunit = optboolean,
+						dstisplayertype = optboolean,
+						dstisnpctype =	optboolean,
+						dstisplayerunit = optboolean,
+						spellname =	{opttablenumber, if_table = {each = isnumber}},
+						spellname2 = {opttablenumber, if_table = {each = isnumber}},
+						msg =	{optstringtable, if_table = {each = isstring}},
+						npcname = {optstringtable, if_table = {each = isstring}},
+						throttle = {optnumber, range = {min = 1}},
+						execute = {istable, command_bundle = true},
+					},
+				},
+			},
+		},
+	},
+}
+
+local command_bundle_cond
+local fire_cond = {}
+
+local function init_command_bundle_cond()
+	command_bundle_cond = {
+		istable,
+		array = {
+			each = {
+				istable,
+				array = {
+					min = 2,
+					multiple = 2,
+					-- every two elements
+					each_pair = {
+						expect = {istable, expect = true},
+						set = {
+							istable,
+							hash = {
+								each = {
+									isstringtablenumber,
+									if_string = {replaces = true},
+									if_table = {series_table = true},
+								},
+							},
+						},
+						insert = {
+							istable,
+							array = {min = 2},
+							schema = {
+								{isstring, container = true},
+								{isstring, replaces = true},
+							},
+						},
+						wipe = {isstring, container = true},
+						batchquash = {istable, array = {min = 1, each = fire_cond.alert}},
+						quashall = isboolean,
+						scheduletimer = {
+							istable,
+							array = {size = 2},
+							schema = {
+								{isstring, timer = true},
+								{
+									isstringnumber,
+									if_number = {range = {min = 0}},
+									if_string = {replaces = true},
+								},
+							},
+						},
+						canceltimer = {isstring, timer = true},
+						alert = fire_cond.alert,
+						batchalert = {istable, array = {min = 1, each = fire_cond.alert}},
+						quash = {isstring, alert = true},
+						cancelalert = {isstring, alert = true},
+						schedulealert = {
+							istable,
+							array = {size = 2},
+							schema = {
+								{isstring, alert = true},
+								{
+									isstringnumber,
+									if_number = {range = {min = 0}},
+									if_string = {replaces = true},
+								},
+							},
+						},
+						repeatalert = {
+							-- same as schedulealert
+							istable,
+							array = {size = 2},
+							schema = {
+								{isstring, alert = true},
+								{
+									isstringnumber,
+									if_number = {range = {min = 0}},
+									if_string = {replaces = true},
+								},
+							},
+						},
+						settimeleft = {
+							-- same as schedulealert
+							istable,
+							array = {size = 2},
+							schema = {
+								{isstring, alert = true},
+								{
+									isstringnumber,
+									if_number = {range = {min = 0}},
+									if_string = {replaces = true},
+								},
+							},
+						},
+						resettimer = isboolean,
+						tracing = {
+							istable,
+							array_part = {min = 1, max = 4},
+							hash_schema = {
+								powers = {opttable, array = {min = 1, max = 1, each = isboolean}},
+							},
+						},
+						proximitycheck = {
+							istable,
+							array = {size = 2},
+							schema = {
+								{isstring, replaces = true},
+								{isnumber, inclusion = PROXIMITYRANGES},
+							},
+						},
+						outproximitycheck = {
+							-- same as proximity check
+							istable,
+							array = {size = 2},
+							schema = {
+								{isstring, replaces = true},
+								{isnumber, inclusion = PROXIMITYRANGES},
+							},
+						},
+						arrow = fire_cond.arrow,
+						removearrow = {isstring, replaces = true},
+						removeallarrows = isboolean,
+						raidicon = fire_cond.raidicon,
+						removeraidicon = {isstring, replaces = true},
+						target = {
+							istable,
+							hash = true,
+							schema = {
+								unit = {optstring, inclusion = {"boss1","boss2","boss3","boss4"}},
+								npcid = isnumber,
+								raidicon = fire_cond.optraidicon,
+								announce = fire_cond.optannounce,
+								arrow = fire_cond.optarrow,
+								alerts = {
+									opttable,
+									hash = true,
+									schema = {
+										self = fire_cond.optalert,
+										other = fire_cond.optalert,
+										unknown = fire_cond.optalert,
+									},
+								},
+							},
+						},
+						announce = fire_cond.announce,
+						invoke = {istable, command_bundle = true},
+					}
+				},
+			},
+		},
+	}
+end
+
+---------------------------------------------
+-- UTILITY
+---------------------------------------------
 
 local ipairs,pairs = ipairs,pairs
-local gmatch,match = string.gmatch,string.match
 local assert,type,select = assert,type,select
-local select,concat,wipe = select,table.concat,wipe
-local Gtype = type
+local sort,concat = table.sort,table.concat
+local find,format = string.find,string.format
+local sub,gmatch,match = string.sub,string.gmatch,string.match
 
-local Colors = addon.Media.Colors
-local conditions = addon.Invoker:GetConditions()
-local RepFuncs = addon.Invoker:GetRepFuncs()
-local ProximityFuncs = addon:GetProximityFuncs()
-local util = addon.util
+local function is_table(v) return type(v) == "table" end
+local function is_number(v) return type(v) == "number" end
+local function is_string(v) return type(v) == "string" end
+local function is_boolean(v) return type(v) == "boolean" end
+local function is_function(v) return type(v) == "function" end
+local function is_nil(v) return type(v) == "nil" end
 
-local isstring = {["string"] = true, _ = "string"}
-local isstringtable = {["string"] = true, ["table"] = true, _ = "string or table"}
-local isstringtableboolean = {["string"] = true, ["table"] = true, ["boolean"] = true, _ = "string, table, boolean"}
-local isnumber = {["number"] = true, _ = "number"}
-local isboolean = {["boolean"] = true, _ = "boolean"}
-local istable = {["table"] = true, _ = "table"}
-local istablenumber = {["table"] = true, ["number"] = true, _ = "table or number"}
-local isnumber = {["number"] = true, _ = "number"}
-local isnumberstring = {["number"] = true, ["string"] = true, _ = "number or string"}
-local isnumberstringtable = {["number"] = true, ["string"] = true, ["table"] = true, _ = "string, number or string"}
-local opttablenumber = {["table"] = true, ["number"] = true, ["nil"] = true, _ = "table or number or nil"}
-local optnumberstring = {["number"] = true, ["string"] = true, ["nil"] = true, _ = "number or string"}
-local opttable = {["table"] = true, ["nil"] = true, _= "table or nil"}
-local optstring = {["string"] = true, ["nil"] = true, _ = "string or nil"}
-local optstringtable = {["string"] = true, ["table"] = true, ["nil"] = true, _ = "string or table"}
-local optstringnumbertable = {["string"] = true, ["table"] = true, ["number"] = true, ["nil"] = true, _ = "string, number or table"}
-local optnumber = {["number"] = true, ["nil"] = true, _ = "number or nil"}
-local optboolean = {["boolean"] = true, ["nil"] = true, _ = "boolean or nil"}
+local function assert_table(v,m) assert(is_table(v),m or "expected a table") end
+local function assert_number(v,m) assert(is_number(v),m or "expected a number") end
+local function assert_string(v,m) assert(is_string(v),m or "expected a string") end
+local function assert_boolean(v,m) assert(is_boolean(v),m or "expected a boolean") end
+local function assert_function(v,m) assert(is_function(v),m or "expected a funtion") end
 
-local baseKeys = {
-	version = optnumber,
-	key = isstring,
-	zone = optstring,
-	name = isstring,
-	title = optstring,
-	onstart = opttable,
-	onacquired = opttable,
-	timers = opttable,
-	userdata = opttable,
-	events = opttable,
-	alerts = opttable,
-	windows = opttable,
-	arrows = opttable,
-	raidicons = opttable,
-	announces = opttable,
-	onactivate = opttable,
-	triggers = opttable,
-	category = optstring,
-}
+local function f(str,...)
+	assert(type(str) == "string")
+	local t = {}
+	for i=1,select('#',...) do t[#t+1] = tostring(select(i,...)) end
+	return string.format(str,unpack(t))
+end
 
-local baseLineKeys = {
-	expect = istable,
-	quash = isstring,
-	set = istable,
-	alert = isstringtable,
-	scheduletimer = istable,
-	canceltimer = isstring,
-	resettimer = isboolean,
-	tracing = istable,
-	proximitycheck = istable,
-	outproximitycheck = istable,
-	raidicon = isstringtable,
-	removeraidicon = isstring,
-	arrow = isstringtable,
-	removearrow = isstring,
-	removeallarrows = isboolean,
-	announce = isstringtable,
-	invoke = istable,
-	defeat = isboolean,
-	wipe = isstring,
-	insert = istable,
-	settimeleft = istable,
-	schedulealert = istable,
-	repeatalert = istable,
-	cancelalert = isstring,
-	batchalert = istable,
-	batchquash = istable,
-	quashall = isboolean,
-	target = istable,
-}
+local function err(msg,...)
+	local t = {...}
+	local s = {}
+	s[1] = format("<%s>",table.remove(t))
+	for i=#t,1,-1 do
+		s[#s+1] = is_number(t[i]) and format("[%d]",t[i]) or format(".%s",t[i])
+	end
+	error(format("Invalid encounter %s: %s",concat(s),msg))
+end
 
-local alertBaseKeys = {
-	varname = isstring,
-	type = isstring,
-	text = isstringtable,
-	text2 = optstringtable,
-	text3 = optstringtable,
-	text4 = optstringtable,
-	text5 = optstringtable,
-	text6 = optstringtable,
-	text7 = optstringtable,
-	text8 = optstringtable,
-	text9 = optstringtable,
-	time = isnumberstringtable,
-	time2 = optstringnumbertable,
-	time3 = optstringnumbertable,
-	time4 = optstringnumbertable,
-	time5 = optstringnumbertable,
-	time6 = optstringnumbertable,
-	time7 = optstringnumbertable,
-	time8 = optstringnumbertable,
-	time9 = optstringnumbertable,
-	time10n = optstringnumbertable,
-	time10h = optstringnumbertable,
-	time25n = optstringnumbertable,
-	time25h = optstringnumbertable,
-	throttle = optnumber,
-	flashtime = optnumber,
-	sound = optstring,
-	color1 = optstring,
-	color2 = optstring,
-	flashscreen = optboolean,
-	icon = optstring,
-	counter = optboolean,
-	behavior = optstring,
-	expect = opttable,
-	-- absorb bar
-	textformat = optstring,
-	values = opttable,
-	npcid = optnumberstring,
-	tag = optstring,
-}
+local util = {}
 
-local alertBehaviors = {
-	singleton = true,
-	overwrite = true,
-}
+function util.table_needed(key,...)
+	if not is_table(data[key]) then
+		error(key.." table needed in "..(select(select("#",...),...)))
+	end
+end
 
-local alertTypeValues = {
-	centerpopup = true,
-	dropdown = true,
-	simple = true,
-	absorb = true,
-}
+function util.to_set_list(t)
+	sort(t)
+	return format("{%s, or %s}",concat(t,", ",1,#t-1),t[#t])
+end
 
-local arrowBaseKeys = {
-	varname = isstring,
-	msg = isstring,
-	persist = isnumber,
-	unit = isstring,
-	action = isstring,
-	spell = isstring,
-	sound = optstring,
-	fixed = optboolean,
-	xpos = optnumber,
-	ypos = optnumber,
-	range1 = optnumber,
-	range2 = optnumber,
-	range3 = optnumber,
-}
+function util.pretty(v)
+	return type(v) == "string" and format("%q",v) or tostring(v)
+end
 
-local arrowTypeValues = {
-	TOWARD = true,
-	AWAY = true,
-}
+function util.keys(hash)
+	local t = {}
+	for k in pairs(hash) do t[#t+1] = util.pretty(k) end
+	return util.to_set_list(t)
+end
 
-local raidIconBaseKeys = {
-	varname = isstring,
-	type = isstring,
-	persist = isnumber,
-	unit = isstring,
-	icon = isnumber,
-	reset = optnumber,
-	total = optnumber,
-	remove = optboolean,
-}
+function util.values(array)
+	local t = {}
+	for _,v in pairs(array) do t[#t+1] = util.pretty(v) end
+	return util.to_set_list(t)
+end
 
-local raidIconTypeValues = {
-	FRIENDLY = true,
-	MULTIFRIENDLY = true,
-	ENEMY = true,
-	MULTIENEMY = true,
-}
+function util.split(delimiter,text)
+  local list = {}
+  local pos = 1
+  while true do
+    local first,last = find(text,delimiter,pos)
+    if first then
+      list[#list+1] = sub(text,pos,first - 1)
+      pos = last + 1
+    else
+      list[#list+1] = sub(text,pos)
+      break
+    end
+  end
+  return list
+end
 
-local announceBaseKeys = {
-	varname = isstring,
-	type = isstring,
-	msg = isstring,
-}
+function util.next_s(t,i)
+	local k,v = next(t,i)
+	if k == nil then return end
+	while type(k) ~= "string" do
+		k,v = next(t,k)
+		if k == nil then return end
+	end
+	return k,v
+end
 
-local announceTypeValues = {
-	SAY = true
-}
+-- iterates over string keys
+function util.spairs(t)
+	return util.next_s,t
+end
 
-local baseTables = {
-	triggers = {
-		scan = optstringnumbertable,
-		yell = optstringtable,
-	},
-	onactivate = {
-		tracerstart = optboolean,
-		tracerstop = optboolean,
-		combatstop = optboolean,
-		combatstart = optboolean,
-		tracing = opttable,
-		sortedtracing = opttable,
-		unittracing = opttable,
-		defeat = optstringnumbertable,
-	},
-}
+---------------------------------------------
+-- VALIDATOR
+---------------------------------------------
 
-local eventBaseKeys = {
-	type = isstring,
-	event = optstring,
-	eventtype = optstring,
-	spellid = opttablenumber,
-	spellid2 = opttablenumber,
-	srcnpcid = opttablenumber,
-	dstnpcid = opttablenumber,
-	srcisplayertype = optboolean,
-	srcisnpctype = optboolean,
-	srcisplayerunit = optboolean,
-	dstisplayertype = optboolean,
-	dstisnpctype = optboolean,
-	dstisplayerunit = optboolean,
-	spellname = opttablenumber,
-	spellname2 = opttablenumber,
-	msg = optstringtable,
-	npcname = optstringtable,
-	throttle = optnumber,
-	execute = istable,
-}
+local validate,helpers = {},{}
 
-local targetBaseKeys = {
-	npcid = optnumber,
-	unit = optstring,
-	raidicon = optstringtable,
-	announce = optstringtable,
-	arrow = optstringtable,
-	alerts = opttable,
-}
+function validate:helpers(value,cond,...)
+	-- skip cond[1]
+	for key,info in util.spairs(cond) do
+		local func = helpers[key]
 
-local targetAlertsKeys = {
-	self = optstringtable,
-	other = optstringtable,
-	unknown = optstringtable,
-}
+		assert(func or (key == "schema" or
+							 key == "hash_schema" or
+							 key == "array_schema"))
+		if func then
+			assert_function(func)
+			func(helpers,value,info,...)
+		end
+	end
 
-local eventtypes = {
-	DAMAGE_SHIELD = true,
-	DAMAGE_SHIELD_MISSED = true,
-	DAMAGE_SPLIT = true,
-	PARTY_KILL = true,
-	RANGE_DAMAGE = true,
-	RANGE_MISSED = true,
-	SPELL_AURA_APPLIED = true,
-	SPELL_AURA_APPLIED_DOSE = true,
-	SPELL_AURA_REFRESH = true,
-	SPELL_AURA_REMOVED = true,
-	SPELL_AURA_REMOVED_DOSE = true,
-	SPELL_CAST_FAILED = true,
-	SPELL_CAST_START = true,
-	SPELL_CAST_SUCCESS = true,
-	SPELL_CREATE = true,
-	SPELL_DAMAGE = true,
-	SPELL_ENERGIZE = true,
-	SPELL_EXTRA_ATTACKS = true,
-	SPELL_HEAL = true,
-	SPELL_INTERRUPT = true,
-	SPELL_MISSED = true,
-	SPELL_PERIODIC_DAMAGE = true,
-	SPELL_PERIODIC_ENERGIZE = true,
-	SPELL_PERIODIC_HEAL = true,
-	SPELL_PERIODIC_MISSED = true,
-	SPELL_RESURRECT = true,
-	SPELL_SUMMON = true,
-	SWING_DAMAGE = true,
-	SWING_MISSED = true,
-	SPELL_DISPEL = true,
-	UNIT_DIED = true,
-}
+	-- must go last
+	if cond.schema or cond.hash_schema or cond.array_schema then
+		assert_table(value)
+		if cond.schema then self:struct(pairs,value,cond.schema,...) end
+		if cond.array_schema then self:struct(ipairs,value,cond.array_schema,...) end
+		if cond.hash_schema then self:struct(util.spairs,value,cond.hash_schema,...) end
+	end
+end
 
-local function err(msg,errlvl,...)
-	errlvl = errlvl + 1
-	local work = {}
-	for i=select("#",...),1,-1 do
-		local key = (select(i,...))
-		if type(key) == "number" then
-			key = "["..key.."]"
-		elseif i ~= select("#",...) then
-			key = "."..key
+function validate:type(v,kinds,...)
+	if not kinds[type(v)] then
+		err(f("expected a %s - got %q (%s)",kinds._,v,type(v)),...)
+	end
+end
+
+function validate:struct(iter,struct,schema,...)
+	assert_table(schema)
+	assert_table(struct)
+	assert_function(iter)
+
+	-- key inclusion
+	for k in iter(struct) do
+		if not schema[k] then
+			err(f("unknown key '%s'",k),...)
+		end
+	end
+
+	-- values
+	for k,cond in iter(schema) do
+		assert_table(cond)
+		self:value(struct[k],cond,k,...)
+	end
+end
+
+function validate:value(value,cond,...)
+	assert(_C[cond] or _C[cond[1]], "invalid condition table")
+
+	if #cond > 0 then
+		self:type(value,cond[1],...)
+		if not is_nil(value) then
+			self:helpers(value,cond,...)
+		end
+	else
+		self:type(value,cond,...)
+	end
+end
+
+function validate:data(struct)
+	assert_table(struct)
+	data = struct
+	self:value(struct,master_schema,struct.key)
+end
+
+---------------------------------------------
+-- HELPERS
+---------------------------------------------
+
+do
+	local function exists(v,kind,...)
+		local plural = kind.."s"
+		util.table_needed(plural,...)
+		if not data[plural][v] then
+			err(f("unknown %s %q - expected %s",kind,v,util.keys(data[plural])),...)
+		end
+	end
+
+	local function build_fire_cond(cond,kind)
+		return {
+			cond,
+			if_table = {
+				schema = {
+					{optstring, [kind] = true},
+					time = {optnumber, range = {min = 2, max = 9}},
+					text = {optnumber, range = {min = 2, max = 9}},
+					expect = {opttable, expect = true},
+				},
+			},
+			if_string = {[kind] = true},
+		}
+	end
+
+	for kind,has_cond in pairs(FIRETYPES) do
+		-- helper:alert(...), helper:arrow(...), etc. for checking existence
+		helpers[kind] = function(self,v,_,...)
+			assert_string(v)
+			exists(v,kind,...)
+		end
+
+		if has_cond then
+			fire_cond[kind] = build_fire_cond(isstringtable,kind)
+			for _,sc in ipairs(SHORTCUTS) do
+				fire_cond[kind].if_table.schema[sc] = {optstring, [kind] = true}
+			end
+
+			fire_cond["opt"..kind] = build_fire_cond(optstringtable,kind)
+		end
+	end
+
+	init_command_bundle_cond()
+end
+
+function helpers:inclusion(v,values,...)
+	assert_table(values)
+
+	local inside = false
+
+	for _,value in ipairs(values) do
+		if v == value then
+			inside = true
+			break
+		end
+	end
+
+	if not inside then
+		err(f("expected '%s' to be %s",v,util.values(values)),...)
+	end
+end
+
+function helpers:range(v,rule,...)
+	assert_number(v)
+	assert_table(rule)
+	assert(type(rule.min) == "number" or type(rule.max) == "number")
+
+	local a,b = true,true
+	local context = rule.context or "number"
+	if rule.min then a = v >= rule.min end
+	if rule.max then b = v <= rule.max end
+	if not a or not b then
+		if rule.min and rule.max then
+			err(f("%s should be >= %s and <= %s - got %s",context,rule.min,rule.max,v),...)
+		elseif rule.min then
+			err(f("%s should be >= %s - got %s",context,rule.min,v),...)
+		elseif rule.max then
+			err(f("%s should be <= %s - got %s",context,rule.max,v),...)
+		end
+	end
+end
+
+function helpers:multiple(v,rule,...)
+	assert_number(v)
+	assert_table(rule)
+	assert_number(rule.multiple)
+
+	if v % rule.multiple ~= 0 then
+		local context = rule.context or "number"
+		err(f("%s should be a multiple of %s - got %s",context,rule.multiple,v),...)
+	end
+end
+
+do
+	local function process_rule(v,rule,size,kind,...)
+		assert(type(rule) == "boolean" or type(rule) == "table")
+		if is_table(rule) then
+			rule.context = format("%s size",kind)
+			if rule.min or rule.max then
+				helpers:range(size,rule,...)
+			end
+
+			if rule.multiple then
+				helpers:multiple(size,rule,...)
+			end
+
+			if rule.size and size ~= rule.size then
+				err(f("invalid %s - size must be %s",kind,rule.size),...)
+			end
+
+			if rule.each then
+				key = format("%s_each",kind)
+				helpers[key](helpers,v,rule.each,...)
+			end
+
+			if kind == "array" and rule.each_pair then
+				assert_table(rule.each_pair)
+				assert(#v % 2 == 0)
+
+				for i=1,#v,2 do
+					validate:value(v[i],isstring,i,...)
+					local cond = rule.each_pair[v[i]]
+					if not cond then
+						err(f("unknown key - got %q - expected %s",v[i],util.keys(rule.each_pair)),...)
+					end
+					validate:value(v[i+1],cond,i+1,...)
+				end
+			end
+		end
+	end
+
+	function helpers:hash_part(v,rule,...)
+		assert_table(v)
+
+		local size = 0
+		for k,v in util.spairs(v) do
+			size = size + 1
+		end
+		if size == 0 then err("invalid hash part",...) end
+
+		process_rule(v,rule,size,"hash",...)
+	end
+
+	function helpers:hash(v,rule,...)
+		assert_table(v)
+
+		local size = 0
+		local ok = true
+		for k,v in pairs(v) do
+			if not is_string(k) then
+				ok = false; break
+			end
+			size = size + 1
+		end
+		if ok then ok = #v == 0 end
+		if ok then ok = size > 0 end
+		if not ok then
+			err("invalid hash",...)
+		end
+
+		process_rule(v,rule,size,"hash",...)
+	end
+
+	function helpers:array_part(v,rule,...)
+		assert_table(v)
+		if #v == 0 then err("invalid array part",...) end
+		process_rule(v,rule,#v,"array",...)
+	end
+
+	function helpers:array(v,rule,...)
+		assert_table(v)
+
+		local ok = true
+		for k,v in pairs(v) do
+			if not is_number(k) then
+				ok = false break
+			end
+		end
+		if ok then ok = #v > 0 end
+		if not ok then err("invalid array",...) end
+
+		process_rule(v,rule,#v,"array",...)
+	end
+end
+
+do
+	----------------
+	-- unclosed
+	----------------
+
+	local function unclosed_helper(text,left,right,...)
+		local partial = text
+		-- check for opening
+		if find(partial,left) then
+			local ptn = format("%s.-%s(.*)",left,right)
+			while #partial > 0 do
+				-- discard closure
+				local rest = match(partial,ptn)
+				-- a match implies closure
+				if rest then
+					-- check the rest of the string
+					if not find(rest,left) then break end
+					partial = rest
+				else
+					err(f("unclosed %s%s replace, got %q",left,right,text),...)
+				end
+			end
+		end
+	end
+
+	local function unclosed(text,...)
+		unclosed_helper(text,'#','#',...)
+		unclosed_helper(text,'<','>',...)
+		unclosed_helper(text,'&','&',...)
+	end
+
+	----------------
+	-- funcs
+	----------------
+
+	local REPLACEFUNCS = {
+		tft = true,
+		tft_unitexists = true,
+		tft_isplayer = true,
+		tft_unitname = true,
+		tft2 = true,
+		tft2_unitexists = true,
+		tft2_isplayer = true,
+		tft2_unitname = true,
+		tft3 = true,
+		tft3_unitexists = true,
+		tft3_isplayer = true,
+		tft3_unitname = true,
+		tft4 = true,
+		tft4_unitexists = true,
+		tft4_isplayer = true,
+		tft4_unitname = true,
+		playerguid = true,
+		playername = true,
+		vehicleguid  = true,
+		vehiclenames = true,
+		difficulty = true,
+		srcname_or_YOU = true,
+		dstname_or_YOU = true,
+		upvalue = true,
+		-- with params
+		-- replace vars and nums don't need to be checked
+		npcid = 1,
+		playerbuff = 1,
+		playerdebuff = 1,
+		buffstacks = 2,
+		debuffstacks = 2,
+		timeleft = {1,function(args,...)
+			helpers:alert(args[1],nil,...)
+			if args[2] then
+				validate:value(tonumber(args[2]),isnumber,...)
+			end
+		end},
+		closest = {1,function(args,...)
+			helpers:container(args[1],nil,...)
+		end},
+		hasicon = {2,function(args,...)
+			validate:value(tonumber(args[2]),isnumber,...)
+		end},
+	}
+
+	local function check_args(args,arity,...)
+		-- extra arguments are permitted
+		if not args or #args < arity then
+			err("missing args in replace func",...)
+		end
+	end
+
+	local function funcs(text,...)
+		for rep in gmatch(text,"%b&&") do
+			local args
+			local func = match(rep,"&(.+)&")
+			if find(func,"|") then
+				func,args = match(func,"^([^|]+)|(.+)")
+				if is_string(args) then
+					args = util.split("|",args)
+				end
+			end
+
+			local ok = REPLACEFUNCS[func]
+			if not ok then
+				err(f("replace func %q does not exist - expected %s",rep,util.keys(REPLACEFUNCS)),...)
+			end
+
+			if is_number(ok) then
+				check_args(args,ok,...)
+			elseif is_table(ok) then
+				assert_number(ok[1])
+				assert_function(ok[2])
+
+				check_args(args,ok[1],...)
+				ok[2](args,...)
+			end
+		end
+	end
+
+	----------------
+	-- vars
+	----------------
+
+	local function vars(text,...)
+		for var in gmatch(text,"%b<>") do
+			local key = match(var,"<(.+)>")
+			-- only whine about userdata table if there is a replace var
+			if not data.userdata then
+				util.table_needed("userdata",...)
+			end
+			if not data.userdata[key] then
+				err(f("replace var %q does not exist - expected %s",var,util.keys(data.userdata)),...)
+			end
+		end
+	end
+
+	----------------
+	-- numbers
+	----------------
+
+	local function nums(text,...)
+		for var in gmatch(text,"%b##") do
+			local num = tonumber(match(var,"#(%d+)#"))
+			if not num or num < 1 or num > 11 then
+				err(f("replace num invalid; expected [1,11] - got %q",var),...)
+			end
+		end
+	end
+
+	----------------
+	-- API
+	----------------
+
+	function helpers:replaces(v,_,...)
+		assert_string(v)
+		unclosed(v,...)
+		-- func needs to go first because its params could contain var and num replaces
+		funcs(v,...)
+		vars(v,...)
+		nums(v,...)
+	end
+end
+
+function helpers:equals(v,wanted,...)
+	assert_string(v)
+	assert_string(wanted)
+
+	if v ~= wanted then
+		err(f("expected value to be %q - got %q",wanted,v),...)
+	end
+end
+
+function helpers:sound(v,_,...)
+	assert_string(v)
+	self:inclusion(v,SOUNDS,...)
+end
+
+function helpers:color(v,_,...)
+	assert_string(v)
+	self:inclusion(v,COLORS,...)
+end
+
+do
+	local expect_cond = {istable,array = {min = 3, each = isstring}}
+	local expression_help = {replaces = true}
+
+	function helpers:expect(v,_,...)
+		assert_table(v)
+		validate:value(v,expect_cond,...)
+
+		if (#v + 1) % 4 ~= 0 then
+			err(f("invalid expect array size - got %q",#v),...)
+		end
+
+		local triplets = (#v + 1) / 4
+
+		-- check logical operators
+		for i=2,triplets do
+			local ix = (i-1)*4
+			local log_op = v[ix]
+			if log_op ~= "AND" and log_op ~= "OR" then
+				err(f("unknown logical operator - got %q",log_op),ix,...)
+			end
+		end
+
+		for i=1,triplets do
+			-- left index of triplet
+			local j = 4*i - 3
+			local v1,op,v2 = v[j],v[j+1],v[j+2]
+			if not OPS[op] then
+				err(f("unknown relational operator - got %q",op),j+1,...)
+			end
+			validate:helpers(v1,expression_help,j,...)
+			validate:helpers(v2,expression_help,j+2,...)
+		end
+	end
+end
+
+
+
+function helpers:command_bundle(v,_,...)
+	assert_table(v)
+	validate:value(v,command_bundle_cond,...)
+end
+
+do
+	local cond = {
+		istable,
+		array_part = {
+			min = 1,
+			each = {
+				isstringnumber,
+				if_string = {replaces = true},
+			},
+		},
+		hash_schema = {
+			loop = isboolean,
+			type = {isstring, equals = "series"},
+		}
+	}
+
+	function helpers:series_table(v,_,...)
+		assert_table(v)
+		validate:value(v,cond,...)
+	end
+end
+
+do
+	local cond = {
+		istable,
+		hash = {
+			type = {isstring, equals = "container"} ,
+			wipein = isnumber,
+		},
+	}
+
+	function helpers:container_table(v,_,...)
+		assert_table(v)
+		validate:value(v,cond,...)
+	end
+
+	function helpers:container(v,_,...)
+		assert_string(v)
+		util.table_needed("userdata",...)
+		if not data.userdata[v] or
+			data.userdata[v].type ~= "container" then
+			err(f("unknown userdata container - got %q",v),...)
+		end
+	end
+end
+
+
+do
+	local cond = {
+		istable,
+		hash_schema = {
+			type = {isstring, inclusion = {"series", "container"}},
+			wipein = optnumber,
+			loop = optboolean,
+		}
+	}
+
+	function helpers:series_or_container_table(v,_,...)
+		assert_table(v)
+		validate:value(v,cond,...)
+		helpers[v.type.."_table"](helpers,v,_,...)
+	end
+end
+
+do
+	local function each(iter,collection,cond,...)
+		assert_function(iter)
+		assert_table(collection)
+
+		for k,v in iter(collection) do
+			validate:value(v,cond,k,...)
+		end
+	end
+
+	function helpers:hash_each(v,cond,...)
+		each(util.spairs,v,cond,...)
+	end
+
+	function helpers:array_each(v,cond,...)
+		each(ipairs,v,cond,...)
+	end
+
+	function helpers:each(v,cond,...)
+		each(pairs,v,cond,...)
+	end
+
+	function helpers:each_key(v,cond,...)
+		assert_table(v)
+
+		for k in pairs(v) do
+			validate:value(k,cond,k,...)
+		end
+	end
+end
+
+function helpers:subset(set,values,...)
+	assert_table(set)
+	assert_table(values)
+	local superset = {}
+	for _,v in ipairs(values) do superset[v] = true end
+	for k,v in ipairs(set) do
+		if not superset[v] then
+			err(f("invalid value '%s'",v),k,...)
+		end
+	end
+end
+
+function helpers:if_number(value,cond,...)
+	assert(is_table(cond)); assert(#cond == 0)
+	if is_number(value) then validate:helpers(value,cond,...) end
+end
+
+function helpers:if_string(value,cond,...)
+	assert(is_table(cond)); assert(#cond == 0)
+	if is_string(value) then validate:helpers(value,cond,...) end
+end
+
+function helpers:if_table(value,cond,...)
+	assert(is_table(cond)); assert(#cond == 0)
+	if is_table(value) then validate:helpers(value,cond,...) end
+end
+
+---------------------------------------------
+-- LOADING
+---------------------------------------------
+
+if DXE then
+	-- WoW
+	function DXE:ValidateData(data) validate:data(data) end
+else
+	-- Command line usage:
+	--		lua Validator.lua          - validates all encounters
+	--		lua Validator.lua <key>... - validates one or more encounters
+
+	local function setup()
+		-- DXE
+		DXE = {}
+		DXE.EDB = {}
+		local return_key = setmetatable({},{
+			__index = function(t,k)
+				t[k] = tostring(k)
+				return tostring(k)
+			end,
+		})
+
+		DXE.SN = return_key
+		DXE.ST = return_key
+
+		DXE.L = setmetatable({},{
+			__index = function(t,k)
+				rawset(t,k,return_key)
+				return return_key
+			end,
+		})
+
+		function DXE:RegisterEncounter(data)
+			if DXE.EDB[data.key] then
+				error(format("duplicate key %q - there shouldn't be any",data.key))
+			end
+			DXE.EDB[data.key] = data
+		end
+
+		-- GLOBALS
+		_G.format = string.format
+		UnitFactionGroup = function() return "Alliance" end
+		UNKNOWN = "Unknown"
+	end
+
+	local function load_all()
+		local results = io.popen("find Encounters -name 'Encounters\.lua'")
+		for line in results:lines() do
+			require(line:gsub("\.lua",""))
+		end
+	end
+
+	local function run()
+		if #arg == 0 then
+			-- validate all encounters
+			local start = os.clock()
+			print("validating all encounters...")
+			for _,data in pairs(DXE.EDB) do
+				validate:data(data)
+			end
+			print("all encounters are valid ("..format("%.3fs",os.clock() - start)..")")
 		else
-			key = "["..key.."]: data"
-		end
-		work[#work+1] = key
-	end
-	error("DXE:ValidateData() "..concat(work)..": "..msg, errlvl + 1)
-end
+			-- validate from command line arguments
+			local keys = {}
+			for k,v in ipairs(arg) do keys[v] = true end
 
-local function validateIsArray(tbl,errlvl,...)
-	errlvl = errlvl + 1
-	if #tbl < 1 then
-		err("table should be an array - got an empty table",errlvl,...)
-	end
-	for k in pairs(tbl) do
-		if type(k) ~= "number" then
-			err("all keys should be numbers - invalid array",errlvl,...)
-		end
-	end
-end
-
-local function validateVal(v, oktypes, errlvl, ...)
-	errlvl = errlvl + 1
-	local isok=oktypes[type(v)]
-	if not isok then
-		err("expected a "..oktypes._..", got '"..tostring(v).."'", errlvl, ...)
-	end
-end
-
-local function validateIsArrayOfType(tbl,oktypes,errlvl,...)
-	errlvl = errlvl + 1
-	if #tbl < 1 then
-		err("table should be an array - got an empty table",errlvl,...)
-	end
-	for k,v in pairs(tbl) do
-		if type(k) ~= "number" then
-			err("all keys should be numbers - invalid array",errlvl,...)
-		end
-		validateVal(v,oktypes,errlvl,k,...)
-	end
-end
-
-local function checkParams(func,params,num,errlvl,...)
-	errlvl = errlvl + 1
-	if select('#',string.split("|",params)) ~= num then
-		err("missing parameters",errlvl,func,...)
-	end
-	return string.split("|",params)
-end
-
-local function validateReplaceFuncs(data,text,errlvl,...)
-	errlvl = errlvl + 1
-	for rep in gmatch(text,"%b&&") do
-		local func = match(rep,"&(.+)&")
-		local params
-		if func:find("|") then func,params = match(func,"^([^|]+)|(.+)") end
-		if not RepFuncs[func] then
-			err("replace func does not exist, got '"..rep.."'",errlvl,...)
-		end
-
-		-- params
-		if func == "closest" then
-			checkParams(func,params,1,errlvl,...)
-			local ud = data.userdata
-			if not (ud and ud[params] and type(ud[params]) == "table" and ud[params].type == "container") then
-				err("using closest replace func on an invalid userdata variable '"..params.."'",errlvl,...)
-			end
-		elseif func == "timeleft" then
-			-- skip param checking, delta is optional
-			local id,delta = string.split("|",params)
-			if not data.alerts[id] then
-				err("using timeleft replace func on an invalid alert id '"..id.."'",errlvl,...)
-			end
-			if delta and not tonumber(delta) then
-				err("invalid delta passed to timeleft replace func - got '"..delta.."'",errlvl,...)
-			end
-		elseif func == "npcid" then
-			checkParams(func,params,1,errlvl,...)
-		elseif func == "playerdebuff" then
-			checkParams(func,params,1,errlvl,...)
-		elseif func == "playerbuff" then
-			checkParams(func,params,1,errlvl,...)
-		elseif func == "debuffstacks" then
-			checkParams(func,params,2,errlvl,...)
-		elseif func == "buffstacks" then
-			checkParams(func,params,2,errlvl,...)
-		elseif func == "hasicon" then
-			checkParams(func,params,2,errlvl,...)
-		end
-	end
-end
-
-local function validateReplaceNums(data,text,errlvl,...)
-	errlvl = errlvl + 1
-	for var in gmatch(text,"%b##") do 
-		local key = tonumber(match(var,"#(%d+)#"))
-		if not key or key < 1 or key > 11 then
-			err("replace num is invalid. it should be [1,11] - got '"..var.."'",errlvl,...)
-		end
-	end
-end
-
-local function validateReplaceVars(data,text,errlvl,...)
-	errlvl = errlvl + 1
-	for var in gmatch(text,"%b<>") do 
-		local key = match(var,"<(.+)>")
-		if not data.userdata[key] then
-			err("replace var does not exist, got '"..var.."'",errlvl,...)
-		end
-	end
-end
-
-local function unclosed_helper(text,errlvl,left,right,...)
-	errlvl = errlvl + 1
-
-	local work = text
-	-- check for opening
-	if work:find(left) then
-		while work ~= "" do
-			-- discard closure
-			local rest = work:match(left..".-"..right.."(.*)")
-			-- a match implies closure
-			if rest then
-				-- check the rest of the string
-				if not rest:find(left) then break end
-				work = rest
-			else
-				err("unclosed "..left..right.." replace, got '"..text.."'",errlvl,...)
-			end
-		end
-	end
-end
-
-local function checkForUnclosedReplaces(data,text,errlvl,...)
-	errlvl = errlvl + 1
-
-	unclosed_helper(text,errlvl,'#','#',...)
-	unclosed_helper(text,errlvl,'<','>',...)
-	unclosed_helper(text,errlvl,'&','&',...)
-end
-
-local function validateReplaces(data,text,errlvl,...)
-	if type(text) ~= "string" then return end
-	errlvl = errlvl + 1
-
-	checkForUnclosedReplaces(data,text,errlvl,...)
-
-	validateReplaceFuncs(data,text,errlvl,...)
-	validateReplaceVars(data,text,errlvl,...)
-	validateReplaceNums(data,text,errlvl,...)
-end
-
-local function validateTracing(tbl,errlvl,...)
-	errlvl = errlvl + 1
-	if #tbl > 4 or #tbl == 0 then
-		err("not an array with 1 <= size <= 4",errlvl,"tracing",...)
-	end
-	for k,v in ipairs(tbl) do
-		validateVal(v,isnumber,errlvl,"tracing",...)
-	end
-	if tbl.powers then
-		validateIsArrayOfType(tbl.powers,isboolean,errlvl,"powers","tracing",...)
-	end
-end
-
-local function validateSortedTracing(tbl,errlvl,...)
-	errlvl = errlvl + 1
-	validateIsArray(tbl,errlvl,"sortedtracing",...)
-	if #tbl == 0 then
-		err("got an empty array",errlvl,"sortedtracing",...)
-	end
-	for k,v in ipairs(tbl) do
-		validateVal(v,isnumber,errlvl,"sortedtracing",...)
-	end
-end
-
-local function validateUnitTracing(tbl,errlvl,...)
-	errlvl = errlvl + 1
-	validateIsArray(tbl,errlvl,"unittracing",...)
-	if #tbl == 0 then
-		err("got an empty array",errlvl,"unittracing",...)
-	end
-	for k,v in ipairs(tbl) do
-		validateVal(v,isstring,errlvl,"unittracing",...)
-	end
-end
-
-local validateCommandLine, validateCommandList, validateCommandBundle
-local validateExpectInfo
-
-function validateExpectInfo(data,info,errlvl,...)
-	errlvl = errlvl + 1
-	validateVal(info,istable,errlvl,...)
-	validateIsArrayOfType(info,isstring,errlvl,...)
-	if (#info + 1) % 4 ~= 0 then
-		err("invalid expect array - got '"..#info.."' entries",errlvl,...)
-	end
-	-- check logical operators
-	local nres = (#info + 1) / 4
-	for i=2,nres do
-		local ix = (i-1)*4
-		local log_op = info[ix]
-		if log_op ~= "AND" and log_op ~= "OR" then
-			err("unknown logical operator - got '"..log_op.."'",errlvl,ix,...)
-		end
-	end
-	-- check triplets
-	for i=1,nres do
-		-- left index of triplet
-		local j = 4*i - 3
-		local v1,op,v2 = info[j],info[j+1],info[j+2]
-		if not conditions[op] then
-			err("unknown condition - got '"..op.."'",errlvl,j+1,...)
-		end
-		validateReplaces(data,v1,errlvl,j,...)
-		validateReplaces(data,v2,errlvl,j+2,...)
-	end
-end
-
-local shortcuts = {
-	"srcself",
-	"srcother",
-	"dstself",
-	"dstother",
-}
-
-local tablevalidations = {
-	alerts = function(data,info,var,errlvl,...)
-		errlvl = errlvl + 1
-		if info.time then
-			if info.time < 2 or info.time > 9 then
-				err("time is out of scope - expected [2,9]",errlvl,"time",...)
-			end
-			if not data.alerts[var]["time"..info.time] then
-				err("attempting to fire an alert with a non-existent time index - got '"..info.time.."'",errlvl,...)
-			end
-		end
-		if info.text then
-			if info.text < 2 or info.text > 9 then
-				err("text is out of scope - expected [2,9]",errlvl,"time",...)
-			end
-			if not data.alerts[var]["text"..info.text] then
-				err("attempting to fire an alert with a non-existent text index - got '"..info.text.."'",errlvl,...)
-			end
-		end
-	end,
-	raidicons = function(...) end,
-	arrows = function(...) end,
-	announce = function(...) end,
-}
-
-local function validateFireInfo(data,info,command,defnkey,errlvl,...)
-	errlvl = errlvl + 1
-	validateVal(info,isstringtable,errlvl,...)
-	if type(info) == "string" then
-		if not data[defnkey] or not data[defnkey][info] then
-			err("firing non-existent "..command.." '"..info.."'",errlvl,...)
-		end
-	elseif type(info) == "table" then
-		local flag
-		for _,shortcut in ipairs(shortcuts) do
-			if info[shortcut] then
-				validateFireInfo(data,info[shortcut],command,defnkey,errlvl,shortcut,...)
-				flag = true
-			end
-		end
-		if info.expect then
-			validateExpectInfo(data,info.expect,errlvl,"expect",...)
-		end
-		local var = info[1]
-		if not var and not flag then
-			err(command.."info is invalid - supply an "..command.." var or shortcut",errlvl,1,...)
-		elseif var then
-			validateVal(var,isstring,errlvl,1,...)
-			if not data[defnkey] or not data[defnkey][var] then
-				err("firing non-existent "..command.." '"..var.."'",errlvl,1,...)
-			end
-			if tablevalidations[defnkey] then
-				tablevalidations[defnkey](data,info,var,errlvl,...)
-			end
-		end
-	end
-end
-
-function validateCommandLine(data,type,info,errlvl,...)
-	errlvl = errlvl + 1
-	local oktype = baseLineKeys[type]
-	if not oktype then
-		err("unknown command line type",errlvl,...)
-	end
-	validateVal(info,oktype,errlvl,type,...)
-	if type == "expect" then
-		validateExpectInfo(data,info,errlvl,type,...)
-	elseif type == "set" then
-		for var,value in pairs(info) do
-			local orig_var
-			if var:match("_index$") then
-				orig_var = var
-				var = var:match("^(.*)_index$")
-			end
-			if not data.userdata or not data.userdata[var] then
-				err("setting a non-existent userdata variable '"..(orig_var or var).."'",errlvl,type,...)
-			end
-			if Gtype(value) == "string" then
-				validateReplaces(data,value,errlvl,var,type,...)
-			elseif Gtype(value) == "table" then
-				if value.type ~= "series" and value.type ~= "container" then
-					err("invalid userdata table variable expected 'container' or 'series'",errlvl,type,...)
-				end
-				if value.type == "series" and #value == 0 then
-					err("series requires at least one value in its array",errlvl,var,type,...)
+			local unknown = {}
+			for key in pairs(keys) do
+				if DXE.EDB[key] then
+					validate:data(DXE.EDB[key])
+					print(format("%q is valid",data.key))
+				else
+					unknown[#unknown+1] = key
 				end
 			end
-		end
-	elseif type == "schedulealert" or type == "repeatalert" then
-		validateIsArray(info,errlvl,type,...)
-		if #info ~= 2 then
-			err("array is not size 2",errlvl,type,...)
-		end
-		local alertinfo,time = info[1],info[2]
-		validateVal(time,isnumberstring,errlvl,type,...)
-		validateFireInfo(data,alertinfo,"alert","alerts",errlvl,type,...)
-		if Gtype(time) == "string" then
-			validateReplaces(data,time,errlvl,type,2,...)
-		elseif Gtype(time) == "number" then
-			if time < 0 then
-				err("repeat/schedulealert with a number < 0",errlvl,2,type,...)
-			end
-		end
-	elseif type == "settimeleft" then
-		validateIsArray(info,errlvl,type,...)
-		if #info ~= 2 then
-			err("array is not size 2",errlvl,type,...)
-		end
-		local var,time = info[1],info[2]
-		validateVal(var,isstring,errlvl,type,...)
-		validateVal(time,isnumberstring,errlvl,type,...)
-		if not data.alerts or not data.alerts[var] then
-			err("setttimelefta non-existent alert '"..var.."'",errlvl,type,...)
-		end
-		if Gtype(time) == "string" then
-			validateReplaces(data,time,errlvl,type,2,...)
-		elseif Gtype(time) == "number" then
-			if time < 0 then
-				err("settimeleft with a number < 0",errlvl,2,type,...)
-			end
-		end
-	elseif type == "alert" or type == "announce" or type == "raidicon" or type == "arrow" then
-		validateFireInfo(data,info,type,type.."s",errlvl,type,...)
-	elseif type == "quash" or type == "cancelalert" then
-		if not data.alerts or not data.alerts[info] then
-			err("quashing/cancelalert a non-existent alert '"..info.."'",errlvl,type,...)
-		end
-	elseif type == "batchalert" then
-		validateIsArrayOfType(info,isstringtable,errlvl,type,...)
-		for i,alertinfo in ipairs(info) do
-			validateFireInfo(data,alertinfo,"alert","alerts",errlvl,type,...)
-		end
-	elseif type == "batchquash" then
-		validateIsArrayOfType(info,isstring,errlvl,type,...)
-		for i,var in ipairs(info) do
-			if not data.alerts or not data.alerts[var] then
-				err("batchquash a non-existent alert '"..var.."'",errlvl,i,type,...)
-			end
-		end
-	elseif type == "scheduletimer" then
-		validateIsArray(info,errlvl,"scheduletimer",...)
-		if #info ~= 2 then
-			err("array is not size 2",errlvl,type,...)
-		end
-		local timer,time = info[1],info[2]
-		validateVal(timer,isstring,errlvl,type,...)
-		validateVal(time,isnumberstring,errlvl,type,...)
-		if Gtype(time) == "string" then
-			validateReplaces(data,time,errlvl,type,...)
-		elseif time < 0 then
-			err("scheduling a timer < 0 '"..info[1].."'",errlvl,type,...)
-		end
-		if not data.timers or not data.timers[timer] then
-			err("scheduling a non-existent timer '"..info[1].."'",errlvl,type,...)
-		end
-	elseif type == "canceltimer" then
-		if not data.timers or not data.timers[info] then
-			err("canceling a non-existent timer '"..info.."'",errlvl,type,...)
-		end
-	elseif type == "tracing" then
-		validateTracing(info,errlvl,...)
-	elseif type == "proximitycheck" or type == "outproximitycheck" then
-		validateIsArray(info,errlvl,type,...)
-		if #info ~= 2 then
-			err("array is not size 2",errlvl,type,...)
-		end
-		local target,range = info[1],info[2]
-		validateVal(target,isstring,errlvl,type,...)
-		validateVal(range,isnumber,errlvl,type,...)
-		if not target:find("^#[1-7]#$") and not target:find("^&[^&]+&$") then
-			err("invalid target, has to be exactly of the form #[1-7]# or &func& - got '"..target.."'",errlvl,type,...)
-		end
-		if target:find("^&[^&]+&$") then
-			validateReplaceFuncs(data,target,errlvl,type,...)
-		end
-		if not ProximityFuncs[range] then
-			err("invalid range - got '"..range.."'",errlvl,type,...)
-		end
-	elseif type == "removearrow" then
-		validateReplaces(data,info,errlvl,type,...)
-	elseif type == "removeraidicon" then
-		validateReplaces(data,info,errlvl,type,...)
-	elseif type == "invoke" then
-		validateCommandBundle(data,info,errlvl,type,...)
-	elseif type == "insert" then
-		validateIsArray(info,errlvl,type,...)
-		if #info ~= 2 then
-			err("array is not size 2",errlvl,type,...)
-		end
-		local var,token = info[1],info[2]
-		validateVal(var,isstring,errlvl,1,type,...)
-		validateVal(token,isstring,errlvl,2,type,...)
-		local ud = data.userdata
-		if not (ud and ud[var] and Gtype(ud[var]) == "table" and ud[var].type == "container") then
-			err("wiping an invalid userdata variable '"..var.."'",errlvl,1,type,...)
-		end
-		validateReplaces(data,token,errlvl,2,type,...)
-	elseif type == "wipe" then
-		validateVal(info,isstring,errlvl,type,...)
-		local ud = data.userdata
-		if not (ud and ud[info] and Gtype(ud[info]) == "table" and ud[info].type == "container") then
-			err("wiping an invalid userdata variable '"..info.."'",errlvl,type,...)
-		end
-	elseif type == "target" then
-		validateVal(info,istable,errlvl,type,...)
-		for k in pairs(info) do
-			if not targetBaseKeys[k] then
-				err("unknown key '"..k.."'",errlvl,k,type,...)
-			end
-		end
-		if not info.unit and not info.npcid then
-			err("missing unit/npcid key",errlvl,type,...)
-		end
-		for k,oktypes in pairs(targetBaseKeys) do
-			validateVal(info[k],oktypes,errlvl,k,type,...)
-			if info[k] then
-				if k == "raidicon" or k == "arrow" or k == "announce" then
-					validateFireInfo(data,info[k],k,k.."s",errlvl,k,type,...)
-				elseif k == "alerts" then
-					local fireinfos = info[k]
-					validateVal(fireinfos,istable,errlvl,k,type,...)
-					for cond in pairs(fireinfos) do
-						if not targetAlertsKeys[cond] then
-							err("unknown key '"..cond.."'",errlvl,cond,k,type,...)
-						end
-					end
-					for cond,oktypes2 in pairs(targetAlertsKeys) do
-						validateVal(fireinfos[cond],oktypes2,errlvl,cond,k,type,...)
-						if fireinfos[cond] then
-							validateFireInfo(data,info[k][cond],"alert","alerts",errlvl,cond,k,type,...)
-						end
-					end
-				end
-			end
-		end
-	end
-end
 
-function validateCommandList(data,list,errlvl,...)
-	errlvl = errlvl + 1
-	for k=1,#list,2 do
-		validateVal(list[k],isstring,errlvl,k,...)
-		validateVal(list[k+1],isstringtableboolean,errlvl,k+1,...)
-		validateCommandLine(data,list[k],list[k+1],errlvl,(k+1)/2,...)
-	end
-end
-
-function validateCommandBundle(data,bundle,errlvl,...)
-	errlvl = errlvl + 1
-	validateIsArray(bundle,errlvl,...)
-	for k,list in ipairs(bundle) do
-		validateVal(list,istable,errlvl,k,...)
-		validateIsArray(list,errlvl,k,...)
-		if #list < 2 or #list % 2 == 1 then
-			err("command list size is < 2 or size is odd",errlvl,k,...)
-		end
-		validateCommandList(data,list,errlvl,k,...)
-	end
-end
-
-local function validateAlert(data,info,errlvl,...)
-	errlvl = errlvl + 1
-	-- Consistency check
-	for k in pairs(info) do
-		if not alertBaseKeys[k] then
-			err("unknown key '"..k.."'",errlvl,tostring(k),...)
-		end
-	end
-
-	for k,oktypes in pairs(alertBaseKeys) do
-		validateVal(info[k],oktypes,errlvl,k,...)
-		if info[k] then
-			-- check type
-			if k == "type" and not alertTypeValues[info[k]] then
-				err("expected simple, dropdown, or centerpopup - got '"..info[k].."'",errlvl,k,...)
-			-- check sounds
-			elseif k == "sound" and not info[k]:find("ALERT%d+") then
-				err("unknown sound '"..info[k].."'",errlvl,k,...)
-			-- check colors
-			elseif (k == "color1" or k == "color2") and not Colors[info[k]] then
-				err("unknown color '"..info[k].."'",errlvl,k,...)
-			-- check replaces
-			elseif k == "npcid" or k == "spellid" or k == "tag" then
-				validateReplaces(data,info[k],errlvl,k,...)
-			elseif k == "text" or k == "time" or
-					 k:match("^text[2-9]?$") or k:match("^time[2-9]?$") or
-					 k == "time10n" or k == "time10h" or k == "time25n" or k == "time25h" then
-				local v = info[k]
-				if type(v) == "string" then
-					validateReplaces(data,info[k],errlvl,k,...)
-				elseif type(v) == "table" then
-					if v.type ~= "series" then
-						err("invalid userdata table variable - expected 'type = series'",errlvl,k,...)
-					end
-					if #v == 0 then
-						err("series requires at least one value in its array",errlvl,k,...)
-					end
-				end
-			elseif k == "behavior" then
-				if not alertBehaviors[info[k]] then
-					err("invalid behavior - got '"..info[k].."'",errlvl,k,...)
-				end
-			elseif k == "expect" then
-				validateExpectInfo(data,info[k],errlvl,k,...)
-			elseif k == "values" then
-				for spellid, total in pairs(info[k]) do
-					if type(spellid) ~= "number" then
-						err("keys need to be valid spellids - got 'spellid'",errlvl, k, ...)
-					end
-					validateVal(total,isnumber,errlvl,spellid,k,...)
-					local exists = GetSpellInfo(spellid)
-					if not exists then
-						err("["..spellid.."]: unknown spell identifier",errlvl,k,...)
-					end
-				end
+			if #unknown > 0 then
+				print(format("encounter keys '%s' don't exist",table.concat(unknown,", ")))
 			end
 		end
 	end
 
-	-- color1 is not optional for centerpopups and dropdowns
-	if (info.type == "centerpopup" or info.type == "dropdown") and type(info.color1) ~= "string" then
-		err("requires color1 to be set",errlvl,...)
-	end
-
-	if info.type == "absorb" and (not info.npcid or not info.values) then
-		err("absorb bars require npcid and values to be set",errlvl,...)
-	end
-end
-
-local function validateAlerts(data,alerts,errlvl,...)
-	errlvl = errlvl + 1
-	for k,info in pairs(alerts) do
-		validateVal(k,isstring,errlvl,...)
-		validateAlert(data,info,errlvl,k,...)
-	end
-end
-
-local function validateArrow(data,info,errlvl,...)
-	errlvl = errlvl + 1
-	for k in pairs(info) do
-		if not arrowBaseKeys[k] then
-			err("unknown key '"..k.."'",errlvl,tostring(k),...)
-		end
-	end
-	for k,oktypes in pairs(arrowBaseKeys) do
-		validateVal(info[k],oktypes,errlvl,k,...)
-		if info[k] then
-			-- check type
-			if k == "type" and not arrowTypeValues[info[k]] then
-				err("expected AWAY or TOWARD - got '"..info[k].."'",errlvl,k,...)
-			elseif k == "unit" then
-				validateReplaces(data,info[k],errlvl,k,...)
-			elseif k == "sound" and not info[k]:find("ALERT%d+") then
-				err("unknown sound '"..info[k].."'",errlvl,k,...)
-			end
-		end
-	end
-end
-
-local function validateArrows(data,arrows,errlvl,...)
-	errlvl = errlvl + 1
-	for k,info in pairs(arrows) do
-		validateVal(k,isstring,errlvl,...)
-		validateArrow(data,info,errlvl,k,...)
-	end
-end
-
-local function validateRaidIcon(data,info,errlvl,...)
-	errlvl = errlvl + 1
-	for k in pairs(info) do
-		if not raidIconBaseKeys[k] then
-			err("unknown key '"..k.."'",errlvl,tostring(k),...)
-		end
-	end
-	for k,oktypes in pairs(raidIconBaseKeys) do
-		validateVal(info[k],oktypes,errlvl,k,...)
-		if info[k] then
-			-- check type
-			if k == "type" and not raidIconTypeValues[info[k]] then
-				err("expected FRIENDLY or ENEMY - got '"..info[k].."'",errlvl,k,...)
-			elseif k == "unit" then
-				validateReplaces(data,info[k],errlvl,k,...)
-			elseif k == "icon" and (info[k] > 8 or info[k] < 1)  then
-				err("expected icon to be [1-8] - got '"..info[k].."'",errlvl,k,...)
-			elseif k == "type" then
-				if info[k] == "MULTIFRIENDLY" or info[k] == "MULTIENEMY" then
-					if not info.reset then
-						err("expected 'reset' to exist", errlvl,k,...)
-					end
-					if not info.total then
-						err("expected 'total' to exist", errlvl,k,...)
-					end
-				end
-			end
-		end
-	end
-end
-
-local function validateRaidIcons(data,raidicons,errlvl,...)
-	errlvl = errlvl + 1
-	for k,info in pairs(raidicons) do
-		validateVal(k,isstring,errlvl,...)
-		validateRaidIcon(data,info,errlvl,k,...)
-	end
-end
-
-local function validateAnnounce(data,info,errlvl,...)
-	errlvl = errlvl + 1
-	for k in pairs(info) do
-		if not announceBaseKeys[k] then
-			err("unknown key '"..k.."'",errlvl,tostring(k),...)
-		end
-	end
-	for k,oktypes in pairs(announceBaseKeys) do
-		validateVal(info[k],oktypes,errlvl,k,...)
-		if info[k] then
-			-- check type
-			if k == "type" and not announceTypeValues[info[k]] then
-				err("expected SAY - got '"..info[k].."'",errlvl,k,...)
-			end
-		end
-	end
-end
-
-local function validateAnnounces(data,announces,errlvl,...)
-	errlvl = errlvl + 1
-	for k,info in pairs(announces) do
-		validateVal(k,isstring,errlvl,...)
-		validateAnnounce(data,info,errlvl,k,...)
-	end
-end
-
-local function validateNpcid(data,info,errlvl,k,...)
-	errlvl = errlvl + 1
-	if info[k] and type(info[k]) == "number" then
-		-- do nothing
-	elseif info[k] and type(info[k]) == "table" then
-		validateIsArrayOfType(info[k],isnumber,errlvl,k,...)
-	elseif info[k] then
-		err("invalid npcid(s)",errlvl,k,...)
-	end
-end
-
-local function validateSpellID(data,info,errlvl,k,...)
-	errlvl = errlvl + 1
-	if info[k] and type(info[k]) == "number" then
-		local exists = GetSpellInfo(info[k])
-		if not exists then
-			err("["..info[k].."]: unknown spell identifier",errlvl,k,...)
-		end
-	elseif info[k] and type(info[k]) == "table" then
-		validateIsArray(info[k],errlvl,k,...)
-		for i,spellid in ipairs(info[k]) do
-			local exists = GetSpellInfo(spellid)
-			if not exists then
-				err("["..spellid.."]: unknown spell identifier",errlvl,i,k,...)
-			end
-		end
-	elseif info[k] then
-		err("invalid spell identifier(s)",errlvl,k,...)
-	end
-end
-
-local function validateUserData(data,info,errlvl,...)
-	errlvl = errlvl + 1
-	for var,value in pairs(info) do
-		if Gtype(value) == "string" then
-			validateReplaces(data,value,errlvl,...)
-		elseif Gtype(value) == "table" then
-			if value.type ~= "series" and value.type ~= "container" then
-				err("invalid userdata table variable expected 'container' or 'series'",errlvl,"type",var,...)
-			end
-			if value.type == "container" then
-				if value.wipein then
-					validateVal(value.wipein,isnumber,errlvl,"wipein",var,...)
-				end
-			elseif value.type == "series" and #value == 0 then
-				err("series requires at least one value in its array",errlvl,var,...)
-			end
-		end
-	end
-end
-
-local function validateEvent(data,info,errlvl,...)
-	errlvl = errlvl + 1
-	for k in pairs(info) do
-		if not eventBaseKeys[k] then
-			err("unknown parameter",errlvl,k,...)
-		end
-	end
-	for k, oktypes in pairs(eventBaseKeys) do
-		validateVal(info[k],oktypes,errlvl,k,...)
-		if info[k] then
-			if k == "type" then
-				if info.type == "event" and not info.event then
-					err("missing event key",errlvl,k,...)
-				end
-				if info.type == "combatevent" and not info.eventtype then
-					err("missing eventtype key",errlvl,k,...)
-				end
-				if info.eventtype and not eventtypes[info.eventtype] then
-					err("invalid eventtype value - got '"..info.eventtype.."'",errlvl,"eventtype",...)
-				end
-			elseif k == "spellid" or k == "spellid2" then
-				validateSpellID(data,info,errlvl,k,...)
-			elseif k == "spellname" or k == "spellname2" then
-				validateSpellID(data,info,errlvl,k,...)
-			elseif k == "srcnpcid" or k == "dstnpcid" then
-				validateNpcid(data,info,errlvl,k,...)
-			elseif k == "msg" or k == "npcname" then
-				if type(info[k]) == "table" then
-					validateIsArrayOfType(info[k],isstring,errlvl,k,...)
-				end
-			elseif k == "execute" then
-				validateCommandBundle(data,info.execute,errlvl,"execute",...)
-			end
-		end
-	end
-end
-
-local function validateEvents(data,events,errlvl,...)
-	errlvl = errlvl + 1
-	for k,info in pairs(events) do
-		validateVal(info,istable,errlvl,k,...)
-		validateEvent(data,info,errlvl,k,...)
-	end
-end
-
-
-local function validate(data,errlvl,...)
-	errlvl = errlvl + 1
-	-- Consistency check
-	for k in pairs(data) do
-		if not baseKeys[k] then
-			err("unknown key '"..k.."'",errlvl,tostring(k),...)
-		end
-	end
-	-- Base keys
-	for k,oktypes in pairs(baseKeys) do
-		validateVal(data[k],oktypes,errlvl,k,...)
-		if k == "onstart" and data[k] and util.tablesize(data[k]) > 0 then
-			validateCommandBundle(data,data.onstart,errlvl,"onstart",...)
-		elseif k == "onacquired" and data[k] and util.tablesize(data[k]) > 0 then
-			for npcid,bundle in pairs(data[k]) do
-				validateVal(npcid,isnumber,errlvl,npcid,"onacquired",...)
-				validateCommandBundle(data,bundle,errlvl,npcid,"onacquired",...)
-			end
-		elseif k == "timers" and data.timers then
-			for name,bundle in pairs(data.timers) do
-				validateVal(bundle,istable,errlvl,name,"timers",...)
-				validateCommandBundle(data,bundle,errlvl,name,"timers",...)
-			end
-		end
-	end
-
-	-- Base tables
-	for tblName,tbl in pairs(baseTables) do
-		if data[tblName] then
-			for k,oktypes in pairs(tbl) do
-				validateVal(data[tblName][k],oktypes,errlvl,k,tblName,...)
-				if tblName == "onactivate" then
-					if k == "tracing" and data.onactivate.tracing then
-						validateTracing(data.onactivate.tracing,errlvl,tblName,...)
-					elseif k == "sortedtracing" and data.onactivate.sortedtracing then
-						validateSortedTracing(data.onactivate.sortedtracing,errlvl,tblName,...)
-					elseif k == "unittracing" and data.onactivate.unittracing then
-						validateUnitTracing(data.onactivate.unittracing,errlvl,tblName,...)
-					end
-					local onactivate = data.onactivate
-					if (onactivate.tracing and onactivate.sortedtracing) 
-						 or (onactivate.tracing and onactivate.unittracing) 
-						 or (onactivate.sortedtracing and onactivate.unittracing) then
-						err("cannot have tracing and/or sortedtracing and/or unittracing at the same time",errlvl,tblName,...)
-					end
-				end
-			end
-			for k in pairs(data[tblName]) do
-				if not tbl[k] then
-					err("unknown key - got '"..k.."'",errlvl,k,tblName,...)
-				end
-			end
-		end
-	end
-
-	-- Userdata
-
-	if data.userdata and util.tablesize(data.userdata) > 0 then
-		validateUserData(data,data.userdata,errlvl,"userdata",...)
-	end
-
-	-- Alerts
-	if data.alerts and util.tablesize(data.alerts) > 0 then
-		validateAlerts(data,data.alerts,errlvl,"alerts",...)
-	end
-
-	-- Arrows
-	if data.arrows and util.tablesize(data.arrows) > 0 then
-		validateArrows(data,data.arrows,errlvl,"arrows",...)
-	end
-
-	-- Announces
-	if data.announces and util.tablesize(data.announces) > 0 then
-		validateAnnounces(data,data.announces,errlvl,"announces",...)
-	end
-
-	-- Raid Icons
-	if data.raidicons and util.tablesize(data.raidicons) > 0 then
-		validateRaidIcons(data,data.raidicons,errlvl,"raidicons",...)
-	end
-
-	-- Events
-	if data.events and util.tablesize(data.events) > 0 then
-		validateIsArray(data.events,errlvl,"events",...)
-		validateEvents(data,data.events,errlvl,"events",...)
-	end
-end
-
-function addon:ValidateData(data)
-	local errlvl = 1
-	local name = data.name or data.key or "Data"
-	validate(data,errlvl,name)
+	setup()
+	load_all()
+	run()
 end
