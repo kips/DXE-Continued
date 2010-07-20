@@ -581,7 +581,7 @@ function util.keys(hash)
 end
 
 function util.values(array)
-	assert_table(hash)
+	assert_table(array)
 	local t = {}
 	for _,v in pairs(array) do t[#t+1] = util.pretty(v) end
 	return util.to_set_list(t)
