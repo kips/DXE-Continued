@@ -223,6 +223,7 @@ function Pour(text,icon,color)
 	module:Pour(text,color.r,color.g,color.b,nil,nil,nil,nil,nil,icon)
 	if pfl.AnnounceToRaid and addon:IsPromoted() and addon.GroupType == "RAID" then
 		-- substitute
+		orig_text = gsub(orig_text,"|c%x%x%x%x%x%x%x%x(.-)|r","%1")
 		orig_text = gsub(orig_text,L.alert["YOU"],addon.PNAME)
 		-- color coded text disconnects the user!!!
 		SendChatMessage(format(ANNOUNCE_FORMAT,orig_text),"RAID_WARNING")
