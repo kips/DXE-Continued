@@ -215,18 +215,16 @@ do
 	end
 end
 
-function Pour(text,icon,color)
+local function Pour(text,icon,color)
 	color = color or Colors.WHITE
-	local orig_text = text
-	if pfl.ClrWarningText then text = ColorText(text) end
 	if not pfl.SinkIcon then icon = nil end
-	module:Pour(text,color.r,color.g,color.b,nil,nil,nil,nil,nil,icon)
-	if pfl.AnnounceToRaid and addon:IsPromoted() and addon.GroupType == "RAID" then
-		-- substitute
-		orig_text = gsub(orig_text,"|c%x%x%x%x%x%x%x%x(.-)|r","%1")
-		orig_text = gsub(orig_text,L.alert["YOU"],addon.PNAME)
+	local pour_text = pfl.ClrWarningText and ColorText(text) or text
+	module:Pour(pour_text,color.r,color.g,color.b,nil,nil,nil,nil,nil,icon)
+	local no_you = not find(text,L.alert["YOU"])
+	if no_you and pfl.AnnounceToRaid and addon:IsPromoted() and addon.GroupType == "RAID" then
 		-- color coded text disconnects the user!!!
-		SendChatMessage(format(ANNOUNCE_FORMAT,orig_text),"RAID_WARNING")
+		text = gsub(text,"|c%x%x%x%x%x%x%x%x(.-)|r","%1")
+		SendChatMessage(format(ANNOUNCE_FORMAT,text),"RAID_WARNING")
 	end
 end
 
@@ -335,6 +333,7 @@ function prototype:Destroy()
 	self.righticon:Hide()
 	self.righticon.t:SetTexture("")
 	self.bmsg = nil
+	self.orig_text = nil
 end
 
 do
@@ -480,7 +479,7 @@ do
 
 		if pfl.WarningMessages and self.bmsg and timeleft <= pfl.BeforeThreshold then
 			self.bmsg = nil
-			Pour(self.text:GetText().." - "..MMSS(timeleft),data.icon,data.c1)
+			Pour(self.orig_text.." - "..MMSS(timeleft),data.icon,data.c1)
 		end
 	end
 
@@ -503,7 +502,7 @@ do
 
 		if pfl.WarningMessages and self.bmsg and timeleft <= pfl.BeforeThreshold then
 			self.bmsg = nil
-			Pour(self.text:GetText().." - "..MMSS(timeleft),data.icon,data.c1)
+			Pour(self.orig_text.." - "..MMSS(timeleft),data.icon,data.c1)
 		end
 	end
 
@@ -568,6 +567,7 @@ end
 
 function prototype:SetText(text)
 	self.text:SetText(ColorText(text))
+	self.orig_text = text
 end
 
 function prototype:SetIcon(texture)
