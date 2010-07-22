@@ -1238,8 +1238,6 @@ else
 
 	local function setup()
 		-- DXE
-		DXE = {}
-		DXE.EDB = {}
 		local return_key = setmetatable({},{
 			__index = function(t,k)
 				t[k] = tostring(k)
@@ -1247,27 +1245,37 @@ else
 			end,
 		})
 
-		DXE.SN = return_key
-		DXE.ST = return_key
-
-		DXE.L = setmetatable({},{
-			__index = function(t,k)
-				rawset(t,k,return_key)
-				return return_key
-			end,
-		})
+		DXE = {
+			EDB = {},
+			SN = return_key,
+			ST = return_key,
+			L = setmetatable({},{
+				__index = function(t,k)
+					rawset(t,k,return_key)
+					return return_key
+				end,
+			})
+		}
 
 		function DXE:RegisterEncounter(data)
-			if DXE.EDB[data.key] then
-				error(format("duplicate key %q - there shouldn't be any",data.key))
+			if type(data) == "table" then
+				if type(data.key) == "string" then
+					if DXE.EDB[data.key] then
+						error(format("duplicate key %q - there shouldn't be any",data.key))
+					end
+					DXE.EDB[data.key] = data
+				else
+					print(debug.traceback():match("[./]+Encounters.-%d+:"),"data has a non-string key")
+				end
+			else
+				print(debug.traceback():match("[./]+Encounters.-%d+:"),"a non-table was passed to RegisterEncounter",1)
 			end
-			DXE.EDB[data.key] = data
 		end
 
 		-- GLOBALS
 		_G.format = string.format
-		UnitFactionGroup = function() return "Alliance" end
-		UNKNOWN = "Unknown"
+		_G.UnitFactionGroup = function() return "Alliance" end
+		_G.UNKNOWN = "Unknown"
 	end
 
 	local function load_all()
@@ -1311,3 +1319,4 @@ else
 	load_all()
 	run()
 end
+
