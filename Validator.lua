@@ -806,7 +806,7 @@ do
 			end
 
 			if rule.each then
-				key = format("%s_each",kind)
+				local key = format("%s_each",kind)
 				helpers[key](helpers,v,rule.each,...)
 			end
 
