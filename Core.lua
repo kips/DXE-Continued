@@ -113,7 +113,7 @@ local defaults = {
 
 local addon = LibStub("AceAddon-3.0"):NewAddon("DXE","AceEvent-3.0","AceTimer-3.0","AceComm-3.0","AceSerializer-3.0")
 _G.DXE = addon
-addon.version = 503
+addon.version = 504
 addon:SetDefaultModuleState(false)
 addon.callbacks = LibStub("CallbackHandler-1.0"):New(addon)
 addon.defaults = defaults
@@ -174,12 +174,21 @@ local GUID_LENGTH = 18
 local UT_NPC = 3
 local UT_VEHICLE = 5
 
+-- 12484 is the version that China got the new format, so doing it this way works
+-- for both China and 4.0.x
+local NEW_GUID_FORMAT = tonumber((select(2,GetBuildInfo()))) >= 12484
+
 local NID = setmetatable({},{
 	__index = function(t,guid)
 		if type(guid) ~= "string" or #guid ~= GUID_LENGTH or not guid:find("%xx%x+") then return end
 		local ut = tonumber(sub(guid,5,5),16) % 8
 		local isNPC = ut == UT_NPC or ut == UT_VEHICLE
-		local npcid = isNPC and tonumber(sub(guid,9,12),16)
+		local npcid
+		if NEW_GUID_FORMAT then 
+			npcid = isNPC and tonumber(sub(guid,7,10),16)
+		else
+			npcid = isNPC and tonumber(sub(guid,9,12),16)
+		end
 		t[guid] = npcid
 		return npcid
 	end,
