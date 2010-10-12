@@ -463,7 +463,7 @@ end
 
 do
 	local data = {
-		version = 15,
+		version = 16,
 		key = "halion",
 		zone = L.zone["The Ruby Sanctum"],
 		category = L.zone["Northrend"],
@@ -485,11 +485,21 @@ do
 		},
 		onstart = {
 			{
+				"alert","enragecd",
 				"alert","meteorcd",
 				"alert","debuffcd",
 			},
 		},
 		alerts = {
+			enragecd = {
+				varname = L.alert["Enrage"],
+				type = "dropdown",
+				text = L.alert["Enrage"],
+				time = 480,
+				flashtime = 5,
+				color1 = "RED",
+				icon = ST[12317],
+			},
 			fierydur = {
 				varname = format(L.alert["%s Duration"],SN[74562]),
 				type = "centerpopup",
