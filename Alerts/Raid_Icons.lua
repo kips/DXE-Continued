@@ -16,7 +16,7 @@ local L = addon.L
 
 local wipe = table.wipe
 local targetof = addon.targetof
-local SetRaidTarget = SetRaidTarget
+local SetRaidTarget_Blizzard = SetRaidTarget
 local GetRaidTargetIndex = GetRaidTargetIndex
 local UnitGUID = UnitGUID
 local ipairs,pairs = ipairs,pairs
@@ -26,6 +26,15 @@ addon.RaidIcons = module
 
 local db,pfl
 local debug
+
+-- Workaround the issue where in 4.0.1 SetRaidTarget now toggles
+-- Just like SetRaidTargetIcon
+local function SetRaidTarget(unit, icon)
+	if not icon then return end
+	if GetRaidTargetIndex(unit) ~= icon then
+		SetRaidTarget_Blizzard(unit,icon)
+	end
+end
 
 function module:RefreshProfile() pfl = db.profile end
 
