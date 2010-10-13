@@ -1,4 +1,4 @@
-## Interface: 30300
+## Interface: 40000
 ## Title: DXE |cff99ff33Icecrown Citadel|r
 ## Notes: Deus Vox Encounters |cff99ff33Icecrown Citadel|r
 ## Author: Kollektiv
