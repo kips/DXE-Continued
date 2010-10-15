@@ -39,7 +39,9 @@ externals:
     Libs/LibDualSpec-1.0:
         url: git://git.wowace.com/wow/libdualspec-1-0/mainline.git
         tag: latest
-    Libs/LibShefkiTimer-1.0: git://git.wowace.com/wow/libshefkitimer-1-0/mainline.git
+    Libs/LibShefkiTimer-1.0:
+        url: git://git.wowace.com/wow/libshefkitimer-1-0/mainline.git
+        tag: latest
 
     Options/Libs/AceGUI-3.0:
         url: svn://svn.wowace.com/wow/ace3/mainline/trunk/AceGUI-3.0
