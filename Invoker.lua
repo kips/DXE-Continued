@@ -769,7 +769,6 @@ do
 
 		if not time or time < 0 then return true end
 
-		timers[id].handle = module[schedulefunc](module,firefunc,time,id)
 		if store_args then
 			local args = new()
 			-- Only need the first 7 (up to spellID)
@@ -778,6 +777,8 @@ do
 
 			timers[id].args = args
 		end
+
+		timers[id].handle = module[schedulefunc](module,firefunc,time,id)
 	end
 
 	local function cancel(info,timers)
