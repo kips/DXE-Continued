@@ -17,7 +17,7 @@ end
 
 slug = "deus-vox-encounters"
 locale_uri = URI.parse "http://www.wowace.com/addons/#{slug}/localization/import/"
-locale_uri_api_key = URI.parse "#{locale_uri.to_s}/?api-key=#{API_KEY}"
+locale_uri_api_key = URI.parse "#{locale_uri.to_s.chop}/?api-key=#{API_KEY}"
 locale_regex = /L(?:\.(\w+?))?\["(.+?)"\]/
 
 # map namespace names to namespace values
