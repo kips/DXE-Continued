@@ -1,0 +1,11 @@
+## Interface: 40000
+## Title: DXE |cff99ff33Bastion|r
+## Notes: Deus Vox Encounters |cff99ff33Bastion|r
+## Author: Shefki
+## LoadOnDemand: 1
+## Dependencies: DXE
+## X-DXE-Category: Bastion 
+## X-DXE-Zone: The Bastion of Twilight 
+
+Locales.lua
+Encounters.lua

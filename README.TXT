@@ -12,6 +12,10 @@ DXE_Naxxramas -> ../DXE/Encounters/Naxxramas/
 DXE_Northrend -> ../DXE/Encounters/Northrend/
 DXE_Options -> ../DXE/Options/
 DXE_Ulduar -> ../DXE/Encounters/Ulduar/
+DXE_Descent -> ../DXE/Encounters/Descent/
+DXE_Bastion -> ../DXE/Encounters/Bastion/
+DXE_Throne -> ../DXE/Encounters/Throne/
+DXE_Baradin -> ../DXE/Encounters/Baradin/
 
 Alternatively, you can uncomment the lines commented out in Encounters.xml and the
 Options\Options.lua line in the DXE.toc file.  However, making the links will allow
@@ -30,3 +34,7 @@ Windows instructions:
 	mklink /D ..\DXE_Naxxramas DXE\Encounters\Naxxramas
 	mklink /D ..\DXE_Northrend DXE\Encounters\Northrend
 	mklink /D ..\DXE_Ulduar DXE\Encounters\Ulduar
+	mklink /D ..\DXE_Descent DXE\Encounters\Descent
+	mklink /D ..\DXE_Bastion DXE\Encounters\Bastion
+	mklink /D ..\DXE_Throne DXE\Encounters\Throne
+	mklink /D ..\DXE_Baradin DXE\Encounters\Baradin

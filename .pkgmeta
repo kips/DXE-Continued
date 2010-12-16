@@ -72,3 +72,7 @@ move-folders:
     DXE/Encounters/Coliseum: DXE_Coliseum
     DXE/Encounters/Kalimdor: DXE_Kalimdor
     DXE/Encounters/Citadel: DXE_Citadel
+    DXE/Encounters/Descent: DXE_Descent
+    DXE/Encounters/Bastion: DXE_Bastion
+    DXE/Encounters/Throne: DXE_Throne
+    DXE/Encounters/Baradin: DXE_Baradin

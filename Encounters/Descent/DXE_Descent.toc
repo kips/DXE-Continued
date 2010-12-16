@@ -1,0 +1,11 @@
+## Interface: 40000
+## Title: DXE |cff99ff33Descent|r
+## Notes: Deus Vox Encounters |cff99ff33Descent|r
+## Author: Shefki
+## LoadOnDemand: 1
+## Dependencies: DXE
+## X-DXE-Category: Descent 
+## X-DXE-Zone: Blackwing Descent 
+
+Locales.lua
+Encounters.lua
