@@ -26,7 +26,7 @@ do
 				47120, -- Argaloth 
 			},
 		},
-		userdata = {},
+		--[[userdata = {},
 		onstart = {
 			{
 			}
@@ -38,7 +38,7 @@ do
 		timers = {
 		},
 		events = {
-		},
+		},]]
 	}
 
 	DXE:RegisterEncounter(data)

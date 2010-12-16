@@ -32,7 +32,7 @@ do
 				45872, -- Rohash
 			},
 		},
-		userdata = {},
+		--[[ userdata = {},
 		onstart = {
 			{
 			}
@@ -44,7 +44,7 @@ do
 		timers = {
 		},
 		events = {
-		},
+		}, ]]
 	}
 
 	DXE:RegisterEncounter(data)
@@ -76,7 +76,7 @@ do
 				46753, -- Al'Akir 
 			},
 		},
-		userdata = {
+		--[[ userdata = {
 		},
 		onstart = {
 			{
@@ -89,7 +89,7 @@ do
 		timers = {
 		},
 		events = {
-		},
+		}, ]]
 	}
 
 	DXE:RegisterEncounter(data)

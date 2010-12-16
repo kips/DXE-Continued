@@ -35,7 +35,7 @@ do
 				42180, -- Toxitron
 			},
 		},
-		userdata = {},
+		--[[ userdata = {},
 		onstart = {
 			{
 			}
@@ -47,7 +47,7 @@ do
 		timers = {
 		},
 		events = {
-		},
+		}, ]]
 	}
 
 	DXE:RegisterEncounter(data)
@@ -75,7 +75,7 @@ do
 			combatstop = true,
 			defeat = 41570,
 		},
-		userdata = {
+		--[[ userdata = {
 		},
 		onstart = {
 			{
@@ -88,7 +88,7 @@ do
 		timers = {
 		},
 		events = {
-		},
+		}, ]]
 	}
 
 	DXE:RegisterEncounter(data)
@@ -117,7 +117,7 @@ do
 			combatstop = true,
 			defeat = 41442,
 		},
-		userdata = {},
+		--[[ userdata = {},
 		onstart = {
 			{
 			}
@@ -127,7 +127,7 @@ do
 		alerts = {
 		},
 		events = {
-		},
+		}, ]]
 	}
 
 	DXE:RegisterEncounter(data)
@@ -156,7 +156,7 @@ do
 			combatstop = true,
 			defeat = 41378,
 		},
-		userdata = {},
+		--[[ userdata = {},
 		onstart = {
 			{
 			}
@@ -166,7 +166,7 @@ do
 		alerts = {
 		},
 		events = {
-		},
+		}, ]]
 	}
 
 	DXE:RegisterEncounter(data)
@@ -194,7 +194,7 @@ do
 			combatstop = true,
 			defeat = 43296,
 		},
-		userdata = {},
+		--[[ userdata = {},
 		onstart = {
 			{
 			}
@@ -204,7 +204,7 @@ do
 		alerts = {
 		},
 		events = {
-		},
+		}, ]]
 	}
 
 	DXE:RegisterEncounter(data)
@@ -232,7 +232,7 @@ do
 			combatstop = true,
 			defeat = 41376,
 		},
-		userdata = {},
+		--[[ userdata = {},
 		onstart = {
 			{
 			}
@@ -242,7 +242,7 @@ do
 		alerts = {
 		},
 		events = {
-		},
+		}, ]]
 	}
 
 	DXE:RegisterEncounter(data)

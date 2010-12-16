@@ -23,7 +23,7 @@ do
 				43686, -- Ignacious 
 				43688, -- Arion
 				43689, -- Terrastra
-				43735, -- Elementium Monstrosity
+--				43735, -- Elementium Monstrosity, disabled for now can't trace 5 mobs
 			},
 			tracerstart = true,
 			combatstop = true,
@@ -31,7 +31,7 @@ do
 				43735, -- Elementium Monstrosity
 			},
 		},
-		userdata = {},
+		--[[userdata = {},
 		onstart = {
 			{
 			}
@@ -43,7 +43,7 @@ do
 		timers = {
 		},
 		events = {
-		},
+		}, ]]
 	}
 
 	DXE:RegisterEncounter(data)
@@ -78,7 +78,7 @@ do
 				45993, -- Theralion
 			},
 		},
-		userdata = {
+		--[[ userdata = {
 		},
 		onstart = {
 			{
@@ -91,7 +91,7 @@ do
 		timers = {
 		},
 		events = {
-		},
+		}, ]]
 	}
 
 	DXE:RegisterEncounter(data)
@@ -119,7 +119,7 @@ do
 			combatstop = true,
 			defeat = 44600,
 		},
-		userdata = {},
+		--[[ userdata = {},
 		onstart = {
 			{
 			}
@@ -129,7 +129,7 @@ do
 		alerts = {
 		},
 		events = {
-		},
+		}, ]]
 	}
 
 	DXE:RegisterEncounter(data)
@@ -157,7 +157,7 @@ do
 			combatstop = true,
 			defeat = 43324,
 		},
-		userdata = {},
+		--[[ userdata = {},
 		onstart = {
 			{
 			}
@@ -167,7 +167,7 @@ do
 		alerts = {
 		},
 		events = {
-		},
+		}, ]]
 	}
 
 	DXE:RegisterEncounter(data)
