@@ -253,6 +253,8 @@ do
 		buffstacks = function(unit,buff) local c = select(4,UnitBuff(unit,buff)) return c end,
 		hasicon = function(unit,icon) return RaidIcons:HasIcon(unit,icon) end,
 		closest = function(container) return addon:FindClosestUnit(userdata[container]) end,
+		channeldur = function(unit) local name,sub,text,texture,start,finish = UnitChannelInfo(unit) if start and finish then return (finish - start) / 1000 else return 0 end end,
+		castdur = function(unit) local name,sub,text,texture,start,finish = UnitChannelInfo(unit) if start and finish then return (finish - start) / 1000 else return 0 end end,
 	}
 
 	-- Add funcs for the other health watchers

@@ -79,6 +79,7 @@ local FIRETYPES = {
 }
 
 local EVENTS = {
+	"UNIT_SPELLCAST_CHANNEL_START",
 	"UNIT_SPELLCAST_SUCCEEDED",
 	"CHAT_MSG_MONSTER_EMOTE",
 	"CHAT_MSG_RAID_BOSS_EMOTE","EMOTE",
@@ -959,6 +960,8 @@ do
 		hasicon = {2,function(args,...)
 			validate:value(tonumber(args[2]),isnumber,...)
 		end},
+		channeldur = 1,
+		castdur = 1,
 	}
 
 	local function check_args(args,arity,...)
