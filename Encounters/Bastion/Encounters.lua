@@ -55,7 +55,7 @@ end
 
 do
 	local data = {
-		version = 1,
+		version = 2,
 		key = "val+ther",
 		zone = L.zone["The Bastion of Twilight"],
 		category = L.zone["Bastion"],
@@ -72,26 +72,268 @@ do
 				45993, -- Theralion
 			},
 			tracerstart = true,
+			tracerstop = true,
 			combatstop = true,
 			defeat = {
 				45992, -- Valiona
 				45993, -- Theralion
 			},
 		},
-		--[[ userdata = {
-		},
-		onstart = {
-			{
+		alerts = {
+			flamewarn = {
+				varname = format(L.alert["%s Casting"],SN[86840]),
+				type = "centerpopup",
+				text = format(L.alert["%s Casting"],SN[86840]),
+				time = 2.5,
+				flashtime = 2.5,
+				color1 = "ORANGE",
+				sound = "ALERT12",
+				icon = ST[86840],
+			},
+			dazzlewarn = {
+				varname = format(L.alert["%s Casting"],SN[86408]),
+				type = "centerpopup",
+				text = format(L.alert["%s Casting"],SN[86408]),
+				time = 4,
+				flashtime = 4,
+				color1 = "GREEN",
+				sound = "ALERT2",
+				icon = ST[86408],
+			},
+			engulfself = {
+				varname = format(L.alert["%s on self"],SN[95639]),
+				type = "centerpopup",
+				text = format("%s: %s!",SN[95639],L.alert["YOU"]),
+				time = 20,
+				color1 = "CYAN",
+				icon = ST[95639],
+				flashscreen = true,
+			},
+			engulfdur = {
+				varname = format(L.alert["%s Duration"],SN[95639]),
+				type = "centerpopup",
+				text = format(L.alert["%s Duration"],SN[95639]),
+				time = 20,
+				color1 = "CYAN",
+				icon = ST[95639],
+			},
+			blackoutself = {
+				varname = format(L.alert["%s on self"],SN[92876]),
+				type = "centerpopup",
+				text = format("%s: %s!",SN[92876],L.alert["YOU"]),
+				time = 15,
+				color1 = "BLACK",
+				sound = "ALERT1",
+				icon = ST[92876],
+				flashscreen = true,
+			},
+			blackoutwarn = {
+				varname = format(L.alert["%s Warning"],SN[92876]),
+				type = "centerpopup",
+				text = format("%s: #5#!",SN[92876]),
+				time = 15,
+				color1 = "BLACK",
+				icon = ST[92876],
+			},
+			meteoriteself = {
+				varname = format(L.alert["%s on self"],SN[92863]),
+				type = "centerpopup",
+				text = format(L.alert["%s Warning"],SN[92863]),
+				time = 6,
+				color1 = "PURPLE",
+				icon = ST[92863],
+				sound = "ALERT2",
+			},
+			meteoritewarn = {
+				varname = format(L.alert["%s Warning"],SN[92863]),
+				type = "centerpopup",
+				text = format(L.alert["%s Warning"],SN[92863]),
+				time = 6,
+				color1 = "PURPLE",
+				icon = ST[92863],
+			},
+			blastself = {
+				varname = format(L.alert["%s on self"],SN[92904]),
+				type = "centerpopup",
+				text = format(L.alert["%s Warning"],SN[92904]),
+				time = 2,
+				color1 = "BLUE",
+				icon = ST[92904],
+				sound = "ALERT3",
+			},
+			blastwarn = {
+				varname = format(L.alert["%s Casting"],SN[92904]),
+				type = "centerpopup",
+				text = format(L.alert["%s Casting"],SN[92904]),
+				time = 2,
+				color1 = "BLUE",
+				icon = ST[92904],
 			},
 		},
-		windows = {
+		arrows = {
+			blackoutarrow = {
+				varname = SN[92876],
+				unit = "#5#",
+				persist = 15,
+				action = "TOWARD",
+				msg = L.alert["MOVE TOWARD"],
+				spell = SN[92876],
+				-- TODO: Discover range on this ability tooltip says 0 yds.
+			},
+			engulfarrow = {
+				varname = SN[95639],
+				unit = "#5#",
+				persist = 20,
+				action = "AWAY",
+				msg = L.alert["MOVE AWAY"],
+				spell = SN[95639],
+				-- TODO: Discover range on this ability tooltip says 0 yds.
+			},
+			-- The lack of arrows for Twilight Blast and Twilight Meteorite are not
+			-- an oversight.  They don't fire SPELL_AURA events so it's a pain to provide this.
 		},
-		alerts = {
+		raidicons = {
+			blackoutmark = {
+				varname = SN[92876],
+				type = "FRIENDLY",
+				persist = 15,
+				unit = "#5#",
+				icon = 1,
+			},
+			engulfmark = {
+				varname = SN[95639],
+				type = "MULTIFRIENDLY",
+				persist = 20,
+				unit = "#5#",
+				icon = 2,
+				reset = 3, -- Guess as to how many there are for now.
+				total = 3,
+			},
 		},
 		timers = {
+			fireblast = {
+				{
+					"expect",{"&playerdebuff|"..SN[92898].."&","==","true"},
+					"alert","blastself",
+				},
+				{
+					"expect",{"&playerdebuff|"..SN[92898].."&","~=","false"},
+					"alert","blastwarn",
+				},
+			},
+			firemeteorite = {
+				{
+					"expect",{"&playerdebuff|"..SN[92863].."&","==","true"},
+					"alert","blastself",
+				},
+				{
+					"expect",{"&playerdebuff|"..SN[92863].."&","~=","false"},
+					"alert","blastwarn",
+				},
+			},
 		},
 		events = {
-		}, ]]
+			-- Devouring Flames
+			{
+				type = "combatevent",
+				eventtype = "SPELL_CAST_START",
+				spellname = 86840,
+				execute = {
+					{
+						"alert","flamewarn",
+					}
+				},
+			},
+			-- Dazzling Destruction
+			{
+				type = "combatevent",
+				eventtype = "SPELL_CAST_START",
+				spellname = 86408,
+				execute = {
+					{
+						"alert","dazzlewarn",
+					}
+				},
+			},
+			-- Engulfing Magic
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellname = 95639,
+				dstisplayerunit = true,
+				execute = {
+					{
+						"raidicon","engulfmark",
+					},
+					{
+						"expect",{"#4#","==","&playerguid&"},
+						"alert","engulfself",
+					},
+					{
+						"expect",{"#4#","~=","&playerguid&"},
+						"alert","engulfdur",
+						"arrow","engulfarrow",
+					},
+				},
+			},
+			-- Blackout
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellname = 92876,
+				execute = {
+					{
+						"raidicon","blackoutmark",
+					},
+					{
+						"expect",{"#4#","==","&playerguid&"},
+						"alert","blackoutself",
+					},
+					{
+						"expect",{"#4#","~=","&playerguid&"},
+						"alert","blackoutwarn",
+						"arrow","blackoutarrow",
+					},
+				},
+			},
+			-- Blackout removal
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_REMOVED",
+				spellname = 92876,
+				execute = {
+					{
+						"batchquash",{"blackoutwarn","blackoutself"},
+						"removeraidicon","#5#",
+						"removearrow","#5#",
+					},
+				},
+			},
+			-- Twilight Meteorite
+			-- Does not fire SPELL_AURA events so use a timer to wait and look with playerdebuff. 
+			{
+				type = "combatevent",
+				eventtype = "SPELL_CAST_START",
+				spellname = 92863,
+				execute = {
+					{
+						"scheduletimer",{"firemeteorite",0.2},	
+					},
+				},
+			},
+			-- Twilight Blast
+			-- Does not fire SPELL_AURA events so use a timer to wait and look with playerdebuff. 
+			{
+				type = "combatevent",
+				eventtype = "SPELL_CAST_START",
+				spellname = 92898,
+				execute = {
+					{
+						"scheduletimer",{"fireblast",0.2},	
+					},
+				},
+			},
+		}, 
 	}
 
 	DXE:RegisterEncounter(data)
@@ -103,7 +345,7 @@ end
 
 do
 	local data = {
-		version = 1, 
+		version = 2, 
 		key = "halfus",
 		zone = L.zone["The Bastion of Twilight"],
 		category = L.zone["Bastion"],
@@ -119,17 +361,22 @@ do
 			combatstop = true,
 			defeat = 44600,
 		},
-		--[[ userdata = {},
 		onstart = {
 			{
+				"alert","enragecd",
 			}
 		},
-		windows = {
-		},
 		alerts = {
+			enragecd = {
+				varname = L.alert["Enrage"],
+				type = "dropdown",
+				text = L.alert["Enrage"],
+				time = 360,
+				flashtime = 10,
+				color1 = "RED",
+				icon = ST[12317],
+			},
 		},
-		events = {
-		}, ]]
 	}
 
 	DXE:RegisterEncounter(data)
