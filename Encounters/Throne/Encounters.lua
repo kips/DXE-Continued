@@ -108,7 +108,7 @@ end
 
 do
 	local data = {
-		version = 1,
+		version = 2,
 		key = "alakir",
 		zone = L.zone["Throne of the Four Winds"],
 		category = L.zone["Throne"],
@@ -128,20 +128,114 @@ do
 				46753, -- Al'Akir 
 			},
 		},
-		--[[ userdata = {
+		userdata = {
+			phase = "1",
+			stormlingtime = {10,20,loop = false, type = "series"},
 		},
 		onstart = {
 			{
+				"alert", "windburstcd",
 			},
 		},
-		windows = {
-		},
 		alerts = {
+			windburstcd = {
+				varname = format(L.alert["%s Cooldown"],SN[87770]),
+				type = "dropdown",
+				text = format("%s Cooldown",SN[87770]),
+				time = 25,
+				flashtime = 5,
+				color1 = "BLACK",
+				icon = ST[87770],
+			},
+			stormlingcd = {
+				varname = format(L.alert["%s Cooldown"],SN[87919]),
+				type = "dropdown",
+				text = format(L.alert["%s Cooldown"],SN[87919]),
+				time = "<stormlingtime>",
+				flashtime = 5,
+				color1 = "ORANGE",
+				icon = ST[87919],
+			},
+			feedbackdur = {
+				varname = format(L.alert["%s Duration"],SN[87904]),
+				type = "centerpopup",
+				text = format(L.alert["%s Duration"],SN[87904]),
+				time = 20,
+				flashtime = 20,
+				color1 = "BLUE",
+				icon = ST[87904],
+			},
 		},
-		timers = {
+		raidicons = {
+			rodmark = {
+				varname = SN[93294],
+				type = "FRIENDLY",
+				persist = 5,
+				unit = "#5#",
+				icon = 1,
+			},
 		},
 		events = {
-		}, ]]
+			-- Wind Burst
+			{
+				type = "combatevent",
+				eventtype = "SPELL_CAST_START",
+				spellname = 87770,
+				execute = {
+					{
+						"quash","windburstcd",
+						"alert","windburstcd",
+					},
+				},
+			},
+			-- Feedback
+			{
+				type = "combatevent",
+				eventtype = "SPELL_CAST_SUCCESS",
+				spellname = 87904,
+				execute = {
+					{
+						"alert","feedbackdur",
+					},
+				}
+			},
+			-- Lightning Rod
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellname = 93294,
+				execute = {
+					{
+						"raidicon","rodmark",
+					},
+				},
+			},
+			{
+				type = "event",
+				event = "YELL",
+				execute = {
+					-- Phase 2
+					{
+						"expect",{"#1#", "find", L.chat_throne["^Your futile persistance angers me!"]},
+						"set", {phase = "2"},
+						"quash", "windburstcd",
+						"alert", "stormlingcd",
+					},
+					-- Phase 3
+					{
+						"expect",{"#1#", "find", L.chat_throne["^Enough! I will no longer be contained!"]},
+						"quash", "stormlingcd",
+						"set", {phase = "3"},
+					},
+					-- Stormling Summon
+					{
+						"expect",{"#1#", "find", L.chat_throne["^Storms! I summon you to my side!"]},
+						"quash", "stormlingcd",
+						"alert", "stormlingcd",
+					},
+				},
+			},
+		},
 	}
 
 	DXE:RegisterEncounter(data)
