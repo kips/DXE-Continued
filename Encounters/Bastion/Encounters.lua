@@ -387,7 +387,7 @@ end
 
 do
 	local data = {
-		version = 1, 
+		version = 2, 
 		key = "chogall",
 		zone = L.zone["The Bastion of Twilight"],
 		category = L.zone["Bastion"],
@@ -403,18 +403,274 @@ do
 			combatstop = true,
 			defeat = 43324,
 		},
-		--[[ userdata = {},
 		onstart = {
 			{
+				"alert","furycd",
+				"alert","conversioncd",
+				"set",{conversiontime = 24},
+				"alert","adherentcd",
 			}
 		},
-		windows = {
+		userdata = {
+			conversiontime = 11,
+			adherenttime = {57,92,loop = false, type = "series"},
+			furytime = {50,47,loop = false, type = "series"},
+			creationstime = {30,40,loop = false, type = "series"},
 		},
 		alerts = {
+			-- Phase 1
+			conversioncd = {
+				varname = format(L.alert["%s Cooldown"],SN[91303]),
+				type = "dropdown",
+				text = format(L.alert["%s Cooldown"],SN[91303]),
+				time = "<conversiontime>",
+				flashtime = 5,
+				color1 = "YELLOW",
+				icon = ST[91303],
+			},
+			conversionwarn = {
+				varname = format(L.alert["%s Warning"],SN[91303]),
+				type = "simple",
+				text = SN[91303].."!",
+				time = 3,
+				flashtime = 3,
+				color1 = "YELLOW",
+				sound = "ALERT1",
+				icon = ST[91303],
+			},
+			adherentcd = {
+				varname = format(L.alert["%s Cooldown"],SN[81628]),
+				type = "dropdown",
+				text = format(L.alert["%s Cooldown"],SN[81628]),
+				time = "<adherenttime>",
+				flashtime = 5,
+				color1 = "BLUE",
+				icon = ST[81628],
+			},
+			adherentwarn = {
+				varname = format(L.alert["%s Warning"],SN[81628]),
+				type = "simple",
+				text = SN[81628].."!",
+				time = 3,
+				flashtime = 3,
+				color1 = "BLUE",
+				sound = "ALERT2",
+				icon = ST[81628],
+			},
+			furycd = {
+				varname = format(L.alert["%s Cooldown"],SN[82524]),
+				type = "dropdown",
+				text = SN[82524].."!",
+				time = "<furytime>",
+				flashtime = 5,
+				color1 = "CYAN",
+				icon = ST[82524],
+			},
+			furywarn = {
+				varname = format(L.alert["%s Warning"],SN[82524]),
+				type = "simple",
+				text = SN[82524].."!",
+				time = 3,
+				flashtime = 3,
+				color1 = "CYAN",
+				sound = "ALERT3",
+				icon = ST[82524],
+			},
+			festerbloodcd = {
+				varname = format(L.alert["%s Cooldown"],SN[82299]),
+				type = "dropdown",
+				text = format(L.alert["%s Cooldown"],SN[82299]),
+				time = 38,
+				flashtime = 5,
+				color1 = "MAGENTA",
+				icon = ST[82299],
+			},
+			festerbloodwarn = {
+				varname = format(L.alert["%s Warning"],SN[82299]),
+				type = "simple",
+				text = SN[82299].."!",
+				color1 = "MAGENTA",
+				sound = "ALERT4",
+				time = 3,
+				flashtime = 3,
+			},
+			blazewarnself = {
+				varname = format(L.alert["%s on self"],SN[81538]),
+				type = "simple",
+				text = format("%s: %s! %s!",SN[81538],L.alert["YOU"],L.alert["MOVE AWAY"]), 
+				time = 3,
+				flashtime = 3,
+				throttle = 3,
+				flashscreen = true,
+				color1 = "ORANGE",
+				sound = "ALERT12",
+				icon = ST[81538],
+			},
+			-- Phase 2
+			onetotwocd = {
+				varname = format(L.alert["%s Timer"],L.alert["Phase Two"]),
+				type = "centerpopup",
+				text = format(L.alert["%s Begins"],L.alert["Phase Two"]),
+				time = 5,
+				flashtime = 5,
+				color1 = "MIDGREY",
+				icon = ST[3648],
+			},
+			creationscd = {
+				varname = format(L.alert["%s Cooldown"],SN[82414]),
+				type = "dropdown",
+				text = format(L.alert["%s Cooldown"],SN[82414]),
+				time = "<creationstime>",
+				flashtime = 5,
+				color1 = "PURPLE",
+				icon = ST[82414],
+			},
+			creationswarn = {
+				varname = format(L.alert["%s Warning"],SN[82414]),
+				type = "simple",
+				text = SN[82414].."!",
+				time = 3,
+				flashtime = 3,
+				color1 = "PURPLE",
+				sound = "ALERT5",
+				icon = ST[82414],
+			},
+		},
+		raidicons = {
+			worshipmark = {
+				varname = SN[91317],
+				type = "MULTIFRIENDLY",
+				persist = 5,
+				reset = 5,
+				unit = "#5#",
+				icon = 1,
+				total = 2,
+			},
+			creationsmark = {
+				varname = SN[82414],
+				type = "MULTIENEMY",
+				persist = 30,
+				reset = 30,
+				unit = "#1#",
+				icon = 1,
+				total = 4,
+				remove = false,
+			},
 		},
 		events = {
-		}, ]]
+			-- Summon Corrupting Adherent
+			{
+				type = "combatevent",
+				eventtype = "SPELL_CAST_START",
+				spellname = 81628,
+				execute = {
+					{
+						"quash","adherentcd",
+						"alert","adherentcd",
+						"alert","adherentwarn",
+						"alert","festerbloodcd",
+						"set",{conversiontime = 37},
+					},
+				},
+			},
+			-- Fury of Cho'gall
+			{
+				type = "combatevent",
+				eventtype = "SPELL_CAST_START",
+				spellname = 82524,
+				execute = {
+					{
+						"alert","furycd",    
+						"alert","furywarn",
+					},
+				},
+			},
+			-- Festerblood
+			{
+				type = "combatevent",
+				eventtype = "SPELL_CAST_START",
+				spellname = 82299,
+				execute = {
+					{
+						"quash","festerbloodcd",
+						"alert","festerbloodwarn",
+					},
+				}
+			},
+			-- Conversion
+			{
+				type = "combatevent",
+				eventtype = "SPELL_CAST_SUCCESS",
+				spellname = 91303,
+				execute = {
+					{
+						"alert","conversioncd",
+						"alert","conversionwarn",
+					},
+				},
+			},
+			-- Worshipping
+			{
+				type = "combatevent",
+				eventtype = "SPELL_AURA_APPLIED",
+				spellname = 91317,
+				execute = {
+					{
+						"raidicon","worshipmark",
+					},
+				},
+			},
+			-- Blaze on self
+			{
+				type = "combatevent",
+				eventtype = "SPELL_DAMAGE",
+				spellname = 81538,
+				execute = {
+					{
+						"expect",{"#4#","==","&playerguid&"},
+						"alert","blazewarnself",
+					},
+				},
+			},
+			-- Consume Blood of the Old God
+			{
+				type = "combatevent",
+				eventtype = "SPELL_CAST_SUCCESS",
+				spellname = 82630,
+				execute = {
+					{
+						"quashall",true,
+						"alert","onetotwocd",
+						"alert","creationscd",
+					},
+				},
+			},
+			-- Darkened Creations
+			{
+				type = "combatevent",
+				eventtype = "SPELL_CAST_SUCCESS",
+				spellname = 82414,
+				execute = {
+					{
+						"alert","creationscd",
+						"alert","creationswarn",
+					},
+				},
+			},
+			-- Darkened Creations marks
+			{
+				type = "combatevent",
+				eventtype = "SPELL_CAST_START",
+				spellname = 82411,
+				execute = {
+					{
+						"raidicon","creationsmark",
+					},
+				},
+			},
+		},
 	}
+
 
 	DXE:RegisterEncounter(data)
 end
