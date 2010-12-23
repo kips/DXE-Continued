@@ -55,8 +55,8 @@ end
 
 do
 	local data = {
-		version = 2,
-		key = "val+ther",
+		version = 4,
+		key = "valther",
 		zone = L.zone["The Bastion of Twilight"],
 		category = L.zone["Bastion"],
 		name = L.npc_bastion["Valiona & Theralion"],
@@ -206,8 +206,8 @@ do
 				persist = 20,
 				unit = "#5#",
 				icon = 2,
-				reset = 3, -- Guess as to how many there are for now.
-				total = 3,
+				reset = 2, -- Looks like 2 on 25 man, TODO: Check for 10 man count 
+				total = 2,
 			},
 		},
 		timers = {
@@ -260,7 +260,6 @@ do
 				type = "combatevent",
 				eventtype = "SPELL_AURA_APPLIED",
 				spellname = 95639,
-				dstisplayerunit = true,
 				execute = {
 					{
 						"raidicon","engulfmark",
