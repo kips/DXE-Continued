@@ -289,6 +289,9 @@ end
 do
 	-- 18 yards
 	local bandages = {
+		[53051] = true, -- Dense Embersilk Bandage
+		[53050] = true, -- Heavy Embersilk Bandage
+		[53049] = true, -- Embersilk Bandage
 		[34722] = true, -- Heavy Frostweave Bandage
 		[34721] = true, -- Frostweave Bandage
 		[21991] = true, -- Heavy Netherweave Bandage
