@@ -18,7 +18,7 @@ end
 
 -- Computes the distance between the player and unit in game yards
 -- Intended to be used when the player and unit are in the same map
--- Supported: Ulduar, Naxxramas, The Eye of Eternity, The Obsidian Sanctum, Trial of the Crusader
+-- Supported: Citadel, Ruby Sanctum, Ulduar, Naxxramas, The Eye of Eternity, The Obsidian Sanctum, Trial of the Crusader
 function addon:GetDistanceToUnit(unit,fx2,fy2)
 	local x1,y1 = self:GetPlayerMapPosition("player")
 	local x2,y2
@@ -49,6 +49,53 @@ function addon:GetDistanceToUnit(unit,fx2,fy2)
 	local dy = (y2 - y1) * dims.h
 
 	return (dx*dx + dy*dy)^(0.5),dx,dy -- dx*dx is faster than dx^2
+end
+
+-- Distance Between Units the result is returned in squared form. This is done to reduce overall computation load.
+function addon:GetDistanceBetweenUnits(unit1, unit2, fx1, fx2, fx2,fy2)
+	local x1,y1
+	local x2,y2
+
+	local list = MapDims[GetMapInfo()]
+	if not list then return end
+	local level = GetCurrentMapDungeonLevel()
+	local dims = list[level]
+	if not dims then 
+		-- Zoning in and out will set the dungeon level to 0 so
+		-- we need some special handling to get to the dungeon
+		-- level we want
+		if level == 0 and list[1] then
+			SetMapToCurrentZone()
+			level = GetCurrentMapDungeonLevel()
+			dims = list[level]
+			if not dims then return end
+		else return end
+	end
+
+	if fx1 and fy1 then
+		x1,y1 = fx1,fy1
+	else
+		x1,y1 = self:GetPlayerMapPosition(unit1)
+	end
+	
+	if fx2 and fy2 then
+		x2,y2 = fx2,fy2
+	else
+		x2,y2 = self:GetPlayerMapPosition(unit2)
+	end
+	
+	-- if either unit is in a different zone return nil to abort the check
+	if x1 <= 0 and y1 <= 0 then
+		return nil
+	end
+	if x2 <= 0 and y2 <= 0 then
+		return nil
+	end
+
+	local dx = (x2 - x1) * dims.w
+	local dy = (y2 - y1) * dims.h
+
+	return (dx*dx + dy*dy),dx,dy -- dx*dx is faster than dx^2
 end
 
 local function comp(a,b)
@@ -89,8 +136,8 @@ MapDims= {
 		[1] = {w = 400.728405332355, h = 267.09113174487},
 	},
 	TheArgentColiseum = {
-		[1] = {w = 344.20785972537, h = 229.57961178118},
-		[2] = {w = 688.60679691348, h = 458.95801567569},
+		[1] = {w = 344.20785972537, h = 229.57961178118}, -- Main Floor
+		[2] = {w = 688.60679691348, h = 458.95801567569}, -- Anub
 	},
 	VaultofArchavon = {
 		[1] = {w = 842.2254908359, h = 561.59878021123},
@@ -107,7 +154,22 @@ MapDims= {
 	TheRubySanctum = {
 		[0] = {w = 752.083, h = 502.09}, -- The Ruby Sanctumn
 	},
-	--@debug@
+	-- Credits for this map data goes to LibMapData, has been verified with
+	TheBastionofTwilight = {
+		[1] = { w = 1078.33402252197, h = 718.889984130859}, -- LibMapData, Halfus + Dragons
+		[2] = { w = 778.343017578125, h = 518.894958496094}, -- LibMapData, Council + Cho'gall
+		[3] = { w = 1042.34202575684, h = 694.894958496094}, -- LibMapData, Sinestra
+	},
+	BlackwingDescent = {
+		[1] = { w = 849.69401550293, h = 566.462341070175}, -- LibMapData
+		[2] = { w = 999.69297790527, h = 666.462005615234}, -- LibMapData
+	},
+	ThroneoftheFourWinds = { 
+		-- I am aware that there is only 1 entry here. However throne returns a 1 not a zero when getting num levels.
+		[1] = { w = 1514.534846, h = 1080.831578}, -- IsItemInRange
+		--[1] = {w = 1500.0, h = 1000.0}, -- LibMapData
+	},
+	--[===[@debug@
 	Ironforge = {
 		[0] = {w = 790.574581, h = 527.049720},
 	},
@@ -123,5 +185,5 @@ MapDims= {
 		[0] = {h = 3283.346244075043, w = 4925.000979131685}, -- IsSpellInRange
 		--[0] = {h = 3061.074929413, w = 4606.3254134678}, -- game engine
 	},
-	--@end-debug@
+	--@end-debug@]===]
 }
