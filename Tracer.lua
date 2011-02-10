@@ -20,9 +20,10 @@ local Tracer,prototype = {},{}
 addon.Tracer = Tracer
 
 local trackInfos = {
-	npcid = { func = "Execute", goalType = "number", attribute = function(unit) return NID[UnitGUID(unit)] end },
-	name = { func = "Execute", goalType = "string", attribute = UnitName },
-	unit = { func = "Execute2", goalType = "string", attribute = UnitExists },
+	npcid 		= { func = "Execute", goalType = "number", attribute = function(unit) return NID[UnitGUID(unit)] end },
+	name 		= { func = "Execute", goalType = "string", attribute = UnitName },
+	unit 		= { func = "Execute2", goalType = "string", attribute = UnitExists },
+	userdata	= { func = "Execute3", goalType = "string", attribute = function(uservar) return DXE.Invoker.userdata[uservar] end},
 }
 
 function Tracer:New()
@@ -109,6 +110,15 @@ function prototype:Execute2()
 	end
 end
 
+function prototype:Execute3()
+	local current = self.attribute(self.goal)
+	
+	if not self.previous or self.previous ~= current then
+		self.previous = current
+		self:Fire("TRACER_UPDATE")
+	end
+end
+
 ----------------------------------
 -- API
 ----------------------------------
@@ -122,6 +132,7 @@ function prototype:Track(trackType, goal)
 	self.attribute = info.attribute
 	self.func = info.func
 	self.goal = goal
+	self.trackType = trackType
 end
 
 function prototype:IsOpen()
