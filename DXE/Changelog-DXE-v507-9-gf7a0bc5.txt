@@ -1,0 +1,13 @@
+Shefki:
+	- Bump version number.
+	- Cho'gall (2): Variety of warnings including work from Shrugal.
+	- Valiona & Theralion (4): Fix Engulf warning and rename encounter so it can be distributed.
+	- Al'Akir (2): Add some cooldowns/warnings based on Shuang's work/logs.
+	- Conclave(2): Add warnings for the Rohash side of the fight.
+	- Halfus (2): Add Enrage timer. Valiona & Theralion (2): Add a variety of warnings.
+	Note: These are largely untested at this point and there are no timers
+	to predict when anything is going to happen right now.
+	- Comment out parts of the Cata raid stubs that are empty so Validator doesn't whine.
+	- Stub out Encounters for Cataclysm Raids.
+	- Fix localize.rb so it'll actually work.
+	Wowace doesn't seem to like double slashes.

@@ -1,0 +1,15 @@
+## Interface: 40000
+## Title: DXE |cff99ff33Descent|r
+## Notes: Deus Vox Encounters |cff99ff33Descent|r
+## Author: Shefki
+## LoadOnDemand: 1
+## Dependencies: DXE
+## X-DXE-Category: Descent 
+## X-DXE-Zone: Blackwing Descent 
+## X-Curse-Packaged-Version: v507-9-gf7a0bc5
+## X-Curse-Project-Name: Deus Vox Encounters
+## X-Curse-Project-ID: deus-vox-encounters
+## X-Curse-Repository-ID: wow/deus-vox-encounters/mainline
+
+Locales.lua
+Encounters.lua

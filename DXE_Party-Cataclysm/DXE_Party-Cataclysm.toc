@@ -1,0 +1,11 @@
+## Interface: 40000
+## Title: DXE |cff99ff33Baradin|r
+## Notes: Deus Vox Encounters |cff99ff33Baradin|r
+## Author: Shefki
+## LoadOnDemand: 1
+## Dependencies: DXE
+## X-DXE-Category: Heroics
+## X-DXE-Zone: Heroics 
+
+Locales.lua
+Encounters.lua
