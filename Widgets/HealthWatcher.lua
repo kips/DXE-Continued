@@ -11,8 +11,29 @@ local UnitIsDead = UnitIsDead
 local format = string.format
 local DEAD = DEAD:upper()
 
-function HealthWatcher:New(parent)
-	local hw = CreateFrame("Button",nil,parent)
+function HealthWatcher:SetupSecure(parent)
+	-- Set up the secure frame for click interaction (Shuang)
+	local secure = CreateFrame("Button","hwSecure"..parent.index,parent,"SecureActionButtonTemplate")
+	secure:RegisterForClicks("AnyUp", "AnyDown")
+	
+	-- Set up targetting (Shuang)
+	secure:SetAttribute("type1", "macro");
+	secure:SetAttribute("macrotext1", "/raid Oops! Something went wrong with DXE targeting");
+	-- for an unknown reason the shift left click does not work... (Shuang)
+	secure:SetAttribute("type2", "macro");
+	secure:SetAttribute("macrotext2", "/raid Oops! Something went wrong with DXE focusing");
+	
+	secure:SetAllPoints(parent)
+	secure:SetWidth(parent:GetWidth())
+	secure:SetHeight(parent:GetHeight())
+	secure:SetFrameStrata("HIGH")
+	
+	parent.secure = secure
+end
+
+function HealthWatcher:New(parent, index)
+	local hw = CreateFrame("Button", "hw"..index , parent)
+	hw.index = index
 	-- Embed
 	for k,v in pairs(prototype) do hw[k] = v end
 	hw.events = {}
@@ -20,14 +41,16 @@ function HealthWatcher:New(parent)
 	hw:SetWidth(220); hw:SetHeight(22)
 	addon:RegisterBackground(hw)
 
-	local healthbar = CreateFrame("StatusBar",nil,hw)
+	-- Health
+	local healthbar = CreateFrame("StatusBar","heatlhbar"..index,hw)
 	healthbar:SetMinMaxValues(0,1)
 	healthbar:SetPoint("TOPLEFT",2,-2)
 	healthbar:SetPoint("BOTTOMRIGHT",-2,2)
 	addon:RegisterStatusBar(healthbar)
 	hw.healthbar = healthbar
 
-	local powerbar = CreateFrame("StatusBar",nil,hw)
+	-- Power
+	local powerbar = CreateFrame("StatusBar","powerbar"..index,hw)
 	powerbar:SetMinMaxValues(0,1)
 	powerbar:SetPoint("BOTTOMLEFT",healthbar,"BOTTOMLEFT")
 	powerbar:SetPoint("BOTTOMRIGHT",healthbar,"BOTTOMRIGHT")
@@ -39,7 +62,7 @@ function HealthWatcher:New(parent)
 	
 	local border = CreateFrame("Frame",nil,hw)
 	border:SetAllPoints(true)
-	border:SetFrameLevel(healthbar:GetFrameLevel()+2)
+	border:SetFrameLevel(healthbar:GetFrameLevel()+3)
 	addon:RegisterBorder(border)
 	hw.border = border
 
@@ -78,7 +101,20 @@ end
 function prototype:SetCallback(event, func) self.events[event] = func end
 function prototype:Fire(event, ...) if self.events[event] then self.events[event](self,event,...) end end
 function prototype:Track(trackType,goal) self.tracer:Track(trackType,goal) end
-function prototype:SetTitle(text) self.title:SetText(text) end
+function prototype:SetTitle(text) 
+	self.title:SetText(text) 
+	
+	-- set the macro text attributes here since it isn't being properly set elsewhere
+	if not self.counter and not InCombatLockdown() and text ~= "Default" then
+		-- set up the secure stuff *after* the non-secure so the watching works
+		HealthWatcher:SetupSecure(self)
+		self.secure:HookScript("OnEnter",function(self) addon.Pane.MouseIsOver = true; addon:UpdatePaneVisibility() end)
+		self.secure:HookScript("OnLeave",function(self) addon.Pane.MouseIsOver = false; addon:UpdatePaneVisibility()end)
+
+		self.secure:SetAttribute("macrotext1", format("/targetexact %s", text));
+		self.secure:SetAttribute("macrotext2", format("/targetexact %s\n/focus\n/targetlasttarget ", text));
+	end
+end
 function prototype:IsTitleSet() return self.title:GetText() ~= "..." end
 function prototype:GetGoal() return self.tracer.goal end
 function prototype:EnableUpdates() self.updates = true end
@@ -119,10 +155,27 @@ function prototype:Close()
 end
 
 function prototype:SetInfoBundle(health,hperc,pperc)
-	self.healthbar:SetValue(hperc)
-	self.healthbar:SetStatusBarColor(hperc > 0.5 and ((1 - hperc) * 2) or 1, hperc > 0.5 and 1 or (hperc * 2), 0)
-	self.health:SetText(health)
-	if self.power and pperc then self.powerbar:SetValue(pperc) end
+	if not self.counter then
+		self.healthbar:SetValue(hperc)
+		self.healthbar:SetStatusBarColor(hperc > 0.5 and ((1 - hperc) * 2) or 1, hperc > 0.5 and 1 or (hperc * 2), 0)
+		self.health:SetText(health)
+		if self.power and pperc then self.powerbar:SetValue(pperc) end
+	else -- hijack function for counter data... (Shuang)
+		local current 	= tonumber(health)
+		if not current then return end
+		local total		= hperc
+		local percent 	= current / total
+		local text		= tostring(current).. " / "..tostring(total)
+		
+		self.healthbar:SetValue(percent)
+		self.healthbar:SetStatusBarColor(percent > 0.5 and ((1 - percent) * 2) or 1, percent > 0.5 and 1 or (percent * 2), 0)
+		self.health:SetText(text)
+	end
+end
+
+-- Counter code
+function prototype:ShowCounter(counter)
+	self.counter = counter
 end
 
 -- Events
@@ -147,6 +200,13 @@ function prototype:TRACER_ACQUIRED()
 end
 
 function prototype:TRACER_UPDATE()
+	if self.counter then
+		local current 	= tonumber(DXE.Invoker.userdata[self.counter.."_current"])
+		local total		= tonumber(DXE.Invoker.userdata[self.counter.."_total"])
+		self:SetInfoBundle(current, total)
+		return
+	end
+
 	local unit = self.tracer:First()
 	if UnitIsDead(unit) then
 		self:SetInfoBundle(DEAD, 0, 0)
