@@ -1,11 +1,11 @@
 local defaults = {
 	profile = {8,7,6,5,4,3,2,1,Enabled = true},
-	--@debug@
+	--[===[@debug@
 	global = {
 		debug = {
 		},
 	},
-	--@end-debug@
+	--@end-debug@]===]
 }
 
 -- WORKS: SetRaidTarget(unit,0); SetRaidTarget(unit,[1,8]) 
@@ -47,9 +47,9 @@ function module:OnInitialize()
 	db.RegisterCallback(self, "OnProfileCopied", "RefreshProfile")
 	db.RegisterCallback(self, "OnProfileReset", "RefreshProfile")
 
-	--@debug@
+	--[===[@debug@
 	debug = addon:CreateDebugger("RaidIcons",db.global,db.global.debug)
-	--@end-debug@
+	--@end-debug@]===]
 end
 
 function module:OnDisable()
@@ -147,9 +147,9 @@ do
 	end
 
 	local function MarkUnit(unit)
-		--@debug@
+		--[===[@debug@
 		assert(type(unit) == "string")
-		--@end-debug@
+		--@end-debug@]===]
 
 		local guid = UnitGUID(unit)
 		if guid then
@@ -165,10 +165,10 @@ do
 	end
 
 	local function MarkGUID(guid,icon)
-		--@debug@
+		--[===[@debug@
 		assert(type(guid) == "string")
 		assert(type(icon) == "number")
-		--@end-debug@
+		--@end-debug@]===]
 
 		for _,unit in pairs(unit_to_unittarget) do
 			if UnitGUID(unit) == guid then

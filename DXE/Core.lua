@@ -2,7 +2,7 @@
 -- DEFAULTS
 ---------------------------------------------
 
---@debug@
+--[===[@debug@
 local debug
 
 local debugDefaults = { 
@@ -15,7 +15,7 @@ local debugDefaults = {
 	TriggerDefeat = false,
 	UNIT_NAME_UPDATE = false,
 }
---@end-debug@
+--@end-debug@]===]
 
 local defaults = { 
 	global = { 
@@ -23,9 +23,9 @@ local defaults = {
 		AdvancedMode = false,
 		-- NPC id -> Localized name  
 		L_NPC = {},
-		--@debug@
+		--[===[@debug@
 		debug = debugDefaults,
-		--@end-debug@
+		--@end-debug@]===]
 	},
 	profile = {
 		Enabled = true,
@@ -289,9 +289,6 @@ end
 do
 	-- 18 yards
 	local bandages = {
-		[53051] = true, -- Dense Embersilk Bandage
-		[53050] = true, -- Heavy Embersilk Bandage
-		[53049] = true, -- Embersilk Bandage
 		[34722] = true, -- Heavy Frostweave Bandage
 		[34721] = true, -- Frostweave Bandage
 		[21991] = true, -- Heavy Netherweave Bandage
@@ -372,14 +369,14 @@ do
 	--					     is set to true the function should not be passing in arguments
 	--         		     because they will be lost
 	local function ThrottleFunc(_obj,_func,_time,_postcall)
-		--@debug@
+		--[===[@debug@
 		assert(type(_func) == "string","Expected _func to be a string")
 		assert(type(_obj) == "table","Expected _obj to be a table")
 		assert(type(_obj[_func]) == "function","Expected _obj[func] to be a function")
 		assert(type(_time) == "number","Expected _time to be a number")
 		assert(type(_postcall) == "boolean","Expected _postcall to be a boolean")
 		assert(AceTimer.embeds[_obj],"Expected obj to be AceTimer embedded")
-		--@end-debug@
+		--@end-debug@]===]
 		local _old_func = _obj[_func]
 		local _last,_handle = GetTime() - _time
 		_obj[_func] = function(self,...)
@@ -425,10 +422,10 @@ function addon:RegisterEncounter(data)
 	-- Add to queue if we're not loaded yet
 	if not Initialized then RegisterQueue[key] = data return end
 
-	--@debug@
+	--[===[@debug@
 	local success = safecall(self.ValidateData,self,data)
 	if not success then return end
-	--@end-debug@
+	--@end-debug@]===]
 
 	-- Upgrading
 	if RDB[key] and RDB[key] ~= data then
@@ -518,9 +515,9 @@ do
 		self:StopEncounter()
 		PlaySoundFile(SM:Fetch("sound",pfl.Sounds.VICTORY))
 		if pfl.Proximity.AutoHide then self:HideProximity() end
-		--@debug@
+		--[===[@debug@
 		debug("TriggerDefeat","key: %s",CE.key)
-		--@end-debug@
+		--@end-debug@]===]
 	end
 
 	function addon:SetDefeat(defeat)
@@ -540,9 +537,9 @@ end
 
 --- Change the currently-active encounter.
 function addon:SetActiveEncounter(key)
-	--@debug@
+	--[===[@debug@
 	assert(type(key) == "string","String expected in SetActiveEncounter")
-	--@end-debug@
+	--@end-debug@]===]
 	-- Check the new encounter
 	if not EDB[key] then return end
 	-- Already set to this encounter
@@ -672,9 +669,9 @@ local prevGroupType = "NONE"
 local RosterHandle
 addon.GroupType = "NONE"
 function addon:RAID_ROSTER_UPDATE()
-	--@debug@
+	--[===[@debug@
 	debug("RAID_ROSTER_UPDATE","Invoked")
-	--@end-debug@
+	--@end-debug@]===]
 
 	local tmpOnline,tmpMembers = 0,GetNumRaidMembers()
 	if tmpMembers > 0 then
@@ -719,9 +716,9 @@ function addon:RAID_ROSTER_UPDATE()
 			local name,online = UnitName(pID[i]),UnitIsConnected(pID[i])
 			if online then
 				local unit = pID[i]
-				--@debug@
+				--[===[@debug@
 				debug("PARTY_MEMBERS_CHANGED","name: %s unit: %s guid: %s",name,unit,UnitGUID(unit))
-				--@end-debug@
+				--@end-debug@]===]
 				tmpOnline = tmpOnline + 1
 				for k,t in pairs(Roster) do
 					refreshFuncs[k](t,unit)
@@ -950,9 +947,9 @@ end
 do
 	local funcs = {}
 	function addon:AddToRefreshProfile(func)
-		--@debug@
+		--[===[@debug@
 		assert(type(func) == "function")
-		--@end-debug@
+		--@end-debug@]===]
 		funcs[#funcs+1] = func
 	end
 
@@ -995,9 +992,9 @@ function addon:OnInitialize()
 	db.RegisterCallback(self, "OnProfileCopied", "RefreshProfile")
 	db.RegisterCallback(self, "OnProfileReset", "RefreshProfile")
 
-	--@debug@
+	--[===[@debug@
 	debug = self:CreateDebugger("Core",gbl,debugDefaults)
-	--@end-debug@
+	--@end-debug@]===]
 
 	-- Received database
 	RDB = self.db:RegisterNamespace("RDB", {global = {}}).global
@@ -1013,7 +1010,7 @@ function addon:OnInitialize()
 	self:RegisterEncounter({key = "default", name = L["Default"], title = L["Default"]})
 	self:SetActiveEncounter("default")
 
-	--@debug@
+	--[===[@debug@
 	-- Register addon/received encounter data
 	for key,data in pairs(RegisterQueue) do
 		if RDB[key] and RDB[key].version > data.version then
@@ -1025,7 +1022,7 @@ function addon:OnInitialize()
 
 		RegisterQueue[key] = nil
 	end
-	--@end-debug@
+	--@end-debug@]===]
 
 	-- The rest that don't exist
 	for key,data in pairs(RDB) do
@@ -1236,14 +1233,14 @@ do
 
 	-- Registers saving positions in database
 	function addon:RegisterMoveSaving(frame,point,relativeTo,relativePoint,xOfs,yOfs,withShift,redirect)
-		--@debug@
+		--[===[@debug@
 		assert(type(frame) == "table","expected 'frame' to be a table")
 		assert(frame.IsObjectType and frame:IsObjectType("Region"),"'frame' is not a blizzard frame")
 		if redirect then
 			assert(type(redirect) == "table","expected 'redirect' to be a table")
 			assert(redirect.IsObjectType and redirect:IsObjectType("Region"),"'frame' is not a blizzard frame")
 		end
-		--@end-debug@
+		--@end-debug@]===]
 		frame.__redirect = redirect
 		if withShift then
 			frame:SetScript("OnMouseDown",StartMovingShift)
@@ -1505,10 +1502,10 @@ local DEAD = DEAD:upper()
 -- t[2] = last known perc
 local SortedCache = {}
 local SeenNIDS = {}
---@debug@
+--[===[@debug@
 addon.SortedCache = SortedCache
 addon.SeenNIDS = SeenNIDS
---@end-debug@
+--@end-debug@]===]
 
 -- Currently, only four are needed. We don't want to clutter the screen
 local UNKNOWN = _G.UNKNOWN
@@ -1733,9 +1730,9 @@ do
 	-- Occasionally UnitName("boss1") == UnitName("boss2")
 	function addon:UNIT_NAME_UPDATE(unit)
 		if units[unit] then
-			--@debug@
+			--[===[@debug@
 			debug("UNIT_NAME_UPDATE","unit: %s",unit)
-			--@end-debug@
+			--@end-debug@]===]
 			units[unit]:SetTitle(UnitName(unit))
 		end
 	end
@@ -1823,21 +1820,21 @@ end
 do
 	local LockableFrames = {}
 	function addon:RegisterForLocking(frame)
-		--@debug@
+		--[===[@debug@
 		assert(type(frame) == "table","expected 'frame' to be a table")
 		assert(frame.IsObjectType and frame:IsObjectType("Region"),"'frame' is not a blizzard frame")
-		--@end-debug@
+		--@end-debug@]===]
 		LockableFrames[frame] = true
 		self:UpdateLockedFrames()
 	end
 
 	function addon:CreateLockableFrame(name,width,height,text)
-		--@debug@
+		--[===[@debug@
 		assert(type(name) == "string","expected 'name' to be a string")
 		assert(type(width) == "number" and width > 0,"expected 'width' to be a number > 0")
 		assert(type(height) == "number" and height > 0,"expected 'height' to be a number > 0")
 		assert(type(text) == "string","expected 'text' to be a string")
-		--@end-debug@
+		--@end-debug@]===]
 		local frame = CreateFrame("Frame","DXE"..name,UIParent)
 		frame:EnableMouse(true)
 		frame:SetMovable(true)
@@ -2037,9 +2034,9 @@ do
 	local started = 0
 	-- PLAYER_REGEN_ENABLED
 	function addon:CombatStop()
-		--@debug@
+		--[===[@debug@
 		debug("CombatStop","Invoked")
-		--@end-debug@
+		--@end-debug@]===]
 		if UnitHealth("player") > 0 and not UnitAffectingCombat("player") then
 			-- If this doesn't work then scan the raid for units in combat
 			if dead then
@@ -2081,17 +2078,17 @@ end
 ---------------------------------------------
 
 function addon:SendWhisperComm(target,commType,...)
-	--@debug@
+	--[===[@debug@
 	assert(type(target) == "string")
 	assert(type(commType) == "string")
-	--@end-debug@
+	--@end-debug@]===]
 	self:SendCommMessage("DXE",self:Serialize(commType,...),"WHISPER",target)
 end
 
 function addon:SendRaidComm(commType,...)
-	--@debug@
+	--[===[@debug@
 	assert(type(commType) == "string")
-	--@end-debug@
+	--@end-debug@]===]
 	if addon.GroupType == "NONE" then return end
 	self:SendCommMessage("DXE",self:Serialize(commType,...),addon.GroupType)
 end
@@ -2271,9 +2268,9 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED(_, _,eventtype, _, _, _, dstGUID)
 end
 
 function addon:CHAT_MSG_MONSTER_YELL(_,msg,...)
-	--@debug@
+	--[===[@debug@
 	debug("CHAT_MSG_MONSTER_YELL",msg,...)
-	--@end-debug@
+	--@end-debug@]===]
 	for fragment,key in pairs(TRGS_YELL) do
 		if find(msg,fragment) then
 			self:SetActiveEncounter(key)

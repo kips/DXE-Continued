@@ -12,11 +12,11 @@ local L = AL:NewLocale("DXE", "enUS", true, silent)
 if L then
 
 -- Chat triggers
-local chat_baradin = AL:NewLocale("DXE Chat Baradin", "enUS", true, silent)
-AL:GetLocale("DXE").chat_baradin = AL:GetLocale("DXE Chat Baradin")
+local chat_heroics = AL:NewLocale("DXE Chat Heroics", "enUS", true, silent)
+AL:GetLocale("DXE").chat_heroics = AL:GetLocale("DXE Chat Heroics")
 -- NPC names
-local npc_baradin = AL:NewLocale("DXE NPC Baradin", "enUS", true, silent)
-AL:GetLocale("DXE").npc_baradin = AL:GetLocale("DXE NPC Baradin")
+local npc_heroics = AL:NewLocale("DXE NPC Heroics", "enUS", true, silent)
+AL:GetLocale("DXE").npc_heroics = AL:GetLocale("DXE NPC Heroics")
 if GetLocale() == "enUS" or GetLocale() == "enGB" then return end
 end
 
@@ -24,13 +24,13 @@ local L = AL:NewLocale("DXE", "deDE")
 if L then
 
 -- Chat triggers
-local chat_baradin = AL:NewLocale("DXE Chat Baradin", "deDE")
---@localization(locale="deDE", format="lua_additive_table", namespace="chat_baradin", table-name="chat_baradin")@
-AL:GetLocale("DXE").chat_baradin = AL:GetLocale("DXE Chat Baradin")
+local chat_heroics = AL:NewLocale("DXE Chat Heroics", "deDE")
+--@localization(locale="deDE", format="lua_additive_table", namespace="chat_heroics", table-name="chat_heroics")@
+AL:GetLocale("DXE").chat_heroics = AL:GetLocale("DXE Chat Heroics")
 -- NPC names
-local npc_baradin = AL:NewLocale("DXE NPC Baradin", "deDE")
---@localization(locale="deDE", format="lua_additive_table", namespace="npc_baradin", table-name="npc_baradin")@
-AL:GetLocale("DXE").npc_baradin = AL:GetLocale("DXE NPC Baradin")
+local npc_heroics = AL:NewLocale("DXE NPC Heroics", "deDE")
+--@localization(locale="deDE", format="lua_additive_table", namespace="npc_heroics", table-name="npc_heroics")@
+AL:GetLocale("DXE").npc_heroics = AL:GetLocale("DXE NPC Heroics")
 return
 end
 
@@ -38,13 +38,13 @@ local L = AL:NewLocale("DXE", "esES")
 if L then
 
 -- Chat triggers
-local chat_baradin = AL:NewLocale("DXE Chat Baradin", "esES")
---@localization(locale="esES", format="lua_additive_table", namespace="chat_baradin", table-name="chat_baradin")@
-AL:GetLocale("DXE").chat_baradin = AL:GetLocale("DXE Chat Baradin")
+local chat_heroics = AL:NewLocale("DXE Chat Heroics", "esES")
+--@localization(locale="esES", format="lua_additive_table", namespace="chat_heroics", table-name="chat_heroics")@
+AL:GetLocale("DXE").chat_heroics = AL:GetLocale("DXE Chat Heroics")
 -- NPC names
-local npc_baradin = AL:NewLocale("DXE NPC Baradin", "esES")
---@localization(locale="esES", format="lua_additive_table", namespace="npc_baradin", table-name="npc_baradin")@
-AL:GetLocale("DXE").npc_baradin = AL:GetLocale("DXE NPC Baradin")
+local npc_heroics = AL:NewLocale("DXE NPC Heroics", "esES")
+--@localization(locale="esES", format="lua_additive_table", namespace="npc_heroics", table-name="npc_heroics")@
+AL:GetLocale("DXE").npc_heroics = AL:GetLocale("DXE NPC Heroics")
 return
 end
 
@@ -52,13 +52,13 @@ local L = AL:NewLocale("DXE", "esMX")
 if L then
 
 -- Chat triggers
-local chat_baradin = AL:NewLocale("DXE Chat Baradin", "esMX")
---@localization(locale="esMX", format="lua_additive_table", namespace="chat_baradin", table-name="chat_baradin")@
-AL:GetLocale("DXE").chat_baradin = AL:GetLocale("DXE Chat Baradin")
+local chat_heroics = AL:NewLocale("DXE Chat Heroics", "esMX")
+--@localization(locale="esMX", format="lua_additive_table", namespace="chat_heroics", table-name="chat_heroics")@
+AL:GetLocale("DXE").chat_heroics = AL:GetLocale("DXE Chat Heroics")
 -- NPC names
-local npc_baradin = AL:NewLocale("DXE NPC Baradin", "esMX")
---@localization(locale="esMX", format="lua_additive_table", namespace="npc_baradin", table-name="npc_baradin")@
-AL:GetLocale("DXE").npc_baradin = AL:GetLocale("DXE NPC Baradin")
+local npc_heroics = AL:NewLocale("DXE NPC Heroics", "esMX")
+--@localization(locale="esMX", format="lua_additive_table", namespace="npc_heroics", table-name="npc_heroics")@
+AL:GetLocale("DXE").npc_heroics = AL:GetLocale("DXE NPC Heroics")
 return
 end
 
@@ -66,13 +66,13 @@ local L = AL:NewLocale("DXE", "frFR")
 if L then
 	
 -- Chat triggers
-local chat_baradin = AL:NewLocale("DXE Chat Baradin", "frFR")
---@localization(locale="frFR", format="lua_additive_table", namespace="chat_baradin", table-name="chat_baradin")@
-AL:GetLocale("DXE").chat_baradin = AL:GetLocale("DXE Chat Baradin")
+local chat_heroics = AL:NewLocale("DXE Chat Heroics", "frFR")
+--@localization(locale="frFR", format="lua_additive_table", namespace="chat_heroics", table-name="chat_heroics")@
+AL:GetLocale("DXE").chat_heroics = AL:GetLocale("DXE Chat Heroics")
 -- NPC names
-local npc_baradin = AL:NewLocale("DXE NPC Baradin", "frFR")
---@localization(locale="frFR", format="lua_additive_table", namespace="npc_baradin", table-name="npc_baradin")@
-AL:GetLocale("DXE").npc_baradin = AL:GetLocale("DXE NPC Baradin")
+local npc_heroics = AL:NewLocale("DXE NPC Heroics", "frFR")
+--@localization(locale="frFR", format="lua_additive_table", namespace="npc_heroics", table-name="npc_heroics")@
+AL:GetLocale("DXE").npc_heroics = AL:GetLocale("DXE NPC Heroics")
 return
 end
 
@@ -80,13 +80,13 @@ local L = AL:NewLocale("DXE", "koKR")
 if L then
 
 -- Chat triggers
-local chat_baradin = AL:NewLocale("DXE Chat Baradin", "koKR")
---@localization(locale="koKR", format="lua_additive_table", namespace="chat_baradin", table-name="chat_baradin")@
-AL:GetLocale("DXE").chat_baradin = AL:GetLocale("DXE Chat Baradin")
+local chat_heroics = AL:NewLocale("DXE Chat Heroics", "koKR")
+--@localization(locale="koKR", format="lua_additive_table", namespace="chat_heroics", table-name="chat_heroics")@
+AL:GetLocale("DXE").chat_heroics = AL:GetLocale("DXE Chat Heroics")
 -- NPC names
-local npc_baradin = AL:NewLocale("DXE NPC Baradin", "koKR")
---@localization(locale="koKR", format="lua_additive_table", namespace="npc_baradin", table-name="npc_baradin")@
-AL:GetLocale("DXE").npc_baradin = AL:GetLocale("DXE NPC Baradin")
+local npc_heroics = AL:NewLocale("DXE NPC Heroics", "koKR")
+--@localization(locale="koKR", format="lua_additive_table", namespace="npc_heroics", table-name="npc_heroics")@
+AL:GetLocale("DXE").npc_heroics = AL:GetLocale("DXE NPC Heroics")
 return
 end
 
@@ -94,13 +94,13 @@ local L = AL:NewLocale("DXE", "ruRU")
 if L then
 
 -- Chat triggers
-local chat_baradin = AL:NewLocale("DXE Chat Baradin", "ruRU")
---@localization(locale="ruRU", format="lua_additive_table", namespace="chat_baradin", table-name="chat_baradin")@
-AL:GetLocale("DXE").chat_baradin = AL:GetLocale("DXE Chat Baradin")
+local chat_heroics = AL:NewLocale("DXE Chat Heroics", "ruRU")
+--@localization(locale="ruRU", format="lua_additive_table", namespace="chat_heroics", table-name="chat_heroics")@
+AL:GetLocale("DXE").chat_heroics = AL:GetLocale("DXE Chat Heroics")
 -- NPC names
-local npc_baradin = AL:NewLocale("DXE NPC Baradin", "ruRU")
---@localization(locale="ruRU", format="lua_additive_table", namespace="npc_baradin", table-name="npc_baradin")@
-AL:GetLocale("DXE").npc_baradin = AL:GetLocale("DXE NPC Baradin")
+local npc_heroics = AL:NewLocale("DXE NPC Heroics", "ruRU")
+--@localization(locale="ruRU", format="lua_additive_table", namespace="npc_heroics", table-name="npc_heroics")@
+AL:GetLocale("DXE").npc_heroics = AL:GetLocale("DXE NPC Heroics")
 return
 end
 
@@ -108,13 +108,13 @@ local L = AL:NewLocale("DXE", "zhCN")
 if L then
 
 -- Chat triggers
-local chat_baradin = AL:NewLocale("DXE Chat Baradin", "zhCN")
---@localization(locale="zhCN", format="lua_additive_table", namespace="chat_baradin", table-name="chat_baradin")@
-AL:GetLocale("DXE").chat_baradin = AL:GetLocale("DXE Chat Baradin")
+local chat_heroics = AL:NewLocale("DXE Chat Heroics", "zhCN")
+--@localization(locale="zhCN", format="lua_additive_table", namespace="chat_heroics", table-name="chat_heroics")@
+AL:GetLocale("DXE").chat_heroics = AL:GetLocale("DXE Chat Heroics")
 -- NPC names
-local npc_baradin = AL:NewLocale("DXE NPC Baradin", "zhCN")
---@localization(locale="zhCN", format="lua_additive_table", namespace="npc_baradin", table-name="npc_baradin")@
-AL:GetLocale("DXE").npc_baradin = AL:GetLocale("DXE NPC Baradin")
+local npc_heroics = AL:NewLocale("DXE NPC Heroics", "zhCN")
+--@localization(locale="zhCN", format="lua_additive_table", namespace="npc_heroics", table-name="npc_heroics")@
+AL:GetLocale("DXE").npc_heroics = AL:GetLocale("DXE NPC Heroics")
 return
 end
 
@@ -122,12 +122,12 @@ local L = AL:NewLocale("DXE", "zhTW")
 if L then
 
 -- Chat triggers
-local chat_baradin = AL:NewLocale("DXE Chat Baradin", "zhTW")
---@localization(locale="zhTW", format="lua_additive_table", namespace="chat_baradin", table-name="chat_baradin")@
-AL:GetLocale("DXE").chat_baradin = AL:GetLocale("DXE Chat Baradin")
+local chat_heroics = AL:NewLocale("DXE Chat Heroics", "zhTW")
+--@localization(locale="zhTW", format="lua_additive_table", namespace="chat_heroics", table-name="chat_heroics")@
+AL:GetLocale("DXE").chat_heroics = AL:GetLocale("DXE Chat Heroics")
 -- NPC names
-local npc_baradin = AL:NewLocale("DXE NPC Baradin", "zhTW")
---@localization(locale="zhTW", format="lua_additive_table", namespace="npc_baradin", table-name="npc_baradin")@
-AL:GetLocale("DXE").npc_baradin = AL:GetLocale("DXE NPC Baradin")
+local npc_heroics = AL:NewLocale("DXE NPC Heroics", "zhTW")
+--@localization(locale="zhTW", format="lua_additive_table", namespace="npc_heroics", table-name="npc_heroics")@
+AL:GetLocale("DXE").npc_heroics = AL:GetLocale("DXE NPC Heroics")
 return
 end

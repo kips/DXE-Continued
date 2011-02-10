@@ -268,13 +268,13 @@ local function InitializeOptions()
 						desc = L.options["Show the pane only in party instances"],
 						width = "full",
 					},
-					--[[OnlyIfRunning = {
+					OnlyIfRunning = {
 						order = 260,
 						type = "toggle",
 						name = L.options["Only if engaged"],
 						desc = L.options["Show the pane only if an encounter is running"],
 						width = "full",
-					},]]
+					},
 					OnlyOnMouseover = {
 						order = 261,
 						type = "toggle",
@@ -2292,7 +2292,7 @@ local function InitializeOptions()
 	-- DEBUG
 	---------------------------------------------
 	
-	--@debug@
+	--[===[@debug@
 	local debug_group = {
 		type = "group",
 		order = -2,
@@ -2301,7 +2301,7 @@ local function InitializeOptions()
 	}
 	opts_args.debug_group = debug_group
 	addon:AddDebugOptions(debug_group.args)
-	--@end-debug@
+	--@end-debug@]===]
 
 end
 

@@ -36,11 +36,11 @@ addon:AddToRefreshProfile(RefreshProfile)
 local prototype = {}
 
 function prototype:AddTitleButton(texture,OnClick,text)
-	--@debug@
+	--[===[@debug@
 	assert(type(texture) == "string")
 	assert(type(OnClick) == "function")
 	assert(type(text) == "string")
-	--@end-debug@
+	--@end-debug@]===]
 
 	local button = CreateFrame("Button",nil,self.faux_window)
 	button:SetWidth(buttonSize)
@@ -139,11 +139,11 @@ handlers = {
 ---------------------------------------
 
 function addon:CreateWindow(name,width,height)
-	--@debug@
+	--[===[@debug@
 	assert(type(name) == "string")
 	assert(type(width) == "number")
 	assert(type(height) == "number")
-	--@end-debug@
+	--@end-debug@]===]
 
 	local properName = name:gsub(" ","")
 
@@ -266,10 +266,10 @@ end
 local registry = {}
 
 function addon:RegisterWindow(name,openFunc)
-	--@debug@
+	--[===[@debug@
 	assert(type(name) == "string")
 	assert(type(openFunc) == "function")
-	--@end-debug@
+	--@end-debug@]===]
 	registry[name] = openFunc
 end
 

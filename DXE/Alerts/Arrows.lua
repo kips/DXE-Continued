@@ -280,13 +280,13 @@ end
 
 function module:AddTarget(unit,persist,action,msg,spell,sound,fixed,xpos,ypos,range1,range2,range3)
 	if not pfl.Enable then return end
-	--@debug@
+	--[===[@debug@
 	assert(type(unit) == "string")
 	assert(type(persist) == "number")
 	assert(type(action) == "string")
 	assert(type(msg) == "string")
 	assert(type(spell) == "string")
-	--@end-debug@
+	--@end-debug@]===]
 	if UnitExists(unit) and UnitIsVisible(unit) then
 		-- Can't move to yourself or away from yourself, so bail on arrows that do that.
 		if ((not xpos and not ypos and action == "TOWARD") or (not fixed and action == "AWAY")) and UnitIsUnit(unit,"player") then

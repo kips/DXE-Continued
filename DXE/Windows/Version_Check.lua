@@ -219,10 +219,10 @@ local function CreateWindow()
 	window:SetScript("OnEvent",OnEvent)
 	window:RegisterEvent("ADDON_LOADED")
 	window:SetContentInset(7)
-	--@debug@
+	--[===[@debug@
 	window:AddTitleButton("Interface\\Addons\\DXE\\Textures\\Window\\Sync.tga",
 									function() addon:RequestAllVersions() end,L["Sync"])
-	--@end-debug@
+	--@end-debug@]===]
 	local content = window.content
 	local addonbutton = CreateFrame("Button", nil, content, "UIPanelButtonTemplate")
 	addonbutton:SetWidth(content:GetWidth()/3)

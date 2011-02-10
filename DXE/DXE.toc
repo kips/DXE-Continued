@@ -6,6 +6,10 @@
 ## LoadOnDemand: 1
 ## Dependencies: DXE_Loader
 ## SavedVariables: DXEDB
+## X-Curse-Packaged-Version: v507-9-gf7a0bc5
+## X-Curse-Project-Name: Deus Vox Encounters
+## X-Curse-Project-ID: deus-vox-encounters
+## X-Curse-Repository-ID: wow/deus-vox-encounters/mainline
 
 #@no-lib-strip@
 Libs\AceAddon-3.0\AceAddon-3.0.xml
@@ -37,9 +41,9 @@ Window.lua
 Windows.xml
 
 #@debug@
-#Options\Options.lua
-Debug.lua
-Validator.lua
-Tests.lua
-Encounters.xml
+# #Options\Options.lua
+# Debug.lua
+# Validator.lua
+# Tests.lua
+# Encounters.xml
 #@end-debug@

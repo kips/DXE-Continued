@@ -10,29 +10,29 @@
 	Valid commands are:
 		expect 				= {"<token or value> ... <token_n or value_n>","<op>","<token' or value'> ... <token_n' or value_n'>"}
 		quash 				= "<alert>"
-		set 				= {<var> = <token or value>, ..., <var_n> = <token_n or value_n> }
+		set 					= {<var> = <token or value>, ..., <var_n> = <token_n or value_n> }
 		alert 				= "<alert>"
-		scheduletimer	   	= {"<timer>",<token or number>}
+		scheduletimer	   = {"<timer>",<token or number>}
 		canceltimer 		= "<timer>"
 		resettimer 			= [BOOLEAN]
-		tracing 			= {<name>,...,<name_n>}
-		proximitycheck 		= {"<token>",[10,11,18, or 28]}
+		tracing 				= {<name>,...,<name_n>}
+		proximitycheck 	= {"<token>",[10,11,18, or 28]}
 		outproximitycheck	= {"<token>",[10,11,18, or 28]}
 		raidicon 			= "<raidicon>"
-		removeraidicon    	= "<token>"
+		removeraidicon    = "<token>"
 		arrow 				= "<arrow>"
 		removearrow 		= "<token>"
-		removeallarrows		= [BOOLEAN]
-		invoke            	= command bundle
-		defeat            	= [BOOLEAN]
-		insert            	= {"<userdata>", value},
-		wipe              	= "<userdata>"
-		batchalert        	= {<alert>,...,<alert_n>}
-		batchquash        	= {<alert>,...,<alert_n>}
-		quashall          	= [BOOLEAN]
-		schedulealert     	= {"<alert>",<token or number>}
-		repeatalert       	= {"<alert>",<token or number>}
-		cancelalert       	= "<alert>"
+		removeallarrows	= [BOOLEAN]
+		invoke            = command bundle
+		defeat            = [BOOLEAN]
+		insert            = {"<userdata>", value},
+		wipe              = "<userdata>"
+		batchalert        = {<alert>,...,<alert_n>}
+		batchquash        = {<alert>,...,<alert_n>}
+		quashall          = [BOOLEAN]
+		schedulealert     = {"<alert>",<token or number>}
+		repeatalert       = {"<alert>",<token or number>}
+		cancelalert       = "<alert>"
 ]]
 
 local addon = DXE
@@ -102,7 +102,7 @@ local eventtype_to_bundle = {}
 local combatbundle_to_filter = {}
 local eventbundle_to_filter = {}
 
---@debug@
+--[===[@debug@
 local debug
 
 local debugDefaults = {
@@ -126,14 +126,14 @@ local debugDefaults = {
 	["target.fire"] = false,
 }
 
---@end-debug@
+--@end-debug@]===]
 
 function module:OnInitialize()
 	addon.RegisterCallback(self,"SetActiveEncounter","OnSet")
 	addon.RegisterCallback(self,"StartEncounter","OnStart")
 	addon.RegisterCallback(self,"StopEncounter","OnStop")
 
-	--@debug@
+	--[===[@debug@
 	self.db = addon.db:RegisterNamespace("Invoker", {
 		global = {
 			debug = debugDefaults
@@ -141,7 +141,7 @@ function module:OnInitialize()
 	})
 
 	debug = addon:CreateDebugger("Invoker",self.db.global,debugDefaults)
-	--@end-debug@
+	--@end-debug@]===]
 end
 
 ---------------------------------------------
@@ -162,15 +162,6 @@ local function SetTuple(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11)
 	tuple['9']  = a9  or "nil"
 	tuple['10'] = a10 or "nil"
 	tuple['11'] = a11 or "nil"
-	-- BEGIN new tuples
-	tuple['12'] = a12 or "nil"
-	tuple['13'] = a13 or "nil"
-	tuple['14'] = a14 or "nil"
-	tuple['15'] = a15 or "nil"
-	tuple['16'] = a16 or "nil"
-	tuple['17'] = a17 or "nil"
-	tuple['18'] = a18 or "nil"
-	-- END new tuples
 end
 
 ---------------------------------------------
@@ -280,11 +271,11 @@ do
 		end
 	end
 
-	--@debug@
+	--[===[@debug@
 	function module:GetRepFuncs()
 		return RepFuncs
 	end
-	--@end-debug@
+	--@end-debug@]===]
 
 	local replace_nums = tuple
 
@@ -301,16 +292,16 @@ do
 			local func,args = match(str,"^([^|]+)|(.+)") 
 			func = RepFuncs[func]
 			if not func then return end
-			--@debug@
+			--[===[@debug@
 			debug("replace_funcs",format("func: %s ret: %s",str,tostring(func(split("|",args)))))
-			--@end-debug@
+			--@end-debug@]===]
 			return tostring(func(split("|",args)))
 		else
 			local func = RepFuncs[str]
 			if not func then return end
-			--@debug@
+			--[===[@debug@
 			debug("replace_funcs",format("func: %s ret: %s",str,tostring(func())))
-			--@end-debug@
+			--@end-debug@]===]
 			return tostring(func())
 		end
 	end
@@ -404,11 +395,11 @@ do
 		end
 	end
 
-	--@debug@
+	--[===[@debug@
 	function module:GetConditions()
 		return ops
 	end
-	--@end-debug@
+	--@end-debug@]===]
 
 	local t = {}
 	-- @ADD TO HANDLERS
@@ -511,7 +502,6 @@ do
 					userdata[k] = v
 				end
 			end
-			addon.Invoker.userdata = userdata
 		end
 	end
 
@@ -534,9 +524,9 @@ do
 				end
 			end
 			if flag then 
-				--@debug@
+				--[===[@debug@
 				debug("handlers.set","var: <%s> before: %s after: %s",k,userdata[k],v)
-				--@end-debug@
+				--@end-debug@]===]
 				userdata[k] = v 
 			end
 		end
@@ -546,9 +536,9 @@ do
 	local function wipe_container(k)
 		wipeins[k] = nil
 		wipe(userdata[k])
-		--@debug@
+		--[===[@debug@
 		debug("wipe_container","var: %s table values: %s",k,table.concat(userdata[k],", "))
-		--@end-debug@
+		--@end-debug@]===]
 	end
 
 	-- @ADD TO HANDLERS
@@ -563,9 +553,9 @@ do
 			wipeins[k] = module:ScheduleTimer(wipe_container,ct.wipein,k)
 		end
 
-		--@debug@
+		--[===[@debug@
 		debug("insert","var: %s value: %s table values: %s",k,v,table.concat(userdata[k],", "))
-		--@end-debug@
+		--@end-debug@]===]
 
 		return true
 	end
@@ -573,9 +563,9 @@ do
 	-- @ADD TO HANDLERS
 	handlers.wipe = function(info)
 		wipe(userdata[info])
-		--@debug@
+		--[===[@debug@
 		debug("wipe","var: %s table values: %s",info,table.concat(userdata[info],", "))
-		--@end-debug@
+		--@end-debug@]===]
 		return true
 	end
 end
@@ -703,11 +693,9 @@ do
 				text = text.." "..c
 				counters[var] = c
 			end
-			
-			local flashtime = ReplaceTokens(defn.flashtime)
-			--@debug@
+			--[===[@debug@
 			debug("Alerts","id: %s text: %s time: %s flashtime: %s sound: %s color1: %s color2: %s",var,text,time,defn.flashtime,stgs.sound,stgs.color1,stgs.color2)
-			--@end-debug@
+			--@end-debug@]===]
 			-- Sanity check
 			if not time or time < 0 then return true end
 			-- Pass in appropriate arguments
@@ -994,7 +982,7 @@ do
 	-- "target",{
 	--		unit = <unit>			  -- OPTIONAL
 	--		npcid = <npcid>,		  -- OPTIONAL
-	-- 		raidicon = <raidicon>, -- fired when target exists
+	-- 	raidicon = <raidicon>, -- fired when target exists
 	--		announce = <announce>, -- fired when target is self 	  	-- condition: target exists
 	--		arrow = <arrow>, 		  -- fired when target exists 
 	--		alerts = {
@@ -1038,9 +1026,9 @@ do
 	local cancel_handle	-- Handle for failsafe
 
 	local function fire(unit)
-		--@debug@
+		--[===[@debug@
 		debug("target.fire","unit: %s UnitName: %s",unit,UnitName(unit or ""))
-		--@end-debug@
+		--@end-debug@]===]
 		if UnitExists(unit) then
 			upvalue = UnitName(unit)
 			if info.raidicon then
@@ -1071,9 +1059,9 @@ do
 	function module:UNIT_TARGET(_,unit)
 		if unit == ut_unit then
 			local npcid = NID[UnitGUID(unit)]
-			--@debug@
+			--[===[@debug@
 			debug("target.UNIT_TARGET","unit: %s npcid: %s",unit,npcid)
-			--@end-debug@
+			--@end-debug@]===]
 			if info.npcid == npcid then
 				fire(targetof[unit])
 				self:TeardownTarget()
@@ -1082,9 +1070,9 @@ do
 	end
 
 	local function scan(npcid)
-		--@debug@
+		--[===[@debug@
 		debug("target.scan","Invoked")
-		--@end-debug@
+		--@end-debug@]===]
 		for _,unit in pairs(unit_to_unittarget) do
 				if	 UnitExists(unit)
 				and NID[UnitGUID(unit)] == npcid
@@ -1099,9 +1087,9 @@ do
 		local unit = scan(info.npcid)
 		local cancel
 
-		--@debug@
+		--[===[@debug@
 		debug("target.try","tries: %s UnitName: %s",tries,UnitName(unit or ""))
-		--@end-debug@
+		--@end-debug@]===]
 
 		-- target changed
 		if unit and UnitGUID(unit) ~= last_guid then
@@ -1119,9 +1107,9 @@ do
 	end
 
 	local function failsafe()
-		--@debug@
+		--[===[@debug@
 		debug("target.failsafe","Invoked")
-		--@end-debug@
+		--@end-debug@]===]
 		fire(targetof[ut_unit])
 		cancel_handle = nil
 		module:TeardownTarget()
@@ -1137,9 +1125,9 @@ do
 			cancel_handle = nil
 		end
 		self:UnregisterEvent("UNIT_TARGET")
-		--@debug@
+		--[===[@debug@
 		debug("target.TeardownTarget","Invoked")
-		--@end-debug@
+		--@end-debug@]===]
 	end
 
 	-- @ADD TO HANDLERS
@@ -1150,32 +1138,32 @@ do
 			module:RegisterEvent("UNIT_TARGET")
 			ut_unit = info.unit
 			cancel_handle = module:ScheduleTimer(failsafe,FAILSAFE_TIME)
-			--@debug@
+			--[===[@debug@
 			debug("target.bossunit","UnitName: %s",UnitName(targetof[info.unit]))
-			--@end-debug@
+			--@end-debug@]===]
 		elseif band(tuple['3'],OBJECT_TARGET) == OBJECT_TARGET then
 			module:RegisterEvent("UNIT_TARGET")
 			ut_unit = "target"
 			cancel_handle = module:ScheduleTimer(failsafe,FAILSAFE_TIME)
-			--@debug@
+			--[===[@debug@
 			debug("target.OBJECT_TARGET","UnitName: %s",UnitName("targettarget"))
-			--@end-debug@
+			--@end-debug@]===]
 		elseif band(tuple['3'],OBJECT_FOCUS) == OBJECT_FOCUS then
 			module:RegisterEvent("UNIT_TARGET")
 			ut_unit = "focus"
 			cancel_handle = module:ScheduleTimer(failsafe,FAILSAFE_TIME)
-			--@debug@
+			--[===[@debug@
 			debug("target.OBJECT_FOCUS","UnitName: %s",UnitName("focustarget"))
-			--@end-debug@
+			--@end-debug@]===]
 		else
 			local unit = scan(info.npcid)
 			if unit then last_guid = UnitGUID(unit)
 			else last_guid = nil end
 			try_handle = module:ScheduleRepeatingTimer(try,TRY_REPEAT_TIME)
 			tries = 0
-			--@debug@
+			--[===[@debug@
 			debug("target.StartPolling","UnitName: %s last_guid: %s",UnitName(unit or ""),last_guid)
-			--@end-debug@
+			--@end-debug@]===]
 		end
 		return true
 	end
@@ -1198,11 +1186,7 @@ do
 			local defn = announces[var]
 			if defn.type == "SAY" then
 				local msg = ReplaceTokens(defn.msg)
-				SendChatMessage(msg,"SAY")
-			elseif defn.type == "YELL" then
-				local msg = ReplaceTokens(defn.msg)
-				SendChatMessage(msg,"YELL")
-			else
+				SendChatMessage(defn.msg,"SAY")
 			end
 		end
 		return true
@@ -1501,9 +1485,9 @@ addon.RegisterCallback(module,"HW_TRACER_ACQUIRED")
 ---------------------------------------------
 
 function module:OnSet(_,data)
-	--@debug@
+	--[===[@debug@
 	assert(type(data) == "table","Expected 'data' table as argument #1 in OnSet. Got '"..tostring(data).."'")
-	--@end-debug@
+	--@end-debug@]===]
 	-- Set upvalues
 	CE = data
 	arrows = CE.arrows
