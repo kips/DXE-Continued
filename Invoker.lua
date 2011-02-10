@@ -10,29 +10,29 @@
 	Valid commands are:
 		expect 				= {"<token or value> ... <token_n or value_n>","<op>","<token' or value'> ... <token_n' or value_n'>"}
 		quash 				= "<alert>"
-		set 					= {<var> = <token or value>, ..., <var_n> = <token_n or value_n> }
+		set 				= {<var> = <token or value>, ..., <var_n> = <token_n or value_n> }
 		alert 				= "<alert>"
-		scheduletimer	   = {"<timer>",<token or number>}
+		scheduletimer	   	= {"<timer>",<token or number>}
 		canceltimer 		= "<timer>"
 		resettimer 			= [BOOLEAN]
-		tracing 				= {<name>,...,<name_n>}
-		proximitycheck 	= {"<token>",[10,11,18, or 28]}
+		tracing 			= {<name>,...,<name_n>}
+		proximitycheck 		= {"<token>",[10,11,18, or 28]}
 		outproximitycheck	= {"<token>",[10,11,18, or 28]}
 		raidicon 			= "<raidicon>"
-		removeraidicon    = "<token>"
+		removeraidicon    	= "<token>"
 		arrow 				= "<arrow>"
 		removearrow 		= "<token>"
-		removeallarrows	= [BOOLEAN]
-		invoke            = command bundle
-		defeat            = [BOOLEAN]
-		insert            = {"<userdata>", value},
-		wipe              = "<userdata>"
-		batchalert        = {<alert>,...,<alert_n>}
-		batchquash        = {<alert>,...,<alert_n>}
-		quashall          = [BOOLEAN]
-		schedulealert     = {"<alert>",<token or number>}
-		repeatalert       = {"<alert>",<token or number>}
-		cancelalert       = "<alert>"
+		removeallarrows		= [BOOLEAN]
+		invoke            	= command bundle
+		defeat            	= [BOOLEAN]
+		insert            	= {"<userdata>", value},
+		wipe              	= "<userdata>"
+		batchalert        	= {<alert>,...,<alert_n>}
+		batchquash        	= {<alert>,...,<alert_n>}
+		quashall          	= [BOOLEAN]
+		schedulealert     	= {"<alert>",<token or number>}
+		repeatalert       	= {"<alert>",<token or number>}
+		cancelalert       	= "<alert>"
 ]]
 
 local addon = DXE
@@ -162,6 +162,15 @@ local function SetTuple(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11)
 	tuple['9']  = a9  or "nil"
 	tuple['10'] = a10 or "nil"
 	tuple['11'] = a11 or "nil"
+	-- BEGIN new tuples
+	tuple['12'] = a12 or "nil"
+	tuple['13'] = a13 or "nil"
+	tuple['14'] = a14 or "nil"
+	tuple['15'] = a15 or "nil"
+	tuple['16'] = a16 or "nil"
+	tuple['17'] = a17 or "nil"
+	tuple['18'] = a18 or "nil"
+	-- END new tuples
 end
 
 ---------------------------------------------
@@ -502,6 +511,7 @@ do
 					userdata[k] = v
 				end
 			end
+			addon.Invoker.userdata = userdata
 		end
 	end
 
@@ -693,6 +703,8 @@ do
 				text = text.." "..c
 				counters[var] = c
 			end
+			
+			local flashtime = ReplaceTokens(defn.flashtime)
 			--@debug@
 			debug("Alerts","id: %s text: %s time: %s flashtime: %s sound: %s color1: %s color2: %s",var,text,time,defn.flashtime,stgs.sound,stgs.color1,stgs.color2)
 			--@end-debug@
@@ -982,7 +994,7 @@ do
 	-- "target",{
 	--		unit = <unit>			  -- OPTIONAL
 	--		npcid = <npcid>,		  -- OPTIONAL
-	-- 	raidicon = <raidicon>, -- fired when target exists
+	-- 		raidicon = <raidicon>, -- fired when target exists
 	--		announce = <announce>, -- fired when target is self 	  	-- condition: target exists
 	--		arrow = <arrow>, 		  -- fired when target exists 
 	--		alerts = {
@@ -1186,7 +1198,11 @@ do
 			local defn = announces[var]
 			if defn.type == "SAY" then
 				local msg = ReplaceTokens(defn.msg)
-				SendChatMessage(defn.msg,"SAY")
+				SendChatMessage(msg,"SAY")
+			elseif defn.type == "YELL" then
+				local msg = ReplaceTokens(defn.msg)
+				SendChatMessage(msg,"YELL")
+			else
 			end
 		end
 		return true
